@@ -12,16 +12,12 @@ export class ImageComponent implements OnInit {
 
   @Input("avatarUid") avatarUid:number;
 
-  avatarUrl:string=`https://static.hdslb.com/images/member/noface.gif`;
+  avatarUrl:string;
 
   constructor(private http:HttpClient) { }
 
   ngOnInit() {
-    this.http.get(`${environment.api_server}/v1/bilichat/avatar/${this.avatarUid}`)
-          .subscribe((x:any)=>{
-            if(x.success){
-              this.avatarUrl=`${environment.api_server}/v1/bilichat/avatarimage/?path=${x.face}`;
-          }});
+    this.avatarUrl =`${environment.api_server}/v1/bilichat/avatar/${this.avatarUid}`;
   }
 
 }

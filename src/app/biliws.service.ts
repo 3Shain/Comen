@@ -33,6 +33,8 @@ export class BiliwsService {
     while(offset<v.byteLength){
       var type = view.getInt32(8+offset);
       var sec = v.slice(offset+view.getInt16(4+offset),view.getInt32(offset)+offset);
+      offset+=view.getInt32(offset);
+      //后面不要操作offset了
       if(type==5){
         var json = new TextDecoder().decode(sec);
         var obj = JSON.parse(json);
@@ -40,10 +42,13 @@ export class BiliwsService {
           //pipe 
           //onmessage -> filter danmu_msg -> get avatar -> go to subscriber
           //心跳包实现
+          /*
+          if(String(obj.info[1]).indexOf("狐狸")!=-1){
+            continue;
+          }*/
           this.obs.next({username:obj.info[2][1],message:obj.info[1],avatarUid:obj.info[2][0]});
         }
       }
-      offset+=view.getInt32(offset);
     }
   }
 
