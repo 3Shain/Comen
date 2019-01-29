@@ -1,17 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { BiliwsService } from '../biliws.service';
+import { ActivatedRoute } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-alpha',
   templateUrl: './alpha.component.html',
-  styleUrls: ['./alpha.component.css']
+  styleUrls: ['./alpha.component.css'],
+  encapsulation:ViewEncapsulation.None
 })
 export class AlphaComponent implements OnInit {
 
-  constructor(private bili:BiliwsService) { }
+  private currentRoomId:number;
+
+  constructor(private route: ActivatedRoute
+    ,private title: Title) { }
 
   ngOnInit() {
-    this.bili.initial(7788489);
+    this.currentRoomId=this.route.snapshot.params["id"];
+    this.title.setTitle("BILICHAT-直播间"+this.currentRoomId);
   }
-
 }

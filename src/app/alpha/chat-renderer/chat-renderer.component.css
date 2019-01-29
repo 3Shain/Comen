@@ -1,0 +1,11 @@
+
+yt-live-chat-renderer {
+    font-family: 'Microsoft YaHei';
+    font-size: 13px;
+    --yt-emoji-picker-renderer-height: 30%;
+    --yt-button-default-text-color: var(--yt-live-chat-button-default-text-color);
+    --yt-button-default-background-color: var(--yt-live-chat-button-default-background-color);
+    --yt-button-dark-text-color: var(--yt-live-chat-button-dark-text-color);
+    --yt-button-dark-background-color: var(--yt-live-chat-button-dark-background-color);
+    --yt-button-payment-background-color: var(--yt-live-chat-sponsor-color);
+}

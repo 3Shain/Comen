@@ -8,6 +8,8 @@ import { MessageComponent } from './alpha/message/message.component';
 import { ImageComponent } from './alpha/image/image.component';
 import { AuthorChipComponent } from './alpha/author-chip/author-chip.component';
 import { IndexComponent } from './index/index.component';
+import { ChatRendererComponent } from './alpha/chat-renderer/chat-renderer.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -16,11 +18,13 @@ import { IndexComponent } from './index/index.component';
     MessageComponent,
     ImageComponent,
     AuthorChipComponent,
-    IndexComponent
+    IndexComponent,
+    ChatRendererComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
