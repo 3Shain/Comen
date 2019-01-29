@@ -8,7 +8,7 @@ import { BiliwsService } from '../../biliws.service';
   encapsulation:ViewEncapsulation.None
 })
 export class ChatRendererComponent implements OnInit {
-  private danmakuList:Array<any>;
+  danmakuList:Array<any>;
 
   private _roomId:number;
 

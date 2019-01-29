@@ -2,7 +2,6 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { BiliwsService } from '../biliws.service';
 import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-alpha',
@@ -12,7 +11,7 @@ import { environment } from 'src/environments/environment';
 })
 export class AlphaComponent implements OnInit {
 
-  private currentRoomId:number;
+  currentRoomId:number;
 
   constructor(private route: ActivatedRoute
     ,private title: Title) { }
