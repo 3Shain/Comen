@@ -20,7 +20,7 @@ export class ImageComponent implements OnInit {
     this.http.get(`${environment.api_server}/v1/bilichat/avatar/${this.avatarUid}`)
           .subscribe((x:any)=>{
             if(x.success){
-              this.avatarUrl=`${environment.api_server}/v1/bilichat/avatarimage/?path=${+x.face}`;
+              this.avatarUrl=`${environment.api_server}/v1/bilichat/avatarimage/?path=${x.face}`;
           }});
   }
 
