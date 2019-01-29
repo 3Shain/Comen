@@ -12,7 +12,7 @@ export class ImageComponent implements OnInit {
 
   @Input("avatarUid") avatarUid:number;
 
-  avatarUrl:string=`${environment.api_server}/images/member/noface.gif`;
+  avatarUrl:string=`https://static.hdslb.com/images/member/noface.gif`;
 
   constructor(private http:HttpClient) { }
 
