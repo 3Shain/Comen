@@ -1,5 +1,6 @@
-import { Component, OnInit ,ViewEncapsulation, Input} from '@angular/core';
+import { Component, OnInit ,ViewEncapsulation, Input, PLATFORM_ID, Inject} from '@angular/core';
 import { BiliwsService } from '../../biliws.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'yt-live-chat-renderer',
@@ -22,11 +23,14 @@ export class ChatRendererComponent implements OnInit {
     this._roomId = v;
   }
 
-  constructor(private bili:BiliwsService) { 
+  constructor(private bili:BiliwsService,@Inject(PLATFORM_ID)private plat:Object) { 
     this.danmakuList=new Array();
   }
 
   ngOnInit() {
+    if(!isPlatformBrowser(this.plat)){
+      return;
+    }
     this.bili.initial(this._roomId);
     this.bili.obs.subscribe((x)=>{
       if(this.danmakuList.length>=100){
@@ -37,6 +41,9 @@ export class ChatRendererComponent implements OnInit {
   }
 
   ngAfterViewChecked(){
+    if(!isPlatformBrowser(this.plat)){
+      return;
+    }
     try{
       console.log(document.body.scrollTop);
       window.scrollTo(0,document.body.scrollHeight);
