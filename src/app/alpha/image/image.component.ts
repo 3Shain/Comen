@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'yt-img-shadow',
@@ -10,14 +9,16 @@ import { environment } from '../../../environments/environment';
 })
 export class ImageComponent implements OnInit {
 
-  @Input("avatarUid") avatarUid:number;
+  @Input("avatarUrl") avatarUrl:number;
 
-  avatarUrl:string;
+  @Input("height") height:number;
+
+  @Input("width") width:number;
 
   constructor(private http:HttpClient) { }
 
   ngOnInit() {
-    this.avatarUrl =`${environment.api_server}/v1/bilichat/avatar/${this.avatarUid}`;
+    
   }
 
 }

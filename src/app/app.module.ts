@@ -10,6 +10,7 @@ import { AuthorChipComponent } from './alpha/author-chip/author-chip.component';
 import { IndexComponent } from './index/index.component';
 import { ChatRendererComponent } from './alpha/chat-renderer/chat-renderer.component';
 import { HttpClientModule } from '@angular/common/http';
+import { LegacyPaidMessageComponent } from './alpha/legacy-paid-message/legacy-paid-message.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { HttpClientModule } from '@angular/common/http';
     ImageComponent,
     AuthorChipComponent,
     IndexComponent,
-    ChatRendererComponent
+    ChatRendererComponent,
+    LegacyPaidMessageComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

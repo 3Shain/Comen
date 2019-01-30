@@ -12,7 +12,7 @@ export class MessageComponent implements OnInit {
 
   @Input("message") message:string;
 
-  @Input("avatarUid") avatarUid:number;
+  @Input("avatarUrl") avatarUrl:number;
 
   constructor() { }
 
