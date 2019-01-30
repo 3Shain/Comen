@@ -43,6 +43,10 @@ export class ChatRendererComponent implements OnInit {
           }
           if(x.data.cmd=="DANMU_MSG"){
             //fielterhere
+            var mssg = String(x.data.info[1]);
+            if(mssg.indexOf('哔哩哔哩 (゜-゜)つロ 干杯~')!=-1){
+              return;//
+            }
             var img = new Image();
             img.src=`${environment.api_server}/v1/bilichat/avatar/${x.data.info[2][0]}`;
             img.onload=()=>{
