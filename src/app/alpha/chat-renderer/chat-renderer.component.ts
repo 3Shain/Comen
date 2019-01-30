@@ -29,6 +29,8 @@ export class ChatRendererComponent implements OnInit {
     this.danmakuList = new Array();
   }
 
+  private lastDanmaku:string;
+
   ngOnInit() {
     if (!isPlatformBrowser(this.plat)) {
       return;
@@ -36,7 +38,7 @@ export class ChatRendererComponent implements OnInit {
     this.sendSystemInfo(`正在连接到直播间${this._roomId}...`);
     this.bili.connect(Number(this._roomId)).subscribe(
       x => {
-        if (x.type == "message") {
+        if (x.type == "message") { 
           console.table(x.data);
           while(this.danmakuList.length>100){
             this.danmakuList.shift();//清理以提升效率
@@ -47,6 +49,13 @@ export class ChatRendererComponent implements OnInit {
             if(mssg.indexOf('哔哩哔哩 (゜-゜)つロ 干杯~')!=-1){
               return;//
             }
+            if(mssg==this.lastDanmaku){
+              if(mssg!="awsl"&&mssg!="草"&&mssg.indexOf("888")==-1){
+                console.log("stop！");
+                return;
+              }
+            }
+            this.lastDanmaku=mssg;
             var img = new Image();
             img.src=`${environment.api_server}/v1/bilichat/avatar/${x.data.info[2][0]}`;
             img.onload=()=>{
