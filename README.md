@@ -22,10 +22,10 @@
 ## 💲捐助
 捐助表示您对我这个项目的认可，所得的钱将用于维护公共服务器，也能激励我继续开发更多好的项目
 * 微信  
-<img src="https://raw.githubusercontent.com/3Shain/BiliChat/master/docimg/wx.jpg" width="256">
+<img src="https://raw.githubusercontent.com/3Shain/BiliChat/master/docimg/wx.jpg" width="256">  
 * 支付宝  
-<img src="https://raw.githubusercontent.com/3Shain/BiliChat/master/docimg/zfb.jpg" width="256">
-## ✨TODO
+<img src="https://raw.githubusercontent.com/3Shain/BiliChat/master/docimg/zfb.jpg" width="256">  
+## ✨TODO  
 * 增加不显示头像的参数noface
 * 增加自定义屏蔽参数filter
 
