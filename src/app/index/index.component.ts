@@ -10,6 +10,9 @@ export class IndexComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    setTimeout(()=>{
+      window.location.href="https://github.com/3Shain/BiliChat";
+    },5000);
   }
 
 }

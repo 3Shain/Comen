@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'yt-img-shadow',
@@ -9,7 +10,9 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ImageComponent implements OnInit {
 
-  @Input("avatarUrl") avatarUrl:number;
+  avatarUrl:string;
+
+  @Input("userid") userid:number;
 
   @Input("height") height:number;
 
@@ -18,7 +21,16 @@ export class ImageComponent implements OnInit {
   constructor(private http:HttpClient) { }
 
   ngOnInit() {
-    
+    switch(Number(this.userid)){
+      case -1:
+        this.avatarUrl='/favicon.ico';
+        break;
+      case 0:
+        this.avatarUrl='https://static.hdslb.com/images/member/noface.gif';
+        break;
+      default:
+        this.avatarUrl=`${environment.api_server}/v1/bilichat/avatar/${this.userid}`;
+    }
   }
 
 }

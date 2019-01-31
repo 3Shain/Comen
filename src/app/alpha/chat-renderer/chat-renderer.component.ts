@@ -3,6 +3,7 @@ import { BiliwsService } from '../../biliws.service';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, fromEvent } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'yt-live-chat-renderer',
@@ -13,36 +14,53 @@ import { environment } from '../../../environments/environment';
 export class ChatRendererComponent implements OnInit {
   danmakuList: Array<any>;
 
-  private _roomId: number;
+  private _roomId: number;//这个不是真正的roomId
 
   @Input()
-
-  public get roomId(): number {
-    return this._roomId;
-  }
 
   public set roomId(v: number) {
     this._roomId = v;
   }
 
-  constructor(private bili: BiliwsService, @Inject(PLATFORM_ID) private plat: Object) {
+  constructor(private bili: BiliwsService, 
+    @Inject(PLATFORM_ID) private plat: Object,
+    private http:HttpClient) {
     this.danmakuList = new Array();
   }
 
   private lastDanmaku:string;
 
-  ngOnInit() {
+  ngOnInit(){
     if (!isPlatformBrowser(this.plat)) {
       return;
     }
-    this.sendSystemInfo(`正在连接到直播间${this._roomId}...`);
-    this.bili.connect(Number(this._roomId)).subscribe(
+    if(this._roomId<=0){
+      this.sendSystemInfo("直播间ID格式错误");
+      return;
+    }
+    this.http.get(`${environment.api_server}/v1/bilichat/stat/${this._roomId}`).subscribe(
+      (x:any)=>{
+        if(x.success){
+          this.start(x.data.room_id);
+        }
+        else{
+          this.sendSystemInfo("直播间信息获取失败:"+x.message);
+        }
+      },
+      e=>{
+        this.sendSystemInfo("直播间信息获取失败,尝试rawId");
+        this.start(this._roomId);
+      }
+    )
+  }
+
+  start(realRoomId:number) {
+    this.sendSystemInfo(`正在连接到直播间${realRoomId}...`);
+    //这段代码我觉得需要重构
+    this.bili.connect(Number(realRoomId)).subscribe(
       x => {
         if (x.type == "message") { 
-          console.table(x.data);
-          while(this.danmakuList.length>100){
-            this.danmakuList.shift();//清理以提升效率
-          }
+          //console.table(x.data);
           if(x.data.cmd=="DANMU_MSG"){
             //fielterhere
             var mssg = String(x.data.info[1]);
@@ -50,34 +68,32 @@ export class ChatRendererComponent implements OnInit {
               return;//
             }
             if(mssg==this.lastDanmaku){
-              if(mssg!="awsl"&&mssg!="草"&&mssg.indexOf("888")==-1){
-                console.log("stop！");
+              if(mssg!="awsl"&&mssg!="草"&&mssg.indexOf("888")==-1){//防止重复刷
                 return;
               }
             }
             this.lastDanmaku=mssg;
-            var img = new Image();
-            img.src=`${environment.api_server}/v1/bilichat/avatar/${x.data.info[2][0]}`;
-            img.onload=()=>{
-              this.danmakuList.push({
-                type:'msg',
-                username:x.data.info[2][1],
-                message:x.data.info[1],
-                avatarUrl:img.src
-              });
-            }
-            img.onerror=()=>{
-              this.danmakuList.push({
-                type:'msg',
-                username:x.data.info[2][1],
-                message:x.data.info[1],
-                avatarUrl:'https://static.hdslb.com/images/member/noface.gif'
-              });
-            }
+            this.bili.avatarPreload(x.data.info[2][0]).subscribe(
+              c=>{
+                if(c){
+                  this.sendDanmaku({
+                    type:'msg',
+                    username:x.data.info[2][1],
+                    message:x.data.info[1],
+                    userid:x.data.info[2][0]
+                  });
+                }else{
+                  this.sendDanmaku({
+                    type:'msg',
+                    username:x.data.info[2][1],
+                    message:x.data.info[1],
+                    userid:0
+                  });
+                }
+              }
+            )
           }
           else if(x.data.cmd=="SEND_GIFT"){
-            var img = new Image();
-            img.src=`${environment.api_server}/v1/bilichat/avatar/${x.data.data.uid}`;
             if(x.data.data.coin_type!="gold"){//gold/silver
               return;
             }
@@ -85,26 +101,30 @@ export class ChatRendererComponent implements OnInit {
             if(value<50*1000){//计算用的scale
               return;
             }
-            img.onload=()=>{
-              this.danmakuList.push({
-                type:'gift',
-                username:x.data.data.uname,
-                avatarUrl:img.src,
-                gift:x.data.data.giftName,
-                amount:x.data.data.num,
-                value:value/1000
-              });
-            };
-            img.onerror=()=>{
-              this.danmakuList.push({
-                type:'gift',
-                username:x.data.data.uname,
-                avatarUrl:'https://static.hdslb.com/images/member/noface.gif',
-                gift:x.data.data.giftName,
-                amount:x.data.data.num,
-                value:value/1000
-              });
-            }
+            this.bili.avatarPreload(x.data.data.uid).subscribe(
+              c=>{
+                if(c){
+                  this.sendDanmaku({
+                    type:'gift',
+                    username:x.data.data.uname,
+                    userid:x.data.data.uid,
+                    gift:x.data.data.giftName,
+                    amount:x.data.data.num,
+                    value:value/1000
+                  });
+                }
+                else{
+                  this.sendDanmaku({
+                    type:'gift',
+                    username:x.data.data.uname,
+                    userid:0,
+                    gift:x.data.data.giftName,
+                    amount:x.data.data.num,
+                    value:value/1000
+                  });
+                }
+              }
+            )
           }
         }
         else if(x.type=='open'){
@@ -116,18 +136,25 @@ export class ChatRendererComponent implements OnInit {
       },
       ()=>{
         this.sendSystemInfo('检测到服务器断开,尝试重连中');
-        this.ngOnInit();//重连
+        this.start(realRoomId);//重连
       }
     );
   }
 
   private sendSystemInfo(msg){
-    this.danmakuList.push({
+    this.sendDanmaku({
       type:'msg',
       username:'BILICHAT',
       message:msg,
-      avatarUrl:"/favicon.ico"
+      userid:-1
     });
+  }
+
+  private sendDanmaku(msg){
+    while(this.danmakuList.length>100){
+      this,this.danmakuList.shift();
+    }
+    this.danmakuList.push(msg);
   }
 
   ngAfterViewChecked() {
@@ -141,5 +168,4 @@ export class ChatRendererComponent implements OnInit {
       console.log(err);
     }
   }
-
 }

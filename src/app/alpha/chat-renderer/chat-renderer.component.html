@@ -1,8 +1,8 @@
 <div id="items" class="style-scope yt-live-chat-item-list-render yt-live-chat-renderer">
   <ng-container *ngFor="let item of danmakuList" >
     <yt-live-chat-text-message-renderer *ngIf="item.type=='msg'" username="{{item.username}}" message="{{item.message}}"
-      avatarUrl="{{item.avatarUrl}}"></yt-live-chat-text-message-renderer>
+      [userid]="item.userid"></yt-live-chat-text-message-renderer>
     <yt-live-chat-paid-message-renderer *ngIf="item.type=='gift'" username="{{item.username}}" gift="{{item.gift}}" amount="{{item.amount}}"
-    avatarUrl="{{item.avatarUrl}}" value="{{item.value}}"></yt-live-chat-paid-message-renderer>
+    userid="{{item.userid}}" value="{{item.value}}"></yt-live-chat-paid-message-renderer>
   </ng-container>
 </div>

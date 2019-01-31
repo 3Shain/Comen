@@ -2,8 +2,8 @@ import { Component, OnInit,Input,ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'yt-live-chat-paid-message-renderer',
-  templateUrl: './legacy-paid-message.component.html',
-  styleUrls: ['./legacy-paid-message.component.css'],
+  templateUrl: './paid-message.component.html',
+  styleUrls: ['./paid-message.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class LegacyPaidMessageComponent implements OnInit {
@@ -14,7 +14,7 @@ export class LegacyPaidMessageComponent implements OnInit {
 
   @Input("amount") amount:string;
 
-  @Input("avatarUrl") avatarUrl:number;
+  @Input("userid") userid:number;
 
   @Input("value") value:number;
 
@@ -24,6 +24,7 @@ export class LegacyPaidMessageComponent implements OnInit {
   }
 
   getColor(){
+    //这段代码过于真实
     if(this.value>=1245){
       return '#e62117';
     }

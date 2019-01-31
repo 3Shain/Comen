@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, race, timer, fromEvent } from 'rxjs';
+import { map, tap } from 'rxjs/operators'
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +54,22 @@ export class BiliwsService {
           observer.complete();
         };
       }
+    );
+  }
+
+  avatarPreload(userid:number):Observable<boolean>{
+    var img = new Image();
+    img.src=`${environment.api_server}/v1/bilichat/avatar/${userid}`;
+    return race(
+      timer(1000).pipe(
+        map(x=>false)
+      ),
+      fromEvent(img,'load').pipe(
+        map(x=>true),
+      ),
+      fromEvent(img,'error').pipe(
+        map(x=>false)
+      )
     );
   }
 

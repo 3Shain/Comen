@@ -10,7 +10,7 @@ import { AuthorChipComponent } from './alpha/author-chip/author-chip.component';
 import { IndexComponent } from './index/index.component';
 import { ChatRendererComponent } from './alpha/chat-renderer/chat-renderer.component';
 import { HttpClientModule } from '@angular/common/http';
-import { LegacyPaidMessageComponent } from './alpha/legacy-paid-message/legacy-paid-message.component';
+import { LegacyPaidMessageComponent } from './alpha/paid-message/paid-message.component';
 
 @NgModule({
   declarations: [
