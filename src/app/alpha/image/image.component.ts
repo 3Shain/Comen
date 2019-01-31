@@ -29,7 +29,7 @@ export class ImageComponent implements OnInit {
         this.avatarUrl='https://static.hdslb.com/images/member/noface.gif';
         break;
       default:
-        this.avatarUrl=`${environment.api_server}/v1/bilichat/avatar/${this.userid}`;
+        this.avatarUrl=`${environment.api_server}/avatar/${this.userid}`;
     }
   }
 

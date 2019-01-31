@@ -38,7 +38,7 @@ export class ChatRendererComponent implements OnInit {
       this.sendSystemInfo("直播间ID格式错误");
       return;
     }
-    this.http.get(`${environment.api_server}/v1/bilichat/stat/${this._roomId}`).subscribe(
+    this.http.get(`${environment.api_server}/stat/${this._roomId}`).subscribe(
       (x:any)=>{
         if(x.success){
           this.start(x.data.room_id);

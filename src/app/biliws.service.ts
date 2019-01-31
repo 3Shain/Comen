@@ -59,7 +59,7 @@ export class BiliwsService {
 
   avatarPreload(userid:number):Observable<boolean>{
     var img = new Image();
-    img.src=`${environment.api_server}/v1/bilichat/avatar/${userid}`;
+    img.src=`${environment.api_server}/avatar/${userid}`;
     return race(
       timer(1000).pipe(
         map(x=>false)
