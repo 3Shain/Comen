@@ -2,6 +2,9 @@ const express = require('express')
 const request = require('request')
 
 const app = express()
+const connectHistoryApiFallback = require('connect-history-api-fallback');
+
+const PORT = 5000
 
 app.get('/avatar/:userid',(req,res)=>{
     res.setHeader('Access-Control-Allow-Origin','*');
@@ -43,4 +46,8 @@ app.get('/stat/:roomid',(req,res)=>{
     })
 })
 
-app.listen(5000,()=>console.log('Listen on port 5000'))
+app.use('/', connectHistoryApiFallback())
+app.use('/',express.static('dist/browser'))
+
+
+app.listen(PORT,()=>console.log('Listen on port '+PORT))
