@@ -4,6 +4,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { Observable, fromEvent } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { Timestamp } from 'rxjs/internal/operators/timestamp';
 
 @Component({
   selector: 'yt-live-chat-renderer',
@@ -12,12 +13,14 @@ import { HttpClient } from '@angular/common/http';
   encapsulation: ViewEncapsulation.None
 })
 export class ChatRendererComponent implements OnInit {
+  
   danmakuList: Array<any>;
+
+  waitForRendering: Array<any>;
 
   private _roomId: number;//这个不是真正的roomId
 
   @Input()
-
   public set roomId(v: number) {
     this._roomId = v;
   }
@@ -26,9 +29,28 @@ export class ChatRendererComponent implements OnInit {
     @Inject(PLATFORM_ID) private plat: Object,
     private http:HttpClient) {
     this.danmakuList = new Array();
+    this.waitForRendering = new Array();
   }
 
   private lastDanmaku:string;
+  private lastInvoke:number=Date.now();
+  private lastRender:number=Date.now();
+  private counter:number=0;
+
+  public render(){
+    this.lastInvoke=Date.now();
+    if(this.waitForRendering.length>0){
+      if(Date.now()-this.lastRender>=(1000.0/this.waitForRendering.length)){
+        this.lastRender=Date.now();
+        while(this.danmakuList.length>100){
+          this.danmakuList.shift();
+        }
+        this.danmakuList.push(this.waitForRendering.shift());
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+    }
+    requestAnimationFrame(this.render.bind(this));
+  }
 
   ngOnInit(){
     if (!isPlatformBrowser(this.plat)) {
@@ -52,6 +74,8 @@ export class ChatRendererComponent implements OnInit {
         this.start(this._roomId);
       }
     )
+    
+    requestAnimationFrame(this.render.bind(this));
   }
 
   start(realRoomId:number) {
@@ -63,6 +87,7 @@ export class ChatRendererComponent implements OnInit {
           //console.table(x.data);
           if(x.data.cmd=="DANMU_MSG"){
             //fielterhere
+            console.log(x.data.info[2][1]+' '+x.data.info[7]);
             var mssg = String(x.data.info[1]);
             if(mssg.indexOf('哔哩哔哩 (゜-゜)つロ 干杯~')!=-1){
               return;//
@@ -151,21 +176,12 @@ export class ChatRendererComponent implements OnInit {
   }
 
   private sendDanmaku(msg){
-    while(this.danmakuList.length>100){
-      this,this.danmakuList.shift();
-    }
-    this.danmakuList.push(msg);
+    this.waitForRendering.push(msg);
   }
 
   ngAfterViewChecked() {
     if (!isPlatformBrowser(this.plat)) {
       return;
-    }
-    try {
-      window.scrollTo(0, document.body.scrollHeight);
-      //document.documentElement.scrollTop = document.body.scrollHeight;
-    } catch (err) {
-      console.log(err);
     }
   }
 }
