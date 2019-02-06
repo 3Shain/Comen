@@ -45,6 +45,9 @@ export class ChatRendererComponent implements OnInit {
         while(this.danmakuList.length>100){
           this.danmakuList.shift();
         }
+        while(this.waitForRendering.length>60){//因为当窗口隐藏时可能会积压过多的弹幕
+          this.waitForRendering.shift();
+        }
         this.danmakuList.push(this.waitForRendering.shift());
         window.scrollTo(0, document.body.scrollHeight);
       }
