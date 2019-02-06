@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewEncapsulation, Input, PLATFORM_ID, Inject } from '@angular/core';
 import { BiliwsService } from '../../biliws.service';
 import { isPlatformBrowser } from '@angular/common';
-import { Observable, fromEvent } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Timestamp } from 'rxjs/internal/operators/timestamp';
 
 @Component({
   selector: 'yt-live-chat-renderer',
@@ -25,11 +23,32 @@ export class ChatRendererComponent implements OnInit {
     this._roomId = v;
   }
 
+  filter:Array<string>=[
+    "kimo",
+    "风暴",
+    "弹幕姬","弹幕机",
+    "哔哩哔哩 (゜-゜)つロ 干杯~",
+    "前方高能预警，注意这不是演习",
+    "我从未见过如此厚颜无耻之人",
+    "那万一赢了呢",
+    "你们城里人真会玩",
+    "左舷弹幕太薄了",
+    "别这样，我们乡下人营养跟不上",
+    "要优雅，不要污",
+    "我选择狗带",
+    "别刷",
+    "不要刷",
+    "小鬼",
+    "嘴臭",
+    "梗",
+    "傻逼","弱智","脑残","屏蔽","cnm"
+  ];
+
   constructor(private bili: BiliwsService, 
     @Inject(PLATFORM_ID) private plat: Object,
     private http:HttpClient) {
-    this.danmakuList = new Array();
-    this.waitForRendering = new Array();
+    this.danmakuList = [];
+    this.waitForRendering = [];
   }
 
   private lastDanmaku:string;
@@ -38,15 +57,16 @@ export class ChatRendererComponent implements OnInit {
   private counter:number=0;
 
   public render(){
+    if(Date.now()-this.lastInvoke>1000){//窗口不在active状态时，此方法不会被调用。
+      this.waitForRendering = [];
+      console.log('Idle');
+    }
     this.lastInvoke=Date.now();
     if(this.waitForRendering.length>0){
       if(Date.now()-this.lastRender>=(1000.0/this.waitForRendering.length)){
         this.lastRender=Date.now();
         while(this.danmakuList.length>100){
           this.danmakuList.shift();
-        }
-        while(this.waitForRendering.length>60){//因为当窗口隐藏时可能会积压过多的弹幕
-          this.waitForRendering.shift();
         }
         this.danmakuList.push(this.waitForRendering.shift());
         window.scrollTo(0, document.body.scrollHeight);
@@ -90,13 +110,14 @@ export class ChatRendererComponent implements OnInit {
           //console.table(x.data);
           if(x.data.cmd=="DANMU_MSG"){
             //fielterhere
-            console.log(x.data.info[2][1]+' '+x.data.info[7]);
             var mssg = String(x.data.info[1]);
-            if(mssg.indexOf('哔哩哔哩 (゜-゜)つロ 干杯~')!=-1){
-              return;//
+            if(this.filter.some((item)=>{
+              return mssg.indexOf(item)!=-1;
+            })){
+              return;//filter
             }
             if(mssg==this.lastDanmaku){
-              if(mssg!="awsl"&&mssg!="草"&&mssg.indexOf("888")==-1){//防止重复刷
+              if(mssg!="awsl"&&mssg!="草"&&mssg!="kksk"&&mssg.indexOf("888")==-1){//防止重复刷
                 return;
               }
             }
