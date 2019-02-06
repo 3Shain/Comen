@@ -4,6 +4,7 @@
 
 表面上似乎是个弹幕姬  
 实际上是youtube chatbox的高仿(指样式表直接照搬)实现，不过把内容换成了b站直播弹幕2333  
+**所以在OBS中对于youtube livechat的自定义CSS代码可以直接copy**  
 自豪地使用好文明Angular 7
 
 ## 🌟如何在OBS中使用
@@ -45,11 +46,4 @@
 ## ✨TODO  
 * 增加不显示头像的参数noface
 * 增加自定义屏蔽参数filter
-
-## 👀为什么那天的直播弹幕姬两度自闭
-
-![噔 噔 咚](https://raw.githubusercontent.com/3Shain/BiliChat/master/doc/zibi.png)  
-那是因为缓存头像服务器Redis把内存给撑爆了  
-毕竟人数也太多了  
-(所以快给我打钱加内存啊(明示
 

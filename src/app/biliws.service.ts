@@ -11,6 +11,8 @@ export class BiliwsService {
 
   private ws: WebSocket;
 
+  private heartbeatHandler:any;
+
   constructor(private http: HttpClient) {
   }
   
@@ -29,7 +31,7 @@ export class BiliwsService {
           };
           this.sendPackageObj(7, obj);
           observer.next({ type: 'open' });
-          setInterval(() => { this.sendHeartbeat() }, 30000);
+          this.heartbeatHandler =  setInterval(() => { this.sendHeartbeat() }, 30000);
         };
         this.ws.onmessage = (e) => {
           var arr = new Uint8Array(e.data);
@@ -51,6 +53,7 @@ export class BiliwsService {
         };
         this.ws.onclose = (e) => {
           //observer.next({ type: 'close' });
+          clearInterval(this.heartbeatHandler);
           observer.complete();
         };
       }

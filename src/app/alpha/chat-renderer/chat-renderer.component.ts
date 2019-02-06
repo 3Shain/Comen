@@ -180,8 +180,11 @@ export class ChatRendererComponent implements OnInit {
           this.sendSystemInfo('成功连接到直播间!');
         }
       },
-      e=>{
-
+      (e:any)=>{
+        if(e.target.readyState==WebSocket.CLOSED){
+          this.sendSystemInfo('无法连接到直播间,10秒后重试');
+          setTimeout(()=>this.start(realRoomId),10000);
+        }
       },
       ()=>{
         this.sendSystemInfo('检测到服务器断开,尝试重连中');
