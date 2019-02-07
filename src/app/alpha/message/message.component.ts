@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
-import { DanmakuMessage } from 'src/app/danmaku.def';
+import { DanmakuMessage } from '../../../app/danmaku.def';
 import { isNgTemplate } from '@angular/compiler';
 
 @Component({

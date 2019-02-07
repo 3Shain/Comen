@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-index',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IndexComponent implements OnInit {
 
-  constructor() { }
+  constructor(@Inject(PLATFORM_ID) private plat: Object) { }
 
   ngOnInit() {
+    if(!isPlatformBrowser(this.plat)){
+      return;
+    }
     setTimeout(()=>{
       window.location.href="https://github.com/3Shain/BiliChat";
     },5000);

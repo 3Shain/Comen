@@ -3,7 +3,7 @@ import { BiliwsService } from '../../biliws.service';
 import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { IMessage, DanmakuMessage, GiftMessage } from 'src/app/danmaku.def';
+import { IMessage, DanmakuMessage, GiftMessage } from '../../../app/danmaku.def';
 
 @Component({
   selector: 'yt-live-chat-renderer',
@@ -25,17 +25,15 @@ export class ChatRendererComponent implements OnInit {
   }
 
   filter:Array<string>=[
-    "kimo",
-    "风暴",
+    "kimo","风暴", 
     "弹幕姬","弹幕机",
-    "别刷",
-    "不要刷",
+    "别刷","不要刷",
     "小鬼",
-    "嘴臭",
+    "嘴臭","骂我",
     "梗",
     "傻逼","弱智","脑残","屏蔽","cnm",
     "警察","加群","群号","QQ群",
-    "人工智能"
+    "人工智能","老婆"
   ];
 
   constructor(private bili: BiliwsService, 
@@ -69,6 +67,7 @@ export class ChatRendererComponent implements OnInit {
 
   ngOnInit(){
     if (!isPlatformBrowser(this.plat)) {
+      console.log('server env.');
       return;
     }
     if(this._roomId<=0){
@@ -102,7 +101,6 @@ export class ChatRendererComponent implements OnInit {
         if (x.type == "message") { 
           //console.table(x.data);
           if(x.data.cmd=="DANMU_MSG"){
-            //fielterhere
             if(x.data.info[0][9]>0){
               return;//屏蔽礼物弹幕
             }

@@ -1,5 +1,5 @@
 import { Component, OnInit,Input,ViewEncapsulation } from '@angular/core';
-import { GiftMessage } from 'src/app/danmaku.def';
+import { GiftMessage } from '../../../app/danmaku.def';
 
 @Component({
   selector: 'yt-live-chat-paid-message-renderer',
