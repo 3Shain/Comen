@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -18,7 +17,7 @@ export class ImageComponent implements OnInit {
 
   @Input("width") width:number;
 
-  constructor(private http:HttpClient) { }
+  constructor() { }
 
   ngOnInit() {
     switch(Number(this.userid)){
