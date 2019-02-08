@@ -98,6 +98,9 @@ export class ChatRendererComponent implements OnInit {
     //屏蔽逻辑不应该在渲染器里，20190207
     this.bili.connect(Number(realRoomId)).subscribe(
       x => {
+        if(document.hidden){
+          return;//不显示的时候不要一直请求服务器
+        }
         if (x.type == "message") { 
           //console.table(x.data);
           if(x.data.cmd=="DANMU_MSG"){
