@@ -34,7 +34,7 @@ export class AlphaComponent implements OnInit {
       this.proc.showGift=this.route.snapshot.queryParamMap.get('showGift').toLowerCase()=='true';
     }
     if(this.route.snapshot.queryParamMap.has('wordFilter')){
-      this.proc.wordFilter.concat(String(this.route.snapshot.queryParamMap.get('wordFilter')).split(','));
+      this.proc.wordFilter = this.proc.wordFilter.concat(String(this.route.snapshot.queryParamMap.get('wordFilter')).split(','));
     }
   }
 }
