@@ -22,7 +22,7 @@ export class ImageComponent implements OnInit {
   ngOnInit() {
     switch(Number(this.userid)){
       case -1:
-        this.avatarUrl='/favicon.ico';
+        this.avatarUrl='';
         break;
       case 0:
         this.avatarUrl='https://static.hdslb.com/images/member/noface.gif';

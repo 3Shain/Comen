@@ -16,7 +16,7 @@ export class IndexComponent implements OnInit {
     }
     setTimeout(()=>{
       window.location.href="https://github.com/3Shain/BiliChat";
-    },5000);
+    },3000);
   }
 
 }

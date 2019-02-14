@@ -24,4 +24,12 @@ class GiftMessage implements IMessage{
         public type="gift"){}
 }
 
-export {IMessage,DanmakuMessage,GiftMessage}
+class ConnectedMessage implements IMessage{
+    constructor(
+        public uid:number=0,
+        public username:string=null,
+        public type="connected"
+    ){}
+}
+
+export {IMessage,DanmakuMessage,GiftMessage,ConnectedMessage}
