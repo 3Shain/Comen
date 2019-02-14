@@ -22,16 +22,16 @@ export class AlphaComponent implements OnInit {
     this.title.setTitle("直播间"+this.currentRoomId);
     
     if(this.route.snapshot.queryParamMap.has('loadAvatar')){
-      this.proc.loadAvatar=Boolean(this.route.snapshot.queryParamMap.get('loadAvatar'));
+      this.proc.loadAvatar=this.route.snapshot.queryParamMap.get('loadAvatar').toLowerCase()=='true';
     }
     if(this.route.snapshot.queryParamMap.has('levelFilter')){
       this.proc.userLevelFilter=Number(this.route.snapshot.queryParamMap.get('levelFilter'));
     }
     if(this.route.snapshot.queryParamMap.has('hideGiftDanmaku')){
-      this.proc.hideGiftDanmaku=Boolean(this.route.snapshot.queryParamMap.get('hideGiftDanmaku'));
+      this.proc.hideGiftDanmaku=this.route.snapshot.queryParamMap.get('hideGiftDanmaku').toLowerCase()=='true';
     }
     if(this.route.snapshot.queryParamMap.has('showGift')){
-      this.proc.showGift=Boolean(this.route.snapshot.queryParamMap.get('showGift'));
+      this.proc.showGift=this.route.snapshot.queryParamMap.get('showGift').toLowerCase()=='true';
     }
     if(this.route.snapshot.queryParamMap.has('wordFilter')){
       this.proc.wordFilter.concat(String(this.route.snapshot.queryParamMap.get('wordFilter')).split(','));
