@@ -34,17 +34,14 @@ export class ChatRendererComponent implements OnInit {
   private lastRender: number = Date.now();
 
   public render() {
-    if (this.waitForRendering.length > 0) {
-      if (Date.now() - this.lastRender >= (1000.0 / this.waitForRendering.length)) {
-        this.lastRender = Date.now();
-        while (this.danmakuList.length > 100) {//最大渲染数量100
-          this.danmakuList.shift();
-        }
-        this.danmakuList.push(this.waitForRendering.shift());
-        window.scrollTo(0, document.body.scrollHeight);
+    while (this.waitForRendering.length > 0) {
+      this.danmakuList.push(this.waitForRendering.shift());
+      while (this.danmakuList.length > 100) {//最大渲染数量100
+        this.danmakuList.shift();
       }
     }
-    requestAnimationFrame(this.render.bind(this));
+    window.scrollTo(0, document.body.scrollHeight);
+    setTimeout(this.render.bind(this), 1000);
   }
 
   ngOnInit() {
