@@ -1,7 +1,11 @@
 #content.yt-live-chat-text-message-renderer {
     -ms-align-self: center;
     -webkit-align-self: center;
+    display: inline-block;
+    vertical-align: middle;
+    padding-right: 30px;
     align-self: center;
+    white-space: normal;
     min-width: 0;
 }
 
@@ -17,7 +21,8 @@
 }
 
 #author-photo.yt-live-chat-text-message-renderer {
-    display: block;
+    display: inline-block;
+    vertical-align: middle;
     margin-right: 16px;
     overflow: hidden;
     border-radius: 50%;
@@ -67,10 +72,10 @@ yt-live-chat-text-message-renderer {
     position: relative;
     font-size: 13px;
     padding: 4px 24px;
-    overflow: hidden;
+    white-space: nowrap;
     --yt-endpoint-color: var(--yt-live-chat-primary-text-color, hsl(0, 0%, 6.7%));
     --yt-endpoint-hover-color: var(--yt-live-chat-primary-text-color, var(--yt-endpoint-color));
-    display: flex;
+    display: block;
     -ms-flex-direction: row;
     -webkit-flex-direction: row;
     flex-direction: row;

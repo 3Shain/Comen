@@ -19,9 +19,10 @@ export class BiliwsService {
 
   connect(roomid: number): Observable<IMessage> {
     this.ws = new WebSocket("wss://broadcastlv.chat.bilibili.com:2245/sub");
-    this.ws.binaryType = "arraybuffer";
+    this.ws.binaryType = "blob";
     return new Observable(
       observer => {
+        let that = this;
         this.ws.onopen = (e) => {
           let obj = {
             uid: 0,
@@ -35,18 +36,23 @@ export class BiliwsService {
           observer.next(new ConnectedMessage());
         };
         this.ws.onmessage = (e) => {
-          let arr = new Uint8Array(e.data);
-          let view = new DataView(arr.buffer);
-          let offset = 0;
-          while (offset < arr.byteLength) {
-            let type = view.getInt32(8 + offset);
-            let section = arr.slice(offset + view.getInt16(4 + offset), view.getInt32(offset) + offset);
-            offset += view.getInt32(offset);
-            //后面不要操作offset了
-            if (type == 5) {
-              this.proc.formMessage(JSON.parse(new TextDecoder().decode(section)), observer);
+          let data = e.data;
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            let arr = new Uint8Array(<ArrayBuffer>reader.result);
+            let view = new DataView(arr.buffer);
+            let offset = 0;
+            while (offset < arr.byteLength) {
+              let type = view.getInt32(8 + offset);
+              let section = arr.slice(offset + view.getInt16(4 + offset), view.getInt32(offset) + offset);
+              offset += view.getInt32(offset);
+              //后面不要操作offset了
+              if (type == 5) {
+                that.proc.formMessage(JSON.parse(new TextDecoder().decode(section)), observer);
+              }
             }
-          }
+          };
+          reader.readAsArrayBuffer(data);
         };
         this.ws.onerror = (e) => {
           observer.error(e);

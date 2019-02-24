@@ -5,7 +5,9 @@
     font-weight: 500;
     padding: 8px 16px;
     min-height: 20px;
-    display: flex;
+    overflow: hidden;
+    white-space: nowrap;
+    display: block;
     -ms-flex-direction: row;
     -webkit-flex-direction: row;
     flex-direction: row;
@@ -20,7 +22,7 @@
     height: 40px;
 }
 #author-photo.yt-live-chat-paid-message-renderer {
-    display: block;
+    display: inline-block;
     margin-right: 16px;
     overflow: hidden;
     border-radius: 50%;
@@ -30,7 +32,7 @@
 }
 
 #header-content.yt-live-chat-paid-message-renderer {
-    display: flex;
+    display: inline-block;
     -ms-flex-direction: row;
     -webkit-flex-direction: row;
     flex-direction: row;

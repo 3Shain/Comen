@@ -31,15 +31,9 @@ export class ChatRendererComponent implements OnInit {
     this.waitForRendering = [];
   }
 
-  private lastInvoke: number = Date.now();
   private lastRender: number = Date.now();
 
   public render() {
-    if (Date.now() - this.lastInvoke > 1000) {//窗口不在active状态时，此方法不会被调用。
-      this.waitForRendering = [];
-      console.log('Idle');
-    }
-    this.lastInvoke = Date.now();
     if (this.waitForRendering.length > 0) {
       if (Date.now() - this.lastRender >= (1000.0 / this.waitForRendering.length)) {
         this.lastRender = Date.now();
@@ -85,10 +79,7 @@ export class ChatRendererComponent implements OnInit {
     this.sendSystemInfo(`正在连接到直播间${realRoomId}...`);
     this.bili.connect(Number(realRoomId)).subscribe(
       x => {
-        if (document.hidden) {
-          return;//不显示的时候不要一直请求服务器
-        }
-        else if (x.type == 'connected') {
+        if (x.type == 'connected') {
           this.sendSystemInfo('成功连接到直播间!');
         }
         else {

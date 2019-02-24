@@ -11,7 +11,7 @@ export class MessageProcessorService {
 
   userLevelFilter: number = 0;
 
-  minGiftValue: number = 50;
+  minGiftValue: number = 5;
 
   showGift: boolean = true;
 
