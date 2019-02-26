@@ -73,6 +73,9 @@ var AlphaComponent = /** @class */ (function () {
     }
     AlphaComponent.prototype.ngOnInit = function () {
         this.currentRoomId = this.route.snapshot.params["id"];
+        if (!this.currentRoomId && this.route.snapshot.queryParamMap.has('id')) {
+            this.currentRoomId = parseInt(this.route.snapshot.queryParamMap.get('id'));
+        }
         this.title.setTitle("直播间" + this.currentRoomId);
         if (this.route.snapshot.queryParamMap.has('loadAvatar')) {
             this.proc.loadAvatar = this.route.snapshot.queryParamMap.get('loadAvatar').toLowerCase() == 'true';
