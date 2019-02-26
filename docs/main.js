@@ -522,15 +522,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
 /* harmony import */ var _alpha_alpha_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./alpha/alpha.component */ "./src/app/alpha/alpha.component.ts");
-/* harmony import */ var _index_index_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./index/index.component */ "./src/app/index/index.component.ts");
-
 
 
 
 
 var routes = [
     { path: 'alpha/:id', component: _alpha_alpha_component__WEBPACK_IMPORTED_MODULE_3__["AlphaComponent"] },
-    { path: '', component: _index_index_component__WEBPACK_IMPORTED_MODULE_4__["IndexComponent"] },
+    { path: '', component: _alpha_alpha_component__WEBPACK_IMPORTED_MODULE_3__["AlphaComponent"] },
     { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 var AppRoutingModule = /** @class */ (function () {
