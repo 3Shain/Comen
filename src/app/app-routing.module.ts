@@ -4,9 +4,9 @@ import { AlphaComponent } from './alpha/alpha.component'
 import { IndexComponent } from './index/index.component';
 
 const routes: Routes = [
-  { path:'alpha/:id',component:AlphaComponent},
-  { path:'',component:IndexComponent},
-  { path:'**',redirectTo:'',pathMatch:'full'}
+  { path: 'alpha/:id', component: AlphaComponent },
+  { path: '', component: AlphaComponent },
+  { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 
 @NgModule({
