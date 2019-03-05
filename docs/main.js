@@ -698,7 +698,7 @@ var BiliwsService = /** @class */ (function () {
     }
     BiliwsService.prototype.connect = function (roomid) {
         var _this = this;
-        this.ws = new WebSocket("wss://broadcastlv.chat.bilibili.com:2245/sub");
+        this.ws = new WebSocket("wss://tx-hk-live-comet-01.chat.bilibili.com/sub");
         this.ws.binaryType = "blob";
         return new rxjs__WEBPACK_IMPORTED_MODULE_2__["Observable"](function (observer) {
             var that = _this;
