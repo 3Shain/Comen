@@ -11,12 +11,12 @@ export class IndexComponent implements OnInit {
   constructor(@Inject(PLATFORM_ID) private plat: Object) { }
 
   ngOnInit() {
-    if(!isPlatformBrowser(this.plat)){
+    if (!isPlatformBrowser(this.plat)) {
       return;
     }
-    setTimeout(()=>{
-      window.location.href="https://github.com/3Shain/BiliChat";
-    },3000);
+    setTimeout(() => {
+      window.location.href = 'https://github.com/3Shain/BiliChat';
+    }, 3000);
   }
 
 }

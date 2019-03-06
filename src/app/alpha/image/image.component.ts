@@ -5,30 +5,30 @@ import { environment } from '../../../environments/environment';
   selector: 'yt-img-shadow',
   templateUrl: './image.component.html',
   styleUrls: ['./image.component.css'],
-  encapsulation:ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None
 })
 export class ImageComponent implements OnInit {
 
-  avatarUrl:string;
+  avatarUrl: string;
 
-  @Input("userid") userid:number;
+  @Input() userid: number;
 
-  @Input("height") height:number;
+  @Input() height: number;
 
-  @Input("width") width:number;
+  @Input() width: number;
 
   constructor() { }
 
   ngOnInit() {
-    switch(Number(this.userid)){
+    switch (Number(this.userid)) {
       case -1:
-        this.avatarUrl='favicon.ico';
+        this.avatarUrl = 'favicon.ico';
         break;
       case 0:
-        this.avatarUrl='https://static.hdslb.com/images/member/noface.gif';
+        this.avatarUrl = 'https://static.hdslb.com/images/member/noface.gif';
         break;
       default:
-        this.avatarUrl=`${environment.api_server}/avatar/${this.userid}`;
+        this.avatarUrl = `${environment.api_server}/avatar/${this.userid}`;
     }
   }
 

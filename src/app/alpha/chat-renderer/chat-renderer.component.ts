@@ -17,7 +17,7 @@ export class ChatRendererComponent implements OnInit {
 
   waitForRendering: Array<IMessage>;
 
-  private _roomId: number;//这个不是真正的roomId
+  private _roomId: number; // 这个不是真正的roomId
 
   @Input()
   public set roomId(v: number) {
@@ -35,7 +35,7 @@ export class ChatRendererComponent implements OnInit {
   private lastRender: number = Date.now();
 
   public render() {
-    if (Date.now() - this.lastInvoke > 1000) {//窗口不在active状态时，此方法不会被调用。
+    if (Date.now() - this.lastInvoke > 1000) {// 窗口不在active状态时，此方法不会被调用。
       this.waitForRendering = [];
       console.log('Idle');
     }
@@ -43,7 +43,7 @@ export class ChatRendererComponent implements OnInit {
     if (this.waitForRendering.length > 0) {
       if (Date.now() - this.lastRender >= (1000.0 / this.waitForRendering.length)) {
         this.lastRender = Date.now();
-        while (this.danmakuList.length > 100) {//最大渲染数量100
+        while (this.danmakuList.length > 100) {// 最大渲染数量100
           this.danmakuList.shift();
         }
         this.danmakuList.push(this.waitForRendering.shift());
@@ -59,24 +59,23 @@ export class ChatRendererComponent implements OnInit {
       return;
     }
     if (this._roomId <= 0) {
-      this.sendSystemInfo("直播间ID格式错误");
+      this.sendSystemInfo('直播间ID格式错误');
       return;
     }
-    this.sendSystemInfo("正在获取直播间信息...");
+    this.sendSystemInfo('正在获取直播间信息...');
     this.http.get(`${environment.api_server}/stat/${this._roomId}`).subscribe(
       (x: any) => {
         if (x.success) {
           this.start(x.data.room_id);
-        }
-        else {
-          this.sendSystemInfo("直播间信息获取失败:" + x.message);
+        } else {
+          this.sendSystemInfo('直播间信息获取失败:' + x.message);
         }
       },
       e => {
-        this.sendSystemInfo("直播间信息获取失败,尝试rawId");
+        this.sendSystemInfo('直播间信息获取失败,尝试rawId');
         this.start(this._roomId);
       }
-    )
+    );
 
     requestAnimationFrame(this.render.bind(this));
   }
@@ -86,24 +85,22 @@ export class ChatRendererComponent implements OnInit {
     this.bili.connect(Number(realRoomId)).subscribe(
       x => {
         if (document.hidden) {
-          return;//不显示的时候不要一直请求服务器
-        }
-        else if (x.type == 'connected') {
+          return; // 不显示的时候不要一直请求服务器
+        } else if (x.type === 'connected') {
           this.sendSystemInfo('成功连接到直播间!');
-        }
-        else {
+        } else {
           this.sendDanmaku(x);
         }
       },
       e => {
-        if (e.target.readyState == WebSocket.CLOSED) {
+        if (e.target.readyState === WebSocket.CLOSED) {
           this.sendSystemInfo('无法连接到直播间,5秒后重试');
           setTimeout(() => this.start(realRoomId), 5000);
         }
       },
       () => {
         this.sendSystemInfo('检测到服务器断开,尝试重连中...');
-        this.start(realRoomId);//重连
+        this.start(realRoomId); // 重连
       }
     );
   }

@@ -18,32 +18,32 @@ export class BiliwsService {
   }
 
   connect(roomid: number): Observable<IMessage> {
-    this.ws = new WebSocket("wss://broadcastlv.chat.bilibili.com:2245/sub");
-    this.ws.binaryType = "arraybuffer";
+    this.ws = new WebSocket('wss://broadcastlv.chat.bilibili.com:2245/sub');
+    this.ws.binaryType = 'arraybuffer';
     return new Observable(
       observer => {
         this.ws.onopen = (e) => {
-          let obj = {
+          const obj = {
             uid: 0,
             roomid: Number(roomid),
             protover: 1,
-            platform: "web",
-            clientver: "1.5.15"
+            platform: 'web',
+            clientver: '1.5.15'
           };
           this.sendPackageObj(7, obj);
-          this.heartbeatHandler = setInterval(() => { this.sendHeartbeat() }, 30000);
+          this.heartbeatHandler = setInterval(() => { this.sendHeartbeat(); }, 30000);
           observer.next(new ConnectedMessage());
         };
         this.ws.onmessage = (e) => {
-          let arr = new Uint8Array(e.data);
-          let view = new DataView(arr.buffer);
+          const arr = new Uint8Array(e.data);
+          const view = new DataView(arr.buffer);
           let offset = 0;
           while (offset < arr.byteLength) {
-            let type = view.getInt32(8 + offset);
-            let section = arr.slice(offset + view.getInt16(4 + offset), view.getInt32(offset) + offset);
+            const type = view.getInt32(8 + offset);
+            const section = arr.slice(offset + view.getInt16(4 + offset), view.getInt32(offset) + offset);
             offset += view.getInt32(offset);
-            //后面不要操作offset了
-            if (type == 5) {
+            // 后面不要操作offset了
+            if (type === 5) {
               this.proc.formMessage(JSON.parse(new TextDecoder().decode(section)), observer);
             }
           }
@@ -60,20 +60,20 @@ export class BiliwsService {
   }
 
   private sendHeartbeat() {
-    let body = new TextEncoder().encode("[object Object]");
+    const body = new TextEncoder().encode('[object Object]');
     this.sendPackageBinary(2, body);
   }
 
   private sendPackageBinary(type: number, body: Uint8Array) {
-    let head = new ArrayBuffer(16);
-    let headDataView = new DataView(head);
+    const head = new ArrayBuffer(16);
+    const headDataView = new DataView(head);
     headDataView.setInt32(0, head.byteLength + body.byteLength);
     headDataView.setInt16(4, 16);
     headDataView.setInt16(6, 1);
-    headDataView.setInt32(8, type);//verify
+    headDataView.setInt32(8, type); // verify
     headDataView.setInt32(12, 1);
 
-    let tmp = new Uint8Array(16 + body.byteLength);
+    const tmp = new Uint8Array(16 + body.byteLength);
     tmp.set(new Uint8Array(head), 0);
     tmp.set(body, 16);
 

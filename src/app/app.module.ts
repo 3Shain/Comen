@@ -28,6 +28,6 @@ import { LegacyPaidMessageComponent } from './alpha/paid-message/paid-message.co
   ],
   providers: [],
   bootstrap: [AppComponent],
-  schemas:[CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }
