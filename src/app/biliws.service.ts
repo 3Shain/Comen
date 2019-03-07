@@ -18,7 +18,7 @@ export class BiliwsService {
   }
 
   connect(roomid: number): Observable<IMessage> {
-    this.ws = new WebSocket("wss://broadcastlv.chat.bilibili.com:2245/sub");
+    this.ws = new WebSocket("wss://tx-hk-live-comet-01.chat.bilibili.com/sub");
     this.ws.binaryType = "blob";
     return new Observable(
       observer => {
