@@ -1,3 +1,46 @@
-.container{
-    margin:1em;
+.container {
+    max-width:650px;
+    margin:1em auto;
+    padding:1.5em;
+    background-color:white;
+    border-radius: 1em;
+    box-shadow:0 1px 1px 1px #bbbbbb;
+}
+
+:host {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color:white;
+}
+
+.entry:not(:last-child){
+    padding-bottom: 0.5em;
+    margin-bottom: 0.5em;
+    border-bottom:1px solid #bbbbbb ;
+}
+
+.entry{
+    display: flex;
+
+}
+
+.entry > img{
+    width:3em;
+    height: 3em;
+    border-radius: 50%;
+}
+
+.entry > .info{
+    padding-left: 0.5em;
+}
+
+.entry > .info > .intro{
+    color:#555555;
+    text-indent: 1em;
+}
+
+.def{
+    font-size: 0.8em;
+    color:#555555;
 }

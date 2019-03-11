@@ -1,4 +1,22 @@
 <div class="container">
-  <p>在做了</p>
-  <p>3秒后跳转到Github Repo...</p>
+
+  <h1>BILICHAT <small>by <a href="https://3shain.com" target="_blank">3Shain</a></small></h1>
+  <p>B站仿油管样式评论机<br><del>使B站限定转播成为可能</del></p>
+  <a href="https://github.com/3Shain/BiliChat" target="_blank">View this project on Github</a>
+  <div>
+    <h3>这里可以看到有哪些主播/vtuber/转播man最近使用过Bilichat</h3>
+    <p class="def">* 这个数据并不太准确，因为OBS会使浏览器源始终处于激活状态，即使在被遮挡/隐藏的情况下</p>
+    <div class="list">
+      <!--ngFor-->
+      <div class="entry" *ngFor="let item of entrys">
+        <img [src]="getImageUrl(item.user_id)" />
+        <div class="info">
+          <div><span>{{item.user_name}}</span>
+          <span style="float:right;color:#555555;">{{getTimeString(item.time)}}</span></div>
+          <div class="intro">{{item.user_intro}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
