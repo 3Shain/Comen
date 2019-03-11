@@ -42,7 +42,14 @@
     text-indent: 1em;
 }
 
+.entry > .info > .user > a{
+    color:#777777;
+    margin-left: 0.5em;
+    text-decoration: none;
+}
+
 .def{
     font-size: 0.8em;
     color:#555555;
+    margin:0.4em;
 }

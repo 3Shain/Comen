@@ -6,12 +6,16 @@
   <div>
     <h3>这里可以看到有哪些主播/vtuber/转播man最近使用过Bilichat</h3>
     <p class="def">* 这个数据并不太准确，因为OBS会使浏览器源始终处于激活状态，即使在被遮挡/隐藏的情况下</p>
+    <p class="def">** 如果你发现有时间连续的多条(重复)记录，一定是转播man干的好事</p>
+    <p class="def">*** 一切都是因为OBS对h5的实现不完善，程序没法知道自己是否真正地被显示出来了</p>
     <div class="list">
       <!--ngFor-->
       <div class="entry" *ngFor="let item of entrys">
         <img [src]="getImageUrl(item.user_id)" />
         <div class="info">
-          <div><span>{{item.user_name}}</span>
+          <div class="user"><span>{{item.user_name}}</span>
+            <a [href]="'https://live.bilibili.com/'+item.room_id" target="_blank">[直播间]</a>
+            <a [href]="'https://space.bilibili.com/'+item.user_id" target="_blank">[个人主页]</a>
           <span style="float:right;color:#555555;">{{getTimeString(item.time)}}</span></div>
           <div class="intro">{{item.user_intro}}</div>
         </div>
