@@ -58,6 +58,10 @@ export class ChatRendererComponent implements OnInit {
       console.log('server env.');
       return;
     }
+    if(document.hidden){
+      this.sendSystemInfo('窗口未激活,请刷新浏览器(源)');
+      return;
+    }
     if (this._roomId <= 0) {
       this.sendSystemInfo('直播间ID格式错误');
       return;
