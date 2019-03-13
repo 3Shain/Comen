@@ -6,7 +6,7 @@ const connectHistoryApiFallback = require('connect-history-api-fallback');
 
 const PORT = 5000
 
-app.get('/avatar/:userid',(req,res)=>{
+app.get('/api/avatar/:userid',(req,res)=>{
     res.setHeader('Access-Control-Allow-Origin','*');
     request('https://api.bilibili.com/x/space/acc/info?mid='+req.params.userid,{json:true},(error,response,body)=>{
         if(!error&&response.statusCode==200){
@@ -26,7 +26,7 @@ app.get('/avatar/:userid',(req,res)=>{
     })
 })
 
-app.get('/stat/:roomid',(req,res)=>{
+app.get('/api/stat/:roomid',(req,res)=>{
     res.setHeader('Access-Control-Allow-Origin','*');
     request('https://api.live.bilibili.com/room/v1/Room/room_init?id='+req.params.roomid,{json:true},(error,response,body)=>{
         if(!error&&response.statusCode==200){
