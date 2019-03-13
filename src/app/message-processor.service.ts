@@ -107,7 +107,7 @@ export class MessageProcessorService {
   }
 
   avatarPreload(userid: number): Observable<boolean> {
-    if (!this.loadAvatar) {
+    if (!this.loadAvatar||document.hidden) {
       return of(false);
     }
     const img = new Image();

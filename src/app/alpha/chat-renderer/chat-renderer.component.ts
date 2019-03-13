@@ -59,7 +59,7 @@ export class ChatRendererComponent implements OnInit {
       return;
     }
     if(document.hidden){
-      this.sendSystemInfo('窗口未激活,请刷新浏览器(源)');
+      this.sendSystemInfo('检测到窗口未激活,请刷新浏览器(源)');
       return;
     }
     if (this._roomId <= 0) {
