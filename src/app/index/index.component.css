@@ -1,10 +1,10 @@
 .container {
     max-width:650px;
-    margin:1em auto;
-    padding:1.5em;
+    margin:0em auto;
+    padding:1em;
     background-color:white;
-    border-radius: 1em;
-    box-shadow:0 1px 1px 1px #bbbbbb;
+    /*border-radius: 1em;*/
+    /*box-shadow:0 1px 1px 1px #bbbbbb;*/
 }
 
 :host {
@@ -21,6 +21,10 @@
     border-bottom:1px solid #bbbbbb ;
 }
 
+.list{
+    margin-top:1em;
+}
+
 .entry{
     display: flex;
 
@@ -30,6 +34,7 @@
     width:3em;
     height: 3em;
     border-radius: 50%;
+    flex:none;
 }
 
 .entry > .info{
@@ -39,7 +44,6 @@
 
 .entry > .info > .intro{
     color:#555555;
-    text-indent: 1em;
 }
 
 .entry > .info > .user > a{

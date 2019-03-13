@@ -65,11 +65,7 @@ export class ChatRendererComponent implements OnInit {
     this.sendSystemInfo('正在获取直播间信息...');
     this.http.get(`${environment.api_server}/stat/${this._roomId}`).subscribe(
       (x: any) => {
-        if (x.success) {
-          this.start(x.data.room_id);
-        } else {
-          this.sendSystemInfo('直播间信息获取失败:' + x.message);
-        }
+        this.start(x.room_id);
       },
       e => {
         this.sendSystemInfo('直播间信息获取失败,尝试rawId');

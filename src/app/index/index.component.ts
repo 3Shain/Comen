@@ -15,9 +15,9 @@ export class IndexComponent implements OnInit {
   constructor(@Inject(PLATFORM_ID) private plat: Object,private http:HttpClient) { }
 
   ngOnInit() {
-    if (!isPlatformBrowser(this.plat)) {
+    /*if (!isPlatformBrowser(this.plat)) {
       return;
-    }
+    }*/
     this.http.get<Array<any>>(`${environment.api_server}/history`).subscribe(
       resp=>{
         this.entrys=resp;
