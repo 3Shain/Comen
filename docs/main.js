@@ -198,11 +198,11 @@ var ChatRendererComponent = /** @class */ (function () {
         }
         this.sendSystemInfo("正在获取直播间信息...");
         this.http.get(_environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].api_server + "/stat/" + this._roomId).subscribe(function (x) {
-            if (x.data.room_id) {
-                _this.start(x.data.room_id);
+            if (x.room_id) {
+                _this.start(x.room_id);
             }
             else {
-                _this.sendSystemInfo("直播间信息获取失败:" + x.data);
+                _this.sendSystemInfo("直播间信息获取失败:" + x);
             }
         }, function (e) {
             _this.sendSystemInfo("直播间信息获取失败,尝试rawId");
