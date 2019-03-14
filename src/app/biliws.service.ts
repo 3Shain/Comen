@@ -13,6 +13,9 @@ export class BiliwsService {
 
   private heartbeatHandler: any;
 
+  public lastRenderInvoke:number;
+  public lastRenderPush:number;
+
   constructor(private http: HttpClient,
     private proc: MessageProcessorService) {
   }
@@ -35,6 +38,10 @@ export class BiliwsService {
           observer.next(new ConnectedMessage());
         };
         this.ws.onmessage = (e) => {
+          if(Date.now() - this.lastRenderInvoke > 1000){
+            console.log('Window Inavtive');
+            return;
+          }
           const arr = new Uint8Array(e.data);
           const view = new DataView(arr.buffer);
           let offset = 0;

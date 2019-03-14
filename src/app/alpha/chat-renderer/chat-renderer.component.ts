@@ -31,18 +31,15 @@ export class ChatRendererComponent implements OnInit {
     this.waitForRendering = [];
   }
 
-  private lastInvoke: number = Date.now();
-  private lastRender: number = Date.now();
-
-  public render() {
-    if (Date.now() - this.lastInvoke > 1000) {// 窗口不在active状态时，此方法不会被调用。
+  public update() {
+    if (Date.now() - this.bili.lastRenderInvoke > 1000) {// 窗口不在active状态时，此方法不会被调用。
       this.waitForRendering = [];
-      console.log('Idle');
+      this.sendSystemInfo('窗口已恢复激活');
     }
-    this.lastInvoke = Date.now();
+    this.bili.lastRenderInvoke = Date.now();
     if (this.waitForRendering.length > 0) {
-      if (Date.now() - this.lastRender >= (1000.0 / this.waitForRendering.length)) {
-        this.lastRender = Date.now();
+      if (Date.now() - this.bili.lastRenderPush >= (1000.0 / this.waitForRendering.length)) {
+        this.bili.lastRenderPush = Date.now();
         while (this.danmakuList.length > 100) {// 最大渲染数量100
           this.danmakuList.shift();
         }
@@ -50,7 +47,7 @@ export class ChatRendererComponent implements OnInit {
         window.scrollTo(0, document.body.scrollHeight);
       }
     }
-    requestAnimationFrame(this.render.bind(this));
+    requestAnimationFrame(this.update.bind(this));
   }
 
   ngOnInit() {
@@ -58,10 +55,11 @@ export class ChatRendererComponent implements OnInit {
       console.log('server env.');
       return;
     }
-    if(document.hidden){
-      this.sendSystemInfo('检测到窗口未激活,请刷新浏览器(源)');
-      return;
-    }
+
+    requestAnimationFrame(this.awake.bind(this));
+  }
+
+  public awake(){
     if (this._roomId <= 0) {
       this.sendSystemInfo('直播间ID格式错误');
       return;
@@ -77,16 +75,16 @@ export class ChatRendererComponent implements OnInit {
       }
     );
 
-    requestAnimationFrame(this.render.bind(this));
+    this.bili.lastRenderInvoke = Date.now();
+    this.bili.lastRenderPush = Date.now();
+    requestAnimationFrame(this.update.bind(this));
   }
 
   start(realRoomId: number) {
     this.sendSystemInfo(`正在连接到直播间${realRoomId}...`);
     this.bili.connect(Number(realRoomId)).subscribe(
       x => {
-        if (document.hidden) {
-          return; // 不显示的时候不要一直请求服务器
-        } else if (x.type === 'connected') {
+        if (x.type === 'connected') {
           this.sendSystemInfo('成功连接到直播间!');
         } else {
           this.sendDanmaku(x);
@@ -105,17 +103,20 @@ export class ChatRendererComponent implements OnInit {
     );
   }
 
-  private sendSystemInfo(msg: string) {
+  private sendSystemInfo(msg: string, force:boolean=false) {
     this.sendDanmaku(new DanmakuMessage(
       -1,
       'BILICHAT',
       msg,
       0,
       true
-    ));
+    ),force);
   }
 
-  private sendDanmaku(msg: IMessage) {
-    this.waitForRendering.push(msg);
+  private sendDanmaku(msg: IMessage,force:boolean=false) {
+    if(force){
+      this.danmakuList.push(msg);
+    }else{
+      this.waitForRendering.push(msg);}
   }
 }
