@@ -44,6 +44,7 @@ export class ChatRendererComponent implements OnInit {
           this.danmakuList.shift();
         }
         this.danmakuList.push(this.waitForRendering.shift());
+        window.scrollTo(0, document.body.scrollHeight);
       }
     }
     requestAnimationFrame(this.update.bind(this));
@@ -52,7 +53,6 @@ export class ChatRendererComponent implements OnInit {
     if (!isPlatformBrowser(this.plat)) {
       return;
     }
-    window.scrollTo(0, document.body.scrollHeight);
   }
 
   ngOnInit() {
