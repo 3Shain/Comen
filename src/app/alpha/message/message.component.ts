@@ -36,4 +36,12 @@ export class MessageComponent implements OnInit {
       return '';
     }
   }
+  ngAfterContentInit(){
+    console.log('dom modi');
+    //if (!isPlatformBrowser(this.plat)) {
+      //return;
+    //}
+    //document.documentElement.scrollTop=document.documentElement.scrollHeight;
+    window.scrollTo(0, document.documentElement.scrollHeight);
+  }
 }

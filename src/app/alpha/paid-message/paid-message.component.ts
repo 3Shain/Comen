@@ -32,4 +32,12 @@ export class LegacyPaidMessageComponent implements OnInit {
       return '#00b8d4'; // 50
     }
   }
+  ngAfterContentInit(){
+    console.log('dom modi');
+    //if (!isPlatformBrowser(this.plat)) {
+      //return;
+    //}
+    //document.documentElement.scrollTop=document.documentElement.scrollHeight;
+    window.scrollTo(0, document.documentElement.scrollHeight);
+  }
 }

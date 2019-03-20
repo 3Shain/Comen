@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, Input, PLATFORM_ID, Inject, OnChanges } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input, PLATFORM_ID, Inject, OnChanges, ViewChild, AfterViewInit } from '@angular/core';
 import { BiliwsService } from '../../biliws.service';
 import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../../environments/environment';
@@ -9,7 +9,7 @@ import { IMessage, DanmakuMessage, GiftMessage } from '../../../app/danmaku.def'
   selector: 'yt-live-chat-renderer',
   templateUrl: './chat-renderer.component.html',
   styleUrls: ['./chat-renderer.component.css'],
-  encapsulation: ViewEncapsulation.None
+  //encapsulation: ViewEncapsulation.None
 })
 export class ChatRendererComponent implements OnInit {
 
@@ -44,15 +44,9 @@ export class ChatRendererComponent implements OnInit {
           this.danmakuList.shift();
         }
         this.danmakuList.push(this.waitForRendering.shift());
-        window.scrollTo(0, document.body.scrollHeight);
       }
     }
     requestAnimationFrame(this.update.bind(this));
-  }
-  ngAfterViewChecked(){
-    if (!isPlatformBrowser(this.plat)) {
-      return;
-    }
   }
 
   ngOnInit() {
