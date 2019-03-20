@@ -10,6 +10,7 @@ import { IndexComponent } from './index/index.component';
 import { ChatRendererComponent } from './alpha/chat-renderer/chat-renderer.component';
 import { HttpClientModule } from '@angular/common/http';
 import { LegacyPaidMessageComponent } from './alpha/paid-message/paid-message.component';
+import { ViewerComponent } from './viewer/viewer.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { LegacyPaidMessageComponent } from './alpha/paid-message/paid-message.co
     ImageComponent,
     IndexComponent,
     ChatRendererComponent,
-    LegacyPaidMessageComponent
+    LegacyPaidMessageComponent,
+    ViewerComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

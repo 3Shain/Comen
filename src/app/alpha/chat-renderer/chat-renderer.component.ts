@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, Input, PLATFORM_ID, Inject } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input, PLATFORM_ID, Inject, OnChanges } from '@angular/core';
 import { BiliwsService } from '../../biliws.service';
 import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../../environments/environment';
@@ -44,10 +44,15 @@ export class ChatRendererComponent implements OnInit {
           this.danmakuList.shift();
         }
         this.danmakuList.push(this.waitForRendering.shift());
-        window.scrollTo(0, document.body.scrollHeight);
       }
     }
     requestAnimationFrame(this.update.bind(this));
+  }
+  ngAfterViewChecked(){
+    if (!isPlatformBrowser(this.plat)) {
+      return;
+    }
+    window.scrollTo(0, document.body.scrollHeight);
   }
 
   ngOnInit() {
