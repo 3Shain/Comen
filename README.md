@@ -7,9 +7,10 @@
 **所以在OBS中对于youtube livechat的自定义CSS代码可以直接copy**  
 自豪地使用好文明Angular 7
 
-## 🌟如何在OBS中使用
+## 🌟如何在OBS中使用(本地部署服务)
+0. 下载[Releases](https://github.com/3Shain/BiliChat/releases)中的最新版,然后运行。一切正常的话控制台会输出服务运行的地址。
 1. 在场景中新建浏览器源
-2. 在URL处填写 ` https://bilichat.3shain.com/alpha/<你的直播间ID> `  
+2. 在URL处填写 ` http://localhost:5000/alpha/<你的直播间ID> `  
 到这一步就已经基本完成了。此时的样式与youtube网页直播间的chatbox完 全 一 致
 3. 设置自定义CSS参数  
 你可以从Google上搜索  ` youtube livechat css ` 找现成的代码  
@@ -30,23 +31,6 @@
     > 有一部分词语已经被默认屏蔽，若需解除请自行修改。
 
 例子: https://your.domain/alpha/114514?loadAvatar=false&levelFilter=20&showGift=false&wordFilter=屏蔽词1,屏蔽词2
-
-## ⚽如何自行搭建服务
-0. 安装nodejs和npm软件包管理器
-1. 克隆此项目
-2. 恢复项目包
-    ```
-    npm install
-    ```
-3. 设置`src/environment.ts`内的`api_server`字段为后端服务器  
-`environment.prod.ts`是Production编译目标的配置文件  
-4. 编译项目，然后运行
-    ```
-    npm run build
-    node bilichat
-    ```
-    默认5000端口运行(本地可通过浏览器`127.0.0.1:5000`访问)。本项目仅提供了一个简单的后端请求转发实现(目的是解决跨域问题)，在并发量高的情况下建议自行实现缓存之类的功能  
-本项目可编译为docker镜像，仅配置angular服务端渲染，并没有提供后端转发实现。默认Production编译目标
 
 ## 💲捐助
 捐助表示您对我这个项目的认可，所得的钱将用于维护公共服务器，也能激励我继续开发更多好的项目
