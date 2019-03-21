@@ -11,7 +11,10 @@
     "compile:server": "webpack --config webpack.server.config.js --progress --colors",
     "serve:ssr": "node dist/server",
     "build:ssr": "npm run build:client-and-server-bundles && npm run compile:server",
-    "build:client-and-server-bundles": "ng build --prod && ng run bilichat:server:production"
+    "build:client-and-server-bundles": "ng build --prod && ng run bilichat:server:production",
+    
+    "build:ssr:official": "npm run build:client-and-server-bundles:offcial && npm run compile:server",
+    "build:client-and-server-bundles:offcial": "ng build --prod --configuration=official && ng run bilichat:server:official"
   },
   "private": true,
   "dependencies": {

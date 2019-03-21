@@ -51,14 +51,13 @@ export class ChatRendererComponent implements OnInit {
 
   ngOnInit() {
     if (!isPlatformBrowser(this.plat)) {
-      console.log('server env.');
       return;
     }
 
     requestAnimationFrame(this.awake.bind(this));
   }
 
-  public awake(){
+  public awake() {
     if (this._roomId <= 0) {
       this.sendSystemInfo('直播间ID格式错误');
       return;
@@ -85,6 +84,9 @@ export class ChatRendererComponent implements OnInit {
       x => {
         if (x.type === 'connected') {
           this.sendSystemInfo('成功连接到直播间!');
+          if (environment.verbose) {
+            this.sendSystemInfo('你正在使用公共服务器提供的服务，为了更高的稳定性，建议使用本地部署版本。详情访问https://bilichat.3shain.com');
+          }
         } else {
           this.sendDanmaku(x);
         }
@@ -102,20 +104,21 @@ export class ChatRendererComponent implements OnInit {
     );
   }
 
-  private sendSystemInfo(msg: string, force:boolean=false) {
+  private sendSystemInfo(msg: string, force: boolean = false) {
     this.sendDanmaku(new DanmakuMessage(
       -1,
       'BILICHAT',
       msg,
       0,
       true
-    ),force);
+    ), force);
   }
 
-  private sendDanmaku(msg: IMessage,force:boolean=false) {
-    if(force){
+  private sendDanmaku(msg: IMessage, force: boolean = false) {
+    if (force) {
       this.danmakuList.push(msg);
-    }else{
-      this.waitForRendering.push(msg);}
+    } else {
+      this.waitForRendering.push(msg);
+    }
   }
 }

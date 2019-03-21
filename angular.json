@@ -73,6 +73,30 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "official": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.official.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
             }
           }
         },
@@ -84,6 +108,9 @@
           "configurations": {
             "production": {
               "browserTarget": "bilichat:build:production"
+            },
+            "official": {
+              "browserTarget": "bilichat:build:official"
             }
           }
         },
@@ -135,6 +162,14 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "official": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.official.ts"
                 }
               ]
             }
