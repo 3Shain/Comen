@@ -32,7 +32,7 @@ export class LegacyPaidMessageComponent implements OnInit {
       return '#00b8d4'; // 50
     }
   }
-  ngAfterContentInit(){
+  ngAfterViewInit(){
     console.log('dom modi');
     //if (!isPlatformBrowser(this.plat)) {
       //return;

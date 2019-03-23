@@ -36,7 +36,7 @@ export class MessageComponent implements OnInit {
       return '';
     }
   }
-  ngAfterContentInit(){
+  ngAfterViewInit(){
     console.log('dom modi');
     //if (!isPlatformBrowser(this.plat)) {
       //return;
