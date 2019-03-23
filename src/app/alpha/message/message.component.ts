@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { DanmakuMessage } from '../../../app/danmaku.def';
-import { BiliwsService } from 'src/app/biliws.service';
+import { BiliwsService } from '../../../app/biliws.service';
 
 @Component({
   selector: 'yt-live-chat-text-message-renderer',
