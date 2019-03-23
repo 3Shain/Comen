@@ -10,7 +10,11 @@ app.get('/api/avatar/:userid',(req,res)=>{
     res.setHeader('Access-Control-Allow-Origin','*');
     request('https://api.bilibili.com/x/space/acc/info?mid='+req.params.userid,{json:true},(error,response,body)=>{
         if(!error&&response.statusCode==200){
-            request(body.data.face,{encoding:null},(error2,response2,body2)=>{
+            let url = body.data.face
+            if (url!=='http://static.hdslb.com/images/member/noface.gif') {
+                url = url + '@48w_48h'
+            }
+            request(url,{encoding:null},(error2,response2,body2)=>{
                 if(!error2&&response2.statusCode==200){
                     res.type(response2.headers['content-type'])
                     res.send(body2)
