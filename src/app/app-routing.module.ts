@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AlphaComponent } from './alpha/alpha.component';
 import { IndexComponent } from './index/index.component';
 import { ViewerComponent } from './viewer/viewer.component';
-import { environment } from 'src/environments/environment';
+import { environment } from '../environments/environment';
 import { IndexLocalComponent } from './index-local/index-local.component';
 
 const routes: Routes = [
