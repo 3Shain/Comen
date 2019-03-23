@@ -11,7 +11,7 @@ export class MessageProcessorService {
 
   userLevelFilter = 0;
 
-  minGiftValue = 50;
+  minGiftValue = 1;
 
   showGift = true;
 
@@ -90,7 +90,8 @@ export class MessageProcessorService {
               rawData.data.uname,
               rawData.data.giftName,
               rawData.data.num,
-              value / 1000
+              value / 1000,
+              0
             ));
           } else {
             observer.next(new GiftMessage(
@@ -98,7 +99,32 @@ export class MessageProcessorService {
               rawData.data.uname,
               rawData.data.giftName,
               rawData.data.num,
-              value / 1000
+              value / 1000,
+              0
+            ));
+          }
+        }
+      );
+    } else if (rawData.cmd === 'GUARD_BUY') {
+      this.avatarPreload(rawData.data.uid).subscribe(
+        c => {
+          if (c) {
+            observer.next(new GiftMessage(
+              rawData.data.uid,
+              rawData.data.username,
+              rawData.data.gift_name,
+              rawData.data.num,
+              rawData.data.price / 1000,
+              rawData.data.guard_level
+            ));
+          } else {
+            observer.next(new GiftMessage(
+              0,
+              rawData.data.username,
+              rawData.data.gift_name,
+              rawData.data.num,
+              rawData.data.price / 1000,
+              rawData.data.guard_level
             ));
           }
         }
@@ -125,5 +151,18 @@ export class MessageProcessorService {
     );
   }
 
+  getGuardName(level: number) {
+    //i18n
+    switch (level) {
+      case 1:
+        return '总督';
+      case 2:
+        return '提督';
+      case 3:
+        return '舰长';
+      default:
+        return null;
+    }
+  }
 }
 

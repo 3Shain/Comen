@@ -34,7 +34,7 @@ export class ChatRendererComponent implements OnInit {
   public update() {
     if (Date.now() - this.bili.lastRenderInvoke > 1000) {// 窗口不在active状态时，此方法不会被调用。
       this.waitForRendering = [];
-      this.sendSystemInfo('窗口已恢复激活');
+      //this.sendSystemInfo('窗口已恢复激活');
     }
     this.bili.lastRenderInvoke = Date.now();
     if (this.waitForRendering.length > 0) {

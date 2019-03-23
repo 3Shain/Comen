@@ -14,13 +14,14 @@ class DanmakuMessage implements IMessage {
         public type= 'danmaku') {}
 }
 
-class GiftMessage implements IMessage {
+class GiftMessage {
     constructor(
         public uid: number,
         public username: string,
         public gift: string,
         public amount: number,
         public value: number,
+        public guard_type:number,
         public type= 'gift') {}
 }
 

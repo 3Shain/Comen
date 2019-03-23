@@ -16,7 +16,16 @@ enableProdMode();
 const app = express();
 
 const PORT = process.env.PORT || 4000;
+const VERSION = 1001;
 const DIST_FOLDER = join(process.cwd(), 'dist/browser');
+
+request('https://bilichat.3shain.com/version',{json:true},(error,response,body)=>{
+  if(!error&&response.statusCode==200){
+    if(body.version>VERSION){
+      console.info('Bilichat有更新了！前往 https://github.com/3Shain/BiliChat/releases 获取最新版！')
+    }
+  }
+});
 
 // * NOTE :: leave this as require() since this file is built Dynamically from webpack
 const {AppServerModuleNgFactory, LAZY_MODULE_MAP} = require('./dist/server/main');
@@ -63,10 +72,7 @@ app.get('/api/stat/:roomid',(req,res)=>{
           res.send(body.data)
       }else
       {
-          res.send({
-              success:false,
-              message:"server error"
-          })
+          res.sendStatus(404);
       }
 
   })
