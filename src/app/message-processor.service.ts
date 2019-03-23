@@ -11,7 +11,7 @@ export class MessageProcessorService {
 
   userLevelFilter = 0;
 
-  minGiftValue = 1;
+  minGiftValue = 20;
 
   showGift = true;
 

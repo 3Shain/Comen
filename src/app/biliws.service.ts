@@ -16,6 +16,16 @@ export class BiliwsService {
   public lastRenderInvoke:number;
   public lastRenderPush:number;
 
+  private _ownerId : number;
+  public get ownerId() : number {
+    return this._ownerId;
+  }
+  public set ownerId(v : number) {
+    this._ownerId = v;
+  }
+  
+  
+
   constructor(private http: HttpClient,
     private proc: MessageProcessorService) {
   }

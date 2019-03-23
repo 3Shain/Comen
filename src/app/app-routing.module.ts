@@ -3,11 +3,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { AlphaComponent } from './alpha/alpha.component';
 import { IndexComponent } from './index/index.component';
 import { ViewerComponent } from './viewer/viewer.component';
+import { environment } from 'src/environments/environment';
+import { IndexLocalComponent } from './index-local/index-local.component';
 
 const routes: Routes = [
   { path: 'alpha/:id', component: AlphaComponent},
   { path: 'viewer/:id', component: ViewerComponent},
-  { path: '', component: IndexComponent},
+  { path: 'offcial', component: IndexComponent},
+  { path: '', component: environment.official?IndexComponent:IndexLocalComponent},
   { path: '**', redirectTo: '', pathMatch: 'full'}
 ];
 

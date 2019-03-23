@@ -65,6 +65,7 @@ export class ChatRendererComponent implements OnInit {
     this.sendSystemInfo('正在获取直播间信息...');
     this.http.get(`${environment.api_server}/stat/${this._roomId}`).subscribe(
       (x: any) => {
+        this.bili.ownerId = x.uid;
         this.start(x.room_id);
       },
       e => {
@@ -84,7 +85,7 @@ export class ChatRendererComponent implements OnInit {
       x => {
         if (x.type === 'connected') {
           this.sendSystemInfo('成功连接到直播间!');
-          if (environment.verbose) {
+          if (environment.official) {
             this.sendSystemInfo('你正在使用公共服务器提供的服务，为了更高的稳定性，建议使用本地部署版本。详情访问https://bilichat.3shain.com');
           }
         } else {

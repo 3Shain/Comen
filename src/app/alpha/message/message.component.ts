@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { DanmakuMessage } from '../../../app/danmaku.def';
+import { BiliwsService } from 'src/app/biliws.service';
 
 @Component({
   selector: 'yt-live-chat-text-message-renderer',
@@ -11,13 +12,15 @@ export class MessageComponent implements OnInit {
 
   @Input() item: DanmakuMessage;
 
-  constructor() { }
+  constructor(private bili:BiliwsService) { }
 
   ngOnInit() {
   }
 
   getType() {
-    if (this.item.is_admin) {
+    if(this.item.uid === this.bili.ownerId){
+      return 'owner';
+    } else if (this.item.is_admin) {
       return 'moderator';
     } else if (this.item.guard > 0) {
       return 'member';

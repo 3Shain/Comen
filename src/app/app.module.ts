@@ -11,6 +11,7 @@ import { ChatRendererComponent } from './alpha/chat-renderer/chat-renderer.compo
 import { HttpClientModule } from '@angular/common/http';
 import { LegacyPaidMessageComponent } from './alpha/paid-message/paid-message.component';
 import { ViewerComponent } from './viewer/viewer.component';
+import { IndexLocalComponent } from './index-local/index-local.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { ViewerComponent } from './viewer/viewer.component';
     IndexComponent,
     ChatRendererComponent,
     LegacyPaidMessageComponent,
-    ViewerComponent
+    ViewerComponent,
+    IndexLocalComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
