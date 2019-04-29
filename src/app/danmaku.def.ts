@@ -2,6 +2,7 @@ interface IMessage {
     uid: number;
     username: string;
     type: string;
+    mode:DisplayMode;
 }
 
 class DanmakuMessage implements IMessage {
@@ -11,7 +12,8 @@ class DanmakuMessage implements IMessage {
         public message: string,
         public guard: number,
         public is_admin: boolean,
-        public type= 'danmaku') {}
+        public type= 'danmaku',
+        public mode=1) {}
 }
 
 class GiftMessage {
@@ -22,15 +24,23 @@ class GiftMessage {
         public amount: number,
         public value: number,
         public guard_type:number,
-        public type= 'gift') {}
+        public type= 'gift',
+        public mode=2) {}
 }
 
 class ConnectedMessage implements IMessage {
     constructor(
         public uid: number= 0,
         public username: string= null,
-        public type= 'connected'
+        public type= 'connected',
+        public mode=1
     ) {}
 }
 
-export {IMessage, DanmakuMessage, GiftMessage, ConnectedMessage};
+enum DisplayMode{
+    Danmaku=1,
+    Gift=2,
+    Both=3
+}
+
+export {IMessage, DanmakuMessage, GiftMessage, ConnectedMessage,DisplayMode};

@@ -29,6 +29,7 @@
     > 有个内部设定是只有金瓜子价格大于50000的会显示出来。且价值与颜色对应信息也是直接由代码常量定义的。如果需要自定义，仍需自行修改代码。
 * `wordFilter` 以半角逗号分隔的字符串 所有包含关键词的弹幕都会被屏蔽  
     > 有一部分词语已经被默认屏蔽，若需解除请自行修改。
+* `giftOnly` 只显示礼物信息。
 
 例子: https://your.domain/alpha/114514?loadAvatar=false&levelFilter=20&showGift=false&wordFilter=屏蔽词1,屏蔽词2
 

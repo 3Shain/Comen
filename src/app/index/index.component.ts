@@ -1,7 +1,9 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { ChatRendererComponent } from '../alpha/chat-renderer/chat-renderer.component';
+import { DanmakuMessage, GiftMessage } from '../danmaku.def';
 
 @Component({
   selector: 'app-index',
@@ -11,6 +13,9 @@ import { environment } from '../../environments/environment';
 export class IndexComponent implements OnInit {
 
   entrys:Array<any>;
+
+  @ViewChild('renderer')
+  public renderer:ChatRendererComponent;
 
   constructor(@Inject(PLATFORM_ID) private plat: Object,private http:HttpClient) { }
 
@@ -23,6 +28,17 @@ export class IndexComponent implements OnInit {
         this.entrys=resp;
       }
     )
+    this.renderer.sendSystemInfo("Hello World!");
+    this.renderer.sendDanmaku(new DanmakuMessage(4331384,'3Shain','我是单推人(指一天单推一个',1,false));
+    
+    
+    this.renderer.sendSystemInfo('以下为白上吹雪第一次B限名场景复刻');
+    this.renderer.sendDanmaku(new DanmakuMessage(0,'DD0','awsl',0,false));
+    this.renderer.sendDanmaku(new GiftMessage(109402,'绊爱厨','小电视',2,1245000,0));
+    this.renderer.sendDanmaku(new DanmakuMessage(0,'DD1','草',0,false));
+    this.renderer.sendDanmaku(new DanmakuMessage(0,'DD2','石油佬你来啦',0,false));
+    this.renderer.sendDanmaku(new DanmakuMessage(0,'DD3','草',3,false));
+    this.renderer.sendDanmaku(new DanmakuMessage(0,'DD4','绊 爱 厨',0,false));
   }
 
   getImageUrl(uid){
