@@ -6,15 +6,20 @@
 实际上是youtube chatbox的高仿(指样式表直接照搬)实现，不过把内容换成了b站直播弹幕2333  
 **所以在OBS中对于youtube livechat的自定义CSS代码可以直接copy**  
 自豪地使用好文明Angular 7
-## npm下载
+
+## 本地部署版下载
+可以在[Release]()获取压缩包(bilichat-\*.*.zip)
+
+或者直接使用npm下载
 ```
 npm install -g bilichat
+bilichat
 ```
 
-## 🌟如何在OBS中使用(本地部署服务)
-0. 下载[Releases](https://github.com/3Shain/BiliChat/releases)中的最新版,然后运行。一切正常的话控制台会输出服务运行的地址。
+## 🌟如何在OBS中使用
 1. 在场景中新建浏览器源
-2. 在URL处填写 ` http://localhost:5000/alpha/<你的直播间ID> `  
+2. 在URL处填写 ` https://bilichat.3shain.com/alpha/<你的直播间ID> `  
+如果是本地运行的服务,替换上面的域名即可,如  ` http://localhost:5000/alpha/<你的直播间ID> `  
 到这一步就已经基本完成了。此时的样式与youtube网页直播间的chatbox完 全 一 致
 3. 设置自定义CSS参数  
 你可以从Google上搜索  ` youtube livechat css ` 找现成的代码  
@@ -23,7 +28,7 @@ npm install -g bilichat
 ### 字体问题  
 你有可能发现，使用了别人的CSS代码之后，发现中文全是宋体或者只有一部分正常渲染（总之不太好看）。这时候你可以把代码复制到一个编辑器如Notepad++，VSCode，按`ctrl+f`替换字体的名字。请注意这个字体必须已经安装在推流软件所在的电脑上。不建议使用网络在线字体，可能会出现字体闪烁。
 
-## 🍥自定义参数  
+## 🍥URL参数  
 在url后面添加query参数可以自定义效果  
 * `loadAvatar` true/false 控制是否从api获取头像  默认true
     >这个设置不等于不显示头像，而是只显示默认头像。若需要去掉头像可以在css中设置。  

@@ -1,3 +1,9 @@
+/*
+bilichat.js
+仅用于本地测试(非服务端渲染模式-ng serve)
+或使用 https://github.com/3Shain/BiliChat.CacheServer
+*/
+
 const express = require('express')
 const request = require('request')
 

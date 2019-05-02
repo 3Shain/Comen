@@ -22,7 +22,8 @@ const DIST_FOLDER = join(process.cwd(), 'dist/browser');
 request('https://bilichat.3shain.com/version', { json: true }, (error, response, body) => {
   if (!error && response.statusCode == 200) {
     if (body.version > VERSION) {
-      console.info('Bilichat有更新了！前往 https://github.com/3Shain/BiliChat/releases 获取最新版！')
+      //console.info('Bilichat有更新了！前往 https://github.com/3Shain/BiliChat/releases 获取最新版！')
+      console.info('Bilichat有新版本了！输入指令 npm update bilichat -g 更新!')
     }
   }
 });
@@ -81,7 +82,7 @@ app.get('/api/stat/:roomid', (req, res) => {
   })
 });
 
-app.get('/api/avatar/:userid', (req, res) => {
+app.get('/api/avturl/:userid', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 'public,max-age=86400');
   request('https://api.bilibili.com/x/space/acc/info?mid=' + req.params.userid, { json: true }, (error, response, body) => {
@@ -108,6 +109,6 @@ app.get('*', (req, res) => {
 
 // Start up the Node server
 app.listen(PORT, () => {
-  console.log(`Bilichat正运行在 http://localhost:${PORT}`);
+  console.log(`bilichat正运行在 http://localhost:${PORT}`);
   console.log(`在浏览器或OBS浏览器源中输入URL为http://localhost:${PORT}/alpha/[你的直播间地址] 即可`);
 });
