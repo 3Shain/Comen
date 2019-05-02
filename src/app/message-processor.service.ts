@@ -115,6 +115,7 @@ export class MessageProcessorService {
         if(data.face=='http://static.hdslb.com/images/member/noface.gif'){
           return of(environment.default_avatar);
         }
+        data.face = (<string>data.face).replace(/http:/g,"https:");
         let img = new Image();
         img.src=data.face+'@48w_48h';
         return race(
