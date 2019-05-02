@@ -7,29 +7,14 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./image.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class ImageComponent implements OnInit {
+export class ImageComponent{
 
-  avatarUrl: string;
-
-  @Input() userid: number;
+  @Input() avatarUrl: string;
 
   @Input() height: number;
 
   @Input() width: number;
 
   constructor() { }
-
-  ngOnInit() {
-    switch (Number(this.userid)) {
-      case -1:
-        this.avatarUrl = 'favicon.ico';
-        break;
-      case 0:
-        this.avatarUrl = 'https://static.hdslb.com/images/member/noface.gif';
-        break;
-      default:
-        this.avatarUrl = `${environment.api_server}/avatar/${this.userid}`;
-    }
-  }
 
 }

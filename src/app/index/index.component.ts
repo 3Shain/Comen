@@ -29,12 +29,12 @@ export class IndexComponent implements OnInit {
       }
     )
     this.renderer.sendSystemInfo("Hello World!");
-    this.renderer.sendDanmaku(new DanmakuMessage(4331384,'3Shain','我是单推人(指一天单推一个',1,false));
+    this.renderer.sendDanmaku(new DanmakuMessage(4331384,'3Shain','我是单推人(指一天单推一个',1,false,'http://i2.hdslb.com/bfs/face/b4efacefd9fe31ae253c610168738483631d3d22.jpg'));
     
     
     this.renderer.sendSystemInfo('以下为白上吹雪第一次B限名场景复刻');
     this.renderer.sendDanmaku(new DanmakuMessage(0,'DD0','awsl',0,false));
-    this.renderer.sendDanmaku(new GiftMessage(109402,'绊爱厨','小电视',2,1245000,0));
+    this.renderer.sendDanmaku(new GiftMessage(109402,'绊爱厨','小电视',2,1245000,0,'http://i2.hdslb.com/bfs/face/bd02e3ed33bb93bddb146441a04f212f77f0cb4d.jpg'));
     this.renderer.sendDanmaku(new DanmakuMessage(0,'DD1','草',0,false));
     this.renderer.sendDanmaku(new DanmakuMessage(0,'DD2','石油佬你来啦',0,false));
     this.renderer.sendDanmaku(new DanmakuMessage(0,'DD3','草',3,false));

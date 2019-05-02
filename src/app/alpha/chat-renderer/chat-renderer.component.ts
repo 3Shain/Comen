@@ -67,7 +67,8 @@ export class ChatRendererComponent implements OnInit {
       'BILICHAT',
       msg,
       0,
-      true
+      true,
+      'favicon.ico'
     ), force);
   }
 

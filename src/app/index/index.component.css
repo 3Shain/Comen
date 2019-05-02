@@ -12,9 +12,9 @@
     position: absolute;
     height: 100%;
     width: 100%;
-    /*background-color:white;*/
+    background-color:#ff4081;
     overflow-y: scroll;
-    background-image: url("https://api.i-meto.com/bing?[object Object]");
+    /*background-image: url("https://api.i-meto.com/bing?[object Object]");*/
 }
 
 .entry:not(:last-child){

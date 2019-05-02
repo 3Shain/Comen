@@ -6,6 +6,10 @@
 实际上是youtube chatbox的高仿(指样式表直接照搬)实现，不过把内容换成了b站直播弹幕2333  
 **所以在OBS中对于youtube livechat的自定义CSS代码可以直接copy**  
 自豪地使用好文明Angular 7
+## npm下载
+```
+npm install -g bilichat
+```
 
 ## 🌟如何在OBS中使用(本地部署服务)
 0. 下载[Releases](https://github.com/3Shain/BiliChat/releases)中的最新版,然后运行。一切正常的话控制台会输出服务运行的地址。

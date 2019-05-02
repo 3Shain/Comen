@@ -3,6 +3,7 @@ interface IMessage {
     username: string;
     type: string;
     mode:DisplayMode;
+    avatarUrl:string;
 }
 
 class DanmakuMessage implements IMessage {
@@ -12,11 +13,12 @@ class DanmakuMessage implements IMessage {
         public message: string,
         public guard: number,
         public is_admin: boolean,
+        public avatarUrl:string='https://static.hdslb.com/images/member/noface.gif',
         public type= 'danmaku',
         public mode=1) {}
 }
 
-class GiftMessage {
+class GiftMessage implements IMessage {
     constructor(
         public uid: number,
         public username: string,
@@ -24,6 +26,7 @@ class GiftMessage {
         public amount: number,
         public value: number,
         public guard_type:number,
+        public avatarUrl:string='https://static.hdslb.com/images/member/noface.gif',
         public type= 'gift',
         public mode=2) {}
 }
@@ -32,6 +35,7 @@ class ConnectedMessage implements IMessage {
     constructor(
         public uid: number= 0,
         public username: string= null,
+        public avatarUrl:string =null,
         public type= 'connected',
         public mode=1
     ) {}

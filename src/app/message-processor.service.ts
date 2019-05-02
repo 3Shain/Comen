@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { IMessage, DanmakuMessage, GiftMessage } from './danmaku.def';
 import { Observable, race, timer, fromEvent, Subscriber, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, mergeMap, mapTo } from 'rxjs/operators';
 import { environment } from '../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +36,7 @@ export class MessageProcessorService {
     '人工智能', '老婆'
   ];
 
-  constructor() { }
+  constructor(private http:HttpClient) { }
 
   formMessage(rawData: any, observer: Subscriber<IMessage>) {
     if (rawData.cmd === 'DANMU_MSG') {
@@ -53,24 +54,15 @@ export class MessageProcessorService {
       }
 
       this.avatarPreload(rawData.info[2][0]).subscribe(
-        c => {
-          if (c) {
-            observer.next(new DanmakuMessage(
-              rawData.info[2][0],
-              rawData.info[2][1],
-              rawData.info[1],
-              rawData.info[7],
-              rawData.info[2][2] === 1
-            ));
-          } else {
-            observer.next(new DanmakuMessage(
-              0,
-              rawData.info[2][1],
-              rawData.info[1],
-              rawData.info[7],
-              rawData.info[2][2] === 1
-            ));
-          }
+        avatarUrl => {
+          observer.next(new DanmakuMessage(
+            rawData.info[2][0],
+            rawData.info[2][1],
+            rawData.info[1],
+            rawData.info[7],
+            rawData.info[2][2] === 1,
+            avatarUrl
+          ));
         }
       );
     } else if (this.showGift && rawData.cmd === 'SEND_GIFT') {
@@ -83,71 +75,63 @@ export class MessageProcessorService {
       }
 
       this.avatarPreload(rawData.data.uid).subscribe(
-        c => {
-          if (c) {
-            observer.next(new GiftMessage(
-              rawData.data.uid,
-              rawData.data.uname,
-              rawData.data.giftName,
-              rawData.data.num,
-              value / 1000,
-              0
-            ));
-          } else {
-            observer.next(new GiftMessage(
-              0,
-              rawData.data.uname,
-              rawData.data.giftName,
-              rawData.data.num,
-              value / 1000,
-              0
-            ));
-          }
+        avatarUrl => {
+          observer.next(new GiftMessage(
+            rawData.data.uid,
+            rawData.data.uname,
+            rawData.data.giftName,
+            rawData.data.num,
+            value / 1000,
+            0,
+            avatarUrl
+          ));
         }
       );
     } else if (rawData.cmd === 'GUARD_BUY') {
       this.avatarPreload(rawData.data.uid).subscribe(
-        c => {
-          if (c) {
-            observer.next(new GiftMessage(
-              rawData.data.uid,
-              rawData.data.username,
-              rawData.data.gift_name,
-              rawData.data.num,
-              rawData.data.price / 1000,
-              rawData.data.guard_level
-            ));
-          } else {
-            observer.next(new GiftMessage(
-              0,
-              rawData.data.username,
-              rawData.data.gift_name,
-              rawData.data.num,
-              rawData.data.price / 1000,
-              rawData.data.guard_level
-            ));
-          }
+        avatarUrl => {
+          observer.next(new GiftMessage(
+            rawData.data.uid,
+            rawData.data.username,
+            rawData.data.gift_name,
+            rawData.data.num,
+            rawData.data.price / 1000,
+            rawData.data.guard_level,
+            avatarUrl
+          ));
         }
       );
     }
   }
 
-  avatarPreload(userid: number): Observable<boolean> {
+  avatarPreload(userid: number): Observable<string> {
     if (!this.loadAvatar) {
-      return of(false);
+      return of(environment.default_avatar);
     }
-    const img = new Image();
-    img.src = `${environment.api_server}/avatar/${userid}`;
+    let obs = this.http.get(`${environment.api_server}/avturl/${userid}`)
+    .pipe(
+      //mapTo(x=>x.json()),
+      mergeMap((data:any)=>{
+        if(data.face=='http://static.hdslb.com/images/member/noface.gif'){
+          return of(environment.default_avatar);
+        }
+        let img = new Image();
+        img.src=data.face+'@48w_48h';
+        return race(
+          fromEvent(img,'load').pipe(
+            map(x=>data.face+'@48w_48h')
+          ),
+          fromEvent(img,'error').pipe(
+            map(x=>environment.default_avatar)
+            )
+        );
+    }));
+
     return race(
       timer(1000).pipe(
-        map(x => false)
+        map(x => environment.default_avatar)
       ),
-      fromEvent(img, 'load').pipe(
-        map(x => true),
-      ),
-      fromEvent(img, 'error').pipe(
-        map(x => false)
-      )
+      obs
     );
   }
 

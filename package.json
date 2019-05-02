@@ -1,6 +1,10 @@
 {
   "name": "bilichat",
-  "version": "0.0.0",
+  "version": "1.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/3Shain/Bilichat.git"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -15,7 +19,6 @@
     "build:ssr:official": "npm run build:client-and-server-bundles:offcial && npm run compile:server",
     "build:client-and-server-bundles:offcial": "ng build --prod --configuration=official && ng run bilichat:server:official"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^7.2.4",
     "@angular/cli": "^7.2.4",
