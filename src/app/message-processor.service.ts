@@ -127,7 +127,7 @@ export class MessageProcessorService {
             )
           );
         }),
-        catchError(() => environment.default_avatar)
+        catchError(() => of(environment.default_avatar))
       )
 
     return race(
