@@ -24,7 +24,6 @@ export class AlphaComponent implements OnInit {
     private title: Title,
     private proc: MessageProcessorService,
     private bili: BiliwsService,
-    @Inject(PLATFORM_ID) private plat: Object,
     private http: HttpClient) { }
 
   ngOnInit() {
@@ -44,10 +43,13 @@ export class AlphaComponent implements OnInit {
       this.proc.showGift = this.route.snapshot.queryParamMap.get('showGift').toLowerCase() === 'true';
     }
     if (this.route.snapshot.queryParamMap.has('giftOnly')) {
-      this.renderer.displayMode = this.route.snapshot.queryParamMap.get('showGift').toLowerCase() === 'true'?2:3;
+      this.renderer.displayMode = this.route.snapshot.queryParamMap.get('giftOnly').toLowerCase() === 'true'?2:3;
     }
     if (this.route.snapshot.queryParamMap.has('wordFilter')) {
       this.proc.wordFilter = this.proc.wordFilter.concat(String(this.route.snapshot.queryParamMap.get('wordFilter')).split(','));
+    }
+    if (this.route.snapshot.queryParamMap.has('groupSimilar')) {
+      this.proc.groupSimilar = this.route.snapshot.queryParamMap.get('groupSimilar').toLowerCase() === 'true';
     }
   }
 
@@ -72,14 +74,14 @@ export class AlphaComponent implements OnInit {
   start(realRoomId: number) {
     this.renderer.sendSystemInfo(`正在连接到直播间${realRoomId}...`);
     this.bili.connect(Number(realRoomId)).subscribe(
-      x => {
-        if (x.type === 'connected') {
+      message => {
+        if (message.type === 'connected') {
           this.renderer.sendSystemInfo('成功连接到直播间!');
-          if (environment.official) {
+          if (environment.official) { 
             //this.renderer.sendSystemInfo('你正在使用公共服务器提供的服务，为了更高的稳定性，建议使用本地部署版本。详情访问https://bilichat.3shain.com');
           }
         } else {
-          this.renderer.sendDanmaku(x);
+          this.renderer.sendDanmaku(message);
         }
       },
       e => {

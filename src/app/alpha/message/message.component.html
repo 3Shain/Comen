@@ -27,5 +27,7 @@
     </span>
   </yt-live-chat-author-chip>
   <span id="message" class="style-scope yt-live-chat-text-message-renderer">{{item.message}}</span>
+  
+  <span id="repeat_count" class="style-scope yt-live-chat-text-message-renderer" *ngIf="item.repeat>1" [ngStyle]="{'background-color':getRepeatGradientColor()}">{{item.repeat}}</span>
   <a id="show-original"></a>
 </div>

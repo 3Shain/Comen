@@ -16,6 +16,22 @@
     opacity: var(--yt-live-chat-text-message-renderer-message-message-style_-_opacity);
 }
 
+#repeat_count.yt-live-chat-text-message-renderer {
+    color: white;
+    line-height: 16px;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    font-style: var(--yt-live-chat-text-message-renderer-message-message-style_-_font-style);
+    opacity: var(--yt-live-chat-text-message-renderer-message-message-style_-_opacity);
+    /*background: var(--yt-live-chat-mention-background-color);*/
+    margin-left: 0.5em;
+    border-radius: 0.5em;
+    padding: 0 0.35em;
+    text-shadow: none !important;
+}
+
 #author-photo.yt-live-chat-text-message-renderer {
     display: block;
     margin-right: 16px;

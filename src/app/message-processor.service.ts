@@ -24,6 +24,8 @@ export class MessageProcessorService {
 
   loadAvatar = true;
 
+  groupSimilar = true;
+
   wordFilter: Array<string> = [
     'kimo', '风暴',
     '弹幕姬', '弹幕机',
@@ -36,7 +38,9 @@ export class MessageProcessorService {
     '人工智能', '老婆'
   ];
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) { }
+
+  lastDanmakuMessage: DanmakuMessage;
 
   formMessage(rawData: any, observer: Subscriber<IMessage>) {
     if (rawData.cmd === 'DANMU_MSG') {
@@ -52,17 +56,25 @@ export class MessageProcessorService {
       })) {
         return; // 关键字屏蔽
       }
-
+      if (this.groupSimilar
+        && this.lastDanmakuMessage != null
+        && (this.lastDanmakuMessage.message.indexOf(content) !== -1 || content.indexOf(this.lastDanmakuMessage.message) !== -1)
+      ) {
+        this.lastDanmakuMessage.repeat++;
+        return;
+      }
       this.avatarPreload(rawData.info[2][0]).subscribe(
         avatarUrl => {
-          observer.next(new DanmakuMessage(
+          let l = new DanmakuMessage(
             rawData.info[2][0],
             rawData.info[2][1],
             rawData.info[1],
             rawData.info[7],
             rawData.info[2][2] === 1,
             avatarUrl
-          ));
+          )
+          this.lastDanmakuMessage=l;
+          observer.next(l);
         }
       );
     } else if (this.showGift && rawData.cmd === 'SEND_GIFT') {
@@ -109,24 +121,24 @@ export class MessageProcessorService {
       return of(environment.default_avatar);
     }
     let obs = this.http.get(`${environment.api_server}/avturl/${userid}`)
-    .pipe(
-      //mapTo(x=>x.json()),
-      mergeMap((data:any)=>{
-        if(data.face=='http://static.hdslb.com/images/member/noface.gif'){
-          return of(environment.default_avatar);
-        }
-        data.face = (<string>data.face).replace(/http:/g,"https:");
-        let img = new Image();
-        img.src=data.face+'@48w_48h';
-        return race(
-          fromEvent(img,'load').pipe(
-            map(x=>data.face+'@48w_48h')
-          ),
-          fromEvent(img,'error').pipe(
-            map(x=>environment.default_avatar)
+      .pipe(
+        //mapTo(x=>x.json()),
+        mergeMap((data: any) => {
+          if (data.face == 'http://static.hdslb.com/images/member/noface.gif') {
+            return of(environment.default_avatar);
+          }
+          data.face = (<string>data.face).replace(/http:/g, "https:");
+          let img = new Image();
+          img.src = data.face + '@48w_48h';
+          return race(
+            fromEvent(img, 'load').pipe(
+              map(x => data.face + '@48w_48h')
+            ),
+            fromEvent(img, 'error').pipe(
+              map(x => environment.default_avatar)
             )
-        );
-    }));
+          );
+        }));
 
     return race(
       timer(1000).pipe(

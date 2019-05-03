@@ -15,7 +15,8 @@ class DanmakuMessage implements IMessage {
         public is_admin: boolean,
         public avatarUrl:string='https://static.hdslb.com/images/member/noface.gif',
         public type= 'danmaku',
-        public mode=1) {}
+        public mode=1,
+        public repeat=1) {}
 }
 
 class GiftMessage implements IMessage {
