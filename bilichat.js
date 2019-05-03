@@ -51,7 +51,7 @@ app.get('/api/stat/:roomid', (req, res) => {
     })
 })
 
-app.get('/api/avatar/:userid', (req, res) => {
+app.get('/api/avturl/:userid', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Cache-Control', 'public,max-age=86400');
     request('https://api.bilibili.com/x/space/acc/info?mid=' + req.params.userid, { json: true }, (error, response, body) => {
