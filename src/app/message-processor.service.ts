@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IMessage, DanmakuMessage, GiftMessage } from './danmaku.def';
 import { Observable, race, timer, fromEvent, Subscriber, of } from 'rxjs';
-import { map, mergeMap, mapTo } from 'rxjs/operators';
+import { map, mergeMap, mapTo, catchError } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 
@@ -126,7 +126,9 @@ export class MessageProcessorService {
               map(x => environment.default_avatar)
             )
           );
-        }));
+        }),
+        catchError(() => environment.default_avatar)
+      )
 
     return race(
       timer(1000).pipe(
