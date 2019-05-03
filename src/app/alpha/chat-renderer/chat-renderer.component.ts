@@ -14,15 +14,22 @@ export class ChatRendererComponent implements OnInit {
 
   waitForRendering: Array<IMessage>;
 
+  groupSimilarCache: Array<DanmakuMessage>;
+
   @Input() public maxDammakuNum:number=100;
 
   @Input() public displayMode:number=3;
 
+  @Input() public groupSimilar:boolean=true;
+
   @Output() public onawake:EventEmitter<any>;
+
+  groupSimilarWindow:number=5;
 
   constructor(@Inject(PLATFORM_ID) private plat: Object) {
     this.danmakuList = [];
     this.waitForRendering = [];
+    this.groupSimilarCache = [];
     this.onawake = new EventEmitter();
   }
 
@@ -77,9 +84,23 @@ export class ChatRendererComponent implements OnInit {
     if((this.displayMode&<number>msg.mode)==0&&msg.uid!=-1){
       return;
     }
+    if(msg.type==='danmaku'&&msg.uid>0){
+      for(let c of this.groupSimilarCache){
+        if (this.groupSimilar
+          && (c.message.indexOf((<DanmakuMessage>msg).message) !== -1 || (<DanmakuMessage>msg).message.indexOf(c.message) !== -1)
+        ) {
+          c.repeat++;
+          return; //如果存在相似元素,会在这里被截断
+        }
+      }
+      this.groupSimilarCache.push(<DanmakuMessage>msg);
+      while(this.groupSimilarCache.length>this.groupSimilarWindow){
+        this.groupSimilarCache.shift();
+      }
+    }
     if (force) {
       this.danmakuList.push(msg);
-    } else {
+    } else{
       this.waitForRendering.push(msg);
     }
   }

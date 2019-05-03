@@ -24,8 +24,6 @@ export class MessageProcessorService {
 
   loadAvatar = true;
 
-  groupSimilar = true;
-
   wordFilter: Array<string> = [
     'kimo', '风暴',
     '弹幕姬', '弹幕机',
@@ -39,8 +37,6 @@ export class MessageProcessorService {
   ];
 
   constructor(private http: HttpClient) { }
-
-  lastDanmakuMessage: DanmakuMessage;
 
   formMessage(rawData: any, observer: Subscriber<IMessage>) {
     if (rawData.cmd === 'DANMU_MSG') {
@@ -56,13 +52,6 @@ export class MessageProcessorService {
       })) {
         return; // 关键字屏蔽
       }
-      if (this.groupSimilar
-        && this.lastDanmakuMessage != null
-        && (this.lastDanmakuMessage.message.indexOf(content) !== -1 || content.indexOf(this.lastDanmakuMessage.message) !== -1)
-      ) {
-        this.lastDanmakuMessage.repeat++;
-        return;
-      }
       this.avatarPreload(rawData.info[2][0]).subscribe(
         avatarUrl => {
           let l = new DanmakuMessage(
@@ -73,7 +62,6 @@ export class MessageProcessorService {
             rawData.info[2][2] === 1,
             avatarUrl
           )
-          this.lastDanmakuMessage=l;
           observer.next(l);
         }
       );

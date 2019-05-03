@@ -49,7 +49,7 @@ export class AlphaComponent implements OnInit {
       this.proc.wordFilter = this.proc.wordFilter.concat(String(this.route.snapshot.queryParamMap.get('wordFilter')).split(','));
     }
     if (this.route.snapshot.queryParamMap.has('groupSimilar')) {
-      this.proc.groupSimilar = this.route.snapshot.queryParamMap.get('groupSimilar').toLowerCase() === 'true';
+      this.renderer.groupSimilar = this.route.snapshot.queryParamMap.get('groupSimilar').toLowerCase() === 'true';
     }
   }
 
