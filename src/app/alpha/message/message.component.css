@@ -5,6 +5,13 @@
     min-width: 0;
 }
 
+#emotion.yt-live-chat-text-message-renderer{
+    vertical-align: text-top;
+    height: 120px;
+    max-height: 120px;
+    opacity: var(--yt-live-chat-text-message-renderer-message-message-style_-_opacity);
+}
+
 #message.yt-live-chat-text-message-renderer {
     color: var(--yt-live-chat-primary-text-color, var(--yt-primary-text-color));
     line-height: 16px;

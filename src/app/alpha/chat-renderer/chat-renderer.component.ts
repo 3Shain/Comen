@@ -24,7 +24,7 @@ export class ChatRendererComponent implements OnInit {
 
   @Output() public onawake:EventEmitter<any>;
 
-  groupSimilarWindow:number=5;
+  @Input() public groupSimilarWindow:number=5;
 
   constructor(@Inject(PLATFORM_ID) private plat: Object) {
     this.danmakuList = [];
@@ -76,7 +76,8 @@ export class ChatRendererComponent implements OnInit {
       msg,
       0,
       true,
-      'favicon.ico'
+      undefined,
+      'assets/logo_icon.png'
     ), force);
   }
 
@@ -88,14 +89,15 @@ export class ChatRendererComponent implements OnInit {
       for(let c of this.groupSimilarCache){
         if (this.groupSimilar
           && (c.message.indexOf((<DanmakuMessage>msg).message) !== -1 || (<DanmakuMessage>msg).message.indexOf(c.message) !== -1)
+          && (Math.abs(c.message.length-(<DanmakuMessage>msg).message.length)<Math.min(c.message.length,(<DanmakuMessage>msg).message.length))
         ) {
           c.repeat++;
           return; //如果存在相似元素,会在这里被截断
         }
       }
-      this.groupSimilarCache.push(<DanmakuMessage>msg);
+      this.groupSimilarCache.unshift(<DanmakuMessage>msg);
       while(this.groupSimilarCache.length>this.groupSimilarWindow){
-        this.groupSimilarCache.shift();
+        this.groupSimilarCache.pop();
       }
     }
     if (force) {

@@ -1,11 +1,12 @@
-# BILICHAT
+# <img src="https://raw.githubusercontent.com/3Shain/BiliChat/master/src/favicon.ico" width="48" style="vertical-align:text-bottom"> BILICHAT 
 ![fubuki!](https://raw.githubusercontent.com/3Shain/BiliChat/master/doc/fubuki.jpg)
 > 第一次就实装在小狐狸的b站限定直播我能吹一年(虽然中途因压力过大服务器被干掉两次，果然还是膨胀了)
 
 表面上似乎是个弹幕姬  
 实际上是youtube chatbox的高仿(指样式表直接照搬)实现，不过把内容换成了b站直播弹幕2333  
 **所以在OBS中对于youtube livechat的自定义CSS代码可以直接copy**  
-自豪地使用好文明Angular 7
+自豪地使用好文明Angular 7  
+感谢logo提供者:[@Afanyiyu](https://github.com/Afanyiyu)
 
 ## 本地部署版下载
 可以在[Release]()获取压缩包(bilichat-\*.*.zip)

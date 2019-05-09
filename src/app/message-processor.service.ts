@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IMessage, DanmakuMessage, GiftMessage } from './danmaku.def';
 import { Observable, race, timer, fromEvent, Subscriber, of } from 'rxjs';
-import { map, mergeMap, mapTo, catchError } from 'rxjs/operators';
+import { map, mergeMap , catchError } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 
@@ -36,6 +36,8 @@ export class MessageProcessorService {
     '人工智能', '老婆'
   ];
 
+  customEmotions: Array<any>=[];
+
   constructor(private http: HttpClient) { }
 
   formMessage(rawData: any, observer: Subscriber<IMessage>) {
@@ -60,6 +62,7 @@ export class MessageProcessorService {
             rawData.info[1],
             rawData.info[7],
             rawData.info[2][2] === 1,
+            this.getEmotionUrl(rawData.info[1]),
             avatarUrl
           )
           observer.next(l);
@@ -117,6 +120,7 @@ export class MessageProcessorService {
           }
           data.face = (<string>data.face).replace(/http:/g, "https:");
           let img = new Image();
+          img.referrerPolicy="no-referer";
           img.src = data.face + '@48w_48h';
           return race(
             fromEvent(img, 'load').pipe(
@@ -150,6 +154,10 @@ export class MessageProcessorService {
       default:
         return null;
     }
+  }
+
+  getEmotionUrl(text:string){
+    return undefined;
   }
 }
 

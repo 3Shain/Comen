@@ -6,6 +6,7 @@ bilichat.js
 
 const express = require('express')
 const request = require('request')
+const fs = require('fs')
 
 const app = express()
 const connectHistoryApiFallback = require('connect-history-api-fallback');
@@ -38,14 +39,20 @@ app.get('/api/avatar/:userid', (req, res) => {
 
 app.get('/api/stat/:roomid', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', 'application/json;charset=utf-8');
     request('https://api.live.bilibili.com/room/v1/Room/room_init?id=' + req.params.roomid, { json: true }, (error, response, body) => {
         if (!error && response.statusCode == 200) {
-            res.send(body.data)
+            let ret = body.data;
+            fs.readFile('./config.json', 'utf8', (err, data) => {
+                if (!err)
+                    ret.config = JSON.parse(data);
+                res.send(ret);
+            })
         } else {
             res.send({
                 success: false,
                 message: "server error"
-            })
+            });
         }
 
     })
@@ -53,6 +60,7 @@ app.get('/api/stat/:roomid', (req, res) => {
 
 app.get('/api/avturl/:userid', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', 'application/json;charset=utf-8');
     res.setHeader('Cache-Control', 'public,max-age=86400');
     request('https://api.bilibili.com/x/space/acc/info?mid=' + req.params.userid, { json: true }, (error, response, body) => {
         if (!error && response.statusCode == 200) {
@@ -66,7 +74,18 @@ app.get('/api/avturl/:userid', (req, res) => {
         }
     })
 });
-
+/*
+app.get('/api/config', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', 'application/json;charset=utf-8');
+    fs.readFile('./config.json', 'utf8', (err, data) => {
+        if (!err)
+            res.send(data);
+        else
+            res.sendStatus(404);
+    })
+});
+*/
 app.use('/', connectHistoryApiFallback())
 app.use('/', express.static('dist/browser'))
 

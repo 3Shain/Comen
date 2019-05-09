@@ -1,0 +1,22 @@
+{
+    "displayMode": 3,
+    "loadAvatar": true,
+    "levelFilter": 0,
+    "wordFilter": [],
+    "showGift": true,
+    "hideGiftDanmaku": false,
+    "groupSimilar": true,
+    "customEmotions": [
+        {
+            "command": "理解理解",
+            "source": "rikairikai.jpg"
+        }
+    ],
+    "showSilverGift":false,
+    "giftLevel": [
+        {
+            "value": 50,
+            "color": "3F3F3F"
+        }
+    ]
+}

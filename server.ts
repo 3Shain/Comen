@@ -8,6 +8,7 @@ import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
 import * as express from 'express';
 import { join } from 'path';
 import * as request from 'request';
+import { readFile } from 'fs';
 
 // Faster server renders w/ Prod mode (dev mode never needed)
 enableProdMode();
@@ -87,16 +88,31 @@ app.get('/api/avturl/:userid', (req, res) => {
   res.setHeader('Cache-Control', 'public,max-age=86400');
   request('https://api.bilibili.com/x/space/acc/info?mid=' + req.params.userid, { json: true }, (error, response, body) => {
     if (!error && response.statusCode == 200) {
-      let url = body.data.face
+      let ret = body.data;
+      readFile('./config.json', 'utf8', (err, data) => {
+        if (!err)
+          ret.config = JSON.parse(data);
+        res.send(ret);
+      })
+    } else {
       res.send({
-        face: url
+        success: false,
+        message: "server error"
       });
-    }
-    else {
-      res.sendStatus(404);
     }
   })
 });
+/*
+app.get('/api/config', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  readFile('./config.json', 'utf8', (err, data) => {
+    if (!err)
+      res.send(data);
+    else
+      res.sendStatus(404);
+  })
+});
+*/
 // Serve static files from /browser
 app.get('*.*', express.static(DIST_FOLDER, {
   maxAge: '1y'

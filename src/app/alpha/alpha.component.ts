@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild, Inject, PLATFORM_ID} from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, Inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MessageProcessorService } from '../message-processor.service';
@@ -18,7 +18,7 @@ export class AlphaComponent implements OnInit {
   currentRoomId: number;
 
   @ViewChild('renderer')
-  private renderer:ChatRendererComponent;
+  private renderer: ChatRendererComponent;
 
   constructor(private route: ActivatedRoute,
     private title: Title,
@@ -43,7 +43,7 @@ export class AlphaComponent implements OnInit {
       this.proc.showGift = this.route.snapshot.queryParamMap.get('showGift').toLowerCase() === 'true';
     }
     if (this.route.snapshot.queryParamMap.has('giftOnly')) {
-      this.renderer.displayMode = this.route.snapshot.queryParamMap.get('giftOnly').toLowerCase() === 'true'?2:3;
+      this.renderer.displayMode = this.route.snapshot.queryParamMap.get('giftOnly').toLowerCase() === 'true' ? 2 : 3;
     }
     if (this.route.snapshot.queryParamMap.has('wordFilter')) {
       this.proc.wordFilter = this.proc.wordFilter.concat(String(this.route.snapshot.queryParamMap.get('wordFilter')).split(','));
@@ -53,7 +53,7 @@ export class AlphaComponent implements OnInit {
     }
   }
 
-  onload(){
+  onload() {
     if (this.currentRoomId <= 0) {
       this.renderer.sendSystemInfo('直播间ID格式错误');
       return;
@@ -62,6 +62,18 @@ export class AlphaComponent implements OnInit {
     this.http.get(`${environment.api_server}/stat/${this.currentRoomId}`).subscribe(
       (x: any) => {
         this.bili.ownerId = x.uid;
+        if (x.config) {
+          this.proc.loadAvatar = x.config.loadAvatar||this.proc.loadAvatar;
+          this.proc.userLevelFilter = x.config.levelFilter||this.proc.userLevelFilter;
+          this.proc.hideGiftDanmaku = x.config.hideGiftDanmaku||this.proc.hideGiftDanmaku;
+          this.proc.showGift = x.config.showGift||this.proc.showGift;
+          this.proc.wordFilter = this.proc.wordFilter.concat(x.config.wordFilter||[]);
+          this.proc.customEmotions = x.config.customEmotions||[];
+          this.renderer.displayMode = x.config.displayMode||this.renderer.displayMode;
+          this.renderer.groupSimilar = x.config.groupSimilar||this.renderer.groupSimilar;
+          this.renderer.groupSimilarWindow = x.config.groupSimilarWindow||this.renderer.groupSimilarWindow;
+          this.renderer.maxDammakuNum = x.config.maxDammakuNumber||this.renderer.maxDammakuNum;
+        }
         this.start(x.room_id);
       },
       e => {
@@ -70,14 +82,14 @@ export class AlphaComponent implements OnInit {
       }
     );
   }
-  
+
   start(realRoomId: number) {
     this.renderer.sendSystemInfo(`正在连接到直播间${realRoomId}...`);
     this.bili.connect(Number(realRoomId)).subscribe(
       message => {
         if (message.type === 'connected') {
           this.renderer.sendSystemInfo('成功连接到直播间!');
-          if (environment.official) { 
+          if (environment.official) {
             //this.renderer.sendSystemInfo('你正在使用公共服务器提供的服务，为了更高的稳定性，建议使用本地部署版本。详情访问https://bilichat.3shain.com');
           }
         } else {

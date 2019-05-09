@@ -13,6 +13,7 @@ class DanmakuMessage implements IMessage {
         public message: string,
         public guard: number,
         public is_admin: boolean,
+        public emotionUrl:string,
         public avatarUrl:string='https://static.hdslb.com/images/member/noface.gif',
         public type= 'danmaku',
         public mode=1,
