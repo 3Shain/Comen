@@ -7,6 +7,13 @@ import { BiliwsService } from '../biliws.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
+import {TranslateService} from '@ngx-translate/core';
+
+//Il-Harper:
+//这TS太TM难弄了，我C#做一个带GUI的计算器也只需要5分钟好吧……
+//明天我再继续做……
+//今天晚上用了一个小时现学现卖的TS……还好我有过(guo)硬(qi)的C#基础……
+
 @Component({
   selector: 'app-alpha',
   templateUrl: './alpha.component.html',
@@ -24,11 +31,21 @@ export class AlphaComponent implements OnInit {
     private title: Title,
     private proc: MessageProcessorService,
     private bili: BiliwsService,
-    private http: HttpClient) { }
+    private http: HttpClient, 
+    private translate: TranslateService) {
+      translate.addLangs(["zh", "en", "ja"])
+      translate.setDefaultLang("en");
+
+      //强制语言用这个
+      //translate.use("en");
+
+      let browserLang = translate.getBrowserLang();
+      translate.use(browserLang.match(/en|ja|zh/) ? browserLang : 'zh');
+     }
 
   ngOnInit() {
     this.currentRoomId = this.route.snapshot.params['id'];
-    this.title.setTitle('直播间' + this.currentRoomId);
+    this.title.setTitle(this.translate.instant("room") + this.currentRoomId);
 
     if (this.route.snapshot.queryParamMap.has('loadAvatar')) {
       this.proc.loadAvatar = this.route.snapshot.queryParamMap.get('loadAvatar').toLowerCase() === 'true';
@@ -55,10 +72,22 @@ export class AlphaComponent implements OnInit {
 
   onload() {
     if (this.currentRoomId <= 0) {
-      this.renderer.sendSystemInfo('直播间ID格式错误');
+      //this.renderer.sendSystemInfo(this.translate.instant("idformaterror"));
+      //这做了两个，剩下的我明天有时间弄
+
+
+      this.translate.get("idformaterror").subscribe((value) => {
+        this.renderer.sendSystemInfo(value);
+      })
+
       return;
     }
-    this.renderer.sendSystemInfo('正在获取直播间信息...');
+    //this.renderer.sendSystemInfo(this.translate.instant("getroominfo"));
+
+    this.translate.get("getroominfo").subscribe((value) => {
+      this.renderer.sendSystemInfo(value);
+    })
+
     this.http.get(`${environment.api_server}/stat/${this.currentRoomId}`).subscribe(
       (x: any) => {
         this.bili.ownerId = x.uid;
