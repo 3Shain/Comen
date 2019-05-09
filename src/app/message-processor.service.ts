@@ -157,7 +157,11 @@ export class MessageProcessorService {
   }
 
   getEmotionUrl(text:string){
-    return undefined;
+    let ele =this.customEmotions.find(x=>x.command==text);
+    if(!ele){
+      return undefined;
+    }
+    return ele.source;
   }
 }
 
