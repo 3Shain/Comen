@@ -7,7 +7,8 @@
 
 #emotion.yt-live-chat-text-message-renderer{
     vertical-align: text-top;
-    /*height: 120px;*/
+    height: unset !important;
+    width: unset !important;
     max-height: 100px;
     opacity: var(--yt-live-chat-text-message-renderer-message-message-style_-_opacity);
 }
