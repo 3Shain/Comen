@@ -1,72 +1,69 @@
 <div class="demo-layout-transparent mdl-layout mdl-js-layout">
-  <header class="mdl-layout__header mdl-layout__header--transparent">
-    <div class="mdl-layout__header-row">
-      <!-- Title -->
-      <span class="mdl-layout-title">BILICHAT</span>
-      <!-- Add spacer, to align navigation to the right -->
-      <div class="mdl-layout-spacer"></div>
-      <!-- Navigation -->
-      <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" href="https://github.com/3Shain/BiliChat/releases">下载</a>
-        <a class="mdl-navigation__link" href="https://github.com/3Shain/BiliChat">源码</a>
-      </nav>
-    </div>
-  </header>
-  <!--div class="mdl-layout__drawer">
+    <header class="mdl-layout__header mdl-layout__header--transparent">
+        <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">BILICHAT</span>
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation -->
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="https://github.com/3Shain/BiliChat/releases">{{ INDEX.DOWNLOAD | translate}}</a>
+                <a class="mdl-navigation__link" href="https://github.com/3Shain/BiliChat">{{ 'INDEX.SOURCE' | translate }}</a>
+            </nav>
+        </div>
+    </header>
+    <!--div class="mdl-layout__drawer">
     <span class="mdl-layout-title">BILICHAT</span>
     <nav class="mdl-navigation">
       <a class="mdl-navigation__link" href="">Link</a>
     </nav>
   </div-->
-  <main class="mdl-layout__content">
-  </main>
+    <main class="mdl-layout__content">
+    </main>
 </div>
 <div class="container mdl-grid">
-  <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--8-col info_card">
+    <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--8-col info_card">
 
-    <h1>BILICHAT <small>by <a href="https://3shain.com" target="_blank">3Shain</a></small></h1>
-    <p>B站仿油管样式评论机->效果看右边<br><del>使B站限定转播成为可能</del></p>
-    <p>
-      <a href="/css4obs"
-        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mybutton">
-        <i class="material-icons">color_lens</i> 样式生成器
-      </a>
-      <a href="https://github.com/3Shain/BiliChat" target="_blank"
-        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mybutton">
+        <h1>BILICHAT <small>by <a href="https://3shain.com" target="_blank">3Shain</a></small></h1>
+        <p>{{ 'INDEX.P1' | translate }}<br><del>{{ 'INDEX.P2' | translate }}</del></p>
+        <p>
+            <a href="/css4obs" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mybutton">
+                <i class="material-icons">color_lens</i> {{ 'INDEX.STYLEGEN' | translate }}
+            </a>
+            <a href="https://github.com/3Shain/BiliChat" target="_blank" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mybutton">
         View this project on Github
       </a>
-      <a href="https://github.com/3Shain/BiliChat/releases" target="_blank"
-        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mybutton">
-        <i class="material-icons">get_app</i> 本地版下载地址</a>
-      <a  href="https://nodejs.org/zh-cn/" target="_blank" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mybutton">Node.js(运行库)下载地址</a>
-    </p>
-    <p>使用npm安装： npm i -g bilichat</p>
+            <a href="https://github.com/3Shain/BiliChat/releases" target="_blank" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mybutton">
+                <i class="material-icons">get_app</i> {{ 'INDEX.DOWN' | translate }}</a>
+            <a href="https://nodejs.org/zh-cn/" target="_blank" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mybutton">{{ 'INDEX.NODEJS' | translate }}</a>
+        </p>
+        <p>{{ 'INDEX.NPM' | translate }}</p>
 
-    <p>请优先使用本地部署版本,虽然公共服务器能保证99%的稳定性,但因公共服务器调试/故障/宕机造成直播事故,BILICHAT不会为此负责。</p>
-  </div>
-  <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col display">
-    <yt-live-chat-renderer #renderer></yt-live-chat-renderer>
-    <div class="mdl-card__supporting-text">
+        <p>{{ 'INDEX.DESCRIPTION' | translate }}</p>
     </div>
-  </div>
-  <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col info_card">
-    <!--p class="def">* 这个数据并不太准确，因为OBS会使浏览器源始终处于激活状态，即使在被遮挡/隐藏的情况下</p>
+    <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col display">
+        <yt-live-chat-renderer #renderer></yt-live-chat-renderer>
+        <div class="mdl-card__supporting-text">
+        </div>
+    </div>
+    <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col info_card">
+        <!--p class="def">* 这个数据并不太准确，因为OBS会使浏览器源始终处于激活状态，即使在被遮挡/隐藏的情况下</p>
     <p class="def">** 如果你发现有时间连续的多条(重复)记录，一定是转播man干的好事</p>
     <p class="def">*** 一切都是因为OBS对h5的实现不完善，程序没法知道自己是否真正地被显示出来了</p-->
-    <h5 style="margin:0">使用记录</h5>
-    <div class="list">
-      <!--ngFor-->
-      <div class="entry" *ngFor="let item of entrys">
-        <img [src]="getImageUrl(item.user_id)" />
-        <div class="info">
-          <div class="user"><span>{{item.user_name}}</span>
-            <a [href]="'https://live.bilibili.com/'+item.room_id" target="_blank">[直播间]</a>
-            <a [href]="'https://space.bilibili.com/'+item.user_id" target="_blank">[个人主页]</a>
-            <span style="float:right;color:#555555;">{{getTimeString(item.time)}}</span></div>
-          <div class="intro">{{item.user_intro}}</div>
+        <h5 style="margin:0">{{ 'INDEX.HISTORY' | translate }}</h5>
+        <div class="list">
+            <!--ngFor-->
+            <div class="entry" *ngFor="let item of entrys">
+                <img [src]="getImageUrl(item.user_id)" />
+                <div class="info">
+                    <div class="user"><span>{{item.user_name}}</span>
+                        <a [href]="'https://live.bilibili.com/'+item.room_id" target="_blank">[{{ 'ROOM' | translate }}]</a>
+                        <a [href]="'https://space.bilibili.com/'+item.user_id" target="_blank">[{{ 'SPACE' | translate }}]</a>
+                        <span style="float:right;color:#555555;">{{getTimeString(item.time)}}</span></div>
+                    <div class="intro">{{item.user_intro}}</div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
 </div>

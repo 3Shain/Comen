@@ -9,11 +9,6 @@ import { environment } from '../../environments/environment';
 
 import {TranslateService} from '@ngx-translate/core';
 
-//Il-Harper:
-//这TS太TM难弄了，我C#做一个带GUI的计算器也只需要5分钟好吧……
-//明天我再继续做……
-//今天晚上用了一个小时现学现卖的TS……还好我有过(guo)硬(qi)的C#基础……
-
 @Component({
   selector: 'app-alpha',
   templateUrl: './alpha.component.html',
@@ -31,21 +26,25 @@ export class AlphaComponent implements OnInit {
     private title: Title,
     private proc: MessageProcessorService,
     private bili: BiliwsService,
-    private http: HttpClient, 
+    private http: HttpClient,
     private translate: TranslateService) {
-      translate.addLangs(["zh", "en", "ja"])
-      translate.setDefaultLang("en");
+      translate.addLangs(['zh', 'en', 'ja']);
+      translate.setDefaultLang('en');
 
-      //强制语言用这个
-      //translate.use("en");
+      // 强制语言用这个
+      // translate.use("en");
 
-      let browserLang = translate.getBrowserLang();
+      const browserLang = translate.getBrowserLang();
       translate.use(browserLang.match(/en|ja|zh/) ? browserLang : 'zh');
      }
 
   ngOnInit() {
     this.currentRoomId = this.route.snapshot.params['id'];
-    this.title.setTitle(this.translate.instant("room") + this.currentRoomId);
+    // this.title.setTitle(this.translate.instant("room") + this.currentRoomId);
+
+    this.translate.get('ROOM').subscribe((value) => {
+      this.title.setTitle(value + this.currentRoomId);
+    });
 
     if (this.route.snapshot.queryParamMap.has('loadAvatar')) {
       this.proc.loadAvatar = this.route.snapshot.queryParamMap.get('loadAvatar').toLowerCase() === 'true';
@@ -72,54 +71,68 @@ export class AlphaComponent implements OnInit {
 
   onload() {
     if (this.currentRoomId <= 0) {
-      //this.renderer.sendSystemInfo(this.translate.instant("idformaterror"));
-      //这做了两个，剩下的我明天有时间弄
+      // this.renderer.sendSystemInfo(this.translate.instant("idformaterror"));
 
 
-      this.translate.get("idformaterror").subscribe((value) => {
+      this.translate.get('IDFORMATERROR').subscribe((value) => {
         this.renderer.sendSystemInfo(value);
-      })
+      });
 
       return;
     }
-    //this.renderer.sendSystemInfo(this.translate.instant("getroominfo"));
+    // this.renderer.sendSystemInfo(this.translate.instant("getroominfo"));
 
-    this.translate.get("getroominfo").subscribe((value) => {
+    this.translate.get('GETROOMINFO').subscribe((value) => {
       this.renderer.sendSystemInfo(value);
-    })
+    });
 
     this.http.get(`${environment.api_server}/stat/${this.currentRoomId}`).subscribe(
       (x: any) => {
         this.bili.ownerId = x.uid;
         if (x.config) {
-          this.proc.loadAvatar = x.config.loadAvatar||this.proc.loadAvatar;
-          this.proc.userLevelFilter = x.config.levelFilter||this.proc.userLevelFilter;
-          this.proc.hideGiftDanmaku = x.config.hideGiftDanmaku||this.proc.hideGiftDanmaku;
-          this.proc.showGift = x.config.showGift||this.proc.showGift;
-          this.proc.wordFilter = this.proc.wordFilter.concat(x.config.wordFilter||[]);
-          this.proc.customEmotions = x.config.customEmotions||[];
-          this.renderer.displayMode = x.config.displayMode||this.renderer.displayMode;
-          this.renderer.groupSimilar = x.config.groupSimilar||this.renderer.groupSimilar;
-          this.renderer.groupSimilarWindow = x.config.groupSimilarWindow||this.renderer.groupSimilarWindow;
-          this.renderer.maxDammakuNum = x.config.maxDammakuNumber||this.renderer.maxDammakuNum;
+          this.proc.loadAvatar = x.config.loadAvatar || this.proc.loadAvatar;
+          this.proc.userLevelFilter = x.config.levelFilter || this.proc.userLevelFilter;
+          this.proc.hideGiftDanmaku = x.config.hideGiftDanmaku || this.proc.hideGiftDanmaku;
+          this.proc.showGift = x.config.showGift || this.proc.showGift;
+          this.proc.wordFilter = this.proc.wordFilter.concat(x.config.wordFilter || []);
+          this.proc.customEmotions = x.config.customEmotions || [];
+          this.renderer.displayMode = x.config.displayMode || this.renderer.displayMode;
+          this.renderer.groupSimilar = x.config.groupSimilar || this.renderer.groupSimilar;
+          this.renderer.groupSimilarWindow = x.config.groupSimilarWindow || this.renderer.groupSimilarWindow;
+          this.renderer.maxDammakuNum = x.config.maxDammakuNumber || this.renderer.maxDammakuNum;
         }
         this.start(x.room_id);
       },
       e => {
-        this.renderer.sendSystemInfo('直播间信息获取失败,尝试rawId');
+        // this.renderer.sendSystemInfo('直播间信息获取失败,尝试rawId');
+
+        this.translate.get('ROOMINFORAWID').subscribe((value) => {
+          this.renderer.sendSystemInfo(value);
+        });
         this.start(this.currentRoomId);
       }
     );
   }
 
   start(realRoomId: number) {
-    this.renderer.sendSystemInfo(`正在连接到直播间${realRoomId}...`);
+    // this.renderer.sendSystemInfo(`正在连接到直播间${realRoomId}...`);
+
+    this.translate.get('CONNECTING').subscribe((value) => {
+      this.renderer.sendSystemInfo(value + realRoomId + '...');
+    });
     this.bili.connect(Number(realRoomId)).subscribe(
       message => {
         if (message.type === 'connected') {
-          this.renderer.sendSystemInfo('成功连接到直播间!');
+          // this.renderer.sendSystemInfo('成功连接到直播间!');
+          this.translate.get('CONNECTED').subscribe((value) => {
+            this.renderer.sendSystemInfo(value);
+          });
           if (environment.official) {
-            //this.renderer.sendSystemInfo('你正在使用公共服务器提供的服务，为了更高的稳定性，建议使用本地部署版本。详情访问https://bilichat.3shain.com');
+            // this.renderer.sendSystemInfo('你正在使用公共服务器提供的服务，为了更高的稳定性，建议使用本地部署版本。详情访问https://bilichat.3shain.com');
+            // Use the code below
+            // this.translate.get('usingpublicserver').subscribe((value) => {
+            //   this.renderer.sendSystemInfo(value);
+            // });
           }
         } else {
           this.renderer.sendDanmaku(message);
@@ -127,12 +140,19 @@ export class AlphaComponent implements OnInit {
       },
       e => {
         if (e.target.readyState === WebSocket.CLOSED) {
-          this.renderer.sendSystemInfo('无法连接到直播间,5秒后重试');
+          // this.renderer.sendSystemInfo('无法连接到直播间,5秒后重试');
+
+          this.translate.get('CONNECTCLOSED').subscribe((value) => {
+            this.renderer.sendSystemInfo(value);
+          });
           setTimeout(() => this.start(realRoomId), 5000);
         }
       },
       () => {
-        this.renderer.sendSystemInfo('检测到服务器断开,尝试重连中...');
+        // this.renderer.sendSystemInfo('检测到服务器断开,尝试重连中...');
+        this.translate.get('DISCONNECTED').subscribe((value) => {
+          this.renderer.sendSystemInfo(value);
+        });
         this.start(realRoomId); // 重连
       }
     );
