@@ -7,7 +7,13 @@ import { BiliwsService } from '../biliws.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
+// 入TService和语言列表
 import {TranslateService} from '@ngx-translate/core';
+import { TranslateInit } from '../../assets/i18n/lang';
+
+// 服务端的东西
+
+import { REQUEST } from '@nguniversal/express-engine/tokens';
 
 @Component({
   selector: 'app-alpha',
@@ -27,15 +33,21 @@ export class AlphaComponent implements OnInit {
     private proc: MessageProcessorService,
     private bili: BiliwsService,
     private http: HttpClient,
-    private translate: TranslateService) {
-      translate.addLangs(['zh', 'en', 'ja']);
-      translate.setDefaultLang('en');
+    // 入TService
+    private translate: TranslateService, 
 
-      // 强制语言用这个
-      // translate.use("en");
+// 服务端的东西
 
-      const browserLang = translate.getBrowserLang();
-      translate.use(browserLang.match(/en|ja|zh/) ? browserLang : 'zh');
+//   @Optional()
+   @Inject(REQUEST) private request: Request,
+   @Inject(PLATFORM_ID) private platformId: any
+    ) {
+
+      // 一键Init翻译！
+      TranslateInit.Init(translate, request, platformId);
+
+      // 之后要更改语言直接用如下语句即可
+        // translate.use("en");
      }
 
   ngOnInit() {
