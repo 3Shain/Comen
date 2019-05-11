@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 import { ServerModule, ServerTransferStateModule } from '@angular/platform-server';
 
 import { AppModule } from './app.module';
@@ -37,6 +37,6 @@ export function universalLoader(): TranslateLoader {
       TranslateModule.forRoot({
           loader: {provide: TranslateLoader, useFactory: universalLoader}
       })
-  ]
+  ],
 })
 export class AppServerModule {}

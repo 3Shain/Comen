@@ -7,7 +7,7 @@ import { BiliwsService } from '../biliws.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
-import { TranslateInit } from '../../TranslateUtils';
+import { TranslateInit } from '../TranslateUtils';
 
 
 @Component({
@@ -28,8 +28,8 @@ export class AlphaComponent implements OnInit {
     private proc: MessageProcessorService,
     private bili: BiliwsService,
     private http: HttpClient,
-    public translate: TranslateService,
-  public translateinit: TranslateInit,
+    private translate: TranslateService,
+  private translateinit: TranslateInit,
   @Inject(PLATFORM_ID) public platformId: any) { }
 
   ngOnInit() {

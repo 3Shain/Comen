@@ -42,7 +42,6 @@ export function HttpLoaderFactory(http: HttpClient) {
       loader: {provide: TranslateLoader, useFactory: HttpLoaderFactory, deps: [HttpClient]}
 })
   ],
-  providers: [],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

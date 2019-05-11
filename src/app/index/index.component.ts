@@ -5,7 +5,7 @@ import { environment } from '../../environments/environment';
 import { ChatRendererComponent } from '../alpha/chat-renderer/chat-renderer.component';
 import { DanmakuMessage, GiftMessage } from '../danmaku.def';
 import { TranslateService } from '@ngx-translate/core';
-import { TranslateInit } from '../../TranslateUtils';
+import { TranslateInit } from '../TranslateUtils';
 
 @Component({
   selector: 'app-index',
@@ -20,8 +20,8 @@ export class IndexComponent implements OnInit {
   public renderer:ChatRendererComponent;
 
   constructor(private http:HttpClient,
-    public translate: TranslateService,
-  public translateinit: TranslateInit,
+    private translate: TranslateService,
+  private translateinit: TranslateInit,
   @Inject(PLATFORM_ID) public platformId: any) { }
 
   ngOnInit() {

@@ -5,12 +5,15 @@ const preferredLang = 'zh';
 export {langs, preferredLang};
 
 
-import { TranslateService, TranslateLoader } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { NgModule } from '@angular/core';
 
 export class TranslateInit {
+
+  constructor() {
+
+  }
 
     public Init(translate: TranslateService,
         platformId: any) {
