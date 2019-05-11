@@ -12,18 +12,17 @@ import { isPlatformBrowser } from '@angular/common';
 
 export class TranslateInit {
 
-    public static getLang(translate: TranslateService, request: Request, platformId: any): string {
+    public static getLang(translate: TranslateService, platformId: any): string {
         let lang: string;
         if (isPlatformBrowser(platformId)) {
           lang = translate.getBrowserLang();
         } else {
-          lang = (request.headers['accept-language'] || '').substring(0, 2);
+          lang = preferredlang;
         }
         return lang;
       }
 
-    public static Init(translate: TranslateService, 
-        request: Request, 
+    public static Init(translate: TranslateService,
         platformId: any) {
 
         // 此处选择语言
@@ -35,7 +34,7 @@ export class TranslateInit {
 
         // 检测Browser语言（个人感觉毕竟是在OBS里面，这个检测没啥用……）
         const browserLang = TranslateInit.getLang(
-            translate, request, platformId
+            translate, platformId
         )
         translate.use(preferredlang);
         langs.forEach(l => {

@@ -39,12 +39,12 @@ export class AlphaComponent implements OnInit {
 // 服务端的东西
 
 //   @Optional()
-   @Inject(REQUEST) private request: Request,
+//   @Inject(REQUEST) private request: Request,
    @Inject(PLATFORM_ID) private platformId: any
     ) {
 
       // 一键Init翻译！
-      TranslateInit.Init(translate, request, platformId);
+      TranslateInit.Init(translate, platformId);
 
       // 之后要更改语言直接用如下语句即可
         // translate.use("en");
