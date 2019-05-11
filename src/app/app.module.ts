@@ -15,6 +15,7 @@ import { IndexLocalComponent } from './index-local/index-local.component';
 
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateInit } from './TranslateUtils';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -43,6 +44,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 })
   ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [TranslateInit]
 })
 export class AppModule { }

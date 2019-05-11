@@ -10,6 +10,7 @@ import { readFileSync } from 'fs';
 import { BrowserModule } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ModuleMapLoaderModule } from '@nguniversal/module-map-ngfactory-loader';
+import { TranslateInit } from './TranslateUtils';
 
 
 export function universalLoader(): TranslateLoader {
@@ -38,5 +39,6 @@ export function universalLoader(): TranslateLoader {
           loader: {provide: TranslateLoader, useFactory: universalLoader}
       })
   ],
+  providers: [TranslateInit]
 })
 export class AppServerModule {}
