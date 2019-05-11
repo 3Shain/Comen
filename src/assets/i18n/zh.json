@@ -9,7 +9,7 @@
 	"INDEX.DOWN": "本地版下载地址",
 	"INDEX.DOWNLOAD": "下载",
 	"INDEX.HISTORY": "使用记录",
-	"INDEX.LOCALSUCCESS": "恭喜您，部署成功！接下来请使用http://localhost:5000/alpha/&lt;你的直播间id&gt;启动服务！",
+	"INDEX.LOCALSUCCESS": "恭喜您，部署成功！接下来请使用http://localhost:5000/alpha/<你的直播间id>启动服务！",
 	"INDEX.NODEJS": "Node.js(运行库)下载地址",
 	"INDEX.NPM": "使用npm安装： npm i -g bilichat",
 	"INDEX.P1": "B站仿油管样式评论机->效果看右边",
