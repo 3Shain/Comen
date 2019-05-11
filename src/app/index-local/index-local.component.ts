@@ -5,10 +5,6 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import { TranslateInit } from '../../assets/i18n/lang';
 
-// 服务端的东西
-
-import { REQUEST } from '@nguniversal/express-engine/tokens';
-
 
 @Component({
   selector: 'app-index-local',
@@ -21,10 +17,6 @@ export class IndexLocalComponent implements OnInit {
     // 入TService
     private translate: TranslateService, 
 
-// 服务端的东西
-
-//   @Optional()
-//   @Inject(REQUEST) private request: Request,
    @Inject(PLATFORM_ID) private platformId: any) { 
      
       // 一键Init翻译！

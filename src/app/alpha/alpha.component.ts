@@ -11,9 +11,6 @@ import { environment } from '../../environments/environment';
 import {TranslateService} from '@ngx-translate/core';
 import { TranslateInit } from '../../assets/i18n/lang';
 
-// 服务端的东西
-
-import { REQUEST } from '@nguniversal/express-engine/tokens';
 
 @Component({
   selector: 'app-alpha',
@@ -36,10 +33,6 @@ export class AlphaComponent implements OnInit {
     // 入TService
     private translate: TranslateService, 
 
-// 服务端的东西
-
-//   @Optional()
-//   @Inject(REQUEST) private request: Request,
    @Inject(PLATFORM_ID) private platformId: any
     ) {
 
