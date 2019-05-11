@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { TranslateInit } from '../../TranslateUtils';
 
 @Component({
   selector: 'app-index-local',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IndexLocalComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public translate: TranslateService,
+  public translateinit: TranslateInit,
+  @Inject(PLATFORM_ID) public platformId: any) { }
 
   ngOnInit() {
+    this.translateinit.Init(this.translate, this.platformId);
   }
 
 }

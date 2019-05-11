@@ -8,10 +8,19 @@ import { MessageComponent } from './alpha/message/message.component';
 import { ImageComponent } from './alpha/image/image.component';
 import { IndexComponent } from './index/index.component';
 import { ChatRendererComponent } from './alpha/chat-renderer/chat-renderer.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { LegacyPaidMessageComponent } from './alpha/paid-message/paid-message.component';
 import { ViewerComponent } from './viewer/viewer.component';
 import { IndexLocalComponent } from './index-local/index-local.component';
+
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
+
 
 @NgModule({
   declarations: [
@@ -28,7 +37,10 @@ import { IndexLocalComponent } from './index-local/index-local.component';
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    TranslateModule.forRoot({
+      loader: {provide: TranslateLoader, useFactory: HttpLoaderFactory, deps: [HttpClient]}
+})
   ],
   providers: [],
   bootstrap: [AppComponent],

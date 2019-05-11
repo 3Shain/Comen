@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { ChatRendererComponent } from '../alpha/chat-renderer/chat-renderer.component';
 import { DanmakuMessage, GiftMessage } from '../danmaku.def';
+import { TranslateService } from '@ngx-translate/core';
+import { TranslateInit } from '../../TranslateUtils';
 
 @Component({
   selector: 'app-index',
@@ -17,9 +19,13 @@ export class IndexComponent implements OnInit {
   @ViewChild('renderer')
   public renderer:ChatRendererComponent;
 
-  constructor(@Inject(PLATFORM_ID) private plat: Object,private http:HttpClient) { }
+  constructor(private http:HttpClient,
+    public translate: TranslateService,
+  public translateinit: TranslateInit,
+  @Inject(PLATFORM_ID) public platformId: any) { }
 
   ngOnInit() {
+    this.translateinit.Init(this.translate, this.platformId);
     /*if (!isPlatformBrowser(this.plat)) {
       return;
     }*/
