@@ -14,8 +14,9 @@ describe('AppService', () => {
     expect(service).toBeTruthy();
   }));
 
-  it('getGiftColor 0', inject([MessageProcessorService], (service: MessageProcessorService) => {
-    expect(service.getGiftColor(0)).toEqual('#00b8d4');
+  it('getGiftColor', inject([MessageProcessorService], (service: MessageProcessorService) => {
+    service.customGiftLevel.sort((a,b)=>{return b.value-a.value;});
+    expect(service.getGiftColor(50)).toEqual('#00bfa5');
   }));
 
 

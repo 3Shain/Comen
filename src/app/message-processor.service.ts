@@ -181,7 +181,7 @@ export class MessageProcessorService {
         return s.color;
       }
     }
-    return undefined;
+    return '#00b8d4';//const min value color
   }
 }
 

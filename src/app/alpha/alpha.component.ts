@@ -70,7 +70,7 @@ export class AlphaComponent implements OnInit {
           this.proc.wordFilter = this.proc.wordFilter.concat(x.config.wordFilter||[]);
           this.proc.customEmotions = x.config.customEmotions||[];
           this.proc.customGiftLevel = x.config.customGiftLevel||this.proc.customGiftLevel;
-          this.proc.customGiftLevel.sort((a,b)=>{return a.value-b.value;});//sort
+          this.proc.customGiftLevel.sort((a,b)=>{return b.value-a.value;});//sort from large to small
           this.renderer.displayMode = x.config.displayMode||this.renderer.displayMode;
           this.renderer.groupSimilar = x.config.groupSimilar||this.renderer.groupSimilar;
           this.renderer.groupSimilarWindow = x.config.groupSimilarWindow||this.renderer.groupSimilarWindow;
