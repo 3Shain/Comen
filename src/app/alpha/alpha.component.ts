@@ -33,7 +33,7 @@ export class AlphaComponent implements OnInit {
   @Inject(PLATFORM_ID) public platformId: any) { }
 
   ngOnInit() {
-   this.translateinit.Init(this.translate, this.platformId);
+   this.translateinit.Init(this.translate, this.platformId, this.route);
 
     this.currentRoomId = this.route.snapshot.params['id'];
     this.translate.get('ROOM').subscribe((value) => {

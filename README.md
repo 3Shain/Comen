@@ -41,8 +41,9 @@ bilichat
     > 有一部分词语已经被默认屏蔽，若需解除请自行修改。
 * `giftOnly` 只显示礼物信息 默认false
 * `groupSimilar` 堆叠同类弹幕 默认true
+* `lang` 语言（en、ja、zh、zh-tw可选）
 
-例子: https://your.domain/alpha/114514?loadAvatar=false&levelFilter=20&showGift=false&wordFilter=屏蔽词1,屏蔽词2
+例子: https://your.domain/alpha/114514?loadAvatar=false&levelFilter=20&showGift=false&wordFilter=屏蔽词1,屏蔽词2&lang=zh
 
 ## 💲捐助
 捐助表示您对我这个项目的认可，所得的钱将用于维护公共服务器，也能激励我继续开发更多好的项目
