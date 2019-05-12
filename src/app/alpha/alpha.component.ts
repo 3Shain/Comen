@@ -51,6 +51,9 @@ export class AlphaComponent implements OnInit {
     if (this.route.snapshot.queryParamMap.has('groupSimilar')) {
       this.renderer.groupSimilar = this.route.snapshot.queryParamMap.get('groupSimilar').toLowerCase() === 'true';
     }
+    if (this.route.snapshot.queryParamMap.has('pure')) {
+      this.proc.pure = this.route.snapshot.queryParamMap.get('pure').toLowerCase() === 'true';
+    }
   }
 
   onload() {
@@ -58,29 +61,33 @@ export class AlphaComponent implements OnInit {
       this.renderer.sendSystemInfo('直播间ID格式错误');
       return;
     }
-    this.renderer.sendSystemInfo('正在获取直播间信息...');
-    this.http.get(`${environment.api_server}/stat/${this.currentRoomId}`).subscribe(
-      (x: any) => {
-        this.bili.ownerId = x.uid;
-        if (x.config) {
-          this.proc.loadAvatar = x.config.loadAvatar||this.proc.loadAvatar;
-          this.proc.userLevelFilter = x.config.levelFilter||this.proc.userLevelFilter;
-          this.proc.hideGiftDanmaku = x.config.hideGiftDanmaku||this.proc.hideGiftDanmaku;
-          this.proc.showGift = x.config.showGift||this.proc.showGift;
-          this.proc.wordFilter = this.proc.wordFilter.concat(x.config.wordFilter||[]);
-          this.proc.customEmotions = x.config.customEmotions||[];
-          this.renderer.displayMode = x.config.displayMode||this.renderer.displayMode;
-          this.renderer.groupSimilar = x.config.groupSimilar||this.renderer.groupSimilar;
-          this.renderer.groupSimilarWindow = x.config.groupSimilarWindow||this.renderer.groupSimilarWindow;
-          this.renderer.maxDammakuNum = x.config.maxDammakuNumber||this.renderer.maxDammakuNum;
+    if (this.proc.pure) {
+      this.start(this.currentRoomId);
+    } else {
+      this.renderer.sendSystemInfo('正在获取直播间信息...');
+      this.http.get(`${environment.api_server}/stat/${this.currentRoomId}`).subscribe(
+        (x: any) => {
+          this.bili.ownerId = x.uid;
+          if (x.config) {
+            this.proc.loadAvatar = x.config.loadAvatar || this.proc.loadAvatar;
+            this.proc.userLevelFilter = x.config.levelFilter || this.proc.userLevelFilter;
+            this.proc.hideGiftDanmaku = x.config.hideGiftDanmaku || this.proc.hideGiftDanmaku;
+            this.proc.showGift = x.config.showGift || this.proc.showGift;
+            this.proc.wordFilter = this.proc.wordFilter.concat(x.config.wordFilter || []);
+            this.proc.customEmotions = x.config.customEmotions || [];
+            this.renderer.displayMode = x.config.displayMode || this.renderer.displayMode;
+            this.renderer.groupSimilar = x.config.groupSimilar || this.renderer.groupSimilar;
+            this.renderer.groupSimilarWindow = x.config.groupSimilarWindow || this.renderer.groupSimilarWindow;
+            this.renderer.maxDammakuNum = x.config.maxDammakuNumber || this.renderer.maxDammakuNum;
+          }
+          this.start(x.room_id);
+        },
+        e => {
+          this.renderer.sendSystemInfo('直播间信息获取失败,尝试rawId');
+          this.start(this.currentRoomId);
         }
-        this.start(x.room_id);
-      },
-      e => {
-        this.renderer.sendSystemInfo('直播间信息获取失败,尝试rawId');
-        this.start(this.currentRoomId);
-      }
-    );
+      );
+    }
   }
 
   start(realRoomId: number) {
