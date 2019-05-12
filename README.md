@@ -2,6 +2,20 @@
 ![fubuki!](https://raw.githubusercontent.com/3Shain/BiliChat/master/doc/fubuki.jpg)
 > 第一次就实装在小狐狸的b站限定直播我能吹一年(虽然中途因压力过大服务器被干掉两次，果然还是膨胀了)
 
+
+
+<p align="center"><a href="https://github.com/3Shain/BiliChat"><img alt="star this repo" src="http://githubbadges.com/star.svg?user=3Shain&amp;repo=BiliChat&amp;style=flat"/></a>
+<a href="https://github.com/3Shain/BiliChat/fork"><img alt="fork this repo" src="http://githubbadges.com/fork.svg?user=3Shain&amp;repo=BiliChat&amp;style=flat"/></a>
+<a href="https://npmjs.org/package/bilichat"><img alt="NPM" src="https://nodei.co/npm/bilichat.png?compact=true"/></a>
+<a href="https://github.com/ellerbrock/typescript-badges/"><img alt="TypeScript" src="https://badges.frapsoft.com/typescript/version/typescript-next.svg?v=101"/></a>
+<a href="https://github.com/ellerbrock/open-source-badges/"><img alt="Open Source Love" src="https://badges.frapsoft.com/os/v2/open-source.png?v=103"/></a>
+<a href="https://opensource.org/licenses/GPL-3.0/"><img alt="GPL Licence" src="https://badges.frapsoft.com/os/gpl/gpl.svg?v=103"/></a>
+<a href="http://makeapullrequest.com"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square"/></a>
+<a href="https://angular.io/">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="166" height="28"><g shape-rendering="crispEdges"><path fill="#555" d="M0 0h91v28H0z"/><path fill="#97ca00" d="M91 0h75v28H91z"/></g><g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="100"><image x="9" y="7" width="14" height="14" xlink:href="data:image/svg+xml;base64,PHN2ZyBmaWxsPSJ3aGl0ZXNtb2tlIiByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGl0bGU+QW5ndWxhciBpY29uPC90aXRsZT48cGF0aCBkPSJNOS45MyAxMi42NDVoNC4xMzRMMTEuOTk2IDcuNzQiLz48cGF0aCBkPSJNMTEuOTk2LjAwOUwuNjg2IDMuOTg4bDEuNzI1IDE0Ljc2IDkuNTg1IDUuMjQzIDkuNTg4LTUuMjM4TDIzLjMwOCAzLjk5IDExLjk5Ni4wMXptNy4wNTggMTguMjk3aC0yLjYzNmwtMS40Mi0zLjUwMUg4Ljk5NWwtMS40MiAzLjUwMUg0LjkzN2w3LjA2LTE1LjY0OCA3LjA1NyAxNS42NDh6Ii8+PC9zdmc+"/> <text x="540" y="175" transform="scale(.1)" textLength="500">Angular</text><text x="1285" y="175" font-weight="bold" transform="scale(.1)" textLength="510">Version 7</text></g> </svg>
+</a>
+</p>
+
 表面上似乎是个弹幕姬  
 实际上是youtube chatbox的高仿(指样式表直接照搬)实现，不过把内容换成了b站直播弹幕2333  
 **所以在OBS中对于youtube livechat的自定义CSS代码可以直接copy**  
