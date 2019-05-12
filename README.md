@@ -2,6 +2,17 @@
 ![fubuki!](https://raw.githubusercontent.com/3Shain/BiliChat/master/doc/fubuki.jpg)
 > 第一次就实装在小狐狸的b站限定直播我能吹一年(虽然中途因压力过大服务器被干掉两次，果然还是膨胀了)
 
+
+
+<p align="center"><a href="https://github.com/3Shain/BiliChat"><img alt="star this repo" src="http://githubbadges.com/star.svg?user=3Shain&amp;repo=BiliChat&amp;style=flat"/></a>
+<a href="https://github.com/3Shain/BiliChat/fork"><img alt="fork this repo" src="http://githubbadges.com/fork.svg?user=3Shain&amp;repo=BiliChat&amp;style=flat"/></a>
+<a href="https://npmjs.org/package/bilichat"><img alt="NPM" src="https://nodei.co/npm/bilichat.png?compact=true"/></a>
+<a href="https://github.com/ellerbrock/typescript-badges/"><img alt="TypeScript" src="https://badges.frapsoft.com/typescript/version/typescript-next.svg?v=101"/></a>
+<a href="https://github.com/ellerbrock/open-source-badges/"><img alt="Open Source Love" src="https://badges.frapsoft.com/os/v2/open-source.png?v=103"/></a>
+<a href="https://opensource.org/licenses/GPL-3.0/"><img alt="GPL Licence" src="https://badges.frapsoft.com/os/gpl/gpl.svg?v=103"/></a>
+<a href="http://makeapullrequest.com"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square"/></a>
+</p>
+
 表面上似乎是个弹幕姬  
 实际上是youtube chatbox的高仿(指样式表直接照搬)实现，不过把内容换成了b站直播弹幕2333  
 **所以在OBS中对于youtube livechat的自定义CSS代码可以直接copy**  
