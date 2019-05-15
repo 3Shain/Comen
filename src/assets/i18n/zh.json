@@ -1,3 +1,12 @@
 {
+    "CONNECTCLOSED": "无法连接到直播间,5秒后重试。",
+    "CONNECTED": "成功连接到直播间!",
+    "CONNECTING": "正在连接到直播间",
+    "DISCONNECTED": "检测到服务器断开,尝试重连中...",
+    "GETROOMINFO": "正在获取直播间信息...",
+    "IDFORMATERROR": "直播间ID格式错误",
+    "ROOMINFORAWID": "直播间信息获取失败,尝试rawId",
+    
+    "ROOM": "直播间",
     "INDEX": "主页"
 }
