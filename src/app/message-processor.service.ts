@@ -38,6 +38,8 @@ export class MessageProcessorService {
 
   customEmotions: Array<any>=[];
 
+  pure: boolean=false;
+
   constructor(private http: HttpClient) { }
 
   formMessage(rawData: any, observer: Subscriber<IMessage>) {
@@ -109,6 +111,9 @@ export class MessageProcessorService {
 
   avatarPreload(userid: number): Observable<string> {
     if (!this.loadAvatar) {
+      return of(environment.default_avatar);
+    }
+    if (this.pure) {
       return of(environment.default_avatar);
     }
     let obs = this.http.get(`${environment.api_server}/avturl/${userid}`)

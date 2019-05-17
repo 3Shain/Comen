@@ -55,6 +55,9 @@ export class AlphaComponent implements OnInit {
     if (this.route.snapshot.queryParamMap.has('groupSimilar')) {
       this.renderer.groupSimilar = this.route.snapshot.queryParamMap.get('groupSimilar').toLowerCase() === 'true';
     }
+    if (this.route.snapshot.queryParamMap.has('pure')) {
+      this.proc.pure = this.route.snapshot.queryParamMap.get('pure').toLowerCase() === 'true';
+    }
   }
 
   onload() {
@@ -64,7 +67,10 @@ export class AlphaComponent implements OnInit {
       });
       return;
     }
-    this.translate.get('GETROOMINFO').subscribe((value) => {
+if (this.proc.pure) {
+      this.start(this.currentRoomId);
+    } else {
+      this.translate.get('GETROOMINFO').subscribe((value) => {
       this.renderer.sendSystemInfo(value);
     });
     this.http.get(`${environment.api_server}/stat/${this.currentRoomId}`).subscribe(
@@ -91,6 +97,7 @@ export class AlphaComponent implements OnInit {
         this.start(this.currentRoomId);
       }
     );
+    }
   }
 
   start(realRoomId: number) {
