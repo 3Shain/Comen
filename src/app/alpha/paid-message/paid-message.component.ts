@@ -35,22 +35,6 @@ export class LegacyPaidMessageComponent implements OnInit {
     }
   }
 
-  getColor() {
-    // 这段代码过于真实
-    if (this.item.value >= 1245) {
-      return '#e62117';
-    } else if (this.item.value >= 450) {
-      return '#c2185b';
-    } else if (this.item.value >= 300) {
-      return '#e65100';
-    } else if (this.item.value >= 100) {
-      return '#ffca28';
-    } else if (this.item.value >= 50) {
-      return '#00bfa5'; // 100
-    } else {
-      return '#00b8d4'; // 50
-    }
-  }
   ngAfterViewInit(){
     //if (!isPlatformBrowser(this.plat)) {
     //  return;
