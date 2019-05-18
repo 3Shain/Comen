@@ -1,0 +1,12 @@
+{
+    "CONNECTCLOSED": "Connetion failed, retry in 5 seconds.",
+    "CONNECTED": "Successfully connected!",
+    "CONNECTING": "Connecting to channel ",
+    "DISCONNECTED": "Server disconnected, retry connecting...",
+    "GETROOMINFO": "Fetching channel information...",
+    "IDFORMATERROR": "ID is not a valid value.",
+    "ROOMINFORAWID": "Fetch information failed, retry with rawID",
+
+    "ROOM": "Channel",
+    "INDEX":"Index"
+}

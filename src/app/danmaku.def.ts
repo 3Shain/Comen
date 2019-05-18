@@ -2,8 +2,8 @@ interface IMessage {
     uid: number;
     username: string;
     type: string;
-    mode:DisplayMode;
-    avatarUrl:string;
+    mode: DisplayMode;
+    avatarUrl: string;
 }
 
 class DanmakuMessage implements IMessage {
@@ -13,11 +13,11 @@ class DanmakuMessage implements IMessage {
         public message: string,
         public guard: number,
         public is_admin: boolean,
-        public emotionUrl:string,
-        public avatarUrl:string='https://static.hdslb.com/images/member/noface.gif',
+        public emotionUrl: string,
+        public avatarUrl: string= 'https://static.hdslb.com/images/member/noface.gif',
         public type= 'danmaku',
-        public mode=1,
-        public repeat=1) {}
+        public mode= 1,
+        public repeat= 1) {}
 }
 
 class GiftMessage implements IMessage {
@@ -27,26 +27,27 @@ class GiftMessage implements IMessage {
         public gift: string,
         public amount: number,
         public value: number,
-        public guard_type:number,
-        public avatarUrl:string='https://static.hdslb.com/images/member/noface.gif',
+        public guard_type: number,
+        public color: string,
+        public avatarUrl: string= 'https://static.hdslb.com/images/member/noface.gif',
         public type= 'gift',
-        public mode=2) {}
+        public mode= 2) {}
 }
 
 class ConnectedMessage implements IMessage {
     constructor(
         public uid: number= 0,
         public username: string= null,
-        public avatarUrl:string =null,
+        public avatarUrl: string = null,
         public type= 'connected',
-        public mode=1
+        public mode= 1
     ) {}
 }
 
-enum DisplayMode{
-    Danmaku=1,
-    Gift=2,
-    Both=3
+enum DisplayMode {
+    Danmaku= 1,
+    Gift= 2,
+    Both= 3
 }
 
-export {IMessage, DanmakuMessage, GiftMessage, ConnectedMessage,DisplayMode};
+export {IMessage, DanmakuMessage, GiftMessage, ConnectedMessage, DisplayMode};

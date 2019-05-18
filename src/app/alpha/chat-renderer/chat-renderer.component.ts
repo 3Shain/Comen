@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Inject ,PLATFORM_ID, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Inject , PLATFORM_ID, Output, EventEmitter } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { IMessage, DanmakuMessage } from '../../../app/danmaku.def';
 
@@ -6,7 +6,7 @@ import { IMessage, DanmakuMessage } from '../../../app/danmaku.def';
   selector: 'yt-live-chat-renderer',
   templateUrl: './chat-renderer.component.html',
   styleUrls: ['./chat-renderer.component.css'],
-  //encapsulation: ViewEncapsulation.None
+  // encapsulation: ViewEncapsulation.None
 })
 export class ChatRendererComponent implements OnInit {
 
@@ -16,15 +16,15 @@ export class ChatRendererComponent implements OnInit {
 
   groupSimilarCache: Array<DanmakuMessage>;
 
-  @Input() public maxDammakuNum:number=100;
+  @Input() public maxDammakuNum = 100;
 
-  @Input() public displayMode:number=3;
+  @Input() public displayMode = 3;
 
-  @Input() public groupSimilar:boolean=true;
+  @Input() public groupSimilar = true;
 
-  @Output() public onawake:EventEmitter<any>;
+  @Output() public onawake: EventEmitter<any>;
 
-  @Input() public groupSimilarWindow:number=5;
+  @Input() public groupSimilarWindow = 5;
 
   constructor(@Inject(PLATFORM_ID) private plat: Object) {
     this.danmakuList = [];
@@ -33,13 +33,13 @@ export class ChatRendererComponent implements OnInit {
     this.onawake = new EventEmitter();
   }
 
-  private lastRenderInvoke:number;
-  private lastRenderPush:number;
+  private lastRenderInvoke: number;
+  private lastRenderPush: number;
 
   onFrame() {
     if (Date.now() - this.lastRenderInvoke > 1000) {// 窗口不在active状态时，此方法不会被调用。
       this.waitForRendering = [];
-      //this.sendSystemInfo('窗口已恢复激活');
+      // this.sendSystemInfo('窗口已恢复激活');
     }
     this.lastRenderInvoke = Date.now();
     if (this.waitForRendering.length > 0) {
@@ -82,27 +82,27 @@ export class ChatRendererComponent implements OnInit {
   }
 
   public sendDanmaku(msg: IMessage, force: boolean = false) {
-    if((this.displayMode&<number>msg.mode)==0&&msg.uid!=-1){
+    if ((this.displayMode & <number>msg.mode) === 0 && msg.uid !== -1) {
       return;
     }
-    if(msg.type==='danmaku'&&msg.uid>0){
-      for(let c of this.groupSimilarCache){
+    if (msg.type === 'danmaku' && msg.uid > 0) {
+      for (const c of this.groupSimilarCache) {
         if (this.groupSimilar
           && (c.message.indexOf((<DanmakuMessage>msg).message) !== -1 || (<DanmakuMessage>msg).message.indexOf(c.message) !== -1)
-          && (Math.abs(c.message.length-(<DanmakuMessage>msg).message.length)<Math.min(c.message.length,(<DanmakuMessage>msg).message.length))
+          && (Math.abs(c.message.length - (<DanmakuMessage>msg).message.length) < Math.min(c.message.length, (<DanmakuMessage>msg).message.length))
         ) {
           c.repeat++;
-          return; //如果存在相似元素,会在这里被截断
+          return; // 如果存在相似元素,会在这里被截断
         }
       }
       this.groupSimilarCache.unshift(<DanmakuMessage>msg);
-      while(this.groupSimilarCache.length>this.groupSimilarWindow){
+      while (this.groupSimilarCache.length > this.groupSimilarWindow) {
         this.groupSimilarCache.pop();
       }
     }
     if (force) {
       this.danmakuList.push(msg);
-    } else{
+    } else {
       this.waitForRendering.push(msg);
     }
   }

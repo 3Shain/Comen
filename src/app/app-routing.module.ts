@@ -10,7 +10,7 @@ const routes: Routes = [
   { path: 'alpha/:id', component: AlphaComponent},
   { path: 'viewer/:id', component: ViewerComponent},
   { path: 'official', component: IndexComponent},
-  { path: '', component: environment.official?IndexComponent:IndexLocalComponent},
+  { path: '', component: environment.official ? IndexComponent : IndexLocalComponent},
   { path: '**', redirectTo: '', pathMatch: 'full'}
 ];
 
