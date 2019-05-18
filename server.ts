@@ -8,7 +8,8 @@ import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
 import * as express from 'express';
 import { join } from 'path';
 import * as request from 'request';
-import { readFile } from 'fs';
+import { readFile, existsSync, exists } from 'fs';
+import { config } from 'rxjs';
 
 // Faster server renders w/ Prod mode (dev mode never needed)
 enableProdMode();
@@ -17,7 +18,7 @@ enableProdMode();
 const app = express();
 
 const PORT = process.env.PORT || 4000;
-const VERSION = 1010;
+const VERSION = 1020;
 const DIST_FOLDER = join(process.cwd(), 'dist/browser');
 
 request('https://bilichat.3shain.com/version', { json: true }, (error, response, body) => {
@@ -73,32 +74,41 @@ app.get('/api/avatar/:userid', (req, res) => {
 
 app.get('/api/stat/:roomid', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Content-Type', 'application/json;charset=utf-8');
   request('https://api.live.bilibili.com/room/v1/Room/room_init?id=' + req.params.roomid, { json: true }, (error, response, body) => {
     if (!error && response.statusCode == 200) {
-      res.send(body.data)
-    } else {
-      res.sendStatus(404);
-    }
-
-  })
-});
-
-app.get('/api/avturl/:userid', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Cache-Control', 'public,max-age=86400');
-  request('https://api.bilibili.com/x/space/acc/info?mid=' + req.params.userid, { json: true }, (error, response, body) => {
-    if (!error && response.statusCode == 200) {
       let ret = body.data;
-      readFile('./config.json', 'utf8', (err, data) => {
+      let configPath = './config.json';
+      if (existsSync(`./config.${req.params.roomid}.json`)) {
+        configPath = `./config.${req.params.roomid}.json`;
+      }
+      readFile(configPath, 'utf8', (err, data) => {
         if (!err)
           ret.config = JSON.parse(data);
         res.send(ret);
-      })
+      });
     } else {
       res.send({
         success: false,
         message: "server error"
       });
+    }
+  })
+})
+
+app.get('/api/avturl/:userid', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Content-Type', 'application/json;charset=utf-8');
+  res.setHeader('Cache-Control', 'public,max-age=86400');
+  request('https://api.bilibili.com/x/space/acc/info?mid=' + req.params.userid, { json: true }, (error, response, body) => {
+    if (!error && response.statusCode == 200) {
+      let url = body.data.face
+      res.send({
+        face: url
+      });
+    }
+    else {
+      res.sendStatus(404);
     }
   })
 });

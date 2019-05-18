@@ -48,11 +48,20 @@ export class AlphaComponent implements OnInit {
     if (this.route.snapshot.queryParamMap.has('wordFilter')) {
       this.proc.wordFilter = this.proc.wordFilter.concat(String(this.route.snapshot.queryParamMap.get('wordFilter')).split(','));
     }
+    if (this.route.snapshot.queryParamMap.has('blackList')) {
+      this.proc.blackList = this.proc.blackList.concat(String(this.route.snapshot.queryParamMap.get('blackList')).split(',').map(x=>Number(x)));
+    }
     if (this.route.snapshot.queryParamMap.has('groupSimilar')) {
       this.renderer.groupSimilar = this.route.snapshot.queryParamMap.get('groupSimilar').toLowerCase() === 'true';
     }
     if (this.route.snapshot.queryParamMap.has('pure')) {
       this.proc.pure = this.route.snapshot.queryParamMap.get('pure').toLowerCase() === 'true';
+    }
+    if (this.route.snapshot.queryParamMap.has('minGiftValue')) {
+      this.proc.minGiftValue = Number(this.route.snapshot.queryParamMap.get('minGiftValue'));
+    }
+    if (this.route.snapshot.queryParamMap.has('silverGiftRatio')) {
+      this.proc.silverGiftRatio = Number(this.route.snapshot.queryParamMap.get('silverGiftRatio'));
     }
   }
 
@@ -73,7 +82,10 @@ export class AlphaComponent implements OnInit {
           this.proc.userLevelFilter = x.config.levelFilter||this.proc.userLevelFilter;
           this.proc.hideGiftDanmaku = x.config.hideGiftDanmaku||this.proc.hideGiftDanmaku;
           this.proc.showGift = x.config.showGift||this.proc.showGift;
+          this.proc.minGiftValue = x.config.minGiftValue||this.proc.minGiftValue;
+          this.proc.silverGiftRatio = x.config.silverGiftRatio||this.proc.silverGiftRatio;
           this.proc.wordFilter = this.proc.wordFilter.concat(x.config.wordFilter||[]);
+          this.proc.blackList = this.proc.blackList.concat(x.config.blackList||[]);
           this.proc.customEmotions = x.config.customEmotions||[];
           this.proc.customGiftLevel = x.config.customGiftLevel||this.proc.customGiftLevel;
           this.proc.customGiftLevel.sort((a,b)=>{return b.value-a.value;});//sort from large to small

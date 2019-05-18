@@ -43,11 +43,15 @@ app.get('/api/stat/:roomid', (req, res) => {
     request('https://api.live.bilibili.com/room/v1/Room/room_init?id=' + req.params.roomid, { json: true }, (error, response, body) => {
         if (!error && response.statusCode == 200) {
             let ret = body.data;
-            fs.readFile('./config.json', 'utf8', (err, data) => {
+            let configPath = './config.json';
+            if (existsSync(`./config.${req.params.roomid}.json`)) {
+                configPath = `./config.${req.params.roomid}.json`;
+            }
+            readFile(configPath, 'utf8', (err, data) => {
                 if (!err)
                     ret.config = JSON.parse(data);
                 res.send(ret);
-            })
+            });
         } else {
             res.send({
                 success: false,

@@ -36,6 +36,8 @@ export class MessageProcessorService {
     '人工智能', '老婆'
   ];
 
+  blackList: Array<number> = [];
+
   customEmotions: Array<any> = [];
 
   customGiftLevel: Array<any> = [
@@ -47,12 +49,17 @@ export class MessageProcessorService {
     { value: 0, color: '#00b8d4' }
   ];
 
+  silverGiftRatio:number = 0;
+
   pure: boolean=false;
 
   constructor(private http: HttpClient) { }
 
   formMessage(rawData: any, observer: Subscriber<IMessage>) {
     if (rawData.cmd === 'DANMU_MSG') {
+      if(this.blackList.indexOf(rawData.info[2][0]) !== -1){
+        return; // blackList
+      }
       if (this.hideGiftDanmaku && rawData.info[0][9] > 0) {
         return; // 屏蔽礼物弹幕
       }
@@ -80,10 +87,10 @@ export class MessageProcessorService {
         }
       );
     } else if (this.showGift && rawData.cmd === 'SEND_GIFT') {
+      let value = rawData.data.total_coin;
       if (rawData.data.coin_type !== 'gold') {// gold/silver
-        return;
+        value*=this.silverGiftRatio;
       }
-      const value = rawData.data.total_coin;
       if (value < this.minGiftValue * 1000) {// 计算用的scale
         return;
       }
