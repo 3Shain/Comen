@@ -28,6 +28,7 @@ class GiftMessage implements IMessage {
         public amount: number,
         public value: number,
         public guard_type:number,
+        public color:string,
         public avatarUrl:string='https://static.hdslb.com/images/member/noface.gif',
         public type= 'gift',
         public mode=2) {}

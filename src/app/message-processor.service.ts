@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IMessage, DanmakuMessage, GiftMessage } from './danmaku.def';
 import { Observable, race, timer, fromEvent, Subscriber, of } from 'rxjs';
-import { map, mergeMap , catchError } from 'rxjs/operators';
+import { map, mergeMap, catchError } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 
@@ -36,7 +36,20 @@ export class MessageProcessorService {
     '人工智能', '老婆'
   ];
 
-  customEmotions: Array<any>=[];
+  blackList: Array<number> = [];
+
+  customEmotions: Array<any> = [];
+
+  customGiftLevel: Array<any> = [
+    { value: 1245, color: '#e62117' },
+    { value: 450, color: '#c2185b' },
+    { value: 300, color: '#e65110' },
+    { value: 100, color: '#ffca28' },
+    { value: 50, color: '#00bfa5' },
+    { value: 0, color: '#00b8d4' }
+  ];
+
+  silverGiftRatio:number = 0;
 
   pure: boolean=false;
 
@@ -44,6 +57,9 @@ export class MessageProcessorService {
 
   formMessage(rawData: any, observer: Subscriber<IMessage>) {
     if (rawData.cmd === 'DANMU_MSG') {
+      if(this.blackList.indexOf(rawData.info[2][0]) !== -1){
+        return; // blackList
+      }
       if (this.hideGiftDanmaku && rawData.info[0][9] > 0) {
         return; // 屏蔽礼物弹幕
       }
@@ -71,10 +87,10 @@ export class MessageProcessorService {
         }
       );
     } else if (this.showGift && rawData.cmd === 'SEND_GIFT') {
+      let value = rawData.data.total_coin;
       if (rawData.data.coin_type !== 'gold') {// gold/silver
-        return;
+        value*=this.silverGiftRatio;
       }
-      const value = rawData.data.total_coin;
       if (value < this.minGiftValue * 1000) {// 计算用的scale
         return;
       }
@@ -88,6 +104,7 @@ export class MessageProcessorService {
             rawData.data.num,
             value / 1000,
             0,
+            this.getGiftColor(value/1000),
             avatarUrl
           ));
         }
@@ -102,6 +119,7 @@ export class MessageProcessorService {
             rawData.data.num,
             rawData.data.price / 1000,
             rawData.data.guard_level,
+            this.getGiftColor(rawData.data.price / 1000),
             avatarUrl
           ));
         }
@@ -125,7 +143,7 @@ export class MessageProcessorService {
           }
           data.face = (<string>data.face).replace(/http:/g, "https:");
           let img = new Image();
-          img.referrerPolicy="no-referer";
+          img.referrerPolicy = "no-referer";
           img.src = data.face + '@48w_48h';
           return race(
             fromEvent(img, 'load').pipe(
@@ -161,12 +179,21 @@ export class MessageProcessorService {
     }
   }
 
-  getEmotionUrl(text:string){
-    let ele =this.customEmotions.find(x=>x.command==text);
-    if(!ele){
+  getEmotionUrl(text: string) {
+    let ele = this.customEmotions.find(x => x.command == text);
+    if (!ele) {
       return undefined;
     }
     return ele.source;
+  }
+
+  getGiftColor(value:number){
+    for(let s of this.customGiftLevel){
+      if(value>=s.value){
+        return s.color;
+      }
+    }
+    return '#00b8d4';//const min value color
   }
 }
 

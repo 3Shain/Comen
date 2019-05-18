@@ -48,11 +48,20 @@ export class AlphaComponent implements OnInit {
     if (this.route.snapshot.queryParamMap.has('wordFilter')) {
       this.proc.wordFilter = this.proc.wordFilter.concat(String(this.route.snapshot.queryParamMap.get('wordFilter')).split(','));
     }
+    if (this.route.snapshot.queryParamMap.has('blackList')) {
+      this.proc.blackList = this.proc.blackList.concat(String(this.route.snapshot.queryParamMap.get('blackList')).split(',').map(x=>Number(x)));
+    }
     if (this.route.snapshot.queryParamMap.has('groupSimilar')) {
       this.renderer.groupSimilar = this.route.snapshot.queryParamMap.get('groupSimilar').toLowerCase() === 'true';
     }
     if (this.route.snapshot.queryParamMap.has('pure')) {
       this.proc.pure = this.route.snapshot.queryParamMap.get('pure').toLowerCase() === 'true';
+    }
+    if (this.route.snapshot.queryParamMap.has('minGiftValue')) {
+      this.proc.minGiftValue = Number(this.route.snapshot.queryParamMap.get('minGiftValue'));
+    }
+    if (this.route.snapshot.queryParamMap.has('silverGiftRatio')) {
+      this.proc.silverGiftRatio = Number(this.route.snapshot.queryParamMap.get('silverGiftRatio'));
     }
   }
 
@@ -65,20 +74,25 @@ export class AlphaComponent implements OnInit {
       this.start(this.currentRoomId);
     } else {
       this.renderer.sendSystemInfo('正在获取直播间信息...');
-      this.http.get(`${environment.api_server}/stat/${this.currentRoomId}`).subscribe(
-        (x: any) => {
-          this.bili.ownerId = x.uid;
-          if (x.config) {
-            this.proc.loadAvatar = x.config.loadAvatar || this.proc.loadAvatar;
-            this.proc.userLevelFilter = x.config.levelFilter || this.proc.userLevelFilter;
-            this.proc.hideGiftDanmaku = x.config.hideGiftDanmaku || this.proc.hideGiftDanmaku;
-            this.proc.showGift = x.config.showGift || this.proc.showGift;
-            this.proc.wordFilter = this.proc.wordFilter.concat(x.config.wordFilter || []);
-            this.proc.customEmotions = x.config.customEmotions || [];
-            this.renderer.displayMode = x.config.displayMode || this.renderer.displayMode;
-            this.renderer.groupSimilar = x.config.groupSimilar || this.renderer.groupSimilar;
-            this.renderer.groupSimilarWindow = x.config.groupSimilarWindow || this.renderer.groupSimilarWindow;
-            this.renderer.maxDammakuNum = x.config.maxDammakuNumber || this.renderer.maxDammakuNum;
+    this.http.get(`${environment.api_server}/stat/${this.currentRoomId}`).subscribe(
+      (x: any) => {
+        this.bili.ownerId = x.uid;
+        if (x.config) {
+          this.proc.loadAvatar = x.config.loadAvatar||this.proc.loadAvatar;
+          this.proc.userLevelFilter = x.config.levelFilter||this.proc.userLevelFilter;
+          this.proc.hideGiftDanmaku = x.config.hideGiftDanmaku||this.proc.hideGiftDanmaku;
+          this.proc.showGift = x.config.showGift||this.proc.showGift;
+          this.proc.minGiftValue = x.config.minGiftValue||this.proc.minGiftValue;
+          this.proc.silverGiftRatio = x.config.silverGiftRatio||this.proc.silverGiftRatio;
+          this.proc.wordFilter = this.proc.wordFilter.concat(x.config.wordFilter||[]);
+          this.proc.blackList = this.proc.blackList.concat(x.config.blackList||[]);
+          this.proc.customEmotions = x.config.customEmotions||[];
+          this.proc.customGiftLevel = x.config.customGiftLevel||this.proc.customGiftLevel;
+          this.proc.customGiftLevel.sort((a,b)=>{return b.value-a.value;});//sort from large to small
+          this.renderer.displayMode = x.config.displayMode||this.renderer.displayMode;
+          this.renderer.groupSimilar = x.config.groupSimilar||this.renderer.groupSimilar;
+          this.renderer.groupSimilarWindow = x.config.groupSimilarWindow||this.renderer.groupSimilarWindow;
+          this.renderer.maxDammakuNum = x.config.maxDammakuNumber||this.renderer.maxDammakuNum;
           }
           this.start(x.room_id);
         },
