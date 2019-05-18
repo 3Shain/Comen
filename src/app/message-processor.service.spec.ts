@@ -6,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 describe('AppService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [MessageProcessorService],imports:[HttpClientModule]
+      providers: [MessageProcessorService], imports: [HttpClientModule]
     });
   });
 
@@ -15,7 +15,7 @@ describe('AppService', () => {
   }));
 
   it('getGiftColor', inject([MessageProcessorService], (service: MessageProcessorService) => {
-    service.customGiftLevel.sort((a,b)=>{return b.value-a.value;});
+    service.customGiftLevel.sort((a, b) => b.value - a.value);
     expect(service.getGiftColor(50)).toEqual('#00bfa5');
   }));
 

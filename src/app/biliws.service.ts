@@ -13,18 +13,18 @@ export class BiliwsService {
 
   private heartbeatHandler: any;
 
-  public lastRenderInvoke:number;
-  public lastRenderPush:number;
+  public lastRenderInvoke: number;
+  public lastRenderPush: number;
 
-  private _ownerId : number;
-  public get ownerId() : number {
+  private _ownerId: number;
+  public get ownerId(): number {
     return this._ownerId;
   }
-  public set ownerId(v : number) {
+  public set ownerId(v: number) {
     this._ownerId = v;
   }
-  
-  
+
+
 
   constructor(private http: HttpClient,
     private proc: MessageProcessorService) {
@@ -48,7 +48,7 @@ export class BiliwsService {
           observer.next(new ConnectedMessage());
         };
         this.ws.onmessage = (e) => {
-          if(Date.now() - this.lastRenderInvoke > 1000){
+          if (Date.now() - this.lastRenderInvoke > 1000) {
             console.log('Window Inavtive');
             return;
           }

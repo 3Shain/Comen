@@ -14,13 +14,13 @@ const defaultLang = 'zh';
 export class AppComponent implements OnInit {
   title = 'bilichat';
 
-  constructor(private translate:TranslateService,
-    @Inject(PLATFORM_ID) private platformId:Object,
+  constructor(private translate: TranslateService,
+    @Inject(PLATFORM_ID) private platformId: Object,
     @Optional()
-    @Inject(REQUEST) private request:Request){
+    @Inject(REQUEST) private request: Request) {
   }
 
-  ngOnInit(){
+  ngOnInit() {
     this.translate.addLangs(langs);
     this.translate.setDefaultLang(defaultLang);
     const language = this.getLang();
@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       lang = this.translate.getBrowserLang();
     } else {
-      lang = (this.request.headers['accept-language'] || '').substring(0, 2);//暂不考虑区域代码
+      lang = (this.request.headers['accept-language'] || '').substring(0, 2); // 暂不考虑区域代码
     }
     return lang;
   }

@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./image.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class ImageComponent{
+export class ImageComponent {
 
   @Input() avatarUrl: string;
 

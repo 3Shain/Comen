@@ -11,7 +11,7 @@ import { makeStateKey, StateKey, TransferState } from '@angular/platform-browser
 export function universalLoader(state: TransferState): TranslateLoader {
   return {
     getTranslation: (lang: string) => {
-      return Observable.create((observer: Observer<any>) => {
+      return new Observable(observer => {
         const jsonData = JSON.parse(readFileSync(`./dist/browser/assets/i18n/${lang}.json`, 'utf8'));
         const key: StateKey<number> = makeStateKey<number>('transfer-translate-' + lang);
         state.set(key, jsonData);

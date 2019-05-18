@@ -23,7 +23,7 @@ export function HttpLoaderFactory(http: HttpClient, state: TransferState) {
 
       // 检查transfer-state是否存在传入语言的语言包内容, 不存在则请求相应的语言包资源
       if (data) {
-        return Observable.create(observer => {
+        return new Observable(observer => {
           observer.next(data);
           observer.complete();
         });

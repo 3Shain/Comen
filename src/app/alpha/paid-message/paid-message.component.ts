@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { GiftMessage } from '../../../app/danmaku.def';
-import { isNgTemplate } from '@angular/compiler';
 
 @Component({
   selector: 'yt-live-chat-paid-message-renderer',
@@ -8,7 +7,7 @@ import { isNgTemplate } from '@angular/compiler';
   styleUrls: ['./paid-message.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class LegacyPaidMessageComponent implements OnInit {
+export class LegacyPaidMessageComponent implements OnInit , AfterViewInit {
 
   @Input() item: GiftMessage;
 
@@ -17,29 +16,27 @@ export class LegacyPaidMessageComponent implements OnInit {
   ngOnInit() {
   }
 
-  get title(){
-    if(this.item.guard_type>0){
+  get title() {
+    if (this.item.guard_type > 0) {
       return `新的${this.item.gift}`;
-    }
-    else{
+    } else {
       return this.item.username;
     }
   }
 
-  get subtitle(){
-    if(this.item.guard_type>0){
+  get subtitle() {
+    if (this.item.guard_type > 0) {
       return `欢迎 ${this.item.username} 上舰`;
-    }
-    else{
+    } else {
       return `赠送 ${this.item.gift} ×${this.item.amount}`;
     }
   }
 
-  ngAfterViewInit(){
-    //if (!isPlatformBrowser(this.plat)) {
+  ngAfterViewInit() {
+    // if (!isPlatformBrowser(this.plat)) {
     //  return;
-    //}
-    //document.documentElement.scrollTop=document.documentElement.scrollHeight;
+    // }
+    // document.documentElement.scrollTop=document.documentElement.scrollHeight;
     window.scrollTo(0, document.documentElement.scrollHeight);
   }
 }

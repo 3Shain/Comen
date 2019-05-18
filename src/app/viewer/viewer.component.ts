@@ -10,7 +10,7 @@ import { MessageProcessorService } from '../message-processor.service';
 })
 export class ViewerComponent implements OnInit {
 
-  private currentRoomId:number;
+  private currentRoomId: number;
 
   constructor(private route: ActivatedRoute,
     private title: Title,
