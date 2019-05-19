@@ -10,6 +10,9 @@ module.exports = {
     server: './server.ts'
   },
   target: 'node',
+  node: {
+    __dirname:false
+  },
   resolve: { extensions: ['.ts', '.js'] },
   optimization: {
     minimize: false
@@ -42,6 +45,7 @@ module.exports = {
       /(.+)?express(\\|\/)(.+)?/,
       path.join(__dirname, 'src'),
       {}
-    )
+    ),
+    new webpack.BannerPlugin({ banner: "#!/usr/bin/env node", raw: true })
   ]
 };

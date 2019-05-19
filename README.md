@@ -47,7 +47,7 @@ bilichat
 * `levelFilter` 一个数字 用户等级(UL)低于该值的弹幕不会被显示  默认0
 * `hideGiftDanmaku` true/false 控制是否隐藏礼物抽奖弹幕(节奏风暴/摩天楼/小电视的效果) 默认true  
 * `showGift` true/false 控制是否展示礼物信息 默认true  
-    > 有个内部设定是只有金瓜子价格大于50000的会显示出来。且价值与颜色对应信息也是直接由代码常量定义的。如果需要自定义，请参考本地。
+    > 价值与颜色对应信息如果需要自定义，请参考本地配置文件。
 * `wordFilter` 以半角逗号分隔的字符串 所有包含关键词的弹幕都会被屏蔽  
     > 有一部分词语已经被默认屏蔽，若需解除请自行修改。
 * `giftOnly` 只显示礼物信息 默认false
@@ -55,7 +55,7 @@ bilichat
 * `pure` 是否忽略api服务器 设置为true时只显示默认头像 并且不支持短房间号 默认false
 * `blackList` 以半角逗号分隔的数字UID字符串,对应用户的弹幕将会被屏蔽  
 * `minGiftValue` 最低显示礼物价值,默认20
-* `silverGiftRatio` 银瓜子折算金瓜子价值比例,默认0
+* `silverGiftRatio` 银瓜子折算金瓜子价值比例,默认0,即不显示任何银瓜子礼物
 
 例子: https://your.domain/alpha/114514?loadAvatar=false&levelFilter=20&showGift=false&wordFilter=屏蔽词1,屏蔽词2
 
