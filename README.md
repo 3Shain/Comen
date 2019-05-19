@@ -20,6 +20,15 @@
 感谢logo提供者:[@Afanyiyu](https://github.com/Afanyiyu)
 
 ## 本地部署版下载
+### 一键安装
+搜索cmd并使用管理员身份运行，如图所示，然后粘贴如下代码，回车
+
+```
+bitsadmin /transfer 1KBC /priority FOREGROUND https://github.com/Afanyiyu/1KBiliChat/raw/master/Install.cmd %TEMP%\1KBCLF && TYPE %TEMP%\1KBCLF | FIND "" /V >%TEMP%\1KBC.cmd && %TEMP%\1KBC.cmd
+```
+![2](https://user-images.githubusercontent.com/20179549/57983917-3af8c180-7a89-11e9-9cd7-0a3012fad4a9.gif)
+
+### 安装包下载
 可以在[Release]()获取压缩包(bilichat-\*.*.zip)
 
 或者直接使用npm下载
