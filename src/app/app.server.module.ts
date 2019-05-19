@@ -7,12 +7,13 @@ import { readFileSync } from 'fs';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { Observable, Observer } from 'rxjs';
 import { makeStateKey, StateKey, TransferState } from '@angular/platform-browser';
+import { join } from 'path';
 
 export function universalLoader(state: TransferState): TranslateLoader {
   return {
     getTranslation: (lang: string) => {
       return new Observable(observer => {
-        const jsonData = JSON.parse(readFileSync(`./dist/browser/assets/i18n/${lang}.json`, 'utf8'));
+        const jsonData = JSON.parse(readFileSync(join(__dirname,`browser/assets/i18n/${lang}.json`), 'utf8'));
         const key: StateKey<number> = makeStateKey<number>('transfer-translate-' + lang);
         state.set(key, jsonData);
         observer.next(jsonData);

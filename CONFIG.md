@@ -2,7 +2,7 @@
 
 由于使用URL参数仍有诸多限制(比如长度限制,数据结构单一,特殊字符串需转义),所以**本地部署版本**提供了更为灵活的**配置文件**。
 
-首先,在**运行BILICHAT的目录(PWD)**新建一个 `config.json`文件  
+首先,在 **运行BILICHAT的目录(PWD)** 新建一个 `config.json`文件  
 > 如果你使用npm发布包,你可以将此文件放在任何目录,只要你在当前所在目录执行bilichat命令就可以
 
 如果你希望为特定用户提供特定的配置参数,将文件名改为 `config.<用户ID>.json`即可。如`config.4331384.json`
@@ -83,12 +83,12 @@ UID黑名单。
 设置礼物弹幕的不同等级及其颜色,默认值
 ```json
 [
-    { value: 1245, color: "#e62117" },
-    { value: 450, color: "#c2185b" },
-    { value: 300, color: "#e65110" },
-    { value: 100, color: "#ffca28" },
-    { value: 50, color: "#00bfa5" },
-    { value: 0, color: "#00b8d4" }
+    { "value": 1245, "color": "#e62117" },
+    { "value": 450, "color": "#c2185b" },
+    { "value": 300, "color": "#e65110" },
+    { "value": 100, "color": "#ffca28" },
+    { "value": 50, "color": "#00bfa5" },
+    { "value": 0, "color": "#00b8d4" }
 ]
 ```
 value表示该等级的最低价值(RMB),color为对应hex颜色值(注意#符号)

@@ -8,8 +8,7 @@ import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
 import * as express from 'express';
 import { join } from 'path';
 import * as request from 'request';
-import { readFile, existsSync, exists } from 'fs';
-import { config } from 'rxjs';
+import { readFile, existsSync } from 'fs';
 
 // Faster server renders w/ Prod mode (dev mode never needed)
 enableProdMode();
@@ -18,8 +17,8 @@ enableProdMode();
 const app = express();
 
 const PORT = process.env.PORT || 4000;
-const VERSION = 1020;
-const DIST_FOLDER = join(process.cwd(), 'dist/browser');
+const VERSION = 1022;
+const DIST_FOLDER = join(__dirname, 'browser');
 
 request('https://bilichat.3shain.com/version', { json: true }, (error, response, body) => {
   if (!error && response.statusCode == 200) {
@@ -136,5 +135,5 @@ app.get('*', (req, res) => {
 // Start up the Node server
 app.listen(PORT, () => {
   console.log(`bilichat正运行在 http://localhost:${PORT}`);
-  console.log(`在浏览器或OBS浏览器源中输入URL为http://localhost:${PORT}/alpha/[你的直播间地址] 即可`);
+  console.log(`在浏览器或OBS浏览器源中输入URL为http://localhost:${PORT}/alpha/<你的直播间号> 即可`);
 });
