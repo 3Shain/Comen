@@ -29,6 +29,9 @@ bilichat
 ```
 
 ## 🌟如何在OBS中使用
+
+![1](https://user-images.githubusercontent.com/20179549/57980507-17b91c80-7a5f-11e9-9033-621c2eecfa9c.gif)
+
 1. 在场景中新建浏览器源
 2. 在URL处填写 ` https://bilichat.3shain.com/alpha/<你的直播间ID> `  
 如果是本地运行的服务,替换上面的域名即可,如  ` http://localhost:5000/alpha/<你的直播间ID> `  
