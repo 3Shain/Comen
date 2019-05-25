@@ -33,7 +33,8 @@ export class MessageProcessorService {
     '梗',
     '傻逼', '弱智', '脑残', '屏蔽', 'cnm',
     '警察', '加群', '群号', 'QQ群', '出警',
-    '人工智能', '老婆'
+    '人工智能', '老婆',
+    '\0'
   ];
 
   blackList: Array<number> = [];
