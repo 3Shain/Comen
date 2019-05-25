@@ -1,11 +1,11 @@
 {
-    "CONNECTCLOSED": "チャンネルに接続できません。5秒後にもう一度試してください。",
+    "CONNECTCLOSED": "ライブルームに接続できません。5秒後にもう一度試します。",
     "CONNECTED": "チャンネルへの接続に成功しました！",
     "CONNECTING": "チャンネルへの接続",
     "DISCONNECTED": "検出されたサーバーが切断されました。再接続を試みています...",
     "GETROOMINFO": "チャンネル情報の取得中...",
     "IDFORMATERROR": "チャンネルIDのフォーマットが正しくありません",
-    "ROOMINFORAWID": "チャンネル情報の取得に失敗しましたrawIdを試してください",
+    "ROOMINFORAWID": "チャンネルで得られた情報が失敗しました、rawIdが試みられます",
 
     "ROOM": "チャンネル",
     "INDEX": "インデックス"
