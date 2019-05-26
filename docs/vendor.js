@@ -104,7 +104,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /**
- * @license Angular v7.2.4
+ * @license Angular v7.2.15
  * (c) 2010-2019 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -185,16 +185,15 @@ var LocationStrategy = /** @class */ (function () {
     return LocationStrategy;
 }());
 /**
- * The `APP_BASE_HREF` token represents the base href to be used with the
- * {@link PathLocationStrategy}.
- *
- * If you're using {@link PathLocationStrategy}, you must provide a provider to a string
- * representing the URL prefix that should be preserved when generating and recognizing
- * URLs.
+ * A predefined [DI token](guide/glossary#di-token) for the base href
+ * to be used with the `PathLocationStrategy`.
+ * The base href is the URL prefix that should be preserved when generating
+ * and recognizing URLs.
  *
  * @usageNotes
  *
- * ### Example
+ * The following example shows how to use this token to configure the root app injector
+ * with a base href value, so that the DI framework can supply the dependency anywhere in the app.
  *
  * ```typescript
  * import {Component, NgModule} from '@angular/core';
@@ -222,12 +221,12 @@ var APP_BASE_HREF = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["InjectionTok
  *
  * A service that applications can use to interact with a browser's URL.
  *
- * Depending on which {@link LocationStrategy} is used, `Location` will either persist
+ * Depending on the {@link LocationStrategy} used, `Location` will either persist
  * to the URL's path or the URL's hash segment.
  *
  * @usageNotes
  *
- * It's better to use {@link Router#navigate} service to trigger route changes. Use
+ * It's better to use the {@link Router#navigate} service to trigger route changes. Use
  * `Location` only if you need to interact with or create normalized URLs outside of
  * routing.
  *
@@ -264,6 +263,10 @@ var Location = /** @class */ (function () {
     Location_1 = Location;
     /**
      * Returns the normalized URL path.
+     *
+     * @param includeHash Whether path has an anchor fragment.
+     *
+     * @returns The normalized URL path.
      */
     // TODO: vsavkin. Remove the boolean flag and always include hash once the deprecated router is
     // removed.
@@ -273,14 +276,24 @@ var Location = /** @class */ (function () {
     };
     /**
      * Normalizes the given path and compares to the current normalized path.
+     *
+     * @param path The given URL path
+     * @param query Query parameters
+     *
+     * @returns `true` if the given URL path is equal to the current normalized path, `false`
+     * otherwise.
      */
     Location.prototype.isCurrentPathEqualTo = function (path, query) {
         if (query === void 0) { query = ''; }
         return this.path() == this.normalize(path + Location_1.normalizeQueryParams(query));
     };
     /**
-     * Given a string representing a URL, returns the normalized URL path without leading or
+     * Given a string representing a URL, returns the URL path after stripping the
      * trailing slashes.
+     *
+     * @param url String representing a URL.
+     *
+     * @returns Normalized URL string.
      */
     Location.prototype.normalize = function (url) {
         return Location_1.stripTrailingSlash(_stripBaseHref(this._baseHref, _stripIndexHtml(url)));
@@ -288,8 +301,13 @@ var Location = /** @class */ (function () {
     /**
      * Given a string representing a URL, returns the platform-specific external URL path.
      * If the given URL doesn't begin with a leading slash (`'/'`), this method adds one
-     * before normalizing. This method will also add a hash if `HashLocationStrategy` is
+     * before normalizing. This method also adds a hash if `HashLocationStrategy` is
      * used, or the `APP_BASE_HREF` if the `PathLocationStrategy` is in use.
+     *
+     *
+     * @param url String representing a URL.
+     *
+     * @returns  A normalized platform-specific URL.
      */
     Location.prototype.prepareExternalUrl = function (url) {
         if (url && url[0] !== '/') {
@@ -299,8 +317,13 @@ var Location = /** @class */ (function () {
     };
     // TODO: rename this method to pushState
     /**
-     * Changes the browsers URL to the normalized version of the given URL, and pushes a
+     * Changes the browsers URL to a normalized version of the given URL, and pushes a
      * new item onto the platform's history.
+     *
+     * @param path  URL path to normalizze
+     * @param query Query parameters
+     * @param state Location history state
+     *
      */
     Location.prototype.go = function (path, query, state) {
         if (query === void 0) { query = ''; }
@@ -308,8 +331,12 @@ var Location = /** @class */ (function () {
         this._platformStrategy.pushState(state, '', path, query);
     };
     /**
-     * Changes the browsers URL to the normalized version of the given URL, and replaces
+     * Changes the browser's URL to a normalized version of the given URL, and replaces
      * the top item on the platform's history stack.
+     *
+     * @param path  URL path to normalizze
+     * @param query Query parameters
+     * @param state Location history state
      */
     Location.prototype.replaceState = function (path, query, state) {
         if (query === void 0) { query = ''; }
@@ -326,19 +353,34 @@ var Location = /** @class */ (function () {
     Location.prototype.back = function () { this._platformStrategy.back(); };
     /**
      * Subscribe to the platform's `popState` events.
+     *
+     * @param value Event that is triggered when the state history changes.
+     * @param exception The exception to throw.
+     *
+     * @returns Subscribed events.
      */
     Location.prototype.subscribe = function (onNext, onThrow, onReturn) {
         return this._subject.subscribe({ next: onNext, error: onThrow, complete: onReturn });
     };
     /**
-     * Given a string of url parameters, prepend with '?' if needed, otherwise return parameters as
-     * is.
+     * Given a string of url parameters, prepend with `?` if needed, otherwise return the
+     * parameters as is.
+     *
+     *  @param  params String of URL parameters
+     *
+     *  @returns URL parameters prepended with `?` or the parameters as is.
      */
     Location.normalizeQueryParams = function (params) {
         return params && params[0] !== '?' ? '?' + params : params;
     };
     /**
-     * Given 2 parts of a url, join them with a slash if needed.
+     * Given 2 parts of a URL, join them with a slash if needed.
+     *
+     * @param start  URL string
+     * @param end    URL string
+     *
+     *
+     * @returns Given URL strings joined with a slash, if needed.
      */
     Location.joinWithSlash = function (start, end) {
         if (start.length == 0) {
@@ -363,9 +405,14 @@ var Location = /** @class */ (function () {
         return start + '/' + end;
     };
     /**
-     * If url has a trailing slash, remove it, otherwise return url as is. This
-     * method looks for the first occurrence of either #, ?, or the end of the
-     * line as `/` characters after any of these should not be replaced.
+     * If URL has a trailing slash, remove it, otherwise return the URL as is. The
+     * method looks for the first occurrence of either `#`, `?`, or the end of the
+     * line as `/` characters and removes the trailing slash if one exists.
+     *
+     * @param url URL string
+     *
+     * @returns Returns a URL string after removing the trailing slash if one exists, otherwise
+     * returns the string as is.
      */
     Location.stripTrailingSlash = function (url) {
         var match = url.match(/#|\?|$/);
@@ -778,8 +825,9 @@ var CURRENCIES_EN = {
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- * The different format styles that can be used to represent numbers.
- * Used by the function {@link getLocaleNumberFormat}.
+ * Format styles that can be used to represent numbers.
+ * @see `getLocaleNumberFormat()`.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -790,7 +838,14 @@ var NumberFormatStyle;
     NumberFormatStyle[NumberFormatStyle["Currency"] = 2] = "Currency";
     NumberFormatStyle[NumberFormatStyle["Scientific"] = 3] = "Scientific";
 })(NumberFormatStyle || (NumberFormatStyle = {}));
-/** @publicApi */
+/**
+ * Plurality cases used for translating plurals to different languages.
+ *
+ * @see `NgPlural`
+ * @see `NgPluralCase`
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
+ *
+ * @publicApi */
 var Plural;
 (function (Plural) {
     Plural[Plural["Zero"] = 0] = "Zero";
@@ -801,11 +856,11 @@ var Plural;
     Plural[Plural["Other"] = 5] = "Other";
 })(Plural || (Plural = {}));
 /**
- * Some languages use two different forms of strings (standalone and format) depending on the
- * context.
- * Typically the standalone version is the nominative form of the word, and the format version is in
- * the genitive.
- * See [the CLDR website](http://cldr.unicode.org/translation/date-time) for more information.
+ * Context-dependant translation forms for strings.
+ * Typically the standalone version is for the nominative form of the word,
+ * and the format version is used for the genitive case.
+ * @see [CLDR website](http://cldr.unicode.org/translation/date-time#TOC-Stand-Alone-vs.-Format-Styles)
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -815,85 +870,143 @@ var FormStyle;
     FormStyle[FormStyle["Standalone"] = 1] = "Standalone";
 })(FormStyle || (FormStyle = {}));
 /**
- * Multiple widths are available for translations: narrow (1 character), abbreviated (3 characters),
- * wide (full length), and short (2 characters, only for days).
- *
- * For example the day `Sunday` will be:
- * - Narrow: `S`
- * - Short: `Su`
- * - Abbreviated: `Sun`
- * - Wide: `Sunday`
+ * String widths available for translations.
+ * The specific character widths are locale-specific.
+ * Examples are given for the word "Sunday" in English.
  *
  * @publicApi
  */
 var TranslationWidth;
 (function (TranslationWidth) {
+    /** 1 character for `en-US`. For example: 'S' */
     TranslationWidth[TranslationWidth["Narrow"] = 0] = "Narrow";
+    /** 3 characters for `en-US`. For example: 'Sun' */
     TranslationWidth[TranslationWidth["Abbreviated"] = 1] = "Abbreviated";
+    /** Full length for `en-US`. For example: "Sunday" */
     TranslationWidth[TranslationWidth["Wide"] = 2] = "Wide";
+    /** 2 characters for `en-US`, For example: "Su" */
     TranslationWidth[TranslationWidth["Short"] = 3] = "Short";
 })(TranslationWidth || (TranslationWidth = {}));
 /**
- * Multiple widths are available for formats: short (minimal amount of data), medium (small amount
- * of data), long (complete amount of data), full (complete amount of data and extra information).
+ * String widths available for date-time formats.
+ * The specific character widths are locale-specific.
+ * Examples are given for `en-US`.
  *
- * For example the date-time formats for the english locale will be:
- *  - `'short'`: `'M/d/yy, h:mm a'` (e.g. `6/15/15, 9:03 AM`)
- *  - `'medium'`: `'MMM d, y, h:mm:ss a'` (e.g. `Jun 15, 2015, 9:03:01 AM`)
- *  - `'long'`: `'MMMM d, y, h:mm:ss a z'` (e.g. `June 15, 2015 at 9:03:01 AM GMT+1`)
- *  - `'full'`: `'EEEE, MMMM d, y, h:mm:ss a zzzz'` (e.g. `Monday, June 15, 2015 at
- * 9:03:01 AM GMT+01:00`)
- *
+ * @see `getLocaleDateFormat()`
+ * @see `getLocaleTimeFormat()``
+ * @see `getLocaleDateTimeFormat()`
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  * @publicApi
  */
 var FormatWidth;
 (function (FormatWidth) {
+    /**
+     * For `en-US`, 'M/d/yy, h:mm a'`
+     * (Example: `6/15/15, 9:03 AM`)
+     */
     FormatWidth[FormatWidth["Short"] = 0] = "Short";
+    /**
+     * For `en-US`, `'MMM d, y, h:mm:ss a'`
+     * (Example: `Jun 15, 2015, 9:03:01 AM`)
+     */
     FormatWidth[FormatWidth["Medium"] = 1] = "Medium";
+    /**
+     * For `en-US`, `'MMMM d, y, h:mm:ss a z'`
+     * (Example: `June 15, 2015 at 9:03:01 AM GMT+1`)
+     */
     FormatWidth[FormatWidth["Long"] = 2] = "Long";
+    /**
+     * For `en-US`, `'EEEE, MMMM d, y, h:mm:ss a zzzz'`
+     * (Example: `Monday, June 15, 2015 at 9:03:01 AM GMT+01:00`)
+     */
     FormatWidth[FormatWidth["Full"] = 3] = "Full";
 })(FormatWidth || (FormatWidth = {}));
 /**
- * Number symbol that can be used to replace placeholders in number patterns.
- * The placeholders are based on english values:
+ * Symbols that can be used to replace placeholders in number patterns.
+ * Examples are based on `en-US` values.
  *
- * | Name                   | Example for en-US | Meaning                                     |
- * |------------------------|-------------------|---------------------------------------------|
- * | decimal                | 2,345`.`67        | decimal separator                           |
- * | group                  | 2`,`345.67        | grouping separator, typically for thousands |
- * | plusSign               | `+`23             | the plus sign used with numbers             |
- * | minusSign              | `-`23             | the minus sign used with numbers            |
- * | percentSign            | 23.4`%`           | the percent sign (out of 100)               |
- * | perMille               | 234`‰`            | the permille sign (out of 1000)             |
- * | exponential            | 1.2`E`3           | used in computers for 1.2×10³.              |
- * | superscriptingExponent | 1.2`×`103         | human-readable format of exponential        |
- * | infinity               | `∞`               | used in +∞ and -∞.                          |
- * | nan                    | `NaN`             | "not a number".                             |
- * | timeSeparator          | 10`:`52           | symbol used between time units              |
- * | currencyDecimal        | $2,345`.`67       | decimal separator, fallback to "decimal"    |
- * | currencyGroup          | $2`,`345.67       | grouping separator, fallback to "group"     |
+ * @see `getLocaleNumberSymbol()`
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
 var NumberSymbol;
 (function (NumberSymbol) {
+    /**
+     * Decimal separator.
+     * For `en-US`, the dot character.
+     * Example : 2,345`.`67
+     */
     NumberSymbol[NumberSymbol["Decimal"] = 0] = "Decimal";
+    /**
+     * Grouping separator, typically for thousands.
+     * For `en-US`, the comma character.
+     * Example: 2`,`345.67
+     */
     NumberSymbol[NumberSymbol["Group"] = 1] = "Group";
+    /**
+     * List-item separator.
+     * Example: "one, two, and three"
+     */
     NumberSymbol[NumberSymbol["List"] = 2] = "List";
+    /**
+     * Sign for percentage (out of 100).
+     * Example: 23.4%
+     */
     NumberSymbol[NumberSymbol["PercentSign"] = 3] = "PercentSign";
+    /**
+     * Sign for positive numbers.
+     * Example: +23
+     */
     NumberSymbol[NumberSymbol["PlusSign"] = 4] = "PlusSign";
+    /**
+     * Sign for negative numbers.
+     * Example: -23
+     */
     NumberSymbol[NumberSymbol["MinusSign"] = 5] = "MinusSign";
+    /**
+     * Computer notation for exponential value (n times a power of 10).
+     * Example: 1.2E3
+     */
     NumberSymbol[NumberSymbol["Exponential"] = 6] = "Exponential";
+    /**
+     * Human-readable format of exponential.
+     * Example: 1.2x103
+     */
     NumberSymbol[NumberSymbol["SuperscriptingExponent"] = 7] = "SuperscriptingExponent";
+    /**
+     * Sign for permille (out of 1000).
+     * Example: 23.4‰
+     */
     NumberSymbol[NumberSymbol["PerMille"] = 8] = "PerMille";
+    /**
+     * Infinity, can be used with plus and minus.
+     * Example: ∞, +∞, -∞
+     */
     NumberSymbol[NumberSymbol["Infinity"] = 9] = "Infinity";
+    /**
+     * Not a number.
+     * Example: NaN
+     */
     NumberSymbol[NumberSymbol["NaN"] = 10] = "NaN";
+    /**
+     * Symbol used between time units.
+     * Example: 10:52
+     */
     NumberSymbol[NumberSymbol["TimeSeparator"] = 11] = "TimeSeparator";
+    /**
+     * Decimal separator for currency values (fallback to `Decimal`).
+     * Example: $2,345.67
+     */
     NumberSymbol[NumberSymbol["CurrencyDecimal"] = 12] = "CurrencyDecimal";
+    /**
+     * Group separator for currency values (fallback to `Group`).
+     * Example: $2,345.67
+     */
     NumberSymbol[NumberSymbol["CurrencyGroup"] = 13] = "CurrencyGroup";
 })(NumberSymbol || (NumberSymbol = {}));
 /**
- * The value for each day of the week, based on the en-US locale
+ * The value for each day of the week, based on the `en-US` locale
  *
  * @publicApi
  */
@@ -908,7 +1021,11 @@ var WeekDay;
     WeekDay[WeekDay["Saturday"] = 6] = "Saturday";
 })(WeekDay || (WeekDay = {}));
 /**
- * The locale id for the chosen locale (e.g `en-GB`).
+ * Retrieves the locale ID from the currently loaded locale.
+ * The loaded locale could be, for example, a global one rather than a regional one.
+ * @param locale A locale code, such as `fr-FR`.
+ * @returns The locale code. For example, `fr`.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -916,7 +1033,13 @@ function getLocaleId(locale) {
     return findLocaleData(locale)[0 /* LocaleId */];
 }
 /**
- * Periods of the day (e.g. `[AM, PM]` for en-US).
+ * Retrieves day period strings for the given locale.
+ *
+ * @param locale A locale code for the locale format rules to use.
+ * @param formStyle The required grammatical form.
+ * @param width The required character width.
+ * @returns An array of localized period strings. For example, `[AM, PM]` for `en-US`.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -927,7 +1050,14 @@ function getLocaleDayPeriods(locale, formStyle, width) {
     return getLastDefinedValue(amPm, width);
 }
 /**
- * Days of the week for the Gregorian calendar (e.g. `[Sunday, Monday, ... Saturday]` for en-US).
+ * Retrieves days of the week for the given locale, using the Gregorian calendar.
+ *
+ * @param locale A locale code for the locale format rules to use.
+ * @param formStyle The required grammatical form.
+ * @param width The required character width.
+ * @returns An array of localized name strings.
+ * For example,`[Sunday, Monday, ... Saturday]` for `en-US`.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -938,7 +1068,14 @@ function getLocaleDayNames(locale, formStyle, width) {
     return getLastDefinedValue(days, width);
 }
 /**
- * Months of the year for the Gregorian calendar (e.g. `[January, February, ...]` for en-US).
+ * Retrieves months of the year for the given locale, using the Gregorian calendar.
+ *
+ * @param locale A locale code for the locale format rules to use.
+ * @param formStyle The required grammatical form.
+ * @param width The required character width.
+ * @returns An array of localized name strings.
+ * For example,  `[January, February, ...]` for `en-US`.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -949,7 +1086,14 @@ function getLocaleMonthNames(locale, formStyle, width) {
     return getLastDefinedValue(months, width);
 }
 /**
- * Eras for the Gregorian calendar (e.g. AD/BC).
+ * Retrieves Gregorian-calendar eras for the given locale.
+ * @param locale A locale code for the locale format rules to use.
+ * @param formStyle The required grammatical form.
+ * @param width The required character width.
+
+ * @returns An array of localized era strings.
+ * For example, `[AD, BC]` for `en-US`.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -959,8 +1103,13 @@ function getLocaleEraNames(locale, width) {
     return getLastDefinedValue(erasData, width);
 }
 /**
- * First day of the week for this locale, based on english days (Sunday = 0, Monday = 1, ...).
- * For example in french the value would be 1 because the first day of the week is Monday.
+ * Retrieves the first day of the week for the given locale.
+ *
+ * @param locale A locale code for the locale format rules to use.
+ * @returns A day index number, using the 0-based week-day index for `en-US`
+ * (Sunday = 0, Monday = 1, ...).
+ * For example, for `fr-FR`, returns 1 to indicate that the first day is Monday.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -969,9 +1118,11 @@ function getLocaleFirstDayOfWeek(locale) {
     return data[8 /* FirstDayOfWeek */];
 }
 /**
- * Range of days in the week that represent the week-end for this locale, based on english days
- * (Sunday = 0, Monday = 1, ...).
- * For example in english the value would be [6,0] for Saturday to Sunday.
+ * Range of week days that are considered the week-end for the given locale.
+ *
+ * @param locale A locale code for the locale format rules to use.
+ * @returns The range of day values, `[startDay, endDay]`.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -980,27 +1131,13 @@ function getLocaleWeekEndRange(locale) {
     return data[9 /* WeekendRange */];
 }
 /**
- * Date format that depends on the locale.
+ * Retrieves a localized date-value formating string.
  *
- * There are four basic date formats:
- * - `full` should contain long-weekday (EEEE), year (y), long-month (MMMM), day (d).
- *
- *  For example, English uses `EEEE, MMMM d, y`, corresponding to a date like
- *  "Tuesday, September 14, 1999".
- *
- * - `long` should contain year, long-month, day.
- *
- *  For example, `MMMM d, y`, corresponding to a date like "September 14, 1999".
- *
- * - `medium` should contain year, abbreviated-month (MMM), day.
- *
- *  For example, `MMM d, y`, corresponding to a date like "Sep 14, 1999".
- *  For languages that do not use abbreviated months, use the numeric month (MM/M). For example,
- *  `y/MM/dd`, corresponding to a date like "1999/09/14".
- *
- * - `short` should contain year, numeric-month (MM/M), and day.
- *
- *  For example, `M/d/yy`, corresponding to a date like "9/14/99".
+ * @param locale A locale code for the locale format rules to use.
+ * @param width The format type.
+ * @returns The localized formating string.
+ * @see `FormatWidth`
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -1009,23 +1146,14 @@ function getLocaleDateFormat(locale, width) {
     return getLastDefinedValue(data[10 /* DateFormat */], width);
 }
 /**
- * Time format that depends on the locale.
+ * Retrieves a localized time-value formatting string.
  *
- * The standard formats include four basic time formats:
- * - `full` should contain hour (h/H), minute (mm), second (ss), and zone (zzzz).
- * - `long` should contain hour, minute, second, and zone (z)
- * - `medium` should contain hour, minute, second.
- * - `short` should contain hour, minute.
- *
- * Note: The patterns depend on whether the main country using your language uses 12-hour time or
- * not:
- * - For 12-hour time, use a pattern like `hh:mm a` using h to mean a 12-hour clock cycle running
- * 1 through 12 (midnight plus 1 minute is 12:01), or using K to mean a 12-hour clock cycle
- * running 0 through 11 (midnight plus 1 minute is 0:01).
- * - For 24-hour time, use a pattern like `HH:mm` using H to mean a 24-hour clock cycle running 0
- * through 23 (midnight plus 1 minute is 0:01), or using k to mean a 24-hour clock cycle running
- * 1 through 24 (midnight plus 1 minute is 24:01).
- *
+ * @param locale A locale code for the locale format rules to use.
+ * @param width The format type.
+ * @returns The localized formatting string.
+ * @see `FormatWidth`
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
+
  * @publicApi
  */
 function getLocaleTimeFormat(locale, width) {
@@ -1033,27 +1161,13 @@ function getLocaleTimeFormat(locale, width) {
     return getLastDefinedValue(data[11 /* TimeFormat */], width);
 }
 /**
- * Date-time format that depends on the locale.
+ * Retrieves a localized date-time formatting string.
  *
- * The date-time pattern shows how to combine separate patterns for date (represented by {1})
- * and time (represented by {0}) into a single pattern. It usually doesn't need to be changed.
- * What you want to pay attention to are:
- * - possibly removing a space for languages that don't use it, such as many East Asian languages
- * - possibly adding a comma, other punctuation, or a combining word
- *
- * For example:
- * - English uses `{1} 'at' {0}` or `{1}, {0}` (depending on date style), while Japanese uses
- *  `{1}{0}`.
- * - An English formatted date-time using the combining pattern `{1}, {0}` could be
- *  `Dec 10, 2010, 3:59:49 PM`. Notice the comma and space between the date portion and the time
- *  portion.
- *
- * There are four formats (`full`, `long`, `medium`, `short`); the determination of which to use
- * is normally based on the date style. For example, if the date has a full month and weekday
- * name, the full combining pattern will be used to combine that with a time. If the date has
- * numeric month, the short version of the combining pattern will be used to combine that with a
- * time. English uses `{1} 'at' {0}` for full and long styles, and `{1}, {0}` for medium and short
- * styles.
+ * @param locale A locale code for the locale format rules to use.
+ * @param width The format type.
+ * @returns The localized formatting string.
+ * @see `FormatWidth`
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -1063,8 +1177,12 @@ function getLocaleDateTimeFormat(locale, width) {
     return getLastDefinedValue(dateTimeFormatData, width);
 }
 /**
- * Number symbol that can be used to replace placeholders in number formats.
- * See {@link NumberSymbol} for more information.
+ * Retrieves a localized number symbol that can be used to replace placeholders in number formats.
+ * @param locale The locale code.
+ * @param symbol The symbol to localize.
+ * @returns The character for the localized symbol.
+ * @see `NumberSymbol`
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -1082,17 +1200,17 @@ function getLocaleNumberSymbol(locale, symbol) {
     return res;
 }
 /**
- * Number format that depends on the locale.
+ * Retrieves a number format for a given locale.
  *
  * Numbers are formatted using patterns, like `#,###.00`. For example, the pattern `#,###.00`
- * when used to format the number 12345.678 could result in "12'345,67". That would happen if the
+ * when used to format the number 12345.678 could result in "12'345,678". That would happen if the
  * grouping separator for your language is an apostrophe, and the decimal separator is a comma.
  *
- * <b>Important:</b> The characters `.` `,` `0` `#` (and others below) are special placeholders;
- * they stand for the decimal separator, and so on, and are NOT real characters.
- * You must NOT "translate" the placeholders; for example, don't change `.` to `,` even though in
+ * <b>Important:</b> The characters `.` `,` `0` `#` (and others below) are special placeholders
+ * that stand for the decimal separator, and so on, and are NOT real characters.
+ * You must NOT "translate" the placeholders. For example, don't change `.` to `,` even though in
  * your language the decimal point is written with a comma. The symbols should be replaced by the
- * local equivalents, using the Number Symbols for your language.
+ * local equivalents, using the appropriate `NumberSymbol` for your language.
  *
  * Here are the special characters used in number patterns:
  *
@@ -1102,13 +1220,17 @@ function getLocaleNumberSymbol(locale, symbol) {
  * | , | Replaced by the "grouping" (thousands) separator. |
  * | 0 | Replaced by a digit (or zero if there aren't enough digits). |
  * | # | Replaced by a digit (or nothing if there aren't enough). |
- * | ¤ | This will be replaced by a currency symbol, such as $ or USD. |
- * | % | This marks a percent format. The % symbol may change position, but must be retained. |
- * | E | This marks a scientific format. The E symbol may change position, but must be retained. |
+ * | ¤ | Replaced by a currency symbol, such as $ or USD. |
+ * | % | Marks a percent format. The % symbol may change position, but must be retained. |
+ * | E | Marks a scientific format. The E symbol may change position, but must be retained. |
  * | ' | Special characters used as literal characters are quoted with ASCII single quotes. |
  *
- * You can find more information
- * [on the CLDR website](http://cldr.unicode.org/translation/number-patterns)
+ * @param locale A locale code for the locale format rules to use.
+ * @param type The type of numeric value to be formatted (such as `Decimal` or `Currency`.)
+ * @returns The localized format string.
+ * @see `NumberFormatStyle`
+ * @see [CLDR website](http://cldr.unicode.org/translation/number-patterns)
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -1117,9 +1239,13 @@ function getLocaleNumberFormat(locale, type) {
     return data[14 /* NumberFormats */][type];
 }
 /**
- * The symbol used to represent the currency for the main country using this locale (e.g. $ for
- * the locale en-US).
- * The symbol will be `null` if the main country cannot be determined.
+ * Retrieves the symbol used to represent the currency for the main country
+ * corresponding to a given locale. For example, '$' for `en-US`.
+ *
+ * @param locale A locale code for the locale format rules to use.
+ * @returns The localized symbol character,
+ * or `null` if the main country cannot be determined.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -1128,9 +1254,12 @@ function getLocaleCurrencySymbol(locale) {
     return data[15 /* CurrencySymbol */] || null;
 }
 /**
- * The name of the currency for the main country using this locale (e.g. 'US Dollar' for the locale
- * en-US).
- * The name will be `null` if the main country cannot be determined.
+ * Retrieves the name of the currency for the main country corresponding
+ * to a given locale. For example, 'US Dollar' for `en-US`.
+ * @param locale A locale code for the locale format rules to use.
+ * @returns The currency name,
+ * or `null` if the main country cannot be determined.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -1139,15 +1268,22 @@ function getLocaleCurrencyName(locale) {
     return data[16 /* CurrencyName */] || null;
 }
 /**
- * Returns the currency values for the locale
+ * Retrieves the currency values for a given locale.
+ * @param locale A locale code for the locale format rules to use.
+ * @returns The currency values.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  */
 function getLocaleCurrencies(locale) {
     var data = findLocaleData(locale);
     return data[17 /* Currencies */];
 }
 /**
- * The locale plural function used by ICU expressions to determine the plural case to use.
- * See {@link NgPlural} for more information.
+ * Retrieves the plural function used by ICU expressions to determine the plural case to use
+ * for a given locale.
+ * @param locale A locale code for the locale format rules to use.
+ * @returns The plural function for the locale.
+ * @see `NgPlural`
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -1161,17 +1297,24 @@ function checkFullData(data) {
     }
 }
 /**
- * Rules used to determine which day period to use (See `dayPeriods` below).
- * The rules can either be an array or a single value. If it's an array, consider it as "from"
- * and "to". If it's a single value then it means that the period is only valid at this exact
- * value.
- * There is always the same number of rules as the number of day periods, which means that the
- * first rule is applied to the first day period and so on.
- * You should fallback to AM/PM when there are no rules available.
+ * Retrieves locale-specific rules used to determine which day period to use
+ * when more than one period is defined for a locale.
  *
- * Note: this is only available if you load the full locale data.
- * See the ["I18n guide"](guide/i18n#i18n-pipes) to know how to import additional locale
- * data.
+ * There is a rule for each defined day period. The
+ * first rule is applied to the first day period and so on.
+ * Fall back to AM/PM when no rules are available.
+ *
+ * A rule can specify a period as time range, or as a single time value.
+ *
+ * This functionality is only available when you have loaded the full locale data.
+ * See the ["I18n guide"](guide/i18n#i18n-pipes).
+ *
+ * @param locale A locale code for the locale format rules to use.
+ * @returns The rules for the locale, a single time value or array of *from-time, to-time*,
+ * or null if no periods are available.
+ *
+ * @see `getLocaleExtraDayPeriods()`
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -1187,15 +1330,19 @@ function getLocaleExtraDayPeriodRules(locale) {
     });
 }
 /**
- * Day Periods indicate roughly how the day is broken up in different languages (e.g. morning,
- * noon, afternoon, midnight, ...).
- * You should use the function {@link getLocaleExtraDayPeriodRules} to determine which period to
- * use.
- * You should fallback to AM/PM when there are no day periods available.
+ * Retrieves locale-specific day periods, which indicate roughly how a day is broken up
+ * in different languages.
+ * For example, for `en-US`, periods are morning, noon, afternoon, evening, and midnight.
  *
- * Note: this is only available if you load the full locale data.
- * See the ["I18n guide"](guide/i18n#i18n-pipes) to know how to import additional locale
- * data.
+ * This functionality is only available when you have loaded the full locale data.
+ * See the ["I18n guide"](guide/i18n#i18n-pipes).
+ *
+ * @param locale A locale code for the locale format rules to use.
+ * @param formStyle The required grammatical form.
+ * @param width The required character width.
+ * @returns The translated day-period strings.
+ * @see `getLocaleExtraDayPeriodRules()`
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -1210,11 +1357,15 @@ function getLocaleExtraDayPeriods(locale, formStyle, width) {
     return getLastDefinedValue(dayPeriods, width) || [];
 }
 /**
- * Returns the first value that is defined in an array, going backwards.
+ * Retrieves the first value that is defined in an array, going backwards from an index position.
  *
- * To avoid repeating the same data (e.g. when "format" and "standalone" are the same) we only
- * add the first one to the locale data arrays, the other ones are only defined when different.
- * We use this function to retrieve the first defined value.
+ * To avoid repeating the same data (as when the "format" and "standalone" forms are the same)
+ * add the first value to the locale data arrays, and add other values only if they are different.
+ *
+ * @param data The data array to retrieve from.
+ * @param index A 0-based index into the array to start from.
+ * @returns The value immediately before the given index position.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -1227,14 +1378,18 @@ function getLastDefinedValue(data, index) {
     throw new Error('Locale data API: locale data undefined');
 }
 /**
- * Extract the hours and minutes from a string like "15:45"
+ * Extracts the hours and minutes from a string like "15:45"
  */
 function extractTime(time) {
     var _a = Object(tslib__WEBPACK_IMPORTED_MODULE_1__["__read"])(time.split(':'), 2), h = _a[0], m = _a[1];
     return { hours: +h, minutes: +m };
 }
 /**
- * Finds the locale data for a locale id
+ * Finds the locale data for a given locale.
+ *
+ * @param locale The locale code.
+ * @returns The locale data.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -1256,9 +1411,17 @@ function findLocaleData(locale) {
     throw new Error("Missing locale data for the locale \"" + locale + "\".");
 }
 /**
- * Returns the currency symbol for a given currency code, or the code if no symbol available
- * (e.g.: format narrow = $, format wide = US$, code = USD)
- * If no locale is provided, it uses the locale "en" by default
+ * Retrieves the currency symbol for a given currency code.
+ *
+ * For example, for the default `en-US` locale, the code `USD` can
+ * be represented by the narrow symbol `$` or the wide symbol `US$`.
+ *
+ * @param code The currency code.
+ * @param format The format, `wide` or `narrow`.
+ * @param locale A locale code for the locale format rules to use.
+ *
+ * @returns The symbol, or the currency code if no symbol is available.0
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -1274,8 +1437,12 @@ function getCurrencySymbol(code, format, locale) {
 // Most currencies have cents, that's why the default is 2
 var DEFAULT_NB_OF_CURRENCY_DIGITS = 2;
 /**
- * Returns the number of decimal digits for the given currency.
- * Its value depends upon the presence of cents in that particular currency.
+ * Reports the number of decimal digits for a given currency.
+ * The value depends upon the presence of cents in that particular currency.
+ *
+ * @param code The currency code.
+ * @returns The number of decimal digits, typically 0 or 2.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -1330,17 +1497,18 @@ var TranslationType;
  *
  * Formats a date according to locale rules.
  *
- * Where:
- * - `value` is a Date, a number (milliseconds since UTC epoch) or an ISO string
- *   (https://www.w3.org/TR/NOTE-datetime).
- * - `format` indicates which date/time components to include. See {@link DatePipe} for more
- *   details.
- * - `locale` is a `string` defining the locale to use.
- * - `timezone` to be used for formatting. It understands UTC/GMT and the continental US time zone
- *   abbreviations, but for general use, use a time zone offset (e.g. `'+0430'`).
- *   If not specified, host system settings are used.
+ * @param value The date to format, as a Date, or a number (milliseconds since UTC epoch)
+ * or an [ISO date-time string](https://www.w3.org/TR/NOTE-datetime).
+ * @param format The date-time components to include. See `DatePipe` for details.
+ * @param locale A locale code for the locale format rules to use.
+ * @param timezone The time zone. A time zone offset from GMT (such as `'+0430'`),
+ * or a standard UTC/GMT or continental US time zone abbreviation.
+ * If not specified, uses host system settings.
  *
- * See {@link DatePipe} for more details.
+ * @returns The formatted date string.
+ *
+ * @see `DatePipe`
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -1962,7 +2130,7 @@ var DIGIT_CHAR = '#';
 var CURRENCY_CHAR = '¤';
 var PERCENT_CHAR = '%';
 /**
- * Transforms a number to a locale string based on a style and a format
+ * Transforms a number to a locale string based on a style and a format.
  */
 function formatNumberToLocaleString(value, pattern, locale, groupSymbol, decimalSymbol, digitsInfo, isPercent) {
     if (isPercent === void 0) { isPercent = false; }
@@ -2056,15 +2224,21 @@ function formatNumberToLocaleString(value, pattern, locale, groupSymbol, decimal
  *
  * Formats a number as currency using locale rules.
  *
- * Use `currency` to format a number as currency.
+ * @param value The number to format.
+ * @param locale A locale code for the locale format rules to use.
+ * @param currency A string containing the currency symbol or its name,
+ * such as "$" or "Canadian Dollar". Used in output string, but does not affect the operation
+ * of the function.
+ * @param currencyCode The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217)
+ * currency code to use in the result string, such as `USD` for the US dollar and `EUR` for the euro.
+ * @param digitInfo Decimal representation options, specified by a string in the following format:
+ * `{minIntegerDigits}.{minFractionDigits}-{maxFractionDigits}`. See `DecimalPipe` for more details.
  *
- * Where:
- * - `value` is a number.
- * - `locale` is a `string` defining the locale to use.
- * - `currency` is the string that represents the currency, it can be its symbol or its name.
- * - `currencyCode` is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, such
- *    as `USD` for the US dollar and `EUR` for the euro.
- * - `digitInfo` See {@link DecimalPipe} for more details.
+ * @returns The formatted currency value.
+ *
+ * @see `formatNumber()`
+ * @see `DecimalPipe`
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -2085,12 +2259,18 @@ function formatCurrency(value, locale, currency, currencyCode, digitsInfo) {
  *
  * Formats a number as a percentage according to locale rules.
  *
- * Where:
- * - `value` is a number.
- * - `locale` is a `string` defining the locale to use.
- * - `digitInfo` See {@link DecimalPipe} for more details.
+ * @param value The number to format.
+ * @param locale A locale code for the locale format rules to use.
+ * @param digitInfo Decimal representation options, specified by a string in the following format:
+ * `{minIntegerDigits}.{minFractionDigits}-{maxFractionDigits}`. See `DecimalPipe` for more details.
  *
+ * @returns The formatted percentage value.
+ *
+ * @see `formatNumber()`
+ * @see `DecimalPipe`
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  * @publicApi
+ *
  */
 function formatPercent(value, locale, digitsInfo) {
     var format = getLocaleNumberFormat(locale, NumberFormatStyle.Percent);
@@ -2102,13 +2282,16 @@ function formatPercent(value, locale, digitsInfo) {
  * @ngModule CommonModule
  * @description
  *
- * Formats a number as text. Group sizing and separator and other locale-specific
- * configurations are based on the locale.
+ * Formats a number as text, with group sizing, separator, and other
+ * parameters based on the locale.
  *
- * Where:
- * - `value` is a number.
- * - `locale` is a `string` defining the locale to use.
- * - `digitInfo` See {@link DecimalPipe} for more details.
+ * @param value The number to format.
+ * @param locale A locale code for the locale format rules to use.
+ * @param digitInfo Decimal representation options, specified by a string in the following format:
+ * `{minIntegerDigits}.{minFractionDigits}-{maxFractionDigits}`. See `DecimalPipe` for more details.
+ *
+ * @returns The formatted text string.
+ * @see [Internationalization (i18n) Guide](https://angular.io/guide/i18n)
  *
  * @publicApi
  */
@@ -5892,7 +6075,7 @@ function isPlatformWorkerUi(platformId) {
 /**
  * @publicApi
  */
-var VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["Version"]('7.2.4');
+var VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["Version"]('7.2.15');
 
 /**
  * @license
@@ -5912,16 +6095,20 @@ var ViewportScroller = /** @class */ (function () {
     // De-sugared tree-shakable injection
     // See #23917
     /** @nocollapse */
-    ViewportScroller.ngInjectableDef = Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["defineInjectable"])({ providedIn: 'root', factory: function () { return new BrowserViewportScroller(Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(DOCUMENT), window); } });
+    ViewportScroller.ngInjectableDef = Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["defineInjectable"])({
+        providedIn: 'root',
+        factory: function () { return new BrowserViewportScroller(Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(DOCUMENT), window, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["inject"])(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ErrorHandler"])); }
+    });
     return ViewportScroller;
 }());
 /**
  * Manages the scroll position for a browser window.
  */
 var BrowserViewportScroller = /** @class */ (function () {
-    function BrowserViewportScroller(document, window) {
+    function BrowserViewportScroller(document, window, errorHandler) {
         this.document = document;
         this.window = window;
+        this.errorHandler = errorHandler;
         this.offset = function () { return [0, 0]; };
     }
     /**
@@ -5965,15 +6152,28 @@ var BrowserViewportScroller = /** @class */ (function () {
      */
     BrowserViewportScroller.prototype.scrollToAnchor = function (anchor) {
         if (this.supportScrollRestoration()) {
-            var elSelectedById = this.document.querySelector("#" + anchor);
-            if (elSelectedById) {
-                this.scrollToElement(elSelectedById);
-                return;
+            // Escape anything passed to `querySelector` as it can throw errors and stop the application
+            // from working if invalid values are passed.
+            if (this.window.CSS && this.window.CSS.escape) {
+                anchor = this.window.CSS.escape(anchor);
             }
-            var elSelectedByName = this.document.querySelector("[name='" + anchor + "']");
-            if (elSelectedByName) {
-                this.scrollToElement(elSelectedByName);
-                return;
+            else {
+                anchor = anchor.replace(/(\"|\'\ |:|\.|\[|\]|,|=)/g, '\\$1');
+            }
+            try {
+                var elSelectedById = this.document.querySelector("#" + anchor);
+                if (elSelectedById) {
+                    this.scrollToElement(elSelectedById);
+                    return;
+                }
+                var elSelectedByName = this.document.querySelector("[name='" + anchor + "']");
+                if (elSelectedByName) {
+                    this.scrollToElement(elSelectedByName);
+                    return;
+                }
+            }
+            catch (e) {
+                this.errorHandler.handleError(e);
             }
         }
     };
@@ -6123,7 +6323,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
 /**
- * @license Angular v7.2.4
+ * @license Angular v7.2.15
  * (c) 2010-2019 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -6182,11 +6382,13 @@ var HttpBackend = /** @class */ (function () {
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- * Immutable set of Http headers, with lazy parsing.
+ * `HttpHeaders` class represents the header configuration options for an HTTP request.
+ * Instances should be assumed immutable with lazy parsing.
  *
  * @publicApi
  */
 var HttpHeaders = /** @class */ (function () {
+    /**  Constructs a new HTTP header object with the given values.*/
     function HttpHeaders(headers) {
         var _this = this;
         /**
@@ -6239,14 +6441,22 @@ var HttpHeaders = /** @class */ (function () {
         }
     }
     /**
-     * Checks for existence of header by given name.
+     * Checks for existence of a header by a given name.
+     *
+     * @param name The header name to check for existence.
+     *
+     * @returns Whether the header exits.
      */
     HttpHeaders.prototype.has = function (name) {
         this.init();
         return this.headers.has(name.toLowerCase());
     };
     /**
-     * Returns first header that matches given name.
+     * Returns the first header value that matches a given name.
+     *
+     * @param name The header name to retrieve.
+     *
+     * @returns A string if the header exists, null otherwise
      */
     HttpHeaders.prototype.get = function (name) {
         this.init();
@@ -6254,25 +6464,56 @@ var HttpHeaders = /** @class */ (function () {
         return values && values.length > 0 ? values[0] : null;
     };
     /**
-     * Returns the names of the headers
+     * Returns the names of the headers.
+     *
+     * @returns A list of header names.
      */
     HttpHeaders.prototype.keys = function () {
         this.init();
         return Array.from(this.normalizedNames.values());
     };
     /**
-     * Returns list of header values for a given name.
+     * Returns a list of header values for a given header name.
+     *
+     * @param name The header name from which to retrieve the values.
+     *
+     * @returns A string of values if the header exists, null otherwise.
      */
     HttpHeaders.prototype.getAll = function (name) {
         this.init();
         return this.headers.get(name.toLowerCase()) || null;
     };
+    /**
+     * Appends a new header value to the existing set of
+     * header values.
+     *
+     * @param name The header name for which to append the values.
+     *
+     * @returns A clone of the HTTP header object with the value appended.
+     */
     HttpHeaders.prototype.append = function (name, value) {
         return this.clone({ name: name, value: value, op: 'a' });
     };
+    /**
+     * Sets a header value for a given name. If the header name already exists,
+     * its value is replaced with the given value.
+     *
+     * @param name The header name.
+     * @param value Provides the value to set or overide for a given name.
+     *
+     * @returns A clone of the HTTP header object with the newly set header value.
+     */
     HttpHeaders.prototype.set = function (name, value) {
         return this.clone({ name: name, value: value, op: 's' });
     };
+    /**
+     * Deletes all header values for a given name.
+     *
+     * @param name The header name.
+     * @param value The header values to delete for a given name.
+     *
+     * @returns A clone of the HTTP header object.
+     */
     HttpHeaders.prototype.delete = function (name, value) {
         return this.clone({ name: name, value: value, op: 'd' });
     };
@@ -6372,8 +6613,10 @@ var HttpHeaders = /** @class */ (function () {
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- * A `HttpParameterCodec` that uses `encodeURIComponent` and `decodeURIComponent` to
- * serialize and parse URL parameter keys and values.
+ * A class that uses `encodeURIComponent` and `decodeURIComponent` to
+ * serialize and parse URL parameter keys and values. If you pass URL query parameters
+ * without encoding, the query parameters can get misinterpreted at the receiving end.
+ * Use the `HttpParameterCodec` class to encode and decode the query-string values.
  *
  * @publicApi
  */
@@ -6546,7 +6789,7 @@ var HttpParams = /** @class */ (function () {
                         }
                 }
             });
-            this.cloneFrom = null;
+            this.cloneFrom = this.updates = null;
         }
     };
     return HttpParams;
@@ -6992,8 +7235,8 @@ var HttpErrorResponse = /** @class */ (function (_super) {
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- * Construct an instance of `HttpRequestOptions<T>` from a source `HttpMethodOptions` and
- * the given `body`. Basically, this clones the object and adds the body.
+ * Constructs an instance of `HttpRequestOptions<T>` from a source `HttpMethodOptions` and
+ * the given `body`. This function clones the object and adds the body.
  */
 function addBody(options, body) {
     return {
@@ -7007,11 +7250,46 @@ function addBody(options, body) {
     };
 }
 /**
- * Perform HTTP requests.
+ * Performs HTTP requests.
  *
  * `HttpClient` is available as an injectable class, with methods to perform HTTP requests.
- * Each request method has multiple signatures, and the return type varies according to which
- * signature is called (mainly the values of `observe` and `responseType`).
+ * Each request method has multiple signatures, and the return type varies based on
+ * the signature that is called (mainly the values of `observe` and `responseType`).
+ *
+ *
+ * @see [HTTP Guide](guide/http)
+ *
+ *
+ * @usageNotes
+ * Sample HTTP requests for the [Tour of Heroes](/tutorial/toh-pt0) application.
+ *
+ * ### HTTP Request Example
+ *
+ * ```
+ *  // GET heroes whose name contains search term
+ * searchHeroes(term: string): observable<Hero[]>{
+ *
+ *  const params = new HttpParams({fromString: 'name=term'});
+ *    return this.httpClient.request('GET', this.heroesUrl, {responseType:'json', params});
+ * }
+ * ```
+ * ### JSONP Example
+ * ```
+ * requestJsonp(url, callback = 'callback') {
+ *  return this.httpClient.jsonp(this.heroesURL, callback);
+ * }
+ * ```
+ *
+ *
+ * ### PATCH Example
+ * ```
+ * // PATCH one of the heroes' name
+ * patchHero (id: number, heroName: string): Observable<{}> {
+ * const url = `${this.heroesUrl}/${id}`;   // PATCH api/heroes/42
+ *  return this.httpClient.patch(url, {name: heroName}, httpOptions)
+ *    .pipe(catchError(this.handleError('patchHero')));
+ * }
+* ```
  *
  * @publicApi
  */
@@ -7020,41 +7298,36 @@ var HttpClient = /** @class */ (function () {
         this.handler = handler;
     }
     /**
-     * Constructs an `Observable` for a particular HTTP request that, when subscribed,
+     * Constructs an observable for a generic HTTP request that, when subscribed,
      * fires the request through the chain of registered interceptors and on to the
      * server.
      *
-     * This method can be called in one of two ways. Either an `HttpRequest`
-     * instance can be passed directly as the only parameter, or a method can be
-     * passed as the first parameter, a string URL as the second, and an
-     * options hash as the third.
+     * You can pass an `HttpRequest` directly as the only parameter. In this case,
+     * the call returns an observable of the raw `HttpEvent` stream.
      *
-     * If a `HttpRequest` object is passed directly, an `Observable` of the
-     * raw `HttpEvent` stream will be returned.
+     * Alternatively you can pass an HTTP method as the first parameter,
+     * a URL string as the second, and an options hash containing the request body as the third.
+     * See `addBody()`. In this case, the specified `responseType` and `observe` options determine the
+     * type of returned observable.
+     *   * The `responseType` value determines how a successful response body is parsed.
+     *   * If `responseType` is the default `json`, you can pass a type interface for the resulting
+     * object as a type parameter to the call.
      *
-     * If a request is instead built by providing a URL, the options object
-     * determines the return type of `request()`. In addition to configuring
-     * request parameters such as the outgoing headers and/or the body, the options
-     * hash specifies two key pieces of information about the request: the
-     * `responseType` and what to `observe`.
+     * The `observe` value determines the return type, according to what you are interested in
+     * observing.
+     *   * An `observe` value of events returns an observable of the raw `HttpEvent` stream, including
+     * progress events by default.
+     *   * An `observe` value of response returns an observable of `HttpResponse<T>`,
+     * where the `T` parameter depends on the `responseType` and any optionally provided type
+     * parameter.
+     *   * An `observe` value of body returns an observable of `<T>` with the same `T` body type.
      *
-     * The `responseType` value determines how a successful response body will be
-     * parsed. If `responseType` is the default `json`, a type interface for the
-     * resulting object may be passed as a type parameter to `request()`.
-     *
-     * The `observe` value determines the return type of `request()`, based on what
-     * the consumer is interested in observing. A value of `events` will return an
-     * `Observable<HttpEvent>` representing the raw `HttpEvent` stream,
-     * including progress events by default. A value of `response` will return an
-     * `Observable<HttpResponse<T>>` where the `T` parameter of `HttpResponse`
-     * depends on the `responseType` and any optionally provided type parameter.
-     * A value of `body` will return an `Observable<T>` with the same `T` body type.
      */
     HttpClient.prototype.request = function (first, url, options) {
         var _this = this;
         if (options === void 0) { options = {}; }
         var req;
-        // Firstly, check whether the primary argument is an instance of `HttpRequest`.
+        // First, check whether the primary argument is an instance of `HttpRequest`.
         if (first instanceof HttpRequest) {
             // It is. The other arguments must be undefined (per the signatures) and can be
             // ignored.
@@ -7062,7 +7335,7 @@ var HttpClient = /** @class */ (function () {
         }
         else {
             // It's a string, so it represents a URL. Construct a request based on it,
-            // and incorporate the remaining arguments (assuming GET unless a method is
+            // and incorporate the remaining arguments (assuming `GET` unless a method is
             // provided.
             // Figure out the headers.
             var headers = undefined;
@@ -7154,39 +7427,55 @@ var HttpClient = /** @class */ (function () {
         }
     };
     /**
-     * Constructs an `Observable` which, when subscribed, will cause the configured
-     * DELETE request to be executed on the server. See the individual overloads for
-     * details of `delete()`'s return type based on the provided options.
+     * Constructs an observable that, when subscribed, causes the configured
+     * `DELETE` request to execute on the server. See the individual overloads for
+     * details on the return type.
+     *
+     * @param url     The endpoint URL.
+     * @param options The HTTP options to send with the request.
+     *
      */
     HttpClient.prototype.delete = function (url, options) {
         if (options === void 0) { options = {}; }
         return this.request('DELETE', url, options);
     };
     /**
-     * Constructs an `Observable` which, when subscribed, will cause the configured
-     * GET request to be executed on the server. See the individual overloads for
-     * details of `get()`'s return type based on the provided options.
+     * Constructs an observable that, when subscribed, causes the configured
+     * `GET` request to execute on the server. See the individual overloads for
+     * details on the return type.
      */
     HttpClient.prototype.get = function (url, options) {
         if (options === void 0) { options = {}; }
         return this.request('GET', url, options);
     };
     /**
-     * Constructs an `Observable` which, when subscribed, will cause the configured
-     * HEAD request to be executed on the server. See the individual overloads for
-     * details of `head()`'s return type based on the provided options.
+     * Constructs an observable that, when subscribed, causes the configured
+     * `HEAD` request to execute on the server. The `HEAD` method returns
+     * meta information about the resource without transferring the
+     * resource itself. See the individual overloads for
+     * details on the return type.
      */
     HttpClient.prototype.head = function (url, options) {
         if (options === void 0) { options = {}; }
         return this.request('HEAD', url, options);
     };
     /**
-     * Constructs an `Observable` which, when subscribed, will cause a request
-     * with the special method `JSONP` to be dispatched via the interceptor pipeline.
+     * Constructs an `Observable` that, when subscribed, causes a request with the special method
+     * `JSONP` to be dispatched via the interceptor pipeline.
+     * The [JSONP pattern](https://en.wikipedia.org/wiki/JSONP) works around limitations of certain
+     * API endpoints that don't support newer,
+     * and preferable [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) protocol.
+     * JSONP treats the endpoint API as a JavaScript file and tricks the browser to process the
+     * requests even if the API endpoint is not located on the same domain (origin) as the client-side
+     * application making the request.
+     * The endpoint API must support JSONP callback for JSONP requests to work.
+     * The resource API returns the JSON response wrapped in a callback function.
+     * You can pass the callback function name as one of the query parameters.
+     * Note that JSONP requests can only be used with `GET` requests.
      *
-     * A suitable interceptor must be installed (e.g. via the `HttpClientJsonpModule`).
-     * If no such interceptor is reached, then the `JSONP` request will likely be
-     * rejected by the configured backend.
+     * @param url The resource URL.
+     * @param callbackParam The callback function name.
+     *
      */
     HttpClient.prototype.jsonp = function (url, callbackParam) {
         return this.request('JSONP', url, {
@@ -7196,36 +7485,40 @@ var HttpClient = /** @class */ (function () {
         });
     };
     /**
-     * Constructs an `Observable` which, when subscribed, will cause the configured
-     * OPTIONS request to be executed on the server. See the individual overloads for
-     * details of `options()`'s return type based on the provided options.
+     * Constructs an `Observable` that, when subscribed, causes the configured
+     * `OPTIONS` request to execute on the server. This method allows the client
+     * to determine the supported HTTP methods and other capabilites of an endpoint,
+     * without implying a resource action. See the individual overloads for
+     * details on the return type.
      */
     HttpClient.prototype.options = function (url, options) {
         if (options === void 0) { options = {}; }
         return this.request('OPTIONS', url, options);
     };
     /**
-     * Constructs an `Observable` which, when subscribed, will cause the configured
-     * PATCH request to be executed on the server. See the individual overloads for
-     * details of `patch()`'s return type based on the provided options.
+     * Constructs an observable that, when subscribed, causes the configured
+     * `PATCH` request to execute on the server. See the individual overloads for
+     * details on the return type.
      */
     HttpClient.prototype.patch = function (url, body, options) {
         if (options === void 0) { options = {}; }
         return this.request('PATCH', url, addBody(options, body));
     };
     /**
-     * Constructs an `Observable` which, when subscribed, will cause the configured
-     * POST request to be executed on the server. See the individual overloads for
-     * details of `post()`'s return type based on the provided options.
+     * Constructs an observable that, when subscribed, causes the configured
+     * `POST` request to execute on the server. The server responds with the location of
+     * the replaced resource. See the individual overloads for
+     * details on the return type.
      */
     HttpClient.prototype.post = function (url, body, options) {
         if (options === void 0) { options = {}; }
         return this.request('POST', url, addBody(options, body));
     };
     /**
-     * Constructs an `Observable` which, when subscribed, will cause the configured
-     * PUT request to be executed on the server. See the individual overloads for
-     * details of `put()`'s return type based on the provided options.
+     * Constructs an observable that, when subscribed, causes the configured
+     * `PUT` request to execute on the server. The `PUT` method replaces an existing resource
+     * with a new set of values.
+     * See the individual overloads for details on the return type.
      */
     HttpClient.prototype.put = function (url, body, options) {
         if (options === void 0) { options = {}; }
@@ -8344,7 +8637,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "R3BoundTarget", function() { return R3BoundTarget; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /**
- * @license Angular v7.2.4
+ * @license Angular v7.2.15
  * (c) 2010-2019 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -9205,14 +9498,18 @@ var MissingTranslationStrategy;
     MissingTranslationStrategy[MissingTranslationStrategy["Ignore"] = 2] = "Ignore";
 })(MissingTranslationStrategy || (MissingTranslationStrategy = {}));
 function makeMetadataFactory(name, props) {
-    var factory = function () {
+    // This must be declared as a function, not a fat arrow, so that ES2015 devmode produces code
+    // that works with the static_reflector.ts in the ViewEngine compiler.
+    // In particular, `_registerDecoratorOrConstructor` assumes that the value returned here can be
+    // new'ed.
+    function factory() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
         var values = props ? props.apply(void 0, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(args)) : {};
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({ ngMetadataName: name }, values);
-    };
+    }
     factory.isTypeOf = function (obj) { return obj && obj.ngMetadataName === name; };
     factory.ngMetadataName = name;
     return factory;
@@ -13325,7 +13622,7 @@ function assertArrayOfStrings(identifier, value) {
         }
     }
 }
-var INTERPOLATION_BLACKLIST_REGEXPS = [
+var UNUSABLE_INTERPOLATION_REGEXPS = [
     /^\s*$/,
     /[<>]/,
     /^[{}]$/,
@@ -13339,8 +13636,8 @@ function assertInterpolationSymbols(identifier, value) {
     else if (value != null) {
         var start_1 = value[0];
         var end_1 = value[1];
-        // black list checking
-        INTERPOLATION_BLACKLIST_REGEXPS.forEach(function (regexp) {
+        // Check for unusable interpolation symbols
+        UNUSABLE_INTERPOLATION_REGEXPS.forEach(function (regexp) {
             if (regexp.test(start_1) || regexp.test(end_1)) {
                 throw new Error("['" + start_1 + "', '" + end_1 + "'] contains unusable interpolation symbol.");
             }
@@ -18741,11 +19038,9 @@ var TokenizeResult = /** @class */ (function () {
     }
     return TokenizeResult;
 }());
-function tokenize(source, url, getTagDefinition, tokenizeExpansionForms, interpolationConfig) {
-    if (tokenizeExpansionForms === void 0) { tokenizeExpansionForms = false; }
-    if (interpolationConfig === void 0) { interpolationConfig = DEFAULT_INTERPOLATION_CONFIG; }
-    return new _Tokenizer(new ParseSourceFile(source, url), getTagDefinition, tokenizeExpansionForms, interpolationConfig)
-        .tokenize();
+function tokenize(source, url, getTagDefinition, options) {
+    if (options === void 0) { options = {}; }
+    return new _Tokenizer(new ParseSourceFile(source, url), getTagDefinition, options).tokenize();
 }
 var _CR_OR_CRLF_REGEXP = /\r\n?/g;
 function _unexpectedCharacterErrorMsg(charCode) {
@@ -18769,22 +19064,22 @@ var _Tokenizer = /** @class */ (function () {
      * @param _tokenizeIcu Whether to tokenize ICU messages (considered as text nodes when false)
      * @param _interpolationConfig
      */
-    function _Tokenizer(_file, _getTagDefinition, _tokenizeIcu, _interpolationConfig) {
-        if (_interpolationConfig === void 0) { _interpolationConfig = DEFAULT_INTERPOLATION_CONFIG; }
+    function _Tokenizer(_file, _getTagDefinition, options) {
         this._file = _file;
         this._getTagDefinition = _getTagDefinition;
-        this._tokenizeIcu = _tokenizeIcu;
-        this._interpolationConfig = _interpolationConfig;
-        // Note: this is always lowercase!
         this._peek = -1;
         this._nextPeek = -1;
         this._index = -1;
         this._line = 0;
         this._column = -1;
+        this._currentTokenStart = null;
+        this._currentTokenType = null;
         this._expansionCaseStack = [];
         this._inInterpolation = false;
         this.tokens = [];
         this.errors = [];
+        this._tokenizeIcu = options.tokenizeExpansionForms || false;
+        this._interpolationConfig = options.interpolationConfig || DEFAULT_INTERPOLATION_CONFIG;
         this._input = _file.content;
         this._length = _file.content.length;
         this._advance();
@@ -18876,6 +19171,12 @@ var _Tokenizer = /** @class */ (function () {
     };
     _Tokenizer.prototype._endToken = function (parts, end) {
         if (end === void 0) { end = this._getLocation(); }
+        if (this._currentTokenStart === null) {
+            throw new TokenError('Programming error - attempted to end a token when there was no start to the token', this._currentTokenType, this._getSpan(end, end));
+        }
+        if (this._currentTokenType === null) {
+            throw new TokenError('Programming error - attempted to end a token which has no token type', null, this._getSpan(this._currentTokenStart, end));
+        }
         var token = new Token$1(this._currentTokenType, parts, new ParseSourceSpan(this._currentTokenStart, end));
         this.tokens.push(token);
         this._currentTokenStart = null;
@@ -19369,10 +19670,8 @@ var Parser$1 = /** @class */ (function () {
     function Parser(getTagDefinition) {
         this.getTagDefinition = getTagDefinition;
     }
-    Parser.prototype.parse = function (source, url, parseExpansionForms, interpolationConfig) {
-        if (parseExpansionForms === void 0) { parseExpansionForms = false; }
-        if (interpolationConfig === void 0) { interpolationConfig = DEFAULT_INTERPOLATION_CONFIG; }
-        var tokensAndErrors = tokenize(source, url, this.getTagDefinition, parseExpansionForms, interpolationConfig);
+    Parser.prototype.parse = function (source, url, options) {
+        var tokensAndErrors = tokenize(source, url, this.getTagDefinition, options);
         var treeAndErrors = new _TreeBuilder(tokensAndErrors.tokens, this.getTagDefinition).build();
         return new ParseTreeResult(treeAndErrors.rootNodes, tokensAndErrors.errors.concat(treeAndErrors.errors));
     };
@@ -19706,10 +20005,8 @@ var HtmlParser = /** @class */ (function (_super) {
     function HtmlParser() {
         return _super.call(this, getHtmlTagDefinition) || this;
     }
-    HtmlParser.prototype.parse = function (source, url, parseExpansionForms, interpolationConfig) {
-        if (parseExpansionForms === void 0) { parseExpansionForms = false; }
-        if (interpolationConfig === void 0) { interpolationConfig = DEFAULT_INTERPOLATION_CONFIG; }
-        return _super.prototype.parse.call(this, source, url, parseExpansionForms, interpolationConfig);
+    HtmlParser.prototype.parse = function (source, url, options) {
+        return _super.prototype.parse.call(this, source, url, options);
     };
     return HtmlParser;
 }(Parser$1));
@@ -20177,9 +20474,9 @@ var DomElementSchemaRegistry = /** @class */ (function (_super) {
      * Tag and property name are statically known and cannot change at runtime, i.e. it is not
      * possible to bind a value into a changing attribute or tag name.
      *
-     * The filtering is white list based. All attributes in the schema above are assumed to have the
-     * 'NONE' security context, i.e. that they are safe inert string values. Only specific well known
-     * attack vectors are assigned their appropriate context.
+     * The filtering is based on a list of allowed tags|attributes. All attributes in the schema
+     * above are assumed to have the 'NONE' security context, i.e. that they are safe inert
+     * string values. Only specific well known attack vectors are assigned their appropriate context.
      */
     DomElementSchemaRegistry.prototype.securityContext = function (tagName, propName, isAttribute) {
         if (isAttribute) {
@@ -23124,13 +23421,14 @@ function interpolate(args) {
  *
  * @param template text of the template to parse
  * @param templateUrl URL to use for source mapping of the parsed template
+ * @param options options to modify how the template is parsed
  */
 function parseTemplate(template, templateUrl, options) {
     if (options === void 0) { options = {}; }
     var interpolationConfig = options.interpolationConfig, preserveWhitespaces = options.preserveWhitespaces;
     var bindingParser = makeBindingParser(interpolationConfig);
     var htmlParser = new HtmlParser();
-    var parseResult = htmlParser.parse(template, templateUrl, true, interpolationConfig);
+    var parseResult = htmlParser.parse(template, templateUrl, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, options, { tokenizeExpansionForms: true }));
     if (parseResult.errors && parseResult.errors.length > 0) {
         return { errors: parseResult.errors, nodes: [] };
     }
@@ -23965,7 +24263,7 @@ var CompilerFacadeImpl = /** @class */ (function () {
             InterpolationConfig.fromArray(facade.interpolation) :
             DEFAULT_INTERPOLATION_CONFIG;
         // Parse the template and check for errors.
-        var template = parseTemplate(facade.template, sourceMapUrl, { preserveWhitespaces: facade.preserveWhitespaces || false, interpolationConfig: interpolationConfig });
+        var template = parseTemplate(facade.template, sourceMapUrl, { preserveWhitespaces: facade.preserveWhitespaces, interpolationConfig: interpolationConfig });
         if (template.errors !== undefined) {
             var errors = template.errors.map(function (err) { return err.toString(); }).join(', ');
             throw new Error("Errors during JIT compilation of template for " + facade.name + ": " + errors);
@@ -24106,7 +24404,7 @@ function publishFacade(global) {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-var VERSION$1 = new Version('7.2.4');
+var VERSION$1 = new Version('7.2.15');
 
 /**
  * @license
@@ -24556,7 +24854,8 @@ var DirectiveNormalizer = /** @class */ (function () {
     DirectiveNormalizer.prototype._preparseLoadedTemplate = function (prenormData, template, templateAbsUrl) {
         var isInline = !!prenormData.template;
         var interpolationConfig = InterpolationConfig.fromArray(prenormData.interpolation);
-        var rootNodesAndErrors = this._htmlParser.parse(template, templateSourceUrl({ reference: prenormData.ngModuleType }, { type: { reference: prenormData.componentType } }, { isInline: isInline, templateUrl: templateAbsUrl }), true, interpolationConfig);
+        var templateUrl = templateSourceUrl({ reference: prenormData.ngModuleType }, { type: { reference: prenormData.componentType } }, { isInline: isInline, templateUrl: templateAbsUrl });
+        var rootNodesAndErrors = this._htmlParser.parse(template, templateUrl, { tokenizeExpansionForms: true, interpolationConfig: interpolationConfig });
         if (rootNodesAndErrors.errors.length > 0) {
             var errorString = rootNodesAndErrors.errors.join('\n');
             throw syntaxError("Template parse errors:\n" + errorString);
@@ -25329,9 +25628,8 @@ var XmlParser = /** @class */ (function (_super) {
     function XmlParser() {
         return _super.call(this, getXmlTagDefinition) || this;
     }
-    XmlParser.prototype.parse = function (source, url, parseExpansionForms) {
-        if (parseExpansionForms === void 0) { parseExpansionForms = false; }
-        return _super.prototype.parse.call(this, source, url, parseExpansionForms);
+    XmlParser.prototype.parse = function (source, url, options) {
+        return _super.prototype.parse.call(this, source, url, options);
     };
     return XmlParser;
 }(Parser$1));
@@ -25467,7 +25765,7 @@ var XliffParser = /** @class */ (function () {
     XliffParser.prototype.parse = function (xliff, url) {
         this._unitMlString = null;
         this._msgIdToHtml = {};
-        var xml = new XmlParser().parse(xliff, url, false);
+        var xml = new XmlParser().parse(xliff, url);
         this._errors = xml.errors;
         visitAll(this, xml.rootNodes, null);
         return {
@@ -25539,7 +25837,7 @@ var XmlToI18n = /** @class */ (function () {
     function XmlToI18n() {
     }
     XmlToI18n.prototype.convert = function (message, url) {
-        var xmlIcu = new XmlParser().parse(message, url, true);
+        var xmlIcu = new XmlParser().parse(message, url, { tokenizeExpansionForms: true });
         this._errors = xmlIcu.errors;
         var i18nNodes = this._errors.length > 0 || xmlIcu.rootNodes.length == 0 ?
             [] : [].concat.apply([], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(visitAll(this, xmlIcu.rootNodes)));
@@ -25747,7 +26045,7 @@ var Xliff2Parser = /** @class */ (function () {
     Xliff2Parser.prototype.parse = function (xliff, url) {
         this._unitMlString = null;
         this._msgIdToHtml = {};
-        var xml = new XmlParser().parse(xliff, url, false);
+        var xml = new XmlParser().parse(xliff, url);
         this._errors = xml.errors;
         visitAll(this, xml.rootNodes, null);
         return {
@@ -25825,7 +26123,7 @@ var XmlToI18n$1 = /** @class */ (function () {
     function XmlToI18n() {
     }
     XmlToI18n.prototype.convert = function (message, url) {
-        var xmlIcu = new XmlParser().parse(message, url, true);
+        var xmlIcu = new XmlParser().parse(message, url, { tokenizeExpansionForms: true });
         this._errors = xmlIcu.errors;
         var i18nNodes = this._errors.length > 0 || xmlIcu.rootNodes.length == 0 ?
             [] : [].concat.apply([], Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(visitAll(this, xmlIcu.rootNodes)));
@@ -25973,7 +26271,7 @@ var XtbParser = /** @class */ (function () {
         this._msgIdToHtml = {};
         // We can not parse the ICU messages at this point as some messages might not originate
         // from Angular that could not be lex'd.
-        var xml = new XmlParser().parse(xtb, url, false);
+        var xml = new XmlParser().parse(xtb, url);
         this._errors = xml.errors;
         visitAll(this, xml.rootNodes);
         return {
@@ -26034,7 +26332,7 @@ var XmlToI18n$2 = /** @class */ (function () {
     function XmlToI18n() {
     }
     XmlToI18n.prototype.convert = function (message, url) {
-        var xmlIcu = new XmlParser().parse(message, url, true);
+        var xmlIcu = new XmlParser().parse(message, url, { tokenizeExpansionForms: true });
         this._errors = xmlIcu.errors;
         var i18nNodes = this._errors.length > 0 || xmlIcu.rootNodes.length == 0 ?
             [] :
@@ -26135,7 +26433,7 @@ var I18nToHtmlVisitor = /** @class */ (function () {
         var text = this._convertToText(srcMsg);
         // text to html
         var url = srcMsg.nodes[0].sourceSpan.start.file.url;
-        var html = new HtmlParser().parse(text, url, true);
+        var html = new HtmlParser().parse(text, url, { tokenizeExpansionForms: true });
         return {
             nodes: html.rootNodes,
             errors: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__spread"])(this._errors, html.errors),
@@ -26260,10 +26558,10 @@ var I18NHtmlParser = /** @class */ (function () {
                 new TranslationBundle({}, null, digest, undefined, missingTranslation, console);
         }
     }
-    I18NHtmlParser.prototype.parse = function (source, url, parseExpansionForms, interpolationConfig) {
-        if (parseExpansionForms === void 0) { parseExpansionForms = false; }
-        if (interpolationConfig === void 0) { interpolationConfig = DEFAULT_INTERPOLATION_CONFIG; }
-        var parseResult = this._htmlParser.parse(source, url, parseExpansionForms, interpolationConfig);
+    I18NHtmlParser.prototype.parse = function (source, url, options) {
+        if (options === void 0) { options = {}; }
+        var interpolationConfig = options.interpolationConfig || DEFAULT_INTERPOLATION_CONFIG;
+        var parseResult = this._htmlParser.parse(source, url, Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({ interpolationConfig: interpolationConfig }, options));
         if (parseResult.errors.length) {
             return new ParseTreeResult(parseResult.rootNodes, parseResult.errors);
         }
@@ -28948,7 +29246,10 @@ var TemplateParser = /** @class */ (function () {
     };
     TemplateParser.prototype.tryParse = function (component, template, directives, pipes, schemas, templateUrl, preserveWhitespaces) {
         var htmlParseResult = typeof template === 'string' ?
-            this._htmlParser.parse(template, templateUrl, true, this.getInterpolationConfig(component)) :
+            this._htmlParser.parse(template, templateUrl, {
+                tokenizeExpansionForms: true,
+                interpolationConfig: this.getInterpolationConfig(component)
+            }) :
             template;
         if (!preserveWhitespaces) {
             htmlParseResult = removeWhitespaces(htmlParseResult);
@@ -30790,7 +31091,7 @@ var MessageBundle = /** @class */ (function () {
     }
     MessageBundle.prototype.updateFromTemplate = function (html, url, interpolationConfig) {
         var _a;
-        var htmlParserResult = this._htmlParser.parse(html, url, true, interpolationConfig);
+        var htmlParserResult = this._htmlParser.parse(html, url, { tokenizeExpansionForms: true, interpolationConfig: interpolationConfig });
         if (htmlParserResult.errors.length) {
             return htmlParserResult.errors;
         }
@@ -31376,16 +31677,16 @@ var StaticSymbolResolver = /** @class */ (function () {
                             return {
                                 __symbolic: 'error',
                                 message: "Could not resolve " + module + " relative to " + self.host.getMetadataFor(sourceSymbol.filePath) + ".",
-                                line: map.line,
-                                character: map.character,
+                                line: map['line'],
+                                character: map['character'],
                                 fileName: getOriginalName()
                             };
                         }
                         return {
                             __symbolic: 'resolved',
                             symbol: self.getStaticSymbol(filePath, name_1),
-                            line: map.line,
-                            character: map.character,
+                            line: map['line'],
+                            character: map['character'],
                             fileName: getOriginalName()
                         };
                     }
@@ -31499,7 +31800,8 @@ function unwrapResolvedMetadata(metadata) {
     return metadata;
 }
 
-function serializeSummaries(srcFileName, forJitCtx, summaryResolver, symbolResolver, symbols, types) {
+function serializeSummaries(srcFileName, forJitCtx, summaryResolver, symbolResolver, symbols, types, createExternalSymbolReexports) {
+    if (createExternalSymbolReexports === void 0) { createExternalSymbolReexports = true; }
     var toJsonSerializer = new ToJsonSerializer(symbolResolver, summaryResolver, srcFileName);
     // for symbols, we use everything except for the class metadata itself
     // (we keep the statics though), as the class metadata is contained in the
@@ -31510,7 +31812,7 @@ function serializeSummaries(srcFileName, forJitCtx, summaryResolver, symbolResol
         var summary = _a.summary, metadata = _a.metadata;
         toJsonSerializer.addSummary({ symbol: summary.type.reference, metadata: undefined, type: summary });
     });
-    var _a = toJsonSerializer.serialize(), json = _a.json, exportAs = _a.exportAs;
+    var _a = toJsonSerializer.serialize(createExternalSymbolReexports), json = _a.json, exportAs = _a.exportAs;
     if (forJitCtx) {
         var forJitSerializer_1 = new ForJitSerializer(forJitCtx, symbolResolver, summaryResolver);
         types.forEach(function (_a) {
@@ -31638,7 +31940,13 @@ var ToJsonSerializer = /** @class */ (function (_super) {
             }
         }
     };
-    ToJsonSerializer.prototype.serialize = function () {
+    /**
+     * @param createExternalSymbolReexports Whether external static symbols should be re-exported.
+     * This can be enabled if external symbols should be re-exported by the current module in
+     * order to avoid dynamically generated module dependencies which can break strict dependency
+     * enforcements (as in Google3). Read more here: https://github.com/angular/angular/issues/25644
+     */
+    ToJsonSerializer.prototype.serialize = function (createExternalSymbolReexports) {
         var _this = this;
         var exportAs = [];
         var json = JSON.stringify({
@@ -31650,9 +31958,19 @@ var ToJsonSerializer = /** @class */ (function (_super) {
                 if (_this.summaryResolver.isLibraryFile(symbol.filePath)) {
                     var reexportSymbol = _this.reexportedBy.get(symbol);
                     if (reexportSymbol) {
+                        // In case the given external static symbol is already manually exported by the
+                        // user, we just proxy the external static symbol reference to the manual export.
+                        // This ensures that the AOT compiler imports the external symbol through the
+                        // user export and does not introduce another dependency which is not needed.
                         importAs = _this.indexBySymbol.get(reexportSymbol);
                     }
-                    else {
+                    else if (createExternalSymbolReexports) {
+                        // In this case, the given external static symbol is *not* manually exported by
+                        // the user, and we manually create a re-export in the factory file so that we
+                        // don't introduce another module dependency. This is useful when running within
+                        // Bazel so that the AOT compiler does not introduce any module dependencies
+                        // which can break the strict dependency enforcement. (e.g. as in Google3)
+                        // Read more about this here: https://github.com/angular/angular/issues/25644
                         var summary = _this.unprocessedSymbolSummariesBySymbol.get(symbol);
                         if (!summary || !summary.metadata || summary.metadata.__symbolic !== 'interface') {
                             importAs = symbol.name + "_" + index;
@@ -31689,7 +32007,7 @@ var ToJsonSerializer = /** @class */ (function (_super) {
      */
     ToJsonSerializer.prototype.visitStringMap = function (map, context) {
         if (map['__symbolic'] === 'resolved') {
-            return visitValue(map.symbol, this, context);
+            return visitValue(map['symbol'], this, context);
         }
         if (map['__symbolic'] === 'error') {
             delete map['line'];
@@ -32348,7 +32666,7 @@ var AotCompiler = /** @class */ (function () {
         var forJitOutputCtx = this._options.enableSummariesForJit ?
             this._createOutputContext(summaryForJitFileName(srcFileName, true)) :
             null;
-        var _a = serializeSummaries(srcFileName, forJitOutputCtx, this._summaryResolver, this._symbolResolver, symbolSummaries, typeData), json = _a.json, exportAs = _a.exportAs;
+        var _a = serializeSummaries(srcFileName, forJitOutputCtx, this._summaryResolver, this._symbolResolver, symbolSummaries, typeData, this._options.createExternalSymbolFactoryReexports), json = _a.json, exportAs = _a.exportAs;
         exportAs.forEach(function (entry) {
             ngFactoryCtx.statements.push(variable(entry.exportAs).set(ngFactoryCtx.importExpr(entry.symbol)).toDeclStmt(null, [
                 StmtModifier.Exported
@@ -35446,46 +35764,47 @@ publishFacade(_global);
 /*!**************************************************!*\
   !*** ./node_modules/@angular/core/fesm5/core.js ***!
   \**************************************************/
-/*! exports provided: ɵangular_packages_core_core_s, ɵangular_packages_core_core_p, ɵangular_packages_core_core_q, ɵangular_packages_core_core_r, ɵangular_packages_core_core_g, ɵangular_packages_core_core_n, ɵangular_packages_core_core_o, ɵangular_packages_core_core_m, ɵangular_packages_core_core_l, ɵangular_packages_core_core_c, ɵangular_packages_core_core_d, ɵangular_packages_core_core_e, ɵangular_packages_core_core_f, ɵangular_packages_core_core_k, ɵangular_packages_core_core_t, ɵangular_packages_core_core_v, ɵangular_packages_core_core_u, ɵangular_packages_core_core_y, ɵangular_packages_core_core_w, ɵangular_packages_core_core_x, ɵangular_packages_core_core_bb, ɵangular_packages_core_core_bi, ɵangular_packages_core_core_bc, ɵangular_packages_core_core_bd, ɵangular_packages_core_core_be, ɵangular_packages_core_core_bh, ɵangular_packages_core_core_bl, ɵangular_packages_core_core_h, ɵangular_packages_core_core_i, ɵangular_packages_core_core_j, ɵangular_packages_core_core_a, ɵangular_packages_core_core_b, ɵangular_packages_core_core_bj, ɵangular_packages_core_core_z, ɵangular_packages_core_core_ba, createPlatform, assertPlatform, destroyPlatform, getPlatform, PlatformRef, ApplicationRef, createPlatformFactory, NgProbeToken, enableProdMode, isDevMode, APP_ID, PACKAGE_ROOT_URL, PLATFORM_INITIALIZER, PLATFORM_ID, APP_BOOTSTRAP_LISTENER, APP_INITIALIZER, ApplicationInitStatus, DebugElement, DebugNode, asNativeElements, getDebugNode, Testability, TestabilityRegistry, setTestabilityGetter, TRANSLATIONS, TRANSLATIONS_FORMAT, LOCALE_ID, MissingTranslationStrategy, ApplicationModule, wtfCreateScope, wtfLeave, wtfStartTimeRange, wtfEndTimeRange, Type, EventEmitter, ErrorHandler, Sanitizer, SecurityContext, ANALYZE_FOR_ENTRY_COMPONENTS, Attribute, ContentChild, ContentChildren, Query, ViewChild, ViewChildren, Component, Directive, HostBinding, HostListener, Input, Output, Pipe, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule, ViewEncapsulation, Version, VERSION, defineInjectable, defineInjector, forwardRef, resolveForwardRef, Injectable, INJECTOR, Injector, inject, ɵinject, InjectFlags, ReflectiveInjector, createInjector, ResolvedReflectiveFactory, ReflectiveKey, InjectionToken, Inject, Optional, Self, SkipSelf, Host, NgZone, ɵNoopNgZone, RenderComponentType, Renderer, Renderer2, RendererFactory2, RendererStyleFlags2, RootRenderer, COMPILER_OPTIONS, Compiler, CompilerFactory, ModuleWithComponentFactories, ComponentFactory, ɵComponentFactory, ComponentRef, ComponentFactoryResolver, ElementRef, NgModuleFactory, NgModuleRef, NgModuleFactoryLoader, getModuleFactory, QueryList, SystemJsNgModuleLoader, SystemJsNgModuleLoaderConfig, TemplateRef, ViewContainerRef, EmbeddedViewRef, ViewRef, ChangeDetectionStrategy, ChangeDetectorRef, DefaultIterableDiffer, IterableDiffers, KeyValueDiffers, SimpleChange, WrappedValue, platformCore, ɵALLOW_MULTIPLE_PLATFORMS, ɵAPP_ID_RANDOM_PROVIDER, ɵdefaultIterableDiffers, ɵdefaultKeyValueDiffers, ɵdevModeEqual, ɵisListLikeIterable, ɵChangeDetectorStatus, ɵisDefaultChangeDetectionStrategy, ɵConsole, ɵgetInjectableDef, ɵsetCurrentInjector, ɵAPP_ROOT, ɵivyEnabled, ɵCodegenComponentFactoryResolver, ɵresolveComponentResources, ɵReflectionCapabilities, ɵRenderDebugInfo, ɵ_sanitizeHtml, ɵ_sanitizeStyle, ɵ_sanitizeUrl, ɵglobal, ɵlooseIdentical, ɵstringify, ɵmakeDecorator, ɵisObservable, ɵisPromise, ɵclearOverrides, ɵinitServicesIfNeeded, ɵoverrideComponentView, ɵoverrideProvider, ɵNOT_FOUND_CHECK_ONLY_ELEMENT_INJECTOR, ɵdefineBase, ɵdefineComponent, ɵdefineDirective, ɵdefinePipe, ɵdefineNgModule, ɵdetectChanges, ɵrenderComponent, ɵRender3ComponentFactory, ɵRender3ComponentRef, ɵdirectiveInject, ɵinjectAttribute, ɵgetFactoryOf, ɵgetInheritedFactory, ɵtemplateRefExtractor, ɵProvidersFeature, ɵInheritDefinitionFeature, ɵNgOnChangesFeature, ɵLifecycleHooksFeature, ɵRender3NgModuleRef, ɵmarkDirty, ɵNgModuleFactory, ɵNO_CHANGE, ɵcontainer, ɵnextContext, ɵelementStart, ɵnamespaceHTML, ɵnamespaceMathML, ɵnamespaceSVG, ɵelement, ɵlistener, ɵtext, ɵembeddedViewStart, ɵquery, ɵregisterContentQuery, ɵprojection, ɵbind, ɵinterpolation1, ɵinterpolation2, ɵinterpolation3, ɵinterpolation4, ɵinterpolation5, ɵinterpolation6, ɵinterpolation7, ɵinterpolation8, ɵinterpolationV, ɵpipeBind1, ɵpipeBind2, ɵpipeBind3, ɵpipeBind4, ɵpipeBindV, ɵpureFunction0, ɵpureFunction1, ɵpureFunction2, ɵpureFunction3, ɵpureFunction4, ɵpureFunction5, ɵpureFunction6, ɵpureFunction7, ɵpureFunction8, ɵpureFunctionV, ɵgetCurrentView, ɵgetHostElement, ɵrestoreView, ɵcontainerRefreshStart, ɵcontainerRefreshEnd, ɵqueryRefresh, ɵloadQueryList, ɵelementEnd, ɵelementProperty, ɵcomponentHostSyntheticProperty, ɵprojectionDef, ɵreference, ɵenableBindings, ɵdisableBindings, ɵallocHostVars, ɵelementAttribute, ɵelementContainerStart, ɵelementContainerEnd, ɵelementStyling, ɵelementHostAttrs, ɵelementStylingMap, ɵelementStyleProp, ɵelementStylingApply, ɵelementClassProp, ɵtextBinding, ɵtemplate, ɵembeddedViewEnd, ɵstore, ɵload, ɵpipe, ɵwhenRendered, ɵi18n, ɵi18nAttributes, ɵi18nExp, ɵi18nStart, ɵi18nEnd, ɵi18nApply, ɵi18nPostprocess, ɵsetClassMetadata, ɵcompileComponent, ɵcompileDirective, ɵcompileNgModule, ɵcompileNgModuleDefs, ɵpatchComponentDefWithScope, ɵresetCompiledComponents, ɵcompilePipe, ɵsanitizeHtml, ɵsanitizeStyle, ɵdefaultStyleSanitizer, ɵsanitizeScript, ɵsanitizeUrl, ɵsanitizeResourceUrl, ɵbypassSanitizationTrustHtml, ɵbypassSanitizationTrustStyle, ɵbypassSanitizationTrustScript, ɵbypassSanitizationTrustUrl, ɵbypassSanitizationTrustResourceUrl, ɵgetLContext, ɵbindPlayerFactory, ɵaddPlayer, ɵgetPlayers, ɵcompileNgModuleFactory__POST_R3__, ɵSWITCH_COMPILE_COMPONENT__POST_R3__, ɵSWITCH_COMPILE_DIRECTIVE__POST_R3__, ɵSWITCH_COMPILE_PIPE__POST_R3__, ɵSWITCH_COMPILE_NGMODULE__POST_R3__, ɵgetDebugNode__POST_R3__, ɵSWITCH_COMPILE_INJECTABLE__POST_R3__, ɵSWITCH_IVY_ENABLED__POST_R3__, ɵSWITCH_CHANGE_DETECTOR_REF_FACTORY__POST_R3__, ɵCompiler_compileModuleSync__POST_R3__, ɵCompiler_compileModuleAsync__POST_R3__, ɵCompiler_compileModuleAndAllComponentsSync__POST_R3__, ɵCompiler_compileModuleAndAllComponentsAsync__POST_R3__, ɵSWITCH_ELEMENT_REF_FACTORY__POST_R3__, ɵSWITCH_TEMPLATE_REF_FACTORY__POST_R3__, ɵSWITCH_VIEW_CONTAINER_REF_FACTORY__POST_R3__, ɵSWITCH_RENDERER2_FACTORY__POST_R3__, ɵgetModuleFactory__POST_R3__, ɵpublishGlobalUtil, ɵpublishDefaultGlobalUtils, ɵSWITCH_INJECTOR_FACTORY__POST_R3__, ɵregisterModuleFactory, ɵEMPTY_ARRAY, ɵEMPTY_MAP, ɵand, ɵccf, ɵcmf, ɵcrt, ɵdid, ɵeld, ɵelementEventFullName, ɵgetComponentViewDefinitionFactory, ɵinlineInterpolate, ɵinterpolate, ɵmod, ɵmpd, ɵncd, ɵnov, ɵpid, ɵprd, ɵpad, ɵpod, ɵppd, ɵqud, ɵted, ɵunv, ɵvid */
+/*! exports provided: ɵangular_packages_core_core_t, ɵangular_packages_core_core_q, ɵangular_packages_core_core_r, ɵangular_packages_core_core_s, ɵangular_packages_core_core_h, ɵangular_packages_core_core_o, ɵangular_packages_core_core_p, ɵangular_packages_core_core_n, ɵangular_packages_core_core_m, ɵangular_packages_core_core_c, ɵangular_packages_core_core_d, ɵangular_packages_core_core_e, ɵangular_packages_core_core_f, ɵangular_packages_core_core_g, ɵangular_packages_core_core_l, ɵangular_packages_core_core_u, ɵangular_packages_core_core_w, ɵangular_packages_core_core_v, ɵangular_packages_core_core_z, ɵangular_packages_core_core_x, ɵangular_packages_core_core_y, ɵangular_packages_core_core_bc, ɵangular_packages_core_core_bj, ɵangular_packages_core_core_bd, ɵangular_packages_core_core_be, ɵangular_packages_core_core_bf, ɵangular_packages_core_core_bi, ɵangular_packages_core_core_bm, ɵangular_packages_core_core_i, ɵangular_packages_core_core_j, ɵangular_packages_core_core_k, ɵangular_packages_core_core_a, ɵangular_packages_core_core_b, ɵangular_packages_core_core_bk, ɵangular_packages_core_core_ba, ɵangular_packages_core_core_bb, createPlatform, assertPlatform, destroyPlatform, getPlatform, PlatformRef, ApplicationRef, createPlatformFactory, NgProbeToken, enableProdMode, isDevMode, APP_ID, PACKAGE_ROOT_URL, PLATFORM_INITIALIZER, PLATFORM_ID, APP_BOOTSTRAP_LISTENER, APP_INITIALIZER, ApplicationInitStatus, DebugElement, DebugNode, asNativeElements, getDebugNode, Testability, TestabilityRegistry, setTestabilityGetter, TRANSLATIONS, TRANSLATIONS_FORMAT, LOCALE_ID, MissingTranslationStrategy, ApplicationModule, wtfCreateScope, wtfLeave, wtfStartTimeRange, wtfEndTimeRange, Type, EventEmitter, ErrorHandler, Sanitizer, SecurityContext, ANALYZE_FOR_ENTRY_COMPONENTS, Attribute, ContentChild, ContentChildren, Query, ViewChild, ViewChildren, Component, Directive, HostBinding, HostListener, Input, Output, Pipe, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule, ViewEncapsulation, Version, VERSION, defineInjectable, defineInjector, forwardRef, resolveForwardRef, Injectable, INJECTOR, Injector, inject, ɵinject, InjectFlags, ReflectiveInjector, createInjector, ResolvedReflectiveFactory, ReflectiveKey, InjectionToken, Inject, Optional, Self, SkipSelf, Host, NgZone, ɵNoopNgZone, RenderComponentType, Renderer, Renderer2, RendererFactory2, RendererStyleFlags2, RootRenderer, COMPILER_OPTIONS, Compiler, CompilerFactory, ModuleWithComponentFactories, ComponentFactory, ɵComponentFactory, ComponentRef, ComponentFactoryResolver, ElementRef, NgModuleFactory, NgModuleRef, NgModuleFactoryLoader, getModuleFactory, QueryList, SystemJsNgModuleLoader, SystemJsNgModuleLoaderConfig, TemplateRef, ViewContainerRef, EmbeddedViewRef, ViewRef, ChangeDetectionStrategy, ChangeDetectorRef, DefaultIterableDiffer, IterableDiffers, KeyValueDiffers, SimpleChange, WrappedValue, platformCore, ɵALLOW_MULTIPLE_PLATFORMS, ɵAPP_ID_RANDOM_PROVIDER, ɵdefaultIterableDiffers, ɵdefaultKeyValueDiffers, ɵdevModeEqual, ɵisListLikeIterable, ɵChangeDetectorStatus, ɵisDefaultChangeDetectionStrategy, ɵConsole, ɵgetInjectableDef, ɵsetCurrentInjector, ɵAPP_ROOT, ɵivyEnabled, ɵCodegenComponentFactoryResolver, ɵresolveComponentResources, ɵReflectionCapabilities, ɵRenderDebugInfo, ɵ_sanitizeHtml, ɵ_sanitizeStyle, ɵ_sanitizeUrl, ɵglobal, ɵlooseIdentical, ɵstringify, ɵmakeDecorator, ɵisObservable, ɵisPromise, ɵclearOverrides, ɵinitServicesIfNeeded, ɵoverrideComponentView, ɵoverrideProvider, ɵNOT_FOUND_CHECK_ONLY_ELEMENT_INJECTOR, ɵdefineBase, ɵdefineComponent, ɵdefineDirective, ɵdefinePipe, ɵdefineNgModule, ɵdetectChanges, ɵrenderComponent, ɵRender3ComponentFactory, ɵRender3ComponentRef, ɵdirectiveInject, ɵinjectAttribute, ɵgetFactoryOf, ɵgetInheritedFactory, ɵtemplateRefExtractor, ɵProvidersFeature, ɵInheritDefinitionFeature, ɵNgOnChangesFeature, ɵLifecycleHooksFeature, ɵRender3NgModuleRef, ɵmarkDirty, ɵNgModuleFactory, ɵNO_CHANGE, ɵcontainer, ɵnextContext, ɵelementStart, ɵnamespaceHTML, ɵnamespaceMathML, ɵnamespaceSVG, ɵelement, ɵlistener, ɵtext, ɵembeddedViewStart, ɵquery, ɵregisterContentQuery, ɵprojection, ɵbind, ɵinterpolation1, ɵinterpolation2, ɵinterpolation3, ɵinterpolation4, ɵinterpolation5, ɵinterpolation6, ɵinterpolation7, ɵinterpolation8, ɵinterpolationV, ɵpipeBind1, ɵpipeBind2, ɵpipeBind3, ɵpipeBind4, ɵpipeBindV, ɵpureFunction0, ɵpureFunction1, ɵpureFunction2, ɵpureFunction3, ɵpureFunction4, ɵpureFunction5, ɵpureFunction6, ɵpureFunction7, ɵpureFunction8, ɵpureFunctionV, ɵgetCurrentView, ɵgetHostElement, ɵrestoreView, ɵcontainerRefreshStart, ɵcontainerRefreshEnd, ɵqueryRefresh, ɵloadQueryList, ɵelementEnd, ɵelementProperty, ɵcomponentHostSyntheticProperty, ɵprojectionDef, ɵreference, ɵenableBindings, ɵdisableBindings, ɵallocHostVars, ɵelementAttribute, ɵelementContainerStart, ɵelementContainerEnd, ɵelementStyling, ɵelementHostAttrs, ɵelementStylingMap, ɵelementStyleProp, ɵelementStylingApply, ɵelementClassProp, ɵtextBinding, ɵtemplate, ɵembeddedViewEnd, ɵstore, ɵload, ɵpipe, ɵwhenRendered, ɵi18n, ɵi18nAttributes, ɵi18nExp, ɵi18nStart, ɵi18nEnd, ɵi18nApply, ɵi18nPostprocess, ɵsetClassMetadata, ɵcompileComponent, ɵcompileDirective, ɵcompileNgModule, ɵcompileNgModuleDefs, ɵpatchComponentDefWithScope, ɵresetCompiledComponents, ɵcompilePipe, ɵsanitizeHtml, ɵsanitizeStyle, ɵdefaultStyleSanitizer, ɵsanitizeScript, ɵsanitizeUrl, ɵsanitizeResourceUrl, ɵbypassSanitizationTrustHtml, ɵbypassSanitizationTrustStyle, ɵbypassSanitizationTrustScript, ɵbypassSanitizationTrustUrl, ɵbypassSanitizationTrustResourceUrl, ɵgetLContext, ɵbindPlayerFactory, ɵaddPlayer, ɵgetPlayers, ɵcompileNgModuleFactory__POST_R3__, ɵSWITCH_COMPILE_COMPONENT__POST_R3__, ɵSWITCH_COMPILE_DIRECTIVE__POST_R3__, ɵSWITCH_COMPILE_PIPE__POST_R3__, ɵSWITCH_COMPILE_NGMODULE__POST_R3__, ɵgetDebugNode__POST_R3__, ɵSWITCH_COMPILE_INJECTABLE__POST_R3__, ɵSWITCH_IVY_ENABLED__POST_R3__, ɵSWITCH_CHANGE_DETECTOR_REF_FACTORY__POST_R3__, ɵCompiler_compileModuleSync__POST_R3__, ɵCompiler_compileModuleAsync__POST_R3__, ɵCompiler_compileModuleAndAllComponentsSync__POST_R3__, ɵCompiler_compileModuleAndAllComponentsAsync__POST_R3__, ɵSWITCH_ELEMENT_REF_FACTORY__POST_R3__, ɵSWITCH_TEMPLATE_REF_FACTORY__POST_R3__, ɵSWITCH_VIEW_CONTAINER_REF_FACTORY__POST_R3__, ɵSWITCH_RENDERER2_FACTORY__POST_R3__, ɵgetModuleFactory__POST_R3__, ɵpublishGlobalUtil, ɵpublishDefaultGlobalUtils, ɵSWITCH_INJECTOR_FACTORY__POST_R3__, ɵregisterModuleFactory, ɵEMPTY_ARRAY, ɵEMPTY_MAP, ɵand, ɵccf, ɵcmf, ɵcrt, ɵdid, ɵeld, ɵelementEventFullName, ɵgetComponentViewDefinitionFactory, ɵinlineInterpolate, ɵinterpolate, ɵmod, ɵmpd, ɵncd, ɵnov, ɵpid, ɵprd, ɵpad, ɵpod, ɵppd, ɵqud, ɵted, ɵunv, ɵvid */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_s", function() { return APPLICATION_MODULE_PROVIDERS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_p", function() { return _iterableDiffersFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_q", function() { return _keyValueDiffersFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_r", function() { return _localeFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_g", function() { return _appIdRandomProviderFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_n", function() { return DefaultIterableDifferFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_o", function() { return DefaultKeyValueDifferFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_m", function() { return DebugElement__PRE_R3__; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_l", function() { return DebugNode__PRE_R3__; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_c", function() { return injectInjectorOnly; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_d", function() { return ReflectiveInjector_; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_e", function() { return ReflectiveDependency; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_f", function() { return resolveReflectiveProviders; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_k", function() { return getModuleFactory__PRE_R3__; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_t", function() { return wtfEnabled; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_v", function() { return createScope; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_u", function() { return detectWTF; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_y", function() { return endTimeRange; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_w", function() { return leave; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_x", function() { return startTimeRange; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bb", function() { return injectAttributeImpl; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bi", function() { return NG_INJECTABLE_DEF; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bc", function() { return getLView; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bd", function() { return getPreviousOrParentTNode; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_be", function() { return nextContextImpl; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bh", function() { return BoundPlayerFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bl", function() { return loadInternal; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_h", function() { return createElementRef; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_i", function() { return createTemplateRef; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_j", function() { return createViewRef; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_t", function() { return APPLICATION_MODULE_PROVIDERS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_q", function() { return _iterableDiffersFactory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_r", function() { return _keyValueDiffersFactory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_s", function() { return _localeFactory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_h", function() { return _appIdRandomProviderFactory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_o", function() { return DefaultIterableDifferFactory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_p", function() { return DefaultKeyValueDifferFactory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_n", function() { return DebugElement__PRE_R3__; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_m", function() { return DebugNode__PRE_R3__; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_c", function() { return NullInjector; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_d", function() { return injectInjectorOnly; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_e", function() { return ReflectiveInjector_; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_f", function() { return ReflectiveDependency; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_g", function() { return resolveReflectiveProviders; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_l", function() { return getModuleFactory__PRE_R3__; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_u", function() { return wtfEnabled; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_w", function() { return createScope; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_v", function() { return detectWTF; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_z", function() { return endTimeRange; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_x", function() { return leave; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_y", function() { return startTimeRange; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bc", function() { return injectAttributeImpl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bj", function() { return NG_INJECTABLE_DEF; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bd", function() { return getLView; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_be", function() { return getPreviousOrParentTNode; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bf", function() { return nextContextImpl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bi", function() { return BoundPlayerFactory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bm", function() { return loadInternal; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_i", function() { return createElementRef; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_j", function() { return createTemplateRef; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_k", function() { return createViewRef; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_a", function() { return makeParamDecorator; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_b", function() { return makePropDecorator; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bj", function() { return getClosureSafeProperty; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_z", function() { return _def; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_ba", function() { return DebugContext; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bk", function() { return getClosureSafeProperty; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_ba", function() { return _def; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵangular_packages_core_core_bb", function() { return DebugContext; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPlatform", function() { return createPlatform; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assertPlatform", function() { return assertPlatform; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "destroyPlatform", function() { return destroyPlatform; });
@@ -35803,7 +36122,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 /**
- * @license Angular v7.2.4
+ * @license Angular v7.2.15
  * (c) 2010-2019 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -36139,15 +36458,16 @@ function makePropDecorator(name, props, parentClass, additionalProcessing) {
  * found in the LICENSE file at https://angular.io/license
  */
 /**
- * This token can be used to create a virtual provider that will populate the
- * `entryComponents` fields of components and ng modules based on its `useValue`.
+ * A DI token that you can use to create a virtual [provider](guide/glossary#provider)
+ * that will populate the `entryComponents` field of components and NgModules
+ * based on its `useValue` property value.
  * All components that are referenced in the `useValue` value (either directly
- * or in a nested array or map) will be added to the `entryComponents` property.
+ * or in a nested array or map) are added to the `entryComponents` property.
  *
  * @usageNotes
- * ### Example
+ *
  * The following example shows how the router can populate the `entryComponents`
- * field of an NgModule based on the router configuration which refers
+ * field of an NgModule based on a router configuration that refers
  * to components.
  *
  * ```typescript
@@ -36258,6 +36578,7 @@ var ChangeDetectionStrategy;
      * Use the `CheckOnce` strategy, meaning that automatic change detection is deactivated
      * until reactivated by setting the strategy to `Default` (`CheckAlways`).
      * Change detection can still be explicitly invoked.
+     * This strategy applies to all child directives and cannot be overridden.
      */
     ChangeDetectionStrategy[ChangeDetectionStrategy["OnPush"] = 0] = "OnPush";
     /**
@@ -36465,18 +36786,18 @@ function resolveForwardRef(type) {
  *   selector: 'my-comp',
  *   templateUrl: 'my-comp.html', // This requires asynchronous resolution
  * })
- * class MyComponnent{
+ * class MyComponent{
  * }
  *
- * // Calling `renderComponent` will fail because `MyComponent`'s `@Compenent.templateUrl`
- * // needs to be resolved because `renderComponent` is synchronous process.
- * // renderComponent(MyComponent);
+ * // Calling `renderComponent` will fail because `renderComponent` is a synchronous process
+ * // and `MyComponent`'s `@Component.templateUrl` needs to be resolved asynchronously.
  *
- * // Calling `resolveComponentResources` will resolve `@Compenent.templateUrl` into
- * // `@Compenent.template`, which would allow `renderComponent` to proceed in synchronous manner.
- * // Use browser's `fetch` function as the default resource resolution strategy.
+ * // Calling `resolveComponentResources()` will resolve `@Component.templateUrl` into
+ * // `@Component.template`, which allows `renderComponent` to proceed in a synchronous manner.
+ *
+ * // Use browser's `fetch()` function as the default resource resolution strategy.
  * resolveComponentResources(fetch).then(() => {
- *   // After resolution all URLs have been converted into strings.
+ *   // After resolution all URLs have been converted into `template` strings.
  *   renderComponent(MyComponent);
  * });
  *
@@ -36485,8 +36806,8 @@ function resolveForwardRef(type) {
  * NOTE: In AOT the resolution happens during compilation, and so there should be no need
  * to call this method outside JIT mode.
  *
- * @param resourceResolver a function which is responsible to returning a `Promise` of the resolved
- * URL. Browser's `fetch` method is a good default implementation.
+ * @param resourceResolver a function which is responsible for returning a `Promise` to the
+ * contents of the resolved URL. Browser's `fetch()` method is a good default implementation.
  */
 function resolveComponentResources(resourceResolver) {
     // Store all promises which are fetching the resources.
@@ -37453,7 +37774,7 @@ var R3ResolvedDependencyType;
  * found in the LICENSE file at https://angular.io/license
  */
 function getCompilerFacade() {
-    var globalNg = _global.ng;
+    var globalNg = _global['ng'];
     if (!globalNg || !globalNg.ɵcompilerFacade) {
         throw new Error("Angular JIT compilation failed: '@angular/compiler' not loaded!\n" +
             "  - JIT compilation is discouraged for production use-cases! Consider AOT mode instead.\n" +
@@ -40909,7 +41230,7 @@ function updateStylingMap(context, classesInput, stylesInput, directiveRef) {
     var classesValue = classesPlayerBuilder ?
         classesInput.value :
         classesInput;
-    var stylesValue = stylesPlayerBuilder ? stylesInput.value : stylesInput;
+    var stylesValue = stylesPlayerBuilder ? stylesInput['value'] : stylesInput;
     // early exit (this is what's done to avoid using ctx.bind() to cache the value)
     var ignoreAllClassUpdates = limitToSingleClasses(context) || classesValue === NO_CHANGE ||
         classesValue === context[6 /* CachedClassValueOrInitialClassString */];
@@ -46546,7 +46867,7 @@ var Version = /** @class */ (function () {
 /**
  * @publicApi
  */
-var VERSION = new Version('7.2.4');
+var VERSION = new Version('7.2.15');
 
 /**
  * @license
@@ -46982,7 +47303,7 @@ function isDOMParserAvailable() {
  * execution if used in URL context within a HTML document. Specifically, this
  * regular expression matches if (comment from here on and regex copied from
  * Soy's EscapingConventions):
- * (1) Either a protocol in a whitelist (http, https, mailto or ftp).
+ * (1) Either an allowed protocol (http, https, mailto or ftp).
  * (2) or no protocol.  A protocol must be followed by a colon. The below
  *     allows that by allowing colons only after one of the characters [/?#].
  *     A colon after a hash (#) must be in the fragment.
@@ -47104,6 +47425,12 @@ var HTML_ATTRS = tagSet('abbr,accesskey,align,alt,autoplay,axis,bgcolor,border,c
 // can be sanitized, but they increase security surface area without a legitimate use case, so they
 // are left out here.
 var VALID_ATTRS = merge$1(URI_ATTRS, SRCSET_ATTRS, HTML_ATTRS);
+// Elements whose content should not be traversed/preserved, if the elements themselves are invalid.
+//
+// Typically, `<invalid>Some content</invalid>` would traverse (and in this case preserve)
+// `Some content`, but strip `invalid-element` opening/closing tags. For some elements, though, we
+// don't want to preserve the content, if the elements themselves are going to be removed.
+var SKIP_TRAVERSING_CONTENT_IF_INVALID_ELEMENTS = tagSet('script,style,template');
 /**
  * SanitizingHtmlSerializer serializes a DOM fragment, stripping out any unsafe elements and unsafe
  * attributes.
@@ -47120,10 +47447,10 @@ var SanitizingHtmlSerializer = /** @class */ (function () {
         // However this code never accesses properties off of `document` before deleting its contents
         // again, so it shouldn't be vulnerable to DOM clobbering.
         var current = el.firstChild;
-        var elementValid = true;
+        var traverseContent = true;
         while (current) {
             if (current.nodeType === Node.ELEMENT_NODE) {
-                elementValid = this.startElement(current);
+                traverseContent = this.startElement(current);
             }
             else if (current.nodeType === Node.TEXT_NODE) {
                 this.chars(current.nodeValue);
@@ -47132,7 +47459,7 @@ var SanitizingHtmlSerializer = /** @class */ (function () {
                 // Strip non-element, non-text nodes.
                 this.sanitizedSomething = true;
             }
-            if (elementValid && current.firstChild) {
+            if (traverseContent && current.firstChild) {
                 current = current.firstChild;
                 continue;
             }
@@ -47152,18 +47479,18 @@ var SanitizingHtmlSerializer = /** @class */ (function () {
         return this.buf.join('');
     };
     /**
-     * Outputs only valid Elements.
+     * Sanitizes an opening element tag (if valid) and returns whether the element's contents should
+     * be traversed. Element content must always be traversed (even if the element itself is not
+     * valid/safe), unless the element is one of `SKIP_TRAVERSING_CONTENT_IF_INVALID_ELEMENTS`.
      *
-     * Invalid elements are skipped.
-     *
-     * @param element element to sanitize
-     * Returns true if the element is valid.
+     * @param element The element to sanitize.
+     * @return True if the element's contents should be traversed.
      */
     SanitizingHtmlSerializer.prototype.startElement = function (element) {
         var tagName = element.nodeName.toLowerCase();
         if (!VALID_ELEMENTS.hasOwnProperty(tagName)) {
             this.sanitizedSomething = true;
-            return false;
+            return !SKIP_TRAVERSING_CONTENT_IF_INVALID_ELEMENTS.hasOwnProperty(tagName);
         }
         this.buf.push('<');
         this.buf.push(tagName);
@@ -47896,6 +48223,9 @@ function readUpdateOpCodes(updateOpCodes, icus, bindingsStartIndex, changeMask, 
                     }
                     else {
                         var nodeIndex = opCode >>> 2 /* SHIFT_REF */;
+                        var tIcuIndex = void 0;
+                        var tIcu = void 0;
+                        var icuTNode = void 0;
                         switch (opCode & 3 /* MASK_OPCODE */) {
                             case 1 /* Attr */:
                                 var attrName = updateOpCodes[++j];
@@ -47906,9 +48236,9 @@ function readUpdateOpCodes(updateOpCodes, icus, bindingsStartIndex, changeMask, 
                                 textBinding(nodeIndex, value);
                                 break;
                             case 2 /* IcuSwitch */:
-                                var tIcuIndex = updateOpCodes[++j];
-                                var tIcu = icus[tIcuIndex];
-                                var icuTNode = getTNode(nodeIndex, viewData);
+                                tIcuIndex = updateOpCodes[++j];
+                                tIcu = icus[tIcuIndex];
+                                icuTNode = getTNode(nodeIndex, viewData);
                                 // If there is an active case, delete the old nodes
                                 if (icuTNode.activeCaseIndex !== null) {
                                     var removeCodes = tIcu.remove[icuTNode.activeCaseIndex];
@@ -51186,7 +51516,7 @@ var initializeBaseDef = function (target) {
     }
 };
 /**
- * Does the work of creating the `ngBaseDef` property for the @Input and @Output decorators.
+ * Does the work of creating the `ngBaseDef` property for the `Input` and `Output` decorators.
  * @param key "inputs" or "outputs"
  */
 var updateBaseDefFromIOProp = function (getProp) {
@@ -53684,6 +54014,94 @@ function optionsReducer(dst, objs) {
 }
 /**
  * A reference to an Angular application running on a page.
+ *
+ * @usageNotes
+ *
+ * {@a is-stable-examples}
+ * ### isStable examples and caveats
+ *
+ * Note two important points about `isStable`, demonstrated in the examples below:
+ * - the application will never be stable if you start any kind
+ * of recurrent asynchronous task when the application starts
+ * (for example for a polling process, started with a `setInterval`, a `setTimeout`
+ * or using RxJS operators like `interval`);
+ * - the `isStable` Observable runs outside of the Angular zone.
+ *
+ * Let's imagine that you start a recurrent task
+ * (here incrementing a counter, using RxJS `interval`),
+ * and at the same time subscribe to `isStable`.
+ *
+ * ```
+ * constructor(appRef: ApplicationRef) {
+ *   appRef.isStable.pipe(
+ *      filter(stable => stable)
+ *   ).subscribe(() => console.log('App is stable now');
+ *   interval(1000).subscribe(counter => console.log(counter));
+ * }
+ * ```
+ * In this example, `isStable` will never emit `true`,
+ * and the trace "App is stable now" will never get logged.
+ *
+ * If you want to execute something when the app is stable,
+ * you have to wait for the application to be stable
+ * before starting your polling process.
+ *
+ * ```
+ * constructor(appRef: ApplicationRef) {
+ *   appRef.isStable.pipe(
+ *     first(stable => stable),
+ *     tap(stable => console.log('App is stable now')),
+ *     switchMap(() => interval(1000))
+ *   ).subscribe(counter => console.log(counter));
+ * }
+ * ```
+ * In this example, the trace "App is stable now" will be logged
+ * and then the counter starts incrementing every second.
+ *
+ * Note also that this Observable runs outside of the Angular zone,
+ * which means that the code in the subscription
+ * to this Observable will not trigger the change detection.
+ *
+ * Let's imagine that instead of logging the counter value,
+ * you update a field of your component
+ * and display it in its template.
+ *
+ * ```
+ * constructor(appRef: ApplicationRef) {
+ *   appRef.isStable.pipe(
+ *     first(stable => stable),
+ *     switchMap(() => interval(1000))
+ *   ).subscribe(counter => this.value = counter);
+ * }
+ * ```
+ * As the `isStable` Observable runs outside the zone,
+ * the `value` field will be updated properly,
+ * but the template will not be refreshed!
+ *
+ * You'll have to manually trigger the change detection to update the template.
+ *
+ * ```
+ * constructor(appRef: ApplicationRef, cd: ChangeDetectorRef) {
+ *   appRef.isStable.pipe(
+ *     first(stable => stable),
+ *     switchMap(() => interval(1000))
+ *   ).subscribe(counter => {
+ *     this.value = counter;
+ *     cd.detectChanges();
+ *   });
+ * }
+ * ```
+ *
+ * Or make the subscription callback run inside the zone.
+ *
+ * ```
+ * constructor(appRef: ApplicationRef, zone: NgZone) {
+ *   appRef.isStable.pipe(
+ *     first(stable => stable),
+ *     switchMap(() => interval(1000))
+ *   ).subscribe(counter => zone.run(() => this.value = counter));
+ * }
+ * ```
  *
  * @publicApi
  */
@@ -60218,7 +60636,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
 /**
- * @license Angular v7.2.4
+ * @license Angular v7.2.15
  * (c) 2010-2019 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -60655,7 +61073,7 @@ var CachedResourceLoader = /** @class */ (function (_super) {
 /**
  * @publicApi
  */
-var VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["Version"]('7.2.4');
+var VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["Version"]('7.2.15');
 
 /**
  * @license
@@ -60765,7 +61183,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /**
- * @license Angular v7.2.4
+ * @license Angular v7.2.15
  * (c) 2010-2019 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -61765,9 +62183,10 @@ function decoratePreventDefault(eventHandler) {
     };
 }
 var DomRendererFactory2 = /** @class */ (function () {
-    function DomRendererFactory2(eventManager, sharedStylesHost) {
+    function DomRendererFactory2(eventManager, sharedStylesHost, appId) {
         this.eventManager = eventManager;
         this.sharedStylesHost = sharedStylesHost;
+        this.appId = appId;
         this.rendererByCompId = new Map();
         this.defaultRenderer = new DefaultDomRenderer2(eventManager);
     }
@@ -61779,8 +62198,7 @@ var DomRendererFactory2 = /** @class */ (function () {
             case _angular_core__WEBPACK_IMPORTED_MODULE_2__["ViewEncapsulation"].Emulated: {
                 var renderer = this.rendererByCompId.get(type.id);
                 if (!renderer) {
-                    renderer =
-                        new EmulatedEncapsulationDomRenderer2(this.eventManager, this.sharedStylesHost, type);
+                    renderer = new EmulatedEncapsulationDomRenderer2(this.eventManager, this.sharedStylesHost, type, this.appId);
                     this.rendererByCompId.set(type.id, renderer);
                 }
                 renderer.applyToHost(element);
@@ -61803,7 +62221,8 @@ var DomRendererFactory2 = /** @class */ (function () {
     DomRendererFactory2.prototype.end = function () { };
     DomRendererFactory2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Injectable"])(),
-        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [EventManager, DomSharedStylesHost])
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(2, Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Inject"])(_angular_core__WEBPACK_IMPORTED_MODULE_2__["APP_ID"])),
+        Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [EventManager, DomSharedStylesHost, String])
     ], DomRendererFactory2);
     return DomRendererFactory2;
 }());
@@ -61916,13 +62335,13 @@ function checkNoSyntheticProp(name, nameKind) {
 }
 var EmulatedEncapsulationDomRenderer2 = /** @class */ (function (_super) {
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(EmulatedEncapsulationDomRenderer2, _super);
-    function EmulatedEncapsulationDomRenderer2(eventManager, sharedStylesHost, component) {
+    function EmulatedEncapsulationDomRenderer2(eventManager, sharedStylesHost, component, appId) {
         var _this = _super.call(this, eventManager) || this;
         _this.component = component;
-        var styles = flattenStyles(component.id, component.styles, []);
+        var styles = flattenStyles(appId + '-' + component.id, component.styles, []);
         sharedStylesHost.addStyles(styles);
-        _this.contentAttr = shimContentAttribute(component.id);
-        _this.hostAttr = shimHostAttribute(component.id);
+        _this.contentAttr = shimContentAttribute(appId + '-' + component.id);
+        _this.hostAttr = shimHostAttribute(appId + '-' + component.id);
         return _this;
     }
     EmulatedEncapsulationDomRenderer2.prototype.applyToHost = function (element) { _super.prototype.setAttribute.call(this, element, this.hostAttr, ''); };
@@ -62721,7 +63140,7 @@ var BROWSER_MODULE_PROVIDERS = [
     {
         provide: DomRendererFactory2,
         useClass: DomRendererFactory2,
-        deps: [EventManager, DomSharedStylesHost]
+        deps: [EventManager, DomSharedStylesHost, _angular_core__WEBPACK_IMPORTED_MODULE_2__["APP_ID"]]
     },
     { provide: _angular_core__WEBPACK_IMPORTED_MODULE_2__["RendererFactory2"], useExisting: DomRendererFactory2 },
     { provide: SharedStylesHost, useExisting: DomSharedStylesHost },
@@ -62732,7 +63151,7 @@ var BROWSER_MODULE_PROVIDERS = [
 ];
 /**
  * Exports required infrastructure for all Angular apps.
- * Included by defaults in all Angular apps created with the CLI
+ * Included by default in all Angular apps created with the CLI
  * `new` command.
  * Re-exports `CommonModule` and `ApplicationModule`, making their
  * exports and providers available to all apps.
@@ -63238,7 +63657,7 @@ var By = /** @class */ (function () {
 /**
  * @publicApi
  */
-var VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_2__["Version"]('7.2.4');
+var VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_2__["Version"]('7.2.15');
 
 /**
  * @license
@@ -63355,7 +63774,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
 /**
- * @license Angular v7.2.4
+ * @license Angular v7.2.15
  * (c) 2010-2019 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -64845,10 +65264,10 @@ function createEmptyStateSnapshot(urlTree, rootComponent) {
  * @Component({...})
  * class MyComponent {
  *   constructor(route: ActivatedRoute) {
- *     const id: Observable<string> = route.params.map(p => p.id);
- *     const url: Observable<string> = route.url.map(segments => segments.join(''));
+ *     const id: Observable<string> = route.params.pipe(map(p => p.id));
+ *     const url: Observable<string> = route.url.pipe(map(segments => segments.join('')));
  *     // route.data includes both `data` and `resolve`
- *     const user = route.data.map(d => d.user);
+ *     const user = route.data.pipe(map(d => d.user));
  *   }
  * }
  * ```
@@ -67036,9 +67455,10 @@ function defaultRouterHook(snapshot, runExtras) {
 /**
  * @description
  *
- * Provides the navigation and url manipulation capabilities.
+ * An NgModule that provides navigation and URL manipulation capabilities.
  *
- * See `Routes` for more details and examples.
+ * @see `Route`.
+ * @see [Routing and Navigation Guide](guide/router).
  *
  * @ngModule RouterModule
  *
@@ -67060,11 +67480,12 @@ var Router = /** @class */ (function () {
         this.currentNavigation = null;
         this.navigationId = 0;
         this.isNgZoneEnabled = false;
+        /**
+         * An event stream for routing events in this NgModule.
+         */
         this.events = new rxjs__WEBPACK_IMPORTED_MODULE_3__["Subject"]();
         /**
-         * Error handler that is invoked when a navigation errors.
-         *
-         * See `ErrorHandler` for more information.
+         * A handler for navigation errors in this NgModule.
          */
         this.errorHandler = defaultErrorHandler;
         /**
@@ -67074,13 +67495,16 @@ var Router = /** @class */ (function () {
          */
         this.malformedUriErrorHandler = defaultMalformedUriErrorHandler;
         /**
-         * Indicates if at least one navigation happened.
+         * True if at least one navigation event has occurred,
+         * false otherwise.
          */
         this.navigated = false;
         this.lastSuccessfulId = -1;
         /**
-         * Used by RouterModule. This allows us to
-         * pause the navigation either before preactivation or after it.
+         * Hooks that enable you to pause navigation,
+         * either before or after the preactivation phase.
+         * Used by `RouterModule`.
+         *
          * @internal
          */
         this.hooks = {
@@ -67091,21 +67515,24 @@ var Router = /** @class */ (function () {
          * Extracts and merges URLs. Used for AngularJS to Angular migrations.
          */
         this.urlHandlingStrategy = new DefaultUrlHandlingStrategy();
+        /**
+         * The strategy for re-using routes.
+         */
         this.routeReuseStrategy = new DefaultRouteReuseStrategy();
         /**
-         * Define what the router should do if it receives a navigation request to the current URL.
-         * By default, the router will ignore this navigation. However, this prevents features such
-         * as a "refresh" button. Use this option to configure the behavior when navigating to the
-         * current URL. Default is 'ignore'.
+         * How to handle a navigation request to the current URL. One of:
+         * - `'ignore'` :  The router ignores the request.
+         * - `'reload'` : The router reloads the URL. Use to implement a "refresh" feature.
          */
         this.onSameUrlNavigation = 'ignore';
         /**
-         * Defines how the router merges params, data and resolved data from parent to child
-         * routes. Available options are:
+         * How to merge parameters, data, and resolved data from parent to child
+         * routes. One of:
          *
-         * - `'emptyOnly'`, the default, only inherits parent params for path-less or component-less
-         *   routes.
-         * - `'always'`, enables unconditional inheritance of parent params.
+         * - `'emptyOnly'` : Inherit parent parameters, data, and resolved data
+         * for path-less or component-less routes.
+         * - `'always'` : Inherit parent parameters, data, and resolved data
+         * for all child routes.
          */
         this.paramsInheritanceStrategy = 'emptyOnly';
         /**
@@ -67164,23 +67591,23 @@ var Router = /** @class */ (function () {
         return transitions.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["filter"])(function (t) { return t.id !== 0; }), 
         // Extract URL
         Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(function (t) { return (Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, t, { extractedUrl: _this.urlHandlingStrategy.extract(t.rawUrl) })); }), 
-        // Store the Navigation object
-        Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (t) {
-            _this.currentNavigation = {
-                id: t.id,
-                initialUrl: t.currentRawUrl,
-                extractedUrl: t.extractedUrl,
-                trigger: t.source,
-                extras: t.extras,
-                previousNavigation: _this.lastSuccessfulNavigation ? Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, _this.lastSuccessfulNavigation, { previousNavigation: null }) :
-                    null
-            };
-        }), 
         // Using switchMap so we cancel executing navigations when a new one comes in
         Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function (t) {
             var completed = false;
             var errored = false;
-            return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["of"])(t).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function (t) {
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["of"])(t).pipe(
+            // Store the Navigation object
+            Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (t) {
+                _this.currentNavigation = {
+                    id: t.id,
+                    initialUrl: t.currentRawUrl,
+                    extractedUrl: t.extractedUrl,
+                    trigger: t.source,
+                    extras: t.extras,
+                    previousNavigation: _this.lastSuccessfulNavigation ? Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, _this.lastSuccessfulNavigation, { previousNavigation: null }) :
+                        null
+                };
+            }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function (t) {
                 var urlTransition = !_this.navigated || t.extractedUrl.toString() !== _this.browserUrlTree.toString();
                 var processCurrentUrl = (_this.onSameUrlNavigation === 'reload' ? true : urlTransition) &&
                     _this.urlHandlingStrategy.shouldProcessUrl(t.rawUrl);
@@ -67349,9 +67776,14 @@ var Router = /** @class */ (function () {
                 /* This error type is issued during Redirect, and is handled as a cancellation
                  * rather than an error. */
                 if (isNavigationCancelingError(e)) {
-                    _this.navigated = true;
                     var redirecting = isUrlTree(e.url);
                     if (!redirecting) {
+                        // Set property only if we're not redirecting. If we landed on a page and
+                        // redirect to `/` route, the new navigation is going to see the `/` isn't
+                        // a change from the default currentUrlTree and won't navigate. This is
+                        // only applicable with initial navigation, so setting `navigated` only when
+                        // not redirecting resolves this scenario.
+                        _this.navigated = true;
                         _this.resetStateAndUrl(t.currentRouterState, t.currentUrlTree, t.rawUrl);
                     }
                     var navCancel = new NavigationCancel(t.id, _this.serializeUrl(t.extractedUrl), e.message);
@@ -67422,7 +67854,7 @@ var Router = /** @class */ (function () {
         }
     };
     Object.defineProperty(Router.prototype, "url", {
-        /** The current url */
+        /** The current URL. */
         get: function () { return this.serializeUrl(this.currentUrlTree); },
         enumerable: true,
         configurable: true
@@ -67434,9 +67866,9 @@ var Router = /** @class */ (function () {
     /**
      * Resets the configuration used for navigation and generating links.
      *
-     * @usageNotes
+     * @param config The route array for the new configuration.
      *
-     * ### Example
+     * @usageNotes
      *
      * ```
      * router.resetConfig([
@@ -67455,7 +67887,7 @@ var Router = /** @class */ (function () {
     };
     /** @docsNotRequired */
     Router.prototype.ngOnDestroy = function () { this.dispose(); };
-    /** Disposes of the router */
+    /** Disposes of the router. */
     Router.prototype.dispose = function () {
         if (this.locationSubscription) {
             this.locationSubscription.unsubscribe();
@@ -67463,14 +67895,16 @@ var Router = /** @class */ (function () {
         }
     };
     /**
-     * Applies an array of commands to the current url tree and creates a new url tree.
+     * Applies an array of commands to the current URL tree and creates a new URL tree.
      *
      * When given an activate route, applies the given commands starting from the route.
      * When not given a route, applies the given command starting from the root.
      *
-     * @usageNotes
+     * @param commands An array of commands to apply.
+     * @param navigationExtras
+     * @returns The new URL tree.
      *
-     * ### Example
+     * @usageNotes
      *
      * ```
      * // create /team/33/user/11
@@ -67535,12 +67969,15 @@ var Router = /** @class */ (function () {
         return createUrlTree(a, this.currentUrlTree, commands, q, f);
     };
     /**
-     * Navigate based on the provided url. This navigation is always absolute.
+     * Navigate based on the provided URL, which must be absolute.
      *
-     * Returns a promise that:
-     * - resolves to 'true' when navigation succeeds,
-     * - resolves to 'false' when navigation fails,
-     * - is rejected when an error happens.
+     * @param url An absolute URL. The function does not apply any delta to the current URL.
+     * @param extras An object containing properties that modify the navigation strategy.
+     * The function ignores any properties in the `NavigationExtras` that would change the
+     * provided URL.
+     *
+     * @returns A Promise that resolves to 'true' when navigation succeeds,
+     * to 'false' when navigation fails, or is rejected on error.
      *
      * @usageNotes
      *
@@ -67553,10 +67990,6 @@ var Router = /** @class */ (function () {
      * router.navigateByUrl("/team/33/user/11", { skipLocationChange: true });
      * ```
      *
-     * Since `navigateByUrl()` takes an absolute URL as the first parameter,
-     * it will not apply any delta to the current URL and ignores any properties
-     * in the second parameter (the `NavigationExtras`) that would change the
-     * provided URL.
      */
     Router.prototype.navigateByUrl = function (url, extras) {
         if (extras === void 0) { extras = { skipLocationChange: false }; }
@@ -67919,7 +68352,7 @@ var RouterLink = /** @class */ (function () {
         Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", Boolean)
     ], RouterLink.prototype, "onClick", null);
     RouterLink = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Directive"])({ selector: ':not(a)[routerLink]' }),
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Directive"])({ selector: ':not(a):not(area)[routerLink]' }),
         Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__param"])(2, Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Attribute"])('tabindex')),
         Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Router, ActivatedRoute, String, _angular_core__WEBPACK_IMPORTED_MODULE_2__["Renderer2"], _angular_core__WEBPACK_IMPORTED_MODULE_2__["ElementRef"]])
     ], RouterLink);
@@ -68058,7 +68491,7 @@ var RouterLinkWithHref = /** @class */ (function () {
         Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:returntype", Boolean)
     ], RouterLinkWithHref.prototype, "onClick", null);
     RouterLinkWithHref = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Directive"])({ selector: 'a[routerLink]' }),
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Directive"])({ selector: 'a[routerLink],area[routerLink]' }),
         Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"])("design:paramtypes", [Router, ActivatedRoute,
             _angular_common__WEBPACK_IMPORTED_MODULE_1__["LocationStrategy"]])
     ], RouterLinkWithHref);
@@ -68799,18 +69232,32 @@ var RouterModule = /** @class */ (function () {
      * Creates a module with all the router providers and directives. It also optionally sets up an
      * application listener to perform an initial navigation.
      *
-     * Options (see `ExtraOptions`):
-     * * `enableTracing` makes the router log all its internal events to the console.
-     * * `useHash` enables the location strategy that uses the URL fragment instead of the history
+     * Configuration Options:
+     *
+     * * `enableTracing` Toggles whether the router should log all navigation events to the console.
+     * * `useHash` Enables the location strategy that uses the URL fragment instead of the history
      * API.
-     * * `initialNavigation` disables the initial navigation.
-     * * `errorHandler` provides a custom error handler.
-     * * `preloadingStrategy` configures a preloading strategy (see `PreloadAllModules`).
-     * * `onSameUrlNavigation` configures how the router handles navigation to the current URL. See
-     * `ExtraOptions` for more details.
-     * * `paramsInheritanceStrategy` defines how the router merges params, data and resolved data
-     * from parent to child routes.
-     */
+     * * `initialNavigation` Disables the initial navigation.
+     * * `errorHandler` Defines a custom error handler for failed navigations.
+     * * `preloadingStrategy` Configures a preloading strategy. See `PreloadAllModules`.
+     * * `onSameUrlNavigation` Define what the router should do if it receives a navigation request to
+     * the current URL.
+     * * `scrollPositionRestoration` Configures if the scroll position needs to be restored when
+     * navigating back.
+     * * `anchorScrolling` Configures if the router should scroll to the element when the url has a
+     * fragment.
+     * * `scrollOffset` Configures the scroll offset the router will use when scrolling to an element.
+     * * `paramsInheritanceStrategy` Defines how the router merges params, data and resolved data from
+     * parent to child routes.
+     * * `malformedUriErrorHandler` Defines a custom malformed uri error handler function. This
+     * handler is invoked when encodedURI contains invalid character sequences.
+     * * `urlUpdateStrategy` Defines when the router updates the browser URL. The default behavior is
+     * to update after successful navigation.
+     * * `relativeLinkResolution` Enables the correct relative link resolution in components with
+     * empty paths.
+     *
+     * See `ExtraOptions` for more details about the above options.
+    */
     RouterModule.forRoot = function (routes, config) {
         return {
             ngModule: RouterModule_1,
@@ -69068,7 +69515,7 @@ function provideRouterInitializer() {
 /**
  * @publicApi
  */
-var VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_2__["Version"]('7.2.4');
+var VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_2__["Version"]('7.2.15');
 
 /**
  * @license
@@ -69113,11 +69560,1844 @@ var VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_2__["Version"]('7.2.4')
 
 /***/ }),
 
+/***/ "./node_modules/@nguniversal/express-engine/fesm5/tokens.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@nguniversal/express-engine/fesm5/tokens.js ***!
+  \******************************************************************/
+/*! exports provided: REQUEST, RESPONSE */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "REQUEST", function() { return REQUEST; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RESPONSE", function() { return RESPONSE; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+
+
+var REQUEST = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["InjectionToken"]('REQUEST');
+var RESPONSE = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["InjectionToken"]('RESPONSE');
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+
+//# sourceMappingURL=tokens.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/@ngx-translate/core/fesm5/ngx-translate-core.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@ngx-translate/core/fesm5/ngx-translate-core.js ***!
+  \**********************************************************************/
+/*! exports provided: TranslateModule, TranslateLoader, TranslateFakeLoader, USE_STORE, USE_DEFAULT_LANG, TranslateService, MissingTranslationHandler, FakeMissingTranslationHandler, TranslateParser, TranslateDefaultParser, TranslateCompiler, TranslateFakeCompiler, TranslateDirective, TranslatePipe, TranslateStore */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TranslateModule", function() { return TranslateModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TranslateLoader", function() { return TranslateLoader; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TranslateFakeLoader", function() { return TranslateFakeLoader; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "USE_STORE", function() { return USE_STORE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "USE_DEFAULT_LANG", function() { return USE_DEFAULT_LANG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TranslateService", function() { return TranslateService; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MissingTranslationHandler", function() { return MissingTranslationHandler; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FakeMissingTranslationHandler", function() { return FakeMissingTranslationHandler; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TranslateParser", function() { return TranslateParser; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TranslateDefaultParser", function() { return TranslateDefaultParser; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TranslateCompiler", function() { return TranslateCompiler; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TranslateFakeCompiler", function() { return TranslateFakeCompiler; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TranslateDirective", function() { return TranslateDirective; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TranslatePipe", function() { return TranslatePipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TranslateStore", function() { return TranslateStore; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+
+
+
+
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+TranslateLoader = /** @class */ (function () {
+    function TranslateLoader() {
+    }
+    return TranslateLoader;
+}());
+/**
+ * This loader is just a placeholder that does nothing, in case you don't need a loader at all
+ */
+var TranslateFakeLoader = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(TranslateFakeLoader, _super);
+    function TranslateFakeLoader() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * @param {?} lang
+     * @return {?}
+     */
+    TranslateFakeLoader.prototype.getTranslation = /**
+     * @param {?} lang
+     * @return {?}
+     */
+    function (lang) {
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])({});
+    };
+    TranslateFakeLoader.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"] }
+    ];
+    return TranslateFakeLoader;
+}(TranslateLoader));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+MissingTranslationHandler = /** @class */ (function () {
+    function MissingTranslationHandler() {
+    }
+    return MissingTranslationHandler;
+}());
+/**
+ * This handler is just a placeholder that does nothing, in case you don't need a missing translation handler at all
+ */
+var FakeMissingTranslationHandler = /** @class */ (function () {
+    function FakeMissingTranslationHandler() {
+    }
+    /**
+     * @param {?} params
+     * @return {?}
+     */
+    FakeMissingTranslationHandler.prototype.handle = /**
+     * @param {?} params
+     * @return {?}
+     */
+    function (params) {
+        return params.key;
+    };
+    FakeMissingTranslationHandler.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"] }
+    ];
+    return FakeMissingTranslationHandler;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+TranslateCompiler = /** @class */ (function () {
+    function TranslateCompiler() {
+    }
+    return TranslateCompiler;
+}());
+/**
+ * This compiler is just a placeholder that does nothing, in case you don't need a compiler at all
+ */
+var TranslateFakeCompiler = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(TranslateFakeCompiler, _super);
+    function TranslateFakeCompiler() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * @param {?} value
+     * @param {?} lang
+     * @return {?}
+     */
+    TranslateFakeCompiler.prototype.compile = /**
+     * @param {?} value
+     * @param {?} lang
+     * @return {?}
+     */
+    function (value, lang) {
+        return value;
+    };
+    /**
+     * @param {?} translations
+     * @param {?} lang
+     * @return {?}
+     */
+    TranslateFakeCompiler.prototype.compileTranslations = /**
+     * @param {?} translations
+     * @param {?} lang
+     * @return {?}
+     */
+    function (translations, lang) {
+        return translations;
+    };
+    TranslateFakeCompiler.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"] }
+    ];
+    return TranslateFakeCompiler;
+}(TranslateCompiler));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/* tslint:disable */
+/**
+ * Determines if two objects or two values are equivalent.
+ *
+ * Two objects or values are considered equivalent if at least one of the following is true:
+ *
+ * * Both objects or values pass `===` comparison.
+ * * Both objects or values are of the same type and all of their properties are equal by
+ *   comparing them with `equals`.
+ *
+ * @param {?} o1 Object or value to compare.
+ * @param {?} o2 Object or value to compare.
+ * @return {?} true if arguments are equal.
+ */
+function equals(o1, o2) {
+    if (o1 === o2)
+        return true;
+    if (o1 === null || o2 === null)
+        return false;
+    if (o1 !== o1 && o2 !== o2)
+        return true; // NaN === NaN
+    // NaN === NaN
+    /** @type {?} */
+    var t1 = typeof o1;
+    /** @type {?} */
+    var t2 = typeof o2;
+    /** @type {?} */
+    var length;
+    /** @type {?} */
+    var key;
+    /** @type {?} */
+    var keySet;
+    if (t1 == t2 && t1 == 'object') {
+        if (Array.isArray(o1)) {
+            if (!Array.isArray(o2))
+                return false;
+            if ((length = o1.length) == o2.length) {
+                for (key = 0; key < length; key++) {
+                    if (!equals(o1[key], o2[key]))
+                        return false;
+                }
+                return true;
+            }
+        }
+        else {
+            if (Array.isArray(o2)) {
+                return false;
+            }
+            keySet = Object.create(null);
+            for (key in o1) {
+                if (!equals(o1[key], o2[key])) {
+                    return false;
+                }
+                keySet[key] = true;
+            }
+            for (key in o2) {
+                if (!(key in keySet) && typeof o2[key] !== 'undefined') {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+    return false;
+}
+/* tslint:enable */
+/**
+ * @param {?} value
+ * @return {?}
+ */
+function isDefined(value) {
+    return typeof value !== 'undefined' && value !== null;
+}
+/**
+ * @param {?} item
+ * @return {?}
+ */
+function isObject(item) {
+    return (item && typeof item === 'object' && !Array.isArray(item));
+}
+/**
+ * @param {?} target
+ * @param {?} source
+ * @return {?}
+ */
+function mergeDeep(target, source) {
+    /** @type {?} */
+    var output = Object.assign({}, target);
+    if (isObject(target) && isObject(source)) {
+        Object.keys(source).forEach(function (key) {
+            var _a, _b;
+            if (isObject(source[key])) {
+                if (!(key in target)) {
+                    Object.assign(output, (_a = {}, _a[key] = source[key], _a));
+                }
+                else {
+                    output[key] = mergeDeep(target[key], source[key]);
+                }
+            }
+            else {
+                Object.assign(output, (_b = {}, _b[key] = source[key], _b));
+            }
+        });
+    }
+    return output;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+TranslateParser = /** @class */ (function () {
+    function TranslateParser() {
+    }
+    return TranslateParser;
+}());
+var TranslateDefaultParser = /** @class */ (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(TranslateDefaultParser, _super);
+    function TranslateDefaultParser() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.templateMatcher = /{{\s?([^{}\s]*)\s?}}/g;
+        return _this;
+    }
+    /**
+     * @param {?} expr
+     * @param {?=} params
+     * @return {?}
+     */
+    TranslateDefaultParser.prototype.interpolate = /**
+     * @param {?} expr
+     * @param {?=} params
+     * @return {?}
+     */
+    function (expr, params) {
+        /** @type {?} */
+        var result;
+        if (typeof expr === 'string') {
+            result = this.interpolateString(expr, params);
+        }
+        else if (typeof expr === 'function') {
+            result = this.interpolateFunction(expr, params);
+        }
+        else {
+            // this should not happen, but an unrelated TranslateService test depends on it
+            result = (/** @type {?} */ (expr));
+        }
+        return result;
+    };
+    /**
+     * @param {?} target
+     * @param {?} key
+     * @return {?}
+     */
+    TranslateDefaultParser.prototype.getValue = /**
+     * @param {?} target
+     * @param {?} key
+     * @return {?}
+     */
+    function (target, key) {
+        /** @type {?} */
+        var keys = key.split('.');
+        key = '';
+        do {
+            key += keys.shift();
+            if (isDefined(target) && isDefined(target[key]) && (typeof target[key] === 'object' || !keys.length)) {
+                target = target[key];
+                key = '';
+            }
+            else if (!keys.length) {
+                target = undefined;
+            }
+            else {
+                key += '.';
+            }
+        } while (keys.length);
+        return target;
+    };
+    /**
+     * @param {?} fn
+     * @param {?=} params
+     * @return {?}
+     */
+    TranslateDefaultParser.prototype.interpolateFunction = /**
+     * @param {?} fn
+     * @param {?=} params
+     * @return {?}
+     */
+    function (fn, params) {
+        return fn(params);
+    };
+    /**
+     * @param {?} expr
+     * @param {?=} params
+     * @return {?}
+     */
+    TranslateDefaultParser.prototype.interpolateString = /**
+     * @param {?} expr
+     * @param {?=} params
+     * @return {?}
+     */
+    function (expr, params) {
+        var _this = this;
+        if (!params) {
+            return expr;
+        }
+        return expr.replace(this.templateMatcher, function (substring, b) {
+            /** @type {?} */
+            var r = _this.getValue(params, b);
+            return isDefined(r) ? r : substring;
+        });
+    };
+    TranslateDefaultParser.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"] }
+    ];
+    return TranslateDefaultParser;
+}(TranslateParser));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+var TranslateStore = /** @class */ (function () {
+    function TranslateStore() {
+        /**
+         * The lang currently used
+         */
+        this.currentLang = this.defaultLang;
+        /**
+         * a list of translations per lang
+         */
+        this.translations = {};
+        /**
+         * an array of langs
+         */
+        this.langs = [];
+        /**
+         * An EventEmitter to listen to translation change events
+         * onTranslationChange.subscribe((params: TranslationChangeEvent) => {
+         *     // do something
+         * });
+         */
+        this.onTranslationChange = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
+        /**
+         * An EventEmitter to listen to lang change events
+         * onLangChange.subscribe((params: LangChangeEvent) => {
+         *     // do something
+         * });
+         */
+        this.onLangChange = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
+        /**
+         * An EventEmitter to listen to default lang change events
+         * onDefaultLangChange.subscribe((params: DefaultLangChangeEvent) => {
+         *     // do something
+         * });
+         */
+        this.onDefaultLangChange = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
+    }
+    return TranslateStore;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var USE_STORE = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["InjectionToken"]('USE_STORE');
+/** @type {?} */
+var USE_DEFAULT_LANG = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["InjectionToken"]('USE_DEFAULT_LANG');
+var TranslateService = /** @class */ (function () {
+    /**
+     *
+     * @param store an instance of the store (that is supposed to be unique)
+     * @param currentLoader An instance of the loader currently used
+     * @param compiler An instance of the compiler currently used
+     * @param parser An instance of the parser currently used
+     * @param missingTranslationHandler A handler for missing translations.
+     * @param isolate whether this service should use the store or not
+     * @param useDefaultLang whether we should use default language translation when current language translation is missing.
+     */
+    function TranslateService(store, currentLoader, compiler, parser, missingTranslationHandler, useDefaultLang, isolate) {
+        if (useDefaultLang === void 0) { useDefaultLang = true; }
+        if (isolate === void 0) { isolate = false; }
+        this.store = store;
+        this.currentLoader = currentLoader;
+        this.compiler = compiler;
+        this.parser = parser;
+        this.missingTranslationHandler = missingTranslationHandler;
+        this.useDefaultLang = useDefaultLang;
+        this.isolate = isolate;
+        this.pending = false;
+        this._onTranslationChange = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
+        this._onLangChange = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
+        this._onDefaultLangChange = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
+        this._langs = [];
+        this._translations = {};
+        this._translationRequests = {};
+    }
+    Object.defineProperty(TranslateService.prototype, "onTranslationChange", {
+        /**
+         * An EventEmitter to listen to translation change events
+         * onTranslationChange.subscribe((params: TranslationChangeEvent) => {
+           *     // do something
+           * });
+         */
+        get: /**
+         * An EventEmitter to listen to translation change events
+         * onTranslationChange.subscribe((params: TranslationChangeEvent) => {
+         *     // do something
+         * });
+         * @return {?}
+         */
+        function () {
+            return this.isolate ? this._onTranslationChange : this.store.onTranslationChange;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(TranslateService.prototype, "onLangChange", {
+        /**
+         * An EventEmitter to listen to lang change events
+         * onLangChange.subscribe((params: LangChangeEvent) => {
+           *     // do something
+           * });
+         */
+        get: /**
+         * An EventEmitter to listen to lang change events
+         * onLangChange.subscribe((params: LangChangeEvent) => {
+         *     // do something
+         * });
+         * @return {?}
+         */
+        function () {
+            return this.isolate ? this._onLangChange : this.store.onLangChange;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(TranslateService.prototype, "onDefaultLangChange", {
+        /**
+         * An EventEmitter to listen to default lang change events
+         * onDefaultLangChange.subscribe((params: DefaultLangChangeEvent) => {
+           *     // do something
+           * });
+         */
+        get: /**
+         * An EventEmitter to listen to default lang change events
+         * onDefaultLangChange.subscribe((params: DefaultLangChangeEvent) => {
+         *     // do something
+         * });
+         * @return {?}
+         */
+        function () {
+            return this.isolate ? this._onDefaultLangChange : this.store.onDefaultLangChange;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(TranslateService.prototype, "defaultLang", {
+        /**
+         * The default lang to fallback when translations are missing on the current lang
+         */
+        get: /**
+         * The default lang to fallback when translations are missing on the current lang
+         * @return {?}
+         */
+        function () {
+            return this.isolate ? this._defaultLang : this.store.defaultLang;
+        },
+        set: /**
+         * @param {?} defaultLang
+         * @return {?}
+         */
+        function (defaultLang) {
+            if (this.isolate) {
+                this._defaultLang = defaultLang;
+            }
+            else {
+                this.store.defaultLang = defaultLang;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(TranslateService.prototype, "currentLang", {
+        /**
+         * The lang currently used
+         */
+        get: /**
+         * The lang currently used
+         * @return {?}
+         */
+        function () {
+            return this.isolate ? this._currentLang : this.store.currentLang;
+        },
+        set: /**
+         * @param {?} currentLang
+         * @return {?}
+         */
+        function (currentLang) {
+            if (this.isolate) {
+                this._currentLang = currentLang;
+            }
+            else {
+                this.store.currentLang = currentLang;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(TranslateService.prototype, "langs", {
+        /**
+         * an array of langs
+         */
+        get: /**
+         * an array of langs
+         * @return {?}
+         */
+        function () {
+            return this.isolate ? this._langs : this.store.langs;
+        },
+        set: /**
+         * @param {?} langs
+         * @return {?}
+         */
+        function (langs) {
+            if (this.isolate) {
+                this._langs = langs;
+            }
+            else {
+                this.store.langs = langs;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(TranslateService.prototype, "translations", {
+        /**
+         * a list of translations per lang
+         */
+        get: /**
+         * a list of translations per lang
+         * @return {?}
+         */
+        function () {
+            return this.isolate ? this._translations : this.store.translations;
+        },
+        set: /**
+         * @param {?} translations
+         * @return {?}
+         */
+        function (translations) {
+            if (this.isolate) {
+                this._translations = translations;
+            }
+            else {
+                this.store.translations = translations;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Sets the default language to use as a fallback
+     */
+    /**
+     * Sets the default language to use as a fallback
+     * @param {?} lang
+     * @return {?}
+     */
+    TranslateService.prototype.setDefaultLang = /**
+     * Sets the default language to use as a fallback
+     * @param {?} lang
+     * @return {?}
+     */
+    function (lang) {
+        var _this = this;
+        if (lang === this.defaultLang) {
+            return;
+        }
+        /** @type {?} */
+        var pending = this.retrieveTranslations(lang);
+        if (typeof pending !== "undefined") {
+            // on init set the defaultLang immediately
+            if (!this.defaultLang) {
+                this.defaultLang = lang;
+            }
+            pending.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["take"])(1))
+                .subscribe(function (res) {
+                _this.changeDefaultLang(lang);
+            });
+        }
+        else { // we already have this language
+            this.changeDefaultLang(lang);
+        }
+    };
+    /**
+     * Gets the default language used
+     */
+    /**
+     * Gets the default language used
+     * @return {?}
+     */
+    TranslateService.prototype.getDefaultLang = /**
+     * Gets the default language used
+     * @return {?}
+     */
+    function () {
+        return this.defaultLang;
+    };
+    /**
+     * Changes the lang currently used
+     */
+    /**
+     * Changes the lang currently used
+     * @param {?} lang
+     * @return {?}
+     */
+    TranslateService.prototype.use = /**
+     * Changes the lang currently used
+     * @param {?} lang
+     * @return {?}
+     */
+    function (lang) {
+        var _this = this;
+        // don't change the language if the language given is already selected
+        if (lang === this.currentLang) {
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(this.translations[lang]);
+        }
+        /** @type {?} */
+        var pending = this.retrieveTranslations(lang);
+        if (typeof pending !== "undefined") {
+            // on init set the currentLang immediately
+            if (!this.currentLang) {
+                this.currentLang = lang;
+            }
+            pending.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["take"])(1))
+                .subscribe(function (res) {
+                _this.changeLang(lang);
+            });
+            return pending;
+        }
+        else { // we have this language, return an Observable
+            this.changeLang(lang);
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(this.translations[lang]);
+        }
+    };
+    /**
+     * Retrieves the given translations
+     */
+    /**
+     * Retrieves the given translations
+     * @param {?} lang
+     * @return {?}
+     */
+    TranslateService.prototype.retrieveTranslations = /**
+     * Retrieves the given translations
+     * @param {?} lang
+     * @return {?}
+     */
+    function (lang) {
+        /** @type {?} */
+        var pending;
+        // if this language is unavailable, ask for it
+        if (typeof this.translations[lang] === "undefined") {
+            this._translationRequests[lang] = this._translationRequests[lang] || this.getTranslation(lang);
+            pending = this._translationRequests[lang];
+        }
+        return pending;
+    };
+    /**
+     * Gets an object of translations for a given language with the current loader
+     * and passes it through the compiler
+     */
+    /**
+     * Gets an object of translations for a given language with the current loader
+     * and passes it through the compiler
+     * @param {?} lang
+     * @return {?}
+     */
+    TranslateService.prototype.getTranslation = /**
+     * Gets an object of translations for a given language with the current loader
+     * and passes it through the compiler
+     * @param {?} lang
+     * @return {?}
+     */
+    function (lang) {
+        var _this = this;
+        this.pending = true;
+        /** @type {?} */
+        var loadingTranslations = this.currentLoader.getTranslation(lang).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["share"])());
+        this.loadingTranslations = loadingTranslations.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["take"])(1), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (res) { return _this.compiler.compileTranslations(res, lang); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["share"])());
+        this.loadingTranslations
+            .subscribe(function (res) {
+            _this.translations[lang] = res;
+            _this.updateLangs();
+            _this.pending = false;
+        }, function (err) {
+            _this.pending = false;
+        });
+        return loadingTranslations;
+    };
+    /**
+     * Manually sets an object of translations for a given language
+     * after passing it through the compiler
+     */
+    /**
+     * Manually sets an object of translations for a given language
+     * after passing it through the compiler
+     * @param {?} lang
+     * @param {?} translations
+     * @param {?=} shouldMerge
+     * @return {?}
+     */
+    TranslateService.prototype.setTranslation = /**
+     * Manually sets an object of translations for a given language
+     * after passing it through the compiler
+     * @param {?} lang
+     * @param {?} translations
+     * @param {?=} shouldMerge
+     * @return {?}
+     */
+    function (lang, translations, shouldMerge) {
+        if (shouldMerge === void 0) { shouldMerge = false; }
+        translations = this.compiler.compileTranslations(translations, lang);
+        if (shouldMerge && this.translations[lang]) {
+            this.translations[lang] = mergeDeep(this.translations[lang], translations);
+        }
+        else {
+            this.translations[lang] = translations;
+        }
+        this.updateLangs();
+        this.onTranslationChange.emit({ lang: lang, translations: this.translations[lang] });
+    };
+    /**
+     * Returns an array of currently available langs
+     */
+    /**
+     * Returns an array of currently available langs
+     * @return {?}
+     */
+    TranslateService.prototype.getLangs = /**
+     * Returns an array of currently available langs
+     * @return {?}
+     */
+    function () {
+        return this.langs;
+    };
+    /**
+     * Add available langs
+     */
+    /**
+     * Add available langs
+     * @param {?} langs
+     * @return {?}
+     */
+    TranslateService.prototype.addLangs = /**
+     * Add available langs
+     * @param {?} langs
+     * @return {?}
+     */
+    function (langs) {
+        var _this = this;
+        langs.forEach(function (lang) {
+            if (_this.langs.indexOf(lang) === -1) {
+                _this.langs.push(lang);
+            }
+        });
+    };
+    /**
+     * Update the list of available langs
+     */
+    /**
+     * Update the list of available langs
+     * @return {?}
+     */
+    TranslateService.prototype.updateLangs = /**
+     * Update the list of available langs
+     * @return {?}
+     */
+    function () {
+        this.addLangs(Object.keys(this.translations));
+    };
+    /**
+     * Returns the parsed result of the translations
+     */
+    /**
+     * Returns the parsed result of the translations
+     * @param {?} translations
+     * @param {?} key
+     * @param {?=} interpolateParams
+     * @return {?}
+     */
+    TranslateService.prototype.getParsedResult = /**
+     * Returns the parsed result of the translations
+     * @param {?} translations
+     * @param {?} key
+     * @param {?=} interpolateParams
+     * @return {?}
+     */
+    function (translations, key, interpolateParams) {
+        var e_1, _a, e_2, _b;
+        /** @type {?} */
+        var res;
+        if (key instanceof Array) {
+            /** @type {?} */
+            var result = {};
+            /** @type {?} */
+            var observables = false;
+            try {
+                for (var key_1 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(key), key_1_1 = key_1.next(); !key_1_1.done; key_1_1 = key_1.next()) {
+                    var k = key_1_1.value;
+                    result[k] = this.getParsedResult(translations, k, interpolateParams);
+                    if (typeof result[k].subscribe === "function") {
+                        observables = true;
+                    }
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (key_1_1 && !key_1_1.done && (_a = key_1.return)) _a.call(key_1);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+            if (observables) {
+                /** @type {?} */
+                var mergedObs = void 0;
+                try {
+                    for (var key_2 = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__values"])(key), key_2_1 = key_2.next(); !key_2_1.done; key_2_1 = key_2.next()) {
+                        var k = key_2_1.value;
+                        /** @type {?} */
+                        var obs = typeof result[k].subscribe === "function" ? result[k] : Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])((/** @type {?} */ (result[k])));
+                        if (typeof mergedObs === "undefined") {
+                            mergedObs = obs;
+                        }
+                        else {
+                            mergedObs = Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["merge"])(mergedObs, obs);
+                        }
+                    }
+                }
+                catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                finally {
+                    try {
+                        if (key_2_1 && !key_2_1.done && (_b = key_2.return)) _b.call(key_2);
+                    }
+                    finally { if (e_2) throw e_2.error; }
+                }
+                return mergedObs.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["toArray"])(), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (arr) {
+                    /** @type {?} */
+                    var obj = {};
+                    arr.forEach(function (value, index) {
+                        obj[key[index]] = value;
+                    });
+                    return obj;
+                }));
+            }
+            return result;
+        }
+        if (translations) {
+            res = this.parser.interpolate(this.parser.getValue(translations, key), interpolateParams);
+        }
+        if (typeof res === "undefined" && this.defaultLang && this.defaultLang !== this.currentLang && this.useDefaultLang) {
+            res = this.parser.interpolate(this.parser.getValue(this.translations[this.defaultLang], key), interpolateParams);
+        }
+        if (typeof res === "undefined") {
+            /** @type {?} */
+            var params = { key: key, translateService: this };
+            if (typeof interpolateParams !== 'undefined') {
+                params.interpolateParams = interpolateParams;
+            }
+            res = this.missingTranslationHandler.handle(params);
+        }
+        return typeof res !== "undefined" ? res : key;
+    };
+    /**
+     * Gets the translated value of a key (or an array of keys)
+     * @returns the translated key, or an object of translated keys
+     */
+    /**
+     * Gets the translated value of a key (or an array of keys)
+     * @param {?} key
+     * @param {?=} interpolateParams
+     * @return {?} the translated key, or an object of translated keys
+     */
+    TranslateService.prototype.get = /**
+     * Gets the translated value of a key (or an array of keys)
+     * @param {?} key
+     * @param {?=} interpolateParams
+     * @return {?} the translated key, or an object of translated keys
+     */
+    function (key, interpolateParams) {
+        var _this = this;
+        if (!isDefined(key) || !key.length) {
+            throw new Error("Parameter \"key\" required");
+        }
+        // check if we are loading a new translation to use
+        if (this.pending) {
+            return rxjs__WEBPACK_IMPORTED_MODULE_2__["Observable"].create(function (observer) {
+                /** @type {?} */
+                var onComplete = function (res) {
+                    observer.next(res);
+                    observer.complete();
+                };
+                /** @type {?} */
+                var onError = function (err) {
+                    observer.error(err);
+                };
+                _this.loadingTranslations.subscribe(function (res) {
+                    res = _this.getParsedResult(res, key, interpolateParams);
+                    if (typeof res.subscribe === "function") {
+                        res.subscribe(onComplete, onError);
+                    }
+                    else {
+                        onComplete(res);
+                    }
+                }, onError);
+            });
+        }
+        else {
+            /** @type {?} */
+            var res = this.getParsedResult(this.translations[this.currentLang], key, interpolateParams);
+            if (typeof res.subscribe === "function") {
+                return res;
+            }
+            else {
+                return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(res);
+            }
+        }
+    };
+    /**
+     * Returns a stream of translated values of a key (or an array of keys) which updates
+     * whenever the language changes.
+     * @returns A stream of the translated key, or an object of translated keys
+     */
+    /**
+     * Returns a stream of translated values of a key (or an array of keys) which updates
+     * whenever the language changes.
+     * @param {?} key
+     * @param {?=} interpolateParams
+     * @return {?} A stream of the translated key, or an object of translated keys
+     */
+    TranslateService.prototype.stream = /**
+     * Returns a stream of translated values of a key (or an array of keys) which updates
+     * whenever the language changes.
+     * @param {?} key
+     * @param {?=} interpolateParams
+     * @return {?} A stream of the translated key, or an object of translated keys
+     */
+    function (key, interpolateParams) {
+        var _this = this;
+        if (!isDefined(key) || !key.length) {
+            throw new Error("Parameter \"key\" required");
+        }
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["concat"])(this.get(key, interpolateParams), this.onLangChange.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["switchMap"])(function (event) {
+            /** @type {?} */
+            var res = _this.getParsedResult(event.translations, key, interpolateParams);
+            if (typeof res.subscribe === "function") {
+                return res;
+            }
+            else {
+                return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(res);
+            }
+        })));
+    };
+    /**
+     * Returns a translation instantly from the internal state of loaded translation.
+     * All rules regarding the current language, the preferred language of even fallback languages will be used except any promise handling.
+     */
+    /**
+     * Returns a translation instantly from the internal state of loaded translation.
+     * All rules regarding the current language, the preferred language of even fallback languages will be used except any promise handling.
+     * @param {?} key
+     * @param {?=} interpolateParams
+     * @return {?}
+     */
+    TranslateService.prototype.instant = /**
+     * Returns a translation instantly from the internal state of loaded translation.
+     * All rules regarding the current language, the preferred language of even fallback languages will be used except any promise handling.
+     * @param {?} key
+     * @param {?=} interpolateParams
+     * @return {?}
+     */
+    function (key, interpolateParams) {
+        if (!isDefined(key) || !key.length) {
+            throw new Error("Parameter \"key\" required");
+        }
+        /** @type {?} */
+        var res = this.getParsedResult(this.translations[this.currentLang], key, interpolateParams);
+        if (typeof res.subscribe !== "undefined") {
+            if (key instanceof Array) {
+                /** @type {?} */
+                var obj_1 = {};
+                key.forEach(function (value, index) {
+                    obj_1[key[index]] = key[index];
+                });
+                return obj_1;
+            }
+            return key;
+        }
+        else {
+            return res;
+        }
+    };
+    /**
+     * Sets the translated value of a key, after compiling it
+     */
+    /**
+     * Sets the translated value of a key, after compiling it
+     * @param {?} key
+     * @param {?} value
+     * @param {?=} lang
+     * @return {?}
+     */
+    TranslateService.prototype.set = /**
+     * Sets the translated value of a key, after compiling it
+     * @param {?} key
+     * @param {?} value
+     * @param {?=} lang
+     * @return {?}
+     */
+    function (key, value, lang) {
+        if (lang === void 0) { lang = this.currentLang; }
+        this.translations[lang][key] = this.compiler.compile(value, lang);
+        this.updateLangs();
+        this.onTranslationChange.emit({ lang: lang, translations: this.translations[lang] });
+    };
+    /**
+     * Changes the current lang
+     */
+    /**
+     * Changes the current lang
+     * @param {?} lang
+     * @return {?}
+     */
+    TranslateService.prototype.changeLang = /**
+     * Changes the current lang
+     * @param {?} lang
+     * @return {?}
+     */
+    function (lang) {
+        this.currentLang = lang;
+        this.onLangChange.emit({ lang: lang, translations: this.translations[lang] });
+        // if there is no default lang, use the one that we just set
+        if (!this.defaultLang) {
+            this.changeDefaultLang(lang);
+        }
+    };
+    /**
+     * Changes the default lang
+     */
+    /**
+     * Changes the default lang
+     * @param {?} lang
+     * @return {?}
+     */
+    TranslateService.prototype.changeDefaultLang = /**
+     * Changes the default lang
+     * @param {?} lang
+     * @return {?}
+     */
+    function (lang) {
+        this.defaultLang = lang;
+        this.onDefaultLangChange.emit({ lang: lang, translations: this.translations[lang] });
+    };
+    /**
+     * Allows to reload the lang file from the file
+     */
+    /**
+     * Allows to reload the lang file from the file
+     * @param {?} lang
+     * @return {?}
+     */
+    TranslateService.prototype.reloadLang = /**
+     * Allows to reload the lang file from the file
+     * @param {?} lang
+     * @return {?}
+     */
+    function (lang) {
+        this.resetLang(lang);
+        return this.getTranslation(lang);
+    };
+    /**
+     * Deletes inner translation
+     */
+    /**
+     * Deletes inner translation
+     * @param {?} lang
+     * @return {?}
+     */
+    TranslateService.prototype.resetLang = /**
+     * Deletes inner translation
+     * @param {?} lang
+     * @return {?}
+     */
+    function (lang) {
+        this._translationRequests[lang] = undefined;
+        this.translations[lang] = undefined;
+    };
+    /**
+     * Returns the language code name from the browser, e.g. "de"
+     */
+    /**
+     * Returns the language code name from the browser, e.g. "de"
+     * @return {?}
+     */
+    TranslateService.prototype.getBrowserLang = /**
+     * Returns the language code name from the browser, e.g. "de"
+     * @return {?}
+     */
+    function () {
+        if (typeof window === 'undefined' || typeof window.navigator === 'undefined') {
+            return undefined;
+        }
+        /** @type {?} */
+        var browserLang = window.navigator.languages ? window.navigator.languages[0] : null;
+        browserLang = browserLang || window.navigator.language || window.navigator.browserLanguage || window.navigator.userLanguage;
+        if (browserLang.indexOf('-') !== -1) {
+            browserLang = browserLang.split('-')[0];
+        }
+        if (browserLang.indexOf('_') !== -1) {
+            browserLang = browserLang.split('_')[0];
+        }
+        return browserLang;
+    };
+    /**
+     * Returns the culture language code name from the browser, e.g. "de-DE"
+     */
+    /**
+     * Returns the culture language code name from the browser, e.g. "de-DE"
+     * @return {?}
+     */
+    TranslateService.prototype.getBrowserCultureLang = /**
+     * Returns the culture language code name from the browser, e.g. "de-DE"
+     * @return {?}
+     */
+    function () {
+        if (typeof window === 'undefined' || typeof window.navigator === 'undefined') {
+            return undefined;
+        }
+        /** @type {?} */
+        var browserCultureLang = window.navigator.languages ? window.navigator.languages[0] : null;
+        browserCultureLang = browserCultureLang || window.navigator.language || window.navigator.browserLanguage || window.navigator.userLanguage;
+        return browserCultureLang;
+    };
+    TranslateService.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"] }
+    ];
+    /** @nocollapse */
+    TranslateService.ctorParameters = function () { return [
+        { type: TranslateStore },
+        { type: TranslateLoader },
+        { type: TranslateCompiler },
+        { type: TranslateParser },
+        { type: MissingTranslationHandler },
+        { type: Boolean, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"], args: [USE_DEFAULT_LANG,] }] },
+        { type: Boolean, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"], args: [USE_STORE,] }] }
+    ]; };
+    return TranslateService;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+var TranslateDirective = /** @class */ (function () {
+    function TranslateDirective(translateService, element, _ref) {
+        var _this = this;
+        this.translateService = translateService;
+        this.element = element;
+        this._ref = _ref;
+        // subscribe to onTranslationChange event, in case the translations of the current lang change
+        if (!this.onTranslationChangeSub) {
+            this.onTranslationChangeSub = this.translateService.onTranslationChange.subscribe(function (event) {
+                if (event.lang === _this.translateService.currentLang) {
+                    _this.checkNodes(true, event.translations);
+                }
+            });
+        }
+        // subscribe to onLangChange event, in case the language changes
+        if (!this.onLangChangeSub) {
+            this.onLangChangeSub = this.translateService.onLangChange.subscribe(function (event) {
+                _this.checkNodes(true, event.translations);
+            });
+        }
+        // subscribe to onDefaultLangChange event, in case the default language changes
+        if (!this.onDefaultLangChangeSub) {
+            this.onDefaultLangChangeSub = this.translateService.onDefaultLangChange.subscribe(function (event) {
+                _this.checkNodes(true);
+            });
+        }
+    }
+    Object.defineProperty(TranslateDirective.prototype, "translate", {
+        set: /**
+         * @param {?} key
+         * @return {?}
+         */
+        function (key) {
+            if (key) {
+                this.key = key;
+                this.checkNodes();
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(TranslateDirective.prototype, "translateParams", {
+        set: /**
+         * @param {?} params
+         * @return {?}
+         */
+        function (params) {
+            if (!equals(this.currentParams, params)) {
+                this.currentParams = params;
+                this.checkNodes(true);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * @return {?}
+     */
+    TranslateDirective.prototype.ngAfterViewChecked = /**
+     * @return {?}
+     */
+    function () {
+        this.checkNodes();
+    };
+    /**
+     * @param {?=} forceUpdate
+     * @param {?=} translations
+     * @return {?}
+     */
+    TranslateDirective.prototype.checkNodes = /**
+     * @param {?=} forceUpdate
+     * @param {?=} translations
+     * @return {?}
+     */
+    function (forceUpdate, translations) {
+        if (forceUpdate === void 0) { forceUpdate = false; }
+        /** @type {?} */
+        var nodes = this.element.nativeElement.childNodes;
+        // if the element is empty
+        if (!nodes.length) {
+            // we add the key as content
+            this.setContent(this.element.nativeElement, this.key);
+            nodes = this.element.nativeElement.childNodes;
+        }
+        for (var i = 0; i < nodes.length; ++i) {
+            /** @type {?} */
+            var node = nodes[i];
+            if (node.nodeType === 3) { // node type 3 is a text node
+                // node type 3 is a text node
+                /** @type {?} */
+                var key = void 0;
+                if (this.key) {
+                    key = this.key;
+                    if (forceUpdate) {
+                        node.lastKey = null;
+                    }
+                }
+                else {
+                    /** @type {?} */
+                    var content = this.getContent(node);
+                    /** @type {?} */
+                    var trimmedContent = content.trim();
+                    if (trimmedContent.length) {
+                        // we want to use the content as a key, not the translation value
+                        if (content !== node.currentValue) {
+                            key = trimmedContent;
+                            // the content was changed from the user, we'll use it as a reference if needed
+                            node.originalContent = this.getContent(node);
+                        }
+                        else if (node.originalContent && forceUpdate) { // the content seems ok, but the lang has changed
+                            node.lastKey = null;
+                            // the current content is the translation, not the key, use the last real content as key
+                            key = node.originalContent.trim();
+                        }
+                    }
+                }
+                this.updateValue(key, node, translations);
+            }
+        }
+    };
+    /**
+     * @param {?} key
+     * @param {?} node
+     * @param {?} translations
+     * @return {?}
+     */
+    TranslateDirective.prototype.updateValue = /**
+     * @param {?} key
+     * @param {?} node
+     * @param {?} translations
+     * @return {?}
+     */
+    function (key, node, translations) {
+        var _this = this;
+        if (key) {
+            if (node.lastKey === key && this.lastParams === this.currentParams) {
+                return;
+            }
+            this.lastParams = this.currentParams;
+            /** @type {?} */
+            var onTranslation = function (res) {
+                if (res !== key) {
+                    node.lastKey = key;
+                }
+                if (!node.originalContent) {
+                    node.originalContent = _this.getContent(node);
+                }
+                node.currentValue = isDefined(res) ? res : (node.originalContent || key);
+                // we replace in the original content to preserve spaces that we might have trimmed
+                _this.setContent(node, _this.key ? node.currentValue : node.originalContent.replace(key, node.currentValue));
+                _this._ref.markForCheck();
+            };
+            if (isDefined(translations)) {
+                /** @type {?} */
+                var res = this.translateService.getParsedResult(translations, key, this.currentParams);
+                if (typeof res.subscribe === "function") {
+                    res.subscribe(onTranslation);
+                }
+                else {
+                    onTranslation(res);
+                }
+            }
+            else {
+                this.translateService.get(key, this.currentParams).subscribe(onTranslation);
+            }
+        }
+    };
+    /**
+     * @param {?} node
+     * @return {?}
+     */
+    TranslateDirective.prototype.getContent = /**
+     * @param {?} node
+     * @return {?}
+     */
+    function (node) {
+        return isDefined(node.textContent) ? node.textContent : node.data;
+    };
+    /**
+     * @param {?} node
+     * @param {?} content
+     * @return {?}
+     */
+    TranslateDirective.prototype.setContent = /**
+     * @param {?} node
+     * @param {?} content
+     * @return {?}
+     */
+    function (node, content) {
+        if (isDefined(node.textContent)) {
+            node.textContent = content;
+        }
+        else {
+            node.data = content;
+        }
+    };
+    /**
+     * @return {?}
+     */
+    TranslateDirective.prototype.ngOnDestroy = /**
+     * @return {?}
+     */
+    function () {
+        if (this.onLangChangeSub) {
+            this.onLangChangeSub.unsubscribe();
+        }
+        if (this.onDefaultLangChangeSub) {
+            this.onDefaultLangChangeSub.unsubscribe();
+        }
+        if (this.onTranslationChangeSub) {
+            this.onTranslationChangeSub.unsubscribe();
+        }
+    };
+    TranslateDirective.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"], args: [{
+                    selector: '[translate],[ngx-translate]'
+                },] }
+    ];
+    /** @nocollapse */
+    TranslateDirective.ctorParameters = function () { return [
+        { type: TranslateService },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ChangeDetectorRef"] }
+    ]; };
+    TranslateDirective.propDecorators = {
+        translate: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"] }],
+        translateParams: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"] }]
+    };
+    return TranslateDirective;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+var TranslatePipe = /** @class */ (function () {
+    function TranslatePipe(translate, _ref) {
+        this.translate = translate;
+        this._ref = _ref;
+        this.value = '';
+    }
+    /**
+     * @param {?} key
+     * @param {?=} interpolateParams
+     * @param {?=} translations
+     * @return {?}
+     */
+    TranslatePipe.prototype.updateValue = /**
+     * @param {?} key
+     * @param {?=} interpolateParams
+     * @param {?=} translations
+     * @return {?}
+     */
+    function (key, interpolateParams, translations) {
+        var _this = this;
+        /** @type {?} */
+        var onTranslation = function (res) {
+            _this.value = res !== undefined ? res : key;
+            _this.lastKey = key;
+            _this._ref.markForCheck();
+        };
+        if (translations) {
+            /** @type {?} */
+            var res = this.translate.getParsedResult(translations, key, interpolateParams);
+            if (typeof res.subscribe === 'function') {
+                res.subscribe(onTranslation);
+            }
+            else {
+                onTranslation(res);
+            }
+        }
+        this.translate.get(key, interpolateParams).subscribe(onTranslation);
+    };
+    /**
+     * @param {?} query
+     * @param {...?} args
+     * @return {?}
+     */
+    TranslatePipe.prototype.transform = /**
+     * @param {?} query
+     * @param {...?} args
+     * @return {?}
+     */
+    function (query) {
+        var _this = this;
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        if (!query || query.length === 0) {
+            return query;
+        }
+        // if we ask another time for the same key, return the last value
+        if (equals(query, this.lastKey) && equals(args, this.lastParams)) {
+            return this.value;
+        }
+        /** @type {?} */
+        var interpolateParams;
+        if (isDefined(args[0]) && args.length) {
+            if (typeof args[0] === 'string' && args[0].length) {
+                // we accept objects written in the template such as {n:1}, {'n':1}, {n:'v'}
+                // which is why we might need to change it to real JSON objects such as {"n":1} or {"n":"v"}
+                /** @type {?} */
+                var validArgs = args[0]
+                    .replace(/(\')?([a-zA-Z0-9_]+)(\')?(\s)?:/g, '"$2":')
+                    .replace(/:(\s)?(\')(.*?)(\')/g, ':"$3"');
+                try {
+                    interpolateParams = JSON.parse(validArgs);
+                }
+                catch (e) {
+                    throw new SyntaxError("Wrong parameter in TranslatePipe. Expected a valid Object, received: " + args[0]);
+                }
+            }
+            else if (typeof args[0] === 'object' && !Array.isArray(args[0])) {
+                interpolateParams = args[0];
+            }
+        }
+        // store the query, in case it changes
+        this.lastKey = query;
+        // store the params, in case they change
+        this.lastParams = args;
+        // set the value
+        this.updateValue(query, interpolateParams);
+        // if there is a subscription to onLangChange, clean it
+        this._dispose();
+        // subscribe to onTranslationChange event, in case the translations change
+        if (!this.onTranslationChange) {
+            this.onTranslationChange = this.translate.onTranslationChange.subscribe(function (event) {
+                if (_this.lastKey && event.lang === _this.translate.currentLang) {
+                    _this.lastKey = null;
+                    _this.updateValue(query, interpolateParams, event.translations);
+                }
+            });
+        }
+        // subscribe to onLangChange event, in case the language changes
+        if (!this.onLangChange) {
+            this.onLangChange = this.translate.onLangChange.subscribe(function (event) {
+                if (_this.lastKey) {
+                    _this.lastKey = null; // we want to make sure it doesn't return the same value until it's been updated
+                    _this.updateValue(query, interpolateParams, event.translations);
+                }
+            });
+        }
+        // subscribe to onDefaultLangChange event, in case the default language changes
+        if (!this.onDefaultLangChange) {
+            this.onDefaultLangChange = this.translate.onDefaultLangChange.subscribe(function () {
+                if (_this.lastKey) {
+                    _this.lastKey = null; // we want to make sure it doesn't return the same value until it's been updated
+                    _this.updateValue(query, interpolateParams);
+                }
+            });
+        }
+        return this.value;
+    };
+    /**
+     * Clean any existing subscription to change events
+     */
+    /**
+     * Clean any existing subscription to change events
+     * @return {?}
+     */
+    TranslatePipe.prototype._dispose = /**
+     * Clean any existing subscription to change events
+     * @return {?}
+     */
+    function () {
+        if (typeof this.onTranslationChange !== 'undefined') {
+            this.onTranslationChange.unsubscribe();
+            this.onTranslationChange = undefined;
+        }
+        if (typeof this.onLangChange !== 'undefined') {
+            this.onLangChange.unsubscribe();
+            this.onLangChange = undefined;
+        }
+        if (typeof this.onDefaultLangChange !== 'undefined') {
+            this.onDefaultLangChange.unsubscribe();
+            this.onDefaultLangChange = undefined;
+        }
+    };
+    /**
+     * @return {?}
+     */
+    TranslatePipe.prototype.ngOnDestroy = /**
+     * @return {?}
+     */
+    function () {
+        this._dispose();
+    };
+    TranslatePipe.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"] },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Pipe"], args: [{
+                    name: 'translate',
+                    pure: false // required to update the value when the promise is resolved
+                },] }
+    ];
+    /** @nocollapse */
+    TranslatePipe.ctorParameters = function () { return [
+        { type: TranslateService },
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ChangeDetectorRef"] }
+    ]; };
+    return TranslatePipe;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+var TranslateModule = /** @class */ (function () {
+    function TranslateModule() {
+    }
+    /**
+     * Use this method in your root module to provide the TranslateService
+     */
+    /**
+     * Use this method in your root module to provide the TranslateService
+     * @param {?=} config
+     * @return {?}
+     */
+    TranslateModule.forRoot = /**
+     * Use this method in your root module to provide the TranslateService
+     * @param {?=} config
+     * @return {?}
+     */
+    function (config) {
+        if (config === void 0) { config = {}; }
+        return {
+            ngModule: TranslateModule,
+            providers: [
+                config.loader || { provide: TranslateLoader, useClass: TranslateFakeLoader },
+                config.compiler || { provide: TranslateCompiler, useClass: TranslateFakeCompiler },
+                config.parser || { provide: TranslateParser, useClass: TranslateDefaultParser },
+                config.missingTranslationHandler || { provide: MissingTranslationHandler, useClass: FakeMissingTranslationHandler },
+                TranslateStore,
+                { provide: USE_STORE, useValue: config.isolate },
+                { provide: USE_DEFAULT_LANG, useValue: config.useDefaultLang },
+                TranslateService
+            ]
+        };
+    };
+    /**
+     * Use this method in your other (non root) modules to import the directive/pipe
+     */
+    /**
+     * Use this method in your other (non root) modules to import the directive/pipe
+     * @param {?=} config
+     * @return {?}
+     */
+    TranslateModule.forChild = /**
+     * Use this method in your other (non root) modules to import the directive/pipe
+     * @param {?=} config
+     * @return {?}
+     */
+    function (config) {
+        if (config === void 0) { config = {}; }
+        return {
+            ngModule: TranslateModule,
+            providers: [
+                config.loader || { provide: TranslateLoader, useClass: TranslateFakeLoader },
+                config.compiler || { provide: TranslateCompiler, useClass: TranslateFakeCompiler },
+                config.parser || { provide: TranslateParser, useClass: TranslateDefaultParser },
+                config.missingTranslationHandler || { provide: MissingTranslationHandler, useClass: FakeMissingTranslationHandler },
+                { provide: USE_STORE, useValue: config.isolate },
+                { provide: USE_DEFAULT_LANG, useValue: config.useDefaultLang },
+                TranslateService
+            ]
+        };
+    };
+    TranslateModule.decorators = [
+        { type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"], args: [{
+                    declarations: [
+                        TranslatePipe,
+                        TranslateDirective
+                    ],
+                    exports: [
+                        TranslatePipe,
+                        TranslateDirective
+                    ]
+                },] }
+    ];
+    return TranslateModule;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
+
+
+
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibmd4LXRyYW5zbGF0ZS1jb3JlLmpzLm1hcCIsInNvdXJjZXMiOlsibmc6Ly9Abmd4LXRyYW5zbGF0ZS9jb3JlL2xpYi90cmFuc2xhdGUubG9hZGVyLnRzIiwibmc6Ly9Abmd4LXRyYW5zbGF0ZS9jb3JlL2xpYi9taXNzaW5nLXRyYW5zbGF0aW9uLWhhbmRsZXIudHMiLCJuZzovL0BuZ3gtdHJhbnNsYXRlL2NvcmUvbGliL3RyYW5zbGF0ZS5jb21waWxlci50cyIsIm5nOi8vQG5neC10cmFuc2xhdGUvY29yZS9saWIvdXRpbC50cyIsIm5nOi8vQG5neC10cmFuc2xhdGUvY29yZS9saWIvdHJhbnNsYXRlLnBhcnNlci50cyIsIm5nOi8vQG5neC10cmFuc2xhdGUvY29yZS9saWIvdHJhbnNsYXRlLnN0b3JlLnRzIiwibmc6Ly9Abmd4LXRyYW5zbGF0ZS9jb3JlL2xpYi90cmFuc2xhdGUuc2VydmljZS50cyIsIm5nOi8vQG5neC10cmFuc2xhdGUvY29yZS9saWIvdHJhbnNsYXRlLmRpcmVjdGl2ZS50cyIsIm5nOi8vQG5neC10cmFuc2xhdGUvY29yZS9saWIvdHJhbnNsYXRlLnBpcGUudHMiLCJuZzovL0BuZ3gtdHJhbnNsYXRlL2NvcmUvcHVibGljX2FwaS50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQge0luamVjdGFibGV9IGZyb20gXCJAYW5ndWxhci9jb3JlXCI7XG5pbXBvcnQge09ic2VydmFibGUsIG9mfSBmcm9tIFwicnhqc1wiO1xuXG5leHBvcnQgYWJzdHJhY3QgY2xhc3MgVHJhbnNsYXRlTG9hZGVyIHtcbiAgYWJzdHJhY3QgZ2V0VHJhbnNsYXRpb24obGFuZzogc3RyaW5nKTogT2JzZXJ2YWJsZTxhbnk+O1xufVxuXG4vKipcbiAqIFRoaXMgbG9hZGVyIGlzIGp1c3QgYSBwbGFjZWhvbGRlciB0aGF0IGRvZXMgbm90aGluZywgaW4gY2FzZSB5b3UgZG9uJ3QgbmVlZCBhIGxvYWRlciBhdCBhbGxcbiAqL1xuQEluamVjdGFibGUoKVxuZXhwb3J0IGNsYXNzIFRyYW5zbGF0ZUZha2VMb2FkZXIgZXh0ZW5kcyBUcmFuc2xhdGVMb2FkZXIge1xuICBnZXRUcmFuc2xhdGlvbihsYW5nOiBzdHJpbmcpOiBPYnNlcnZhYmxlPGFueT4ge1xuICAgIHJldHVybiBvZih7fSk7XG4gIH1cbn1cbiIsImltcG9ydCB7SW5qZWN0YWJsZX0gZnJvbSBcIkBhbmd1bGFyL2NvcmVcIjtcbmltcG9ydCB7VHJhbnNsYXRlU2VydmljZX0gZnJvbSBcIi4vdHJhbnNsYXRlLnNlcnZpY2VcIjtcblxuZXhwb3J0IGludGVyZmFjZSBNaXNzaW5nVHJhbnNsYXRpb25IYW5kbGVyUGFyYW1zIHtcbiAgLyoqXG4gICAqIHRoZSBrZXkgdGhhdCdzIG1pc3NpbmcgaW4gdHJhbnNsYXRpb24gZmlsZXNcbiAgICovXG4gIGtleTogc3RyaW5nO1xuXG4gIC8qKlxuICAgKiBhbiBpbnN0YW5jZSBvZiB0aGUgc2VydmljZSB0aGF0IHdhcyB1bmFibGUgdG8gdHJhbnNsYXRlIHRoZSBrZXkuXG4gICAqL1xuICB0cmFuc2xhdGVTZXJ2aWNlOiBUcmFuc2xhdGVTZXJ2aWNlO1xuXG4gIC8qKlxuICAgKiBpbnRlcnBvbGF0aW9uIHBhcmFtcyB0aGF0IHdlcmUgcGFzc2VkIGFsb25nIGZvciB0cmFuc2xhdGluZyB0aGUgZ2l2ZW4ga2V5LlxuICAgKi9cbiAgaW50ZXJwb2xhdGVQYXJhbXM/OiBPYmplY3Q7XG59XG5cbmV4cG9ydCBhYnN0cmFjdCBjbGFzcyBNaXNzaW5nVHJhbnNsYXRpb25IYW5kbGVyIHtcbiAgLyoqXG4gICAqIEEgZnVuY3Rpb24gdGhhdCBoYW5kbGVzIG1pc3NpbmcgdHJhbnNsYXRpb25zLlxuICAgKlxuICAgKiBAcGFyYW0gcGFyYW1zIGNvbnRleHQgZm9yIHJlc29sdmluZyBhIG1pc3NpbmcgdHJhbnNsYXRpb25cbiAgICogQHJldHVybnMgYSB2YWx1ZSBvciBhbiBvYnNlcnZhYmxlXG4gICAqIElmIGl0IHJldHVybnMgYSB2YWx1ZSwgdGhlbiB0aGlzIHZhbHVlIGlzIHVzZWQuXG4gICAqIElmIGl0IHJldHVybiBhbiBvYnNlcnZhYmxlLCB0aGUgdmFsdWUgcmV0dXJuZWQgYnkgdGhpcyBvYnNlcnZhYmxlIHdpbGwgYmUgdXNlZCAoZXhjZXB0IGlmIHRoZSBtZXRob2Qgd2FzIFwiaW5zdGFudFwiKS5cbiAgICogSWYgaXQgZG9lc24ndCByZXR1cm4gdGhlbiB0aGUga2V5IHdpbGwgYmUgdXNlZCBhcyBhIHZhbHVlXG4gICAqL1xuICBhYnN0cmFjdCBoYW5kbGUocGFyYW1zOiBNaXNzaW5nVHJhbnNsYXRpb25IYW5kbGVyUGFyYW1zKTogYW55O1xufVxuXG4vKipcbiAqIFRoaXMgaGFuZGxlciBpcyBqdXN0IGEgcGxhY2Vob2xkZXIgdGhhdCBkb2VzIG5vdGhpbmcsIGluIGNhc2UgeW91IGRvbid0IG5lZWQgYSBtaXNzaW5nIHRyYW5zbGF0aW9uIGhhbmRsZXIgYXQgYWxsXG4gKi9cbkBJbmplY3RhYmxlKClcbmV4cG9ydCBjbGFzcyBGYWtlTWlzc2luZ1RyYW5zbGF0aW9uSGFuZGxlciBpbXBsZW1lbnRzIE1pc3NpbmdUcmFuc2xhdGlvbkhhbmRsZXIge1xuICBoYW5kbGUocGFyYW1zOiBNaXNzaW5nVHJhbnNsYXRpb25IYW5kbGVyUGFyYW1zKTogc3RyaW5nIHtcbiAgICByZXR1cm4gcGFyYW1zLmtleTtcbiAgfVxufVxuIiwiaW1wb3J0IHtJbmplY3RhYmxlfSBmcm9tIFwiQGFuZ3VsYXIvY29yZVwiO1xuXG5leHBvcnQgYWJzdHJhY3QgY2xhc3MgVHJhbnNsYXRlQ29tcGlsZXIge1xuICBhYnN0cmFjdCBjb21waWxlKHZhbHVlOiBzdHJpbmcsIGxhbmc6IHN0cmluZyk6IHN0cmluZyB8IEZ1bmN0aW9uO1xuXG4gIGFic3RyYWN0IGNvbXBpbGVUcmFuc2xhdGlvbnModHJhbnNsYXRpb25zOiBhbnksIGxhbmc6IHN0cmluZyk6IGFueTtcbn1cblxuLyoqXG4gKiBUaGlzIGNvbXBpbGVyIGlzIGp1c3QgYSBwbGFjZWhvbGRlciB0aGF0IGRvZXMgbm90aGluZywgaW4gY2FzZSB5b3UgZG9uJ3QgbmVlZCBhIGNvbXBpbGVyIGF0IGFsbFxuICovXG5ASW5qZWN0YWJsZSgpXG5leHBvcnQgY2xhc3MgVHJhbnNsYXRlRmFrZUNvbXBpbGVyIGV4dGVuZHMgVHJhbnNsYXRlQ29tcGlsZXIge1xuICBjb21waWxlKHZhbHVlOiBzdHJpbmcsIGxhbmc6IHN0cmluZyk6IHN0cmluZyB8IEZ1bmN0aW9uIHtcbiAgICByZXR1cm4gdmFsdWU7XG4gIH1cblxuICBjb21waWxlVHJhbnNsYXRpb25zKHRyYW5zbGF0aW9uczogYW55LCBsYW5nOiBzdHJpbmcpOiBhbnkge1xuICAgIHJldHVybiB0cmFuc2xhdGlvbnM7XG4gIH1cbn1cbiIsIi8qIHRzbGludDpkaXNhYmxlICovXG4vKipcbiAqIERldGVybWluZXMgaWYgdHdvIG9iamVjdHMgb3IgdHdvIHZhbHVlcyBhcmUgZXF1aXZhbGVudC5cbiAqXG4gKiBUd28gb2JqZWN0cyBvciB2YWx1ZXMgYXJlIGNvbnNpZGVyZWQgZXF1aXZhbGVudCBpZiBhdCBsZWFzdCBvbmUgb2YgdGhlIGZvbGxvd2luZyBpcyB0cnVlOlxuICpcbiAqICogQm90aCBvYmplY3RzIG9yIHZhbHVlcyBwYXNzIGA9PT1gIGNvbXBhcmlzb24uXG4gKiAqIEJvdGggb2JqZWN0cyBvciB2YWx1ZXMgYXJlIG9mIHRoZSBzYW1lIHR5cGUgYW5kIGFsbCBvZiB0aGVpciBwcm9wZXJ0aWVzIGFyZSBlcXVhbCBieVxuICogICBjb21wYXJpbmcgdGhlbSB3aXRoIGBlcXVhbHNgLlxuICpcbiAqIEBwYXJhbSBvMSBPYmplY3Qgb3IgdmFsdWUgdG8gY29tcGFyZS5cbiAqIEBwYXJhbSBvMiBPYmplY3Qgb3IgdmFsdWUgdG8gY29tcGFyZS5cbiAqIEByZXR1cm5zIHRydWUgaWYgYXJndW1lbnRzIGFyZSBlcXVhbC5cbiAqL1xuZXhwb3J0IGZ1bmN0aW9uIGVxdWFscyhvMTogYW55LCBvMjogYW55KTogYm9vbGVhbiB7XG4gIGlmIChvMSA9PT0gbzIpIHJldHVybiB0cnVlO1xuICBpZiAobzEgPT09IG51bGwgfHwgbzIgPT09IG51bGwpIHJldHVybiBmYWxzZTtcbiAgaWYgKG8xICE9PSBvMSAmJiBvMiAhPT0gbzIpIHJldHVybiB0cnVlOyAvLyBOYU4gPT09IE5hTlxuICBsZXQgdDEgPSB0eXBlb2YgbzEsIHQyID0gdHlwZW9mIG8yLCBsZW5ndGg6IG51bWJlciwga2V5OiBhbnksIGtleVNldDogYW55O1xuICBpZiAodDEgPT0gdDIgJiYgdDEgPT0gJ29iamVjdCcpIHtcbiAgICBpZiAoQXJyYXkuaXNBcnJheShvMSkpIHtcbiAgICAgIGlmICghQXJyYXkuaXNBcnJheShvMikpIHJldHVybiBmYWxzZTtcbiAgICAgIGlmICgobGVuZ3RoID0gbzEubGVuZ3RoKSA9PSBvMi5sZW5ndGgpIHtcbiAgICAgICAgZm9yIChrZXkgPSAwOyBrZXkgPCBsZW5ndGg7IGtleSsrKSB7XG4gICAgICAgICAgaWYgKCFlcXVhbHMobzFba2V5XSwgbzJba2V5XSkpIHJldHVybiBmYWxzZTtcbiAgICAgICAgfVxuICAgICAgICByZXR1cm4gdHJ1ZTtcbiAgICAgIH1cbiAgICB9IGVsc2Uge1xuICAgICAgaWYgKEFycmF5LmlzQXJyYXkobzIpKSB7XG4gICAgICAgIHJldHVybiBmYWxzZTtcbiAgICAgIH1cbiAgICAgIGtleVNldCA9IE9iamVjdC5jcmVhdGUobnVsbCk7XG4gICAgICBmb3IgKGtleSBpbiBvMSkge1xuICAgICAgICBpZiAoIWVxdWFscyhvMVtrZXldLCBvMltrZXldKSkge1xuICAgICAgICAgIHJldHVybiBmYWxzZTtcbiAgICAgICAgfVxuICAgICAgICBrZXlTZXRba2V5XSA9IHRydWU7XG4gICAgICB9XG4gICAgICBmb3IgKGtleSBpbiBvMikge1xuICAgICAgICBpZiAoIShrZXkgaW4ga2V5U2V0KSAmJiB0eXBlb2YgbzJba2V5XSAhPT0gJ3VuZGVmaW5lZCcpIHtcbiAgICAgICAgICByZXR1cm4gZmFsc2U7XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICAgIHJldHVybiB0cnVlO1xuICAgIH1cbiAgfVxuICByZXR1cm4gZmFsc2U7XG59XG4vKiB0c2xpbnQ6ZW5hYmxlICovXG5cbmV4cG9ydCBmdW5jdGlvbiBpc0RlZmluZWQodmFsdWU6IGFueSk6IGJvb2xlYW4ge1xuICByZXR1cm4gdHlwZW9mIHZhbHVlICE9PSAndW5kZWZpbmVkJyAmJiB2YWx1ZSAhPT0gbnVsbDtcbn1cblxuZXhwb3J0IGZ1bmN0aW9uIGlzT2JqZWN0KGl0ZW06IGFueSk6IGJvb2xlYW4ge1xuICByZXR1cm4gKGl0ZW0gJiYgdHlwZW9mIGl0ZW0gPT09ICdvYmplY3QnICYmICFBcnJheS5pc0FycmF5KGl0ZW0pKTtcbn1cblxuZXhwb3J0IGZ1bmN0aW9uIG1lcmdlRGVlcCh0YXJnZXQ6IGFueSwgc291cmNlOiBhbnkpOiBhbnkge1xuICBsZXQgb3V0cHV0ID0gT2JqZWN0LmFzc2lnbih7fSwgdGFyZ2V0KTtcbiAgaWYgKGlzT2JqZWN0KHRhcmdldCkgJiYgaXNPYmplY3Qoc291cmNlKSkge1xuICAgIE9iamVjdC5rZXlzKHNvdXJjZSkuZm9yRWFjaCgoa2V5OiBhbnkpID0+IHtcbiAgICAgIGlmIChpc09iamVjdChzb3VyY2Vba2V5XSkpIHtcbiAgICAgICAgaWYgKCEoa2V5IGluIHRhcmdldCkpIHtcbiAgICAgICAgICBPYmplY3QuYXNzaWduKG91dHB1dCwge1trZXldOiBzb3VyY2Vba2V5XX0pO1xuICAgICAgICB9IGVsc2Uge1xuICAgICAgICAgIG91dHB1dFtrZXldID0gbWVyZ2VEZWVwKHRhcmdldFtrZXldLCBzb3VyY2Vba2V5XSk7XG4gICAgICAgIH1cbiAgICAgIH0gZWxzZSB7XG4gICAgICAgIE9iamVjdC5hc3NpZ24ob3V0cHV0LCB7W2tleV06IHNvdXJjZVtrZXldfSk7XG4gICAgICB9XG4gICAgfSk7XG4gIH1cbiAgcmV0dXJuIG91dHB1dDtcbn1cbiIsImltcG9ydCB7SW5qZWN0YWJsZX0gZnJvbSBcIkBhbmd1bGFyL2NvcmVcIjtcbmltcG9ydCB7aXNEZWZpbmVkfSBmcm9tIFwiLi91dGlsXCI7XG5cbmV4cG9ydCBhYnN0cmFjdCBjbGFzcyBUcmFuc2xhdGVQYXJzZXIge1xuICAvKipcbiAgICogSW50ZXJwb2xhdGVzIGEgc3RyaW5nIHRvIHJlcGxhY2UgcGFyYW1ldGVyc1xuICAgKiBcIlRoaXMgaXMgYSB7eyBrZXkgfX1cIiA9PT4gXCJUaGlzIGlzIGEgdmFsdWVcIiwgd2l0aCBwYXJhbXMgPSB7IGtleTogXCJ2YWx1ZVwiIH1cbiAgICogQHBhcmFtIGV4cHJcbiAgICogQHBhcmFtIHBhcmFtc1xuICAgKi9cbiAgYWJzdHJhY3QgaW50ZXJwb2xhdGUoZXhwcjogc3RyaW5nIHwgRnVuY3Rpb24sIHBhcmFtcz86IGFueSk6IHN0cmluZztcblxuICAvKipcbiAgICogR2V0cyBhIHZhbHVlIGZyb20gYW4gb2JqZWN0IGJ5IGNvbXBvc2VkIGtleVxuICAgKiBwYXJzZXIuZ2V0VmFsdWUoeyBrZXkxOiB7IGtleUE6ICd2YWx1ZUknIH19LCAna2V5MS5rZXlBJykgPT0+ICd2YWx1ZUknXG4gICAqIEBwYXJhbSB0YXJnZXRcbiAgICogQHBhcmFtIGtleVxuICAgKi9cbiAgYWJzdHJhY3QgZ2V0VmFsdWUodGFyZ2V0OiBhbnksIGtleTogc3RyaW5nKTogYW55XG59XG5cbkBJbmplY3RhYmxlKClcbmV4cG9ydCBjbGFzcyBUcmFuc2xhdGVEZWZhdWx0UGFyc2VyIGV4dGVuZHMgVHJhbnNsYXRlUGFyc2VyIHtcbiAgdGVtcGxhdGVNYXRjaGVyOiBSZWdFeHAgPSAve3tcXHM/KFtee31cXHNdKilcXHM/fX0vZztcblxuICBwdWJsaWMgaW50ZXJwb2xhdGUoZXhwcjogc3RyaW5nIHwgRnVuY3Rpb24sIHBhcmFtcz86IGFueSk6IHN0cmluZyB7XG4gICAgbGV0IHJlc3VsdDogc3RyaW5nO1xuXG4gICAgaWYgKHR5cGVvZiBleHByID09PSAnc3RyaW5nJykge1xuICAgICAgcmVzdWx0ID0gdGhpcy5pbnRlcnBvbGF0ZVN0cmluZyhleHByLCBwYXJhbXMpO1xuICAgIH0gZWxzZSBpZiAodHlwZW9mIGV4cHIgPT09ICdmdW5jdGlvbicpIHtcbiAgICAgIHJlc3VsdCA9IHRoaXMuaW50ZXJwb2xhdGVGdW5jdGlvbihleHByLCBwYXJhbXMpO1xuICAgIH0gZWxzZSB7XG4gICAgICAvLyB0aGlzIHNob3VsZCBub3QgaGFwcGVuLCBidXQgYW4gdW5yZWxhdGVkIFRyYW5zbGF0ZVNlcnZpY2UgdGVzdCBkZXBlbmRzIG9uIGl0XG4gICAgICByZXN1bHQgPSBleHByIGFzIHN0cmluZztcbiAgICB9XG5cbiAgICByZXR1cm4gcmVzdWx0O1xuICB9XG5cbiAgZ2V0VmFsdWUodGFyZ2V0OiBhbnksIGtleTogc3RyaW5nKTogYW55IHtcbiAgICBsZXQga2V5cyA9IGtleS5zcGxpdCgnLicpO1xuICAgIGtleSA9ICcnO1xuICAgIGRvIHtcbiAgICAgIGtleSArPSBrZXlzLnNoaWZ0KCk7XG4gICAgICBpZiAoaXNEZWZpbmVkKHRhcmdldCkgJiYgaXNEZWZpbmVkKHRhcmdldFtrZXldKSAmJiAodHlwZW9mIHRhcmdldFtrZXldID09PSAnb2JqZWN0JyB8fCAha2V5cy5sZW5ndGgpKSB7XG4gICAgICAgIHRhcmdldCA9IHRhcmdldFtrZXldO1xuICAgICAgICBrZXkgPSAnJztcbiAgICAgIH0gZWxzZSBpZiAoIWtleXMubGVuZ3RoKSB7XG4gICAgICAgIHRhcmdldCA9IHVuZGVmaW5lZDtcbiAgICAgIH0gZWxzZSB7XG4gICAgICAgIGtleSArPSAnLic7XG4gICAgICB9XG4gICAgfSB3aGlsZSAoa2V5cy5sZW5ndGgpO1xuXG4gICAgcmV0dXJuIHRhcmdldDtcbiAgfVxuXG4gIHByaXZhdGUgaW50ZXJwb2xhdGVGdW5jdGlvbihmbjogRnVuY3Rpb24sIHBhcmFtcz86IGFueSkge1xuICAgIHJldHVybiBmbihwYXJhbXMpO1xuICB9XG5cbiAgcHJpdmF0ZSBpbnRlcnBvbGF0ZVN0cmluZyhleHByOiBzdHJpbmcsIHBhcmFtcz86IGFueSkge1xuICAgIGlmICghcGFyYW1zKSB7XG4gICAgICByZXR1cm4gZXhwcjtcbiAgICB9XG5cbiAgICByZXR1cm4gZXhwci5yZXBsYWNlKHRoaXMudGVtcGxhdGVNYXRjaGVyLCAoc3Vic3RyaW5nOiBzdHJpbmcsIGI6IHN0cmluZykgPT4ge1xuICAgICAgbGV0IHIgPSB0aGlzLmdldFZhbHVlKHBhcmFtcywgYik7XG4gICAgICByZXR1cm4gaXNEZWZpbmVkKHIpID8gciA6IHN1YnN0cmluZztcbiAgICB9KTtcbiAgfVxufVxuIiwiaW1wb3J0IHtFdmVudEVtaXR0ZXJ9IGZyb20gXCJAYW5ndWxhci9jb3JlXCI7XG5pbXBvcnQge0RlZmF1bHRMYW5nQ2hhbmdlRXZlbnQsIExhbmdDaGFuZ2VFdmVudCwgVHJhbnNsYXRpb25DaGFuZ2VFdmVudH0gZnJvbSBcIi4vdHJhbnNsYXRlLnNlcnZpY2VcIjtcblxuZXhwb3J0IGNsYXNzIFRyYW5zbGF0ZVN0b3JlIHtcbiAgLyoqXG4gICAqIFRoZSBkZWZhdWx0IGxhbmcgdG8gZmFsbGJhY2sgd2hlbiB0cmFuc2xhdGlvbnMgYXJlIG1pc3Npbmcgb24gdGhlIGN1cnJlbnQgbGFuZ1xuICAgKi9cbiAgcHVibGljIGRlZmF1bHRMYW5nOiBzdHJpbmc7XG5cbiAgLyoqXG4gICAqIFRoZSBsYW5nIGN1cnJlbnRseSB1c2VkXG4gICAqL1xuICBwdWJsaWMgY3VycmVudExhbmc6IHN0cmluZyA9IHRoaXMuZGVmYXVsdExhbmc7XG5cbiAgLyoqXG4gICAqIGEgbGlzdCBvZiB0cmFuc2xhdGlvbnMgcGVyIGxhbmdcbiAgICovXG4gIHB1YmxpYyB0cmFuc2xhdGlvbnM6IGFueSA9IHt9O1xuXG4gIC8qKlxuICAgKiBhbiBhcnJheSBvZiBsYW5nc1xuICAgKi9cbiAgcHVibGljIGxhbmdzOiBBcnJheTxzdHJpbmc+ID0gW107XG5cbiAgLyoqXG4gICAqIEFuIEV2ZW50RW1pdHRlciB0byBsaXN0ZW4gdG8gdHJhbnNsYXRpb24gY2hhbmdlIGV2ZW50c1xuICAgKiBvblRyYW5zbGF0aW9uQ2hhbmdlLnN1YnNjcmliZSgocGFyYW1zOiBUcmFuc2xhdGlvbkNoYW5nZUV2ZW50KSA9PiB7XG4gICAgICogICAgIC8vIGRvIHNvbWV0aGluZ1xuICAgICAqIH0pO1xuICAgKi9cbiAgcHVibGljIG9uVHJhbnNsYXRpb25DaGFuZ2U6IEV2ZW50RW1pdHRlcjxUcmFuc2xhdGlvbkNoYW5nZUV2ZW50PiA9IG5ldyBFdmVudEVtaXR0ZXI8VHJhbnNsYXRpb25DaGFuZ2VFdmVudD4oKTtcblxuICAvKipcbiAgICogQW4gRXZlbnRFbWl0dGVyIHRvIGxpc3RlbiB0byBsYW5nIGNoYW5nZSBldmVudHNcbiAgICogb25MYW5nQ2hhbmdlLnN1YnNjcmliZSgocGFyYW1zOiBMYW5nQ2hhbmdlRXZlbnQpID0+IHtcbiAgICAgKiAgICAgLy8gZG8gc29tZXRoaW5nXG4gICAgICogfSk7XG4gICAqL1xuICBwdWJsaWMgb25MYW5nQ2hhbmdlOiBFdmVudEVtaXR0ZXI8TGFuZ0NoYW5nZUV2ZW50PiA9IG5ldyBFdmVudEVtaXR0ZXI8TGFuZ0NoYW5nZUV2ZW50PigpO1xuXG4gIC8qKlxuICAgKiBBbiBFdmVudEVtaXR0ZXIgdG8gbGlzdGVuIHRvIGRlZmF1bHQgbGFuZyBjaGFuZ2UgZXZlbnRzXG4gICAqIG9uRGVmYXVsdExhbmdDaGFuZ2Uuc3Vic2NyaWJlKChwYXJhbXM6IERlZmF1bHRMYW5nQ2hhbmdlRXZlbnQpID0+IHtcbiAgICAgKiAgICAgLy8gZG8gc29tZXRoaW5nXG4gICAgICogfSk7XG4gICAqL1xuICBwdWJsaWMgb25EZWZhdWx0TGFuZ0NoYW5nZTogRXZlbnRFbWl0dGVyPERlZmF1bHRMYW5nQ2hhbmdlRXZlbnQ+ID0gbmV3IEV2ZW50RW1pdHRlcjxEZWZhdWx0TGFuZ0NoYW5nZUV2ZW50PigpO1xufVxuIiwiaW1wb3J0IHtFdmVudEVtaXR0ZXIsIEluamVjdCwgSW5qZWN0YWJsZSwgSW5qZWN0aW9uVG9rZW59IGZyb20gXCJAYW5ndWxhci9jb3JlXCI7XG5pbXBvcnQge2NvbmNhdCwgbWVyZ2UsIE9ic2VydmFibGUsIE9ic2VydmVyLCBvZn0gZnJvbSBcInJ4anNcIjtcbmltcG9ydCB7bWFwLCBzaGFyZSwgc3dpdGNoTWFwLCB0YWtlLCB0b0FycmF5fSBmcm9tIFwicnhqcy9vcGVyYXRvcnNcIjtcbmltcG9ydCB7TWlzc2luZ1RyYW5zbGF0aW9uSGFuZGxlciwgTWlzc2luZ1RyYW5zbGF0aW9uSGFuZGxlclBhcmFtc30gZnJvbSBcIi4vbWlzc2luZy10cmFuc2xhdGlvbi1oYW5kbGVyXCI7XG5pbXBvcnQge1RyYW5zbGF0ZUNvbXBpbGVyfSBmcm9tIFwiLi90cmFuc2xhdGUuY29tcGlsZXJcIjtcbmltcG9ydCB7VHJhbnNsYXRlTG9hZGVyfSBmcm9tIFwiLi90cmFuc2xhdGUubG9hZGVyXCI7XG5pbXBvcnQge1RyYW5zbGF0ZVBhcnNlcn0gZnJvbSBcIi4vdHJhbnNsYXRlLnBhcnNlclwiO1xuXG5pbXBvcnQge1RyYW5zbGF0ZVN0b3JlfSBmcm9tIFwiLi90cmFuc2xhdGUuc3RvcmVcIjtcbmltcG9ydCB7aXNEZWZpbmVkLCBtZXJnZURlZXB9IGZyb20gXCIuL3V0aWxcIjtcblxuZXhwb3J0IGNvbnN0IFVTRV9TVE9SRSA9IG5ldyBJbmplY3Rpb25Ub2tlbjxzdHJpbmc+KCdVU0VfU1RPUkUnKTtcbmV4cG9ydCBjb25zdCBVU0VfREVGQVVMVF9MQU5HID0gbmV3IEluamVjdGlvblRva2VuPHN0cmluZz4oJ1VTRV9ERUZBVUxUX0xBTkcnKTtcblxuZXhwb3J0IGludGVyZmFjZSBUcmFuc2xhdGlvbkNoYW5nZUV2ZW50IHtcbiAgdHJhbnNsYXRpb25zOiBhbnk7XG4gIGxhbmc6IHN0cmluZztcbn1cblxuZXhwb3J0IGludGVyZmFjZSBMYW5nQ2hhbmdlRXZlbnQge1xuICBsYW5nOiBzdHJpbmc7XG4gIHRyYW5zbGF0aW9uczogYW55O1xufVxuXG5leHBvcnQgaW50ZXJmYWNlIERlZmF1bHRMYW5nQ2hhbmdlRXZlbnQge1xuICBsYW5nOiBzdHJpbmc7XG4gIHRyYW5zbGF0aW9uczogYW55O1xufVxuXG5kZWNsYXJlIGludGVyZmFjZSBXaW5kb3cge1xuICBuYXZpZ2F0b3I6IGFueTtcbn1cblxuZGVjbGFyZSBjb25zdCB3aW5kb3c6IFdpbmRvdztcblxuQEluamVjdGFibGUoKVxuZXhwb3J0IGNsYXNzIFRyYW5zbGF0ZVNlcnZpY2Uge1xuICBwcml2YXRlIGxvYWRpbmdUcmFuc2xhdGlvbnM6IE9ic2VydmFibGU8YW55PjtcbiAgcHJpdmF0ZSBwZW5kaW5nOiBib29sZWFuID0gZmFsc2U7XG4gIHByaXZhdGUgX29uVHJhbnNsYXRpb25DaGFuZ2U6IEV2ZW50RW1pdHRlcjxUcmFuc2xhdGlvbkNoYW5nZUV2ZW50PiA9IG5ldyBFdmVudEVtaXR0ZXI8VHJhbnNsYXRpb25DaGFuZ2VFdmVudD4oKTtcbiAgcHJpdmF0ZSBfb25MYW5nQ2hhbmdlOiBFdmVudEVtaXR0ZXI8TGFuZ0NoYW5nZUV2ZW50PiA9IG5ldyBFdmVudEVtaXR0ZXI8TGFuZ0NoYW5nZUV2ZW50PigpO1xuICBwcml2YXRlIF9vbkRlZmF1bHRMYW5nQ2hhbmdlOiBFdmVudEVtaXR0ZXI8RGVmYXVsdExhbmdDaGFuZ2VFdmVudD4gPSBuZXcgRXZlbnRFbWl0dGVyPERlZmF1bHRMYW5nQ2hhbmdlRXZlbnQ+KCk7XG4gIHByaXZhdGUgX2RlZmF1bHRMYW5nOiBzdHJpbmc7XG4gIHByaXZhdGUgX2N1cnJlbnRMYW5nOiBzdHJpbmc7XG4gIHByaXZhdGUgX2xhbmdzOiBBcnJheTxzdHJpbmc+ID0gW107XG4gIHByaXZhdGUgX3RyYW5zbGF0aW9uczogYW55ID0ge307XG4gIHByaXZhdGUgX3RyYW5zbGF0aW9uUmVxdWVzdHM6IGFueSA9IHt9O1xuXG4gIC8qKlxuICAgKiBBbiBFdmVudEVtaXR0ZXIgdG8gbGlzdGVuIHRvIHRyYW5zbGF0aW9uIGNoYW5nZSBldmVudHNcbiAgICogb25UcmFuc2xhdGlvbkNoYW5nZS5zdWJzY3JpYmUoKHBhcmFtczogVHJhbnNsYXRpb25DaGFuZ2VFdmVudCkgPT4ge1xuICAgICAqICAgICAvLyBkbyBzb21ldGhpbmdcbiAgICAgKiB9KTtcbiAgICovXG4gIGdldCBvblRyYW5zbGF0aW9uQ2hhbmdlKCk6IEV2ZW50RW1pdHRlcjxUcmFuc2xhdGlvbkNoYW5nZUV2ZW50PiB7XG4gICAgcmV0dXJuIHRoaXMuaXNvbGF0ZSA/IHRoaXMuX29uVHJhbnNsYXRpb25DaGFuZ2UgOiB0aGlzLnN0b3JlLm9uVHJhbnNsYXRpb25DaGFuZ2U7XG4gIH1cblxuICAvKipcbiAgICogQW4gRXZlbnRFbWl0dGVyIHRvIGxpc3RlbiB0byBsYW5nIGNoYW5nZSBldmVudHNcbiAgICogb25MYW5nQ2hhbmdlLnN1YnNjcmliZSgocGFyYW1zOiBMYW5nQ2hhbmdlRXZlbnQpID0+IHtcbiAgICAgKiAgICAgLy8gZG8gc29tZXRoaW5nXG4gICAgICogfSk7XG4gICAqL1xuICBnZXQgb25MYW5nQ2hhbmdlKCk6IEV2ZW50RW1pdHRlcjxMYW5nQ2hhbmdlRXZlbnQ+IHtcbiAgICByZXR1cm4gdGhpcy5pc29sYXRlID8gdGhpcy5fb25MYW5nQ2hhbmdlIDogdGhpcy5zdG9yZS5vbkxhbmdDaGFuZ2U7XG4gIH1cblxuICAvKipcbiAgICogQW4gRXZlbnRFbWl0dGVyIHRvIGxpc3RlbiB0byBkZWZhdWx0IGxhbmcgY2hhbmdlIGV2ZW50c1xuICAgKiBvbkRlZmF1bHRMYW5nQ2hhbmdlLnN1YnNjcmliZSgocGFyYW1zOiBEZWZhdWx0TGFuZ0NoYW5nZUV2ZW50KSA9PiB7XG4gICAgICogICAgIC8vIGRvIHNvbWV0aGluZ1xuICAgICAqIH0pO1xuICAgKi9cbiAgZ2V0IG9uRGVmYXVsdExhbmdDaGFuZ2UoKSB7XG4gICAgcmV0dXJuIHRoaXMuaXNvbGF0ZSA/IHRoaXMuX29uRGVmYXVsdExhbmdDaGFuZ2UgOiB0aGlzLnN0b3JlLm9uRGVmYXVsdExhbmdDaGFuZ2U7XG4gIH1cblxuICAvKipcbiAgICogVGhlIGRlZmF1bHQgbGFuZyB0byBmYWxsYmFjayB3aGVuIHRyYW5zbGF0aW9ucyBhcmUgbWlzc2luZyBvbiB0aGUgY3VycmVudCBsYW5nXG4gICAqL1xuICBnZXQgZGVmYXVsdExhbmcoKTogc3RyaW5nIHtcbiAgICByZXR1cm4gdGhpcy5pc29sYXRlID8gdGhpcy5fZGVmYXVsdExhbmcgOiB0aGlzLnN0b3JlLmRlZmF1bHRMYW5nO1xuICB9XG5cbiAgc2V0IGRlZmF1bHRMYW5nKGRlZmF1bHRMYW5nOiBzdHJpbmcpIHtcbiAgICBpZiAodGhpcy5pc29sYXRlKSB7XG4gICAgICB0aGlzLl9kZWZhdWx0TGFuZyA9IGRlZmF1bHRMYW5nO1xuICAgIH0gZWxzZSB7XG4gICAgICB0aGlzLnN0b3JlLmRlZmF1bHRMYW5nID0gZGVmYXVsdExhbmc7XG4gICAgfVxuICB9XG5cbiAgLyoqXG4gICAqIFRoZSBsYW5nIGN1cnJlbnRseSB1c2VkXG4gICAqL1xuICBnZXQgY3VycmVudExhbmcoKTogc3RyaW5nIHtcbiAgICByZXR1cm4gdGhpcy5pc29sYXRlID8gdGhpcy5fY3VycmVudExhbmcgOiB0aGlzLnN0b3JlLmN1cnJlbnRMYW5nO1xuICB9XG5cbiAgc2V0IGN1cnJlbnRMYW5nKGN1cnJlbnRMYW5nOiBzdHJpbmcpIHtcbiAgICBpZiAodGhpcy5pc29sYXRlKSB7XG4gICAgICB0aGlzLl9jdXJyZW50TGFuZyA9IGN1cnJlbnRMYW5nO1xuICAgIH0gZWxzZSB7XG4gICAgICB0aGlzLnN0b3JlLmN1cnJlbnRMYW5nID0gY3VycmVudExhbmc7XG4gICAgfVxuICB9XG5cbiAgLyoqXG4gICAqIGFuIGFycmF5IG9mIGxhbmdzXG4gICAqL1xuICBnZXQgbGFuZ3MoKTogc3RyaW5nW10ge1xuICAgIHJldHVybiB0aGlzLmlzb2xhdGUgPyB0aGlzLl9sYW5ncyA6IHRoaXMuc3RvcmUubGFuZ3M7XG4gIH1cblxuICBzZXQgbGFuZ3MobGFuZ3M6IHN0cmluZ1tdKSB7XG4gICAgaWYgKHRoaXMuaXNvbGF0ZSkge1xuICAgICAgdGhpcy5fbGFuZ3MgPSBsYW5ncztcbiAgICB9IGVsc2Uge1xuICAgICAgdGhpcy5zdG9yZS5sYW5ncyA9IGxhbmdzO1xuICAgIH1cbiAgfVxuXG4gIC8qKlxuICAgKiBhIGxpc3Qgb2YgdHJhbnNsYXRpb25zIHBlciBsYW5nXG4gICAqL1xuICBnZXQgdHJhbnNsYXRpb25zKCk6IGFueSB7XG4gICAgcmV0dXJuIHRoaXMuaXNvbGF0ZSA/IHRoaXMuX3RyYW5zbGF0aW9ucyA6IHRoaXMuc3RvcmUudHJhbnNsYXRpb25zO1xuICB9XG5cbiAgc2V0IHRyYW5zbGF0aW9ucyh0cmFuc2xhdGlvbnM6IGFueSkge1xuICAgIGlmICh0aGlzLmlzb2xhdGUpIHtcbiAgICAgIHRoaXMuX3RyYW5zbGF0aW9ucyA9IHRyYW5zbGF0aW9ucztcbiAgICB9IGVsc2Uge1xuICAgICAgdGhpcy5zdG9yZS50cmFuc2xhdGlvbnMgPSB0cmFuc2xhdGlvbnM7XG4gICAgfVxuICB9XG5cbiAgLyoqXG4gICAqXG4gICAqIEBwYXJhbSBzdG9yZSBhbiBpbnN0YW5jZSBvZiB0aGUgc3RvcmUgKHRoYXQgaXMgc3VwcG9zZWQgdG8gYmUgdW5pcXVlKVxuICAgKiBAcGFyYW0gY3VycmVudExvYWRlciBBbiBpbnN0YW5jZSBvZiB0aGUgbG9hZGVyIGN1cnJlbnRseSB1c2VkXG4gICAqIEBwYXJhbSBjb21waWxlciBBbiBpbnN0YW5jZSBvZiB0aGUgY29tcGlsZXIgY3VycmVudGx5IHVzZWRcbiAgICogQHBhcmFtIHBhcnNlciBBbiBpbnN0YW5jZSBvZiB0aGUgcGFyc2VyIGN1cnJlbnRseSB1c2VkXG4gICAqIEBwYXJhbSBtaXNzaW5nVHJhbnNsYXRpb25IYW5kbGVyIEEgaGFuZGxlciBmb3IgbWlzc2luZyB0cmFuc2xhdGlvbnMuXG4gICAqIEBwYXJhbSBpc29sYXRlIHdoZXRoZXIgdGhpcyBzZXJ2aWNlIHNob3VsZCB1c2UgdGhlIHN0b3JlIG9yIG5vdFxuICAgKiBAcGFyYW0gdXNlRGVmYXVsdExhbmcgd2hldGhlciB3ZSBzaG91bGQgdXNlIGRlZmF1bHQgbGFuZ3VhZ2UgdHJhbnNsYXRpb24gd2hlbiBjdXJyZW50IGxhbmd1YWdlIHRyYW5zbGF0aW9uIGlzIG1pc3NpbmcuXG4gICAqL1xuICBjb25zdHJ1Y3RvcihwdWJsaWMgc3RvcmU6IFRyYW5zbGF0ZVN0b3JlLFxuICAgICAgICAgICAgICBwdWJsaWMgY3VycmVudExvYWRlcjogVHJhbnNsYXRlTG9hZGVyLFxuICAgICAgICAgICAgICBwdWJsaWMgY29tcGlsZXI6IFRyYW5zbGF0ZUNvbXBpbGVyLFxuICAgICAgICAgICAgICBwdWJsaWMgcGFyc2VyOiBUcmFuc2xhdGVQYXJzZXIsXG4gICAgICAgICAgICAgIHB1YmxpYyBtaXNzaW5nVHJhbnNsYXRpb25IYW5kbGVyOiBNaXNzaW5nVHJhbnNsYXRpb25IYW5kbGVyLFxuICAgICAgICAgICAgICBASW5qZWN0KFVTRV9ERUZBVUxUX0xBTkcpIHByaXZhdGUgdXNlRGVmYXVsdExhbmc6IGJvb2xlYW4gPSB0cnVlLFxuICAgICAgICAgICAgICBASW5qZWN0KFVTRV9TVE9SRSkgcHJpdmF0ZSBpc29sYXRlOiBib29sZWFuID0gZmFsc2UpIHtcbiAgfVxuXG4gIC8qKlxuICAgKiBTZXRzIHRoZSBkZWZhdWx0IGxhbmd1YWdlIHRvIHVzZSBhcyBhIGZhbGxiYWNrXG4gICAqL1xuICBwdWJsaWMgc2V0RGVmYXVsdExhbmcobGFuZzogc3RyaW5nKTogdm9pZCB7XG4gICAgaWYgKGxhbmcgPT09IHRoaXMuZGVmYXVsdExhbmcpIHtcbiAgICAgIHJldHVybjtcbiAgICB9XG5cbiAgICBsZXQgcGVuZGluZzogT2JzZXJ2YWJsZTxhbnk+ID0gdGhpcy5yZXRyaWV2ZVRyYW5zbGF0aW9ucyhsYW5nKTtcblxuICAgIGlmICh0eXBlb2YgcGVuZGluZyAhPT0gXCJ1bmRlZmluZWRcIikge1xuICAgICAgLy8gb24gaW5pdCBzZXQgdGhlIGRlZmF1bHRMYW5nIGltbWVkaWF0ZWx5XG4gICAgICBpZiAoIXRoaXMuZGVmYXVsdExhbmcpIHtcbiAgICAgICAgdGhpcy5kZWZhdWx0TGFuZyA9IGxhbmc7XG4gICAgICB9XG5cbiAgICAgIHBlbmRpbmcucGlwZSh0YWtlKDEpKVxuICAgICAgICAuc3Vic2NyaWJlKChyZXM6IGFueSkgPT4ge1xuICAgICAgICAgIHRoaXMuY2hhbmdlRGVmYXVsdExhbmcobGFuZyk7XG4gICAgICAgIH0pO1xuICAgIH0gZWxzZSB7IC8vIHdlIGFscmVhZHkgaGF2ZSB0aGlzIGxhbmd1YWdlXG4gICAgICB0aGlzLmNoYW5nZURlZmF1bHRMYW5nKGxhbmcpO1xuICAgIH1cbiAgfVxuXG4gIC8qKlxuICAgKiBHZXRzIHRoZSBkZWZhdWx0IGxhbmd1YWdlIHVzZWRcbiAgICovXG4gIHB1YmxpYyBnZXREZWZhdWx0TGFuZygpOiBzdHJpbmcge1xuICAgIHJldHVybiB0aGlzLmRlZmF1bHRMYW5nO1xuICB9XG5cbiAgLyoqXG4gICAqIENoYW5nZXMgdGhlIGxhbmcgY3VycmVudGx5IHVzZWRcbiAgICovXG4gIHB1YmxpYyB1c2UobGFuZzogc3RyaW5nKTogT2JzZXJ2YWJsZTxhbnk+IHtcbiAgICAvLyBkb24ndCBjaGFuZ2UgdGhlIGxhbmd1YWdlIGlmIHRoZSBsYW5ndWFnZSBnaXZlbiBpcyBhbHJlYWR5IHNlbGVjdGVkXG4gICAgaWYgKGxhbmcgPT09IHRoaXMuY3VycmVudExhbmcpIHtcbiAgICAgIHJldHVybiBvZih0aGlzLnRyYW5zbGF0aW9uc1tsYW5nXSk7XG4gICAgfVxuXG4gICAgbGV0IHBlbmRpbmc6IE9ic2VydmFibGU8YW55PiA9IHRoaXMucmV0cmlldmVUcmFuc2xhdGlvbnMobGFuZyk7XG5cbiAgICBpZiAodHlwZW9mIHBlbmRpbmcgIT09IFwidW5kZWZpbmVkXCIpIHtcbiAgICAgIC8vIG9uIGluaXQgc2V0IHRoZSBjdXJyZW50TGFuZyBpbW1lZGlhdGVseVxuICAgICAgaWYgKCF0aGlzLmN1cnJlbnRMYW5nKSB7XG4gICAgICAgIHRoaXMuY3VycmVudExhbmcgPSBsYW5nO1xuICAgICAgfVxuXG4gICAgICBwZW5kaW5nLnBpcGUodGFrZSgxKSlcbiAgICAgICAgLnN1YnNjcmliZSgocmVzOiBhbnkpID0+IHtcbiAgICAgICAgICB0aGlzLmNoYW5nZUxhbmcobGFuZyk7XG4gICAgICAgIH0pO1xuXG4gICAgICByZXR1cm4gcGVuZGluZztcbiAgICB9IGVsc2UgeyAvLyB3ZSBoYXZlIHRoaXMgbGFuZ3VhZ2UsIHJldHVybiBhbiBPYnNlcnZhYmxlXG4gICAgICB0aGlzLmNoYW5nZUxhbmcobGFuZyk7XG5cbiAgICAgIHJldHVybiBvZih0aGlzLnRyYW5zbGF0aW9uc1tsYW5nXSk7XG4gICAgfVxuICB9XG5cbiAgLyoqXG4gICAqIFJldHJpZXZlcyB0aGUgZ2l2ZW4gdHJhbnNsYXRpb25zXG4gICAqL1xuICBwcml2YXRlIHJldHJpZXZlVHJhbnNsYXRpb25zKGxhbmc6IHN0cmluZyk6IE9ic2VydmFibGU8YW55PiB7XG4gICAgbGV0IHBlbmRpbmc6IE9ic2VydmFibGU8YW55PjtcblxuICAgIC8vIGlmIHRoaXMgbGFuZ3VhZ2UgaXMgdW5hdmFpbGFibGUsIGFzayBmb3IgaXRcbiAgICBpZiAodHlwZW9mIHRoaXMudHJhbnNsYXRpb25zW2xhbmddID09PSBcInVuZGVmaW5lZFwiKSB7XG4gICAgICB0aGlzLl90cmFuc2xhdGlvblJlcXVlc3RzW2xhbmddID0gdGhpcy5fdHJhbnNsYXRpb25SZXF1ZXN0c1tsYW5nXSB8fCB0aGlzLmdldFRyYW5zbGF0aW9uKGxhbmcpO1xuICAgICAgcGVuZGluZyA9IHRoaXMuX3RyYW5zbGF0aW9uUmVxdWVzdHNbbGFuZ107XG4gICAgfVxuXG4gICAgcmV0dXJuIHBlbmRpbmc7XG4gIH1cblxuICAvKipcbiAgICogR2V0cyBhbiBvYmplY3Qgb2YgdHJhbnNsYXRpb25zIGZvciBhIGdpdmVuIGxhbmd1YWdlIHdpdGggdGhlIGN1cnJlbnQgbG9hZGVyXG4gICAqIGFuZCBwYXNzZXMgaXQgdGhyb3VnaCB0aGUgY29tcGlsZXJcbiAgICovXG4gIHB1YmxpYyBnZXRUcmFuc2xhdGlvbihsYW5nOiBzdHJpbmcpOiBPYnNlcnZhYmxlPGFueT4ge1xuICAgIHRoaXMucGVuZGluZyA9IHRydWU7XG4gICAgY29uc3QgbG9hZGluZ1RyYW5zbGF0aW9ucyA9IHRoaXMuY3VycmVudExvYWRlci5nZXRUcmFuc2xhdGlvbihsYW5nKS5waXBlKHNoYXJlKCkpO1xuICAgIHRoaXMubG9hZGluZ1RyYW5zbGF0aW9ucyA9IGxvYWRpbmdUcmFuc2xhdGlvbnMucGlwZShcbiAgICAgIHRha2UoMSksXG4gICAgICBtYXAoKHJlczogT2JqZWN0KSA9PiB0aGlzLmNvbXBpbGVyLmNvbXBpbGVUcmFuc2xhdGlvbnMocmVzLCBsYW5nKSksXG4gICAgICBzaGFyZSgpXG4gICAgKTtcblxuICAgIHRoaXMubG9hZGluZ1RyYW5zbGF0aW9uc1xuICAgICAgLnN1YnNjcmliZSgocmVzOiBPYmplY3QpID0+IHtcbiAgICAgICAgdGhpcy50cmFuc2xhdGlvbnNbbGFuZ10gPSByZXM7XG4gICAgICAgIHRoaXMudXBkYXRlTGFuZ3MoKTtcbiAgICAgICAgdGhpcy5wZW5kaW5nID0gZmFsc2U7XG4gICAgICB9LCAoZXJyOiBhbnkpID0+IHtcbiAgICAgICAgdGhpcy5wZW5kaW5nID0gZmFsc2U7XG4gICAgICB9KTtcblxuICAgIHJldHVybiBsb2FkaW5nVHJhbnNsYXRpb25zO1xuICB9XG5cbiAgLyoqXG4gICAqIE1hbnVhbGx5IHNldHMgYW4gb2JqZWN0IG9mIHRyYW5zbGF0aW9ucyBmb3IgYSBnaXZlbiBsYW5ndWFnZVxuICAgKiBhZnRlciBwYXNzaW5nIGl0IHRocm91Z2ggdGhlIGNvbXBpbGVyXG4gICAqL1xuICBwdWJsaWMgc2V0VHJhbnNsYXRpb24obGFuZzogc3RyaW5nLCB0cmFuc2xhdGlvbnM6IE9iamVjdCwgc2hvdWxkTWVyZ2U6IGJvb2xlYW4gPSBmYWxzZSk6IHZvaWQge1xuICAgIHRyYW5zbGF0aW9ucyA9IHRoaXMuY29tcGlsZXIuY29tcGlsZVRyYW5zbGF0aW9ucyh0cmFuc2xhdGlvbnMsIGxhbmcpO1xuICAgIGlmIChzaG91bGRNZXJnZSAmJiB0aGlzLnRyYW5zbGF0aW9uc1tsYW5nXSkge1xuICAgICAgdGhpcy50cmFuc2xhdGlvbnNbbGFuZ10gPSBtZXJnZURlZXAodGhpcy50cmFuc2xhdGlvbnNbbGFuZ10sIHRyYW5zbGF0aW9ucyk7XG4gICAgfSBlbHNlIHtcbiAgICAgIHRoaXMudHJhbnNsYXRpb25zW2xhbmddID0gdHJhbnNsYXRpb25zO1xuICAgIH1cbiAgICB0aGlzLnVwZGF0ZUxhbmdzKCk7XG4gICAgdGhpcy5vblRyYW5zbGF0aW9uQ2hhbmdlLmVtaXQoe2xhbmc6IGxhbmcsIHRyYW5zbGF0aW9uczogdGhpcy50cmFuc2xhdGlvbnNbbGFuZ119KTtcbiAgfVxuXG4gIC8qKlxuICAgKiBSZXR1cm5zIGFuIGFycmF5IG9mIGN1cnJlbnRseSBhdmFpbGFibGUgbGFuZ3NcbiAgICovXG4gIHB1YmxpYyBnZXRMYW5ncygpOiBBcnJheTxzdHJpbmc+IHtcbiAgICByZXR1cm4gdGhpcy5sYW5ncztcbiAgfVxuXG4gIC8qKlxuICAgKiBBZGQgYXZhaWxhYmxlIGxhbmdzXG4gICAqL1xuICBwdWJsaWMgYWRkTGFuZ3MobGFuZ3M6IEFycmF5PHN0cmluZz4pOiB2b2lkIHtcbiAgICBsYW5ncy5mb3JFYWNoKChsYW5nOiBzdHJpbmcpID0+IHtcbiAgICAgIGlmICh0aGlzLmxhbmdzLmluZGV4T2YobGFuZykgPT09IC0xKSB7XG4gICAgICAgIHRoaXMubGFuZ3MucHVzaChsYW5nKTtcbiAgICAgIH1cbiAgICB9KTtcbiAgfVxuXG4gIC8qKlxuICAgKiBVcGRhdGUgdGhlIGxpc3Qgb2YgYXZhaWxhYmxlIGxhbmdzXG4gICAqL1xuICBwcml2YXRlIHVwZGF0ZUxhbmdzKCk6IHZvaWQge1xuICAgIHRoaXMuYWRkTGFuZ3MoT2JqZWN0LmtleXModGhpcy50cmFuc2xhdGlvbnMpKTtcbiAgfVxuXG4gIC8qKlxuICAgKiBSZXR1cm5zIHRoZSBwYXJzZWQgcmVzdWx0IG9mIHRoZSB0cmFuc2xhdGlvbnNcbiAgICovXG4gIHB1YmxpYyBnZXRQYXJzZWRSZXN1bHQodHJhbnNsYXRpb25zOiBhbnksIGtleTogYW55LCBpbnRlcnBvbGF0ZVBhcmFtcz86IE9iamVjdCk6IGFueSB7XG4gICAgbGV0IHJlczogc3RyaW5nIHwgT2JzZXJ2YWJsZTxzdHJpbmc+O1xuXG4gICAgaWYgKGtleSBpbnN0YW5jZW9mIEFycmF5KSB7XG4gICAgICBsZXQgcmVzdWx0OiBhbnkgPSB7fSxcbiAgICAgICAgb2JzZXJ2YWJsZXM6IGJvb2xlYW4gPSBmYWxzZTtcbiAgICAgIGZvciAobGV0IGsgb2Yga2V5KSB7XG4gICAgICAgIHJlc3VsdFtrXSA9IHRoaXMuZ2V0UGFyc2VkUmVzdWx0KHRyYW5zbGF0aW9ucywgaywgaW50ZXJwb2xhdGVQYXJhbXMpO1xuICAgICAgICBpZiAodHlwZW9mIHJlc3VsdFtrXS5zdWJzY3JpYmUgPT09IFwiZnVuY3Rpb25cIikge1xuICAgICAgICAgIG9ic2VydmFibGVzID0gdHJ1ZTtcbiAgICAgICAgfVxuICAgICAgfVxuICAgICAgaWYgKG9ic2VydmFibGVzKSB7XG4gICAgICAgIGxldCBtZXJnZWRPYnM6IE9ic2VydmFibGU8c3RyaW5nPjtcbiAgICAgICAgZm9yIChsZXQgayBvZiBrZXkpIHtcbiAgICAgICAgICBsZXQgb2JzID0gdHlwZW9mIHJlc3VsdFtrXS5zdWJzY3JpYmUgPT09IFwiZnVuY3Rpb25cIiA/IHJlc3VsdFtrXSA6IG9mKHJlc3VsdFtrXSBhcyBzdHJpbmcpO1xuICAgICAgICAgIGlmICh0eXBlb2YgbWVyZ2VkT2JzID09PSBcInVuZGVmaW5lZFwiKSB7XG4gICAgICAgICAgICBtZXJnZWRPYnMgPSBvYnM7XG4gICAgICAgICAgfSBlbHNlIHtcbiAgICAgICAgICAgIG1lcmdlZE9icyA9IG1lcmdlKG1lcmdlZE9icywgb2JzKTtcbiAgICAgICAgICB9XG4gICAgICAgIH1cbiAgICAgICAgcmV0dXJuIG1lcmdlZE9icy5waXBlKFxuICAgICAgICAgIHRvQXJyYXkoKSxcbiAgICAgICAgICBtYXAoKGFycjogQXJyYXk8c3RyaW5nPikgPT4ge1xuICAgICAgICAgICAgbGV0IG9iajogYW55ID0ge307XG4gICAgICAgICAgICBhcnIuZm9yRWFjaCgodmFsdWU6IHN0cmluZywgaW5kZXg6IG51bWJlcikgPT4ge1xuICAgICAgICAgICAgICBvYmpba2V5W2luZGV4XV0gPSB2YWx1ZTtcbiAgICAgICAgICAgIH0pO1xuICAgICAgICAgICAgcmV0dXJuIG9iajtcbiAgICAgICAgICB9KVxuICAgICAgICApO1xuICAgICAgfVxuICAgICAgcmV0dXJuIHJlc3VsdDtcbiAgICB9XG5cbiAgICBpZiAodHJhbnNsYXRpb25zKSB7XG4gICAgICByZXMgPSB0aGlzLnBhcnNlci5pbnRlcnBvbGF0ZSh0aGlzLnBhcnNlci5nZXRWYWx1ZSh0cmFuc2xhdGlvbnMsIGtleSksIGludGVycG9sYXRlUGFyYW1zKTtcbiAgICB9XG5cbiAgICBpZiAodHlwZW9mIHJlcyA9PT0gXCJ1bmRlZmluZWRcIiAmJiB0aGlzLmRlZmF1bHRMYW5nICYmIHRoaXMuZGVmYXVsdExhbmcgIT09IHRoaXMuY3VycmVudExhbmcgJiYgdGhpcy51c2VEZWZhdWx0TGFuZykge1xuICAgICAgcmVzID0gdGhpcy5wYXJzZXIuaW50ZXJwb2xhdGUodGhpcy5wYXJzZXIuZ2V0VmFsdWUodGhpcy50cmFuc2xhdGlvbnNbdGhpcy5kZWZhdWx0TGFuZ10sIGtleSksIGludGVycG9sYXRlUGFyYW1zKTtcbiAgICB9XG5cbiAgICBpZiAodHlwZW9mIHJlcyA9PT0gXCJ1bmRlZmluZWRcIikge1xuICAgICAgbGV0IHBhcmFtczogTWlzc2luZ1RyYW5zbGF0aW9uSGFuZGxlclBhcmFtcyA9IHtrZXksIHRyYW5zbGF0ZVNlcnZpY2U6IHRoaXN9O1xuICAgICAgaWYgKHR5cGVvZiBpbnRlcnBvbGF0ZVBhcmFtcyAhPT0gJ3VuZGVmaW5lZCcpIHtcbiAgICAgICAgcGFyYW1zLmludGVycG9sYXRlUGFyYW1zID0gaW50ZXJwb2xhdGVQYXJhbXM7XG4gICAgICB9XG4gICAgICByZXMgPSB0aGlzLm1pc3NpbmdUcmFuc2xhdGlvbkhhbmRsZXIuaGFuZGxlKHBhcmFtcyk7XG4gICAgfVxuXG4gICAgcmV0dXJuIHR5cGVvZiByZXMgIT09IFwidW5kZWZpbmVkXCIgPyByZXMgOiBrZXk7XG4gIH1cblxuICAvKipcbiAgICogR2V0cyB0aGUgdHJhbnNsYXRlZCB2YWx1ZSBvZiBhIGtleSAob3IgYW4gYXJyYXkgb2Yga2V5cylcbiAgICogQHJldHVybnMgdGhlIHRyYW5zbGF0ZWQga2V5LCBvciBhbiBvYmplY3Qgb2YgdHJhbnNsYXRlZCBrZXlzXG4gICAqL1xuICBwdWJsaWMgZ2V0KGtleTogc3RyaW5nIHwgQXJyYXk8c3RyaW5nPiwgaW50ZXJwb2xhdGVQYXJhbXM/OiBPYmplY3QpOiBPYnNlcnZhYmxlPHN0cmluZyB8IGFueT4ge1xuICAgIGlmICghaXNEZWZpbmVkKGtleSkgfHwgIWtleS5sZW5ndGgpIHtcbiAgICAgIHRocm93IG5ldyBFcnJvcihgUGFyYW1ldGVyIFwia2V5XCIgcmVxdWlyZWRgKTtcbiAgICB9XG4gICAgLy8gY2hlY2sgaWYgd2UgYXJlIGxvYWRpbmcgYSBuZXcgdHJhbnNsYXRpb24gdG8gdXNlXG4gICAgaWYgKHRoaXMucGVuZGluZykge1xuICAgICAgcmV0dXJuIE9ic2VydmFibGUuY3JlYXRlKChvYnNlcnZlcjogT2JzZXJ2ZXI8c3RyaW5nPikgPT4ge1xuICAgICAgICBsZXQgb25Db21wbGV0ZSA9IChyZXM6IHN0cmluZykgPT4ge1xuICAgICAgICAgIG9ic2VydmVyLm5leHQocmVzKTtcbiAgICAgICAgICBvYnNlcnZlci5jb21wbGV0ZSgpO1xuICAgICAgICB9O1xuICAgICAgICBsZXQgb25FcnJvciA9IChlcnI6IGFueSkgPT4ge1xuICAgICAgICAgIG9ic2VydmVyLmVycm9yKGVycik7XG4gICAgICAgIH07XG4gICAgICAgIHRoaXMubG9hZGluZ1RyYW5zbGF0aW9ucy5zdWJzY3JpYmUoKHJlczogYW55KSA9PiB7XG4gICAgICAgICAgcmVzID0gdGhpcy5nZXRQYXJzZWRSZXN1bHQocmVzLCBrZXksIGludGVycG9sYXRlUGFyYW1zKTtcbiAgICAgICAgICBpZiAodHlwZW9mIHJlcy5zdWJzY3JpYmUgPT09IFwiZnVuY3Rpb25cIikge1xuICAgICAgICAgICAgcmVzLnN1YnNjcmliZShvbkNvbXBsZXRlLCBvbkVycm9yKTtcbiAgICAgICAgICB9IGVsc2Uge1xuICAgICAgICAgICAgb25Db21wbGV0ZShyZXMpO1xuICAgICAgICAgIH1cbiAgICAgICAgfSwgb25FcnJvcik7XG4gICAgICB9KTtcbiAgICB9IGVsc2Uge1xuICAgICAgbGV0IHJlcyA9IHRoaXMuZ2V0UGFyc2VkUmVzdWx0KHRoaXMudHJhbnNsYXRpb25zW3RoaXMuY3VycmVudExhbmddLCBrZXksIGludGVycG9sYXRlUGFyYW1zKTtcbiAgICAgIGlmICh0eXBlb2YgcmVzLnN1YnNjcmliZSA9PT0gXCJmdW5jdGlvblwiKSB7XG4gICAgICAgIHJldHVybiByZXM7XG4gICAgICB9IGVsc2Uge1xuICAgICAgICByZXR1cm4gb2YocmVzKTtcbiAgICAgIH1cbiAgICB9XG4gIH1cblxuICAvKipcbiAgICogUmV0dXJucyBhIHN0cmVhbSBvZiB0cmFuc2xhdGVkIHZhbHVlcyBvZiBhIGtleSAob3IgYW4gYXJyYXkgb2Yga2V5cykgd2hpY2ggdXBkYXRlc1xuICAgKiB3aGVuZXZlciB0aGUgbGFuZ3VhZ2UgY2hhbmdlcy5cbiAgICogQHJldHVybnMgQSBzdHJlYW0gb2YgdGhlIHRyYW5zbGF0ZWQga2V5LCBvciBhbiBvYmplY3Qgb2YgdHJhbnNsYXRlZCBrZXlzXG4gICAqL1xuICBwdWJsaWMgc3RyZWFtKGtleTogc3RyaW5nIHwgQXJyYXk8c3RyaW5nPiwgaW50ZXJwb2xhdGVQYXJhbXM/OiBPYmplY3QpOiBPYnNlcnZhYmxlPHN0cmluZyB8IGFueT4ge1xuICAgIGlmICghaXNEZWZpbmVkKGtleSkgfHwgIWtleS5sZW5ndGgpIHtcbiAgICAgIHRocm93IG5ldyBFcnJvcihgUGFyYW1ldGVyIFwia2V5XCIgcmVxdWlyZWRgKTtcbiAgICB9XG5cbiAgICByZXR1cm4gY29uY2F0KFxuICAgICAgdGhpcy5nZXQoa2V5LCBpbnRlcnBvbGF0ZVBhcmFtcyksXG4gICAgICB0aGlzLm9uTGFuZ0NoYW5nZS5waXBlKFxuICAgICAgICBzd2l0Y2hNYXAoKGV2ZW50OiBMYW5nQ2hhbmdlRXZlbnQpID0+IHtcbiAgICAgICAgICBjb25zdCByZXMgPSB0aGlzLmdldFBhcnNlZFJlc3VsdChldmVudC50cmFuc2xhdGlvbnMsIGtleSwgaW50ZXJwb2xhdGVQYXJhbXMpO1xuICAgICAgICAgIGlmICh0eXBlb2YgcmVzLnN1YnNjcmliZSA9PT0gXCJmdW5jdGlvblwiKSB7XG4gICAgICAgICAgICByZXR1cm4gcmVzO1xuICAgICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgICByZXR1cm4gb2YocmVzKTtcbiAgICAgICAgICB9XG4gICAgICAgIH0pXG4gICAgICApKTtcbiAgfVxuXG4gIC8qKlxuICAgKiBSZXR1cm5zIGEgdHJhbnNsYXRpb24gaW5zdGFudGx5IGZyb20gdGhlIGludGVybmFsIHN0YXRlIG9mIGxvYWRlZCB0cmFuc2xhdGlvbi5cbiAgICogQWxsIHJ1bGVzIHJlZ2FyZGluZyB0aGUgY3VycmVudCBsYW5ndWFnZSwgdGhlIHByZWZlcnJlZCBsYW5ndWFnZSBvZiBldmVuIGZhbGxiYWNrIGxhbmd1YWdlcyB3aWxsIGJlIHVzZWQgZXhjZXB0IGFueSBwcm9taXNlIGhhbmRsaW5nLlxuICAgKi9cbiAgcHVibGljIGluc3RhbnQoa2V5OiBzdHJpbmcgfCBBcnJheTxzdHJpbmc+LCBpbnRlcnBvbGF0ZVBhcmFtcz86IE9iamVjdCk6IHN0cmluZyB8IGFueSB7XG4gICAgaWYgKCFpc0RlZmluZWQoa2V5KSB8fCAha2V5Lmxlbmd0aCkge1xuICAgICAgdGhyb3cgbmV3IEVycm9yKGBQYXJhbWV0ZXIgXCJrZXlcIiByZXF1aXJlZGApO1xuICAgIH1cblxuICAgIGxldCByZXMgPSB0aGlzLmdldFBhcnNlZFJlc3VsdCh0aGlzLnRyYW5zbGF0aW9uc1t0aGlzLmN1cnJlbnRMYW5nXSwga2V5LCBpbnRlcnBvbGF0ZVBhcmFtcyk7XG4gICAgaWYgKHR5cGVvZiByZXMuc3Vic2NyaWJlICE9PSBcInVuZGVmaW5lZFwiKSB7XG4gICAgICBpZiAoa2V5IGluc3RhbmNlb2YgQXJyYXkpIHtcbiAgICAgICAgbGV0IG9iajogYW55ID0ge307XG4gICAgICAgIGtleS5mb3JFYWNoKCh2YWx1ZTogc3RyaW5nLCBpbmRleDogbnVtYmVyKSA9PiB7XG4gICAgICAgICAgb2JqW2tleVtpbmRleF1dID0ga2V5W2luZGV4XTtcbiAgICAgICAgfSk7XG4gICAgICAgIHJldHVybiBvYmo7XG4gICAgICB9XG4gICAgICByZXR1cm4ga2V5O1xuICAgIH0gZWxzZSB7XG4gICAgICByZXR1cm4gcmVzO1xuICAgIH1cbiAgfVxuXG4gIC8qKlxuICAgKiBTZXRzIHRoZSB0cmFuc2xhdGVkIHZhbHVlIG9mIGEga2V5LCBhZnRlciBjb21waWxpbmcgaXRcbiAgICovXG4gIHB1YmxpYyBzZXQoa2V5OiBzdHJpbmcsIHZhbHVlOiBzdHJpbmcsIGxhbmc6IHN0cmluZyA9IHRoaXMuY3VycmVudExhbmcpOiB2b2lkIHtcbiAgICB0aGlzLnRyYW5zbGF0aW9uc1tsYW5nXVtrZXldID0gdGhpcy5jb21waWxlci5jb21waWxlKHZhbHVlLCBsYW5nKTtcbiAgICB0aGlzLnVwZGF0ZUxhbmdzKCk7XG4gICAgdGhpcy5vblRyYW5zbGF0aW9uQ2hhbmdlLmVtaXQoe2xhbmc6IGxhbmcsIHRyYW5zbGF0aW9uczogdGhpcy50cmFuc2xhdGlvbnNbbGFuZ119KTtcbiAgfVxuXG4gIC8qKlxuICAgKiBDaGFuZ2VzIHRoZSBjdXJyZW50IGxhbmdcbiAgICovXG4gIHByaXZhdGUgY2hhbmdlTGFuZyhsYW5nOiBzdHJpbmcpOiB2b2lkIHtcbiAgICB0aGlzLmN1cnJlbnRMYW5nID0gbGFuZztcbiAgICB0aGlzLm9uTGFuZ0NoYW5nZS5lbWl0KHtsYW5nOiBsYW5nLCB0cmFuc2xhdGlvbnM6IHRoaXMudHJhbnNsYXRpb25zW2xhbmddfSk7XG5cbiAgICAvLyBpZiB0aGVyZSBpcyBubyBkZWZhdWx0IGxhbmcsIHVzZSB0aGUgb25lIHRoYXQgd2UganVzdCBzZXRcbiAgICBpZiAoIXRoaXMuZGVmYXVsdExhbmcpIHtcbiAgICAgIHRoaXMuY2hhbmdlRGVmYXVsdExhbmcobGFuZyk7XG4gICAgfVxuICB9XG5cbiAgLyoqXG4gICAqIENoYW5nZXMgdGhlIGRlZmF1bHQgbGFuZ1xuICAgKi9cbiAgcHJpdmF0ZSBjaGFuZ2VEZWZhdWx0TGFuZyhsYW5nOiBzdHJpbmcpOiB2b2lkIHtcbiAgICB0aGlzLmRlZmF1bHRMYW5nID0gbGFuZztcbiAgICB0aGlzLm9uRGVmYXVsdExhbmdDaGFuZ2UuZW1pdCh7bGFuZzogbGFuZywgdHJhbnNsYXRpb25zOiB0aGlzLnRyYW5zbGF0aW9uc1tsYW5nXX0pO1xuICB9XG5cbiAgLyoqXG4gICAqIEFsbG93cyB0byByZWxvYWQgdGhlIGxhbmcgZmlsZSBmcm9tIHRoZSBmaWxlXG4gICAqL1xuICBwdWJsaWMgcmVsb2FkTGFuZyhsYW5nOiBzdHJpbmcpOiBPYnNlcnZhYmxlPGFueT4ge1xuICAgIHRoaXMucmVzZXRMYW5nKGxhbmcpO1xuICAgIHJldHVybiB0aGlzLmdldFRyYW5zbGF0aW9uKGxhbmcpO1xuICB9XG5cbiAgLyoqXG4gICAqIERlbGV0ZXMgaW5uZXIgdHJhbnNsYXRpb25cbiAgICovXG4gIHB1YmxpYyByZXNldExhbmcobGFuZzogc3RyaW5nKTogdm9pZCB7XG4gICAgdGhpcy5fdHJhbnNsYXRpb25SZXF1ZXN0c1tsYW5nXSA9IHVuZGVmaW5lZDtcbiAgICB0aGlzLnRyYW5zbGF0aW9uc1tsYW5nXSA9IHVuZGVmaW5lZDtcbiAgfVxuXG4gIC8qKlxuICAgKiBSZXR1cm5zIHRoZSBsYW5ndWFnZSBjb2RlIG5hbWUgZnJvbSB0aGUgYnJvd3NlciwgZS5nLiBcImRlXCJcbiAgICovXG4gIHB1YmxpYyBnZXRCcm93c2VyTGFuZygpOiBzdHJpbmcge1xuICAgIGlmICh0eXBlb2Ygd2luZG93ID09PSAndW5kZWZpbmVkJyB8fCB0eXBlb2Ygd2luZG93Lm5hdmlnYXRvciA9PT0gJ3VuZGVmaW5lZCcpIHtcbiAgICAgIHJldHVybiB1bmRlZmluZWQ7XG4gICAgfVxuXG4gICAgbGV0IGJyb3dzZXJMYW5nOiBhbnkgPSB3aW5kb3cubmF2aWdhdG9yLmxhbmd1YWdlcyA/IHdpbmRvdy5uYXZpZ2F0b3IubGFuZ3VhZ2VzWzBdIDogbnVsbDtcbiAgICBicm93c2VyTGFuZyA9IGJyb3dzZXJMYW5nIHx8IHdpbmRvdy5uYXZpZ2F0b3IubGFuZ3VhZ2UgfHwgd2luZG93Lm5hdmlnYXRvci5icm93c2VyTGFuZ3VhZ2UgfHwgd2luZG93Lm5hdmlnYXRvci51c2VyTGFuZ3VhZ2U7XG5cbiAgICBpZiAoYnJvd3NlckxhbmcuaW5kZXhPZignLScpICE9PSAtMSkge1xuICAgICAgYnJvd3NlckxhbmcgPSBicm93c2VyTGFuZy5zcGxpdCgnLScpWzBdO1xuICAgIH1cblxuICAgIGlmIChicm93c2VyTGFuZy5pbmRleE9mKCdfJykgIT09IC0xKSB7XG4gICAgICBicm93c2VyTGFuZyA9IGJyb3dzZXJMYW5nLnNwbGl0KCdfJylbMF07XG4gICAgfVxuXG4gICAgcmV0dXJuIGJyb3dzZXJMYW5nO1xuICB9XG5cbiAgLyoqXG4gICAqIFJldHVybnMgdGhlIGN1bHR1cmUgbGFuZ3VhZ2UgY29kZSBuYW1lIGZyb20gdGhlIGJyb3dzZXIsIGUuZy4gXCJkZS1ERVwiXG4gICAqL1xuICBwdWJsaWMgZ2V0QnJvd3NlckN1bHR1cmVMYW5nKCk6IHN0cmluZyB7XG4gICAgaWYgKHR5cGVvZiB3aW5kb3cgPT09ICd1bmRlZmluZWQnIHx8IHR5cGVvZiB3aW5kb3cubmF2aWdhdG9yID09PSAndW5kZWZpbmVkJykge1xuICAgICAgcmV0dXJuIHVuZGVmaW5lZDtcbiAgICB9XG5cbiAgICBsZXQgYnJvd3NlckN1bHR1cmVMYW5nOiBhbnkgPSB3aW5kb3cubmF2aWdhdG9yLmxhbmd1YWdlcyA/IHdpbmRvdy5uYXZpZ2F0b3IubGFuZ3VhZ2VzWzBdIDogbnVsbDtcbiAgICBicm93c2VyQ3VsdHVyZUxhbmcgPSBicm93c2VyQ3VsdHVyZUxhbmcgfHwgd2luZG93Lm5hdmlnYXRvci5sYW5ndWFnZSB8fCB3aW5kb3cubmF2aWdhdG9yLmJyb3dzZXJMYW5ndWFnZSB8fCB3aW5kb3cubmF2aWdhdG9yLnVzZXJMYW5ndWFnZTtcblxuICAgIHJldHVybiBicm93c2VyQ3VsdHVyZUxhbmc7XG4gIH1cbn1cbiIsImltcG9ydCB7QWZ0ZXJWaWV3Q2hlY2tlZCwgQ2hhbmdlRGV0ZWN0b3JSZWYsIERpcmVjdGl2ZSwgRWxlbWVudFJlZiwgSW5wdXQsIE9uRGVzdHJveX0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XG5pbXBvcnQge1N1YnNjcmlwdGlvbn0gZnJvbSAncnhqcyc7XG5pbXBvcnQge0RlZmF1bHRMYW5nQ2hhbmdlRXZlbnQsIExhbmdDaGFuZ2VFdmVudCwgVHJhbnNsYXRlU2VydmljZSwgVHJhbnNsYXRpb25DaGFuZ2VFdmVudH0gZnJvbSAnLi90cmFuc2xhdGUuc2VydmljZSc7XG5pbXBvcnQge2VxdWFscywgaXNEZWZpbmVkfSBmcm9tICcuL3V0aWwnO1xuXG5ARGlyZWN0aXZlKHtcbiAgc2VsZWN0b3I6ICdbdHJhbnNsYXRlXSxbbmd4LXRyYW5zbGF0ZV0nXG59KVxuZXhwb3J0IGNsYXNzIFRyYW5zbGF0ZURpcmVjdGl2ZSBpbXBsZW1lbnRzIEFmdGVyVmlld0NoZWNrZWQsIE9uRGVzdHJveSB7XG4gIGtleTogc3RyaW5nO1xuICBsYXN0UGFyYW1zOiBhbnk7XG4gIGN1cnJlbnRQYXJhbXM6IGFueTtcbiAgb25MYW5nQ2hhbmdlU3ViOiBTdWJzY3JpcHRpb247XG4gIG9uRGVmYXVsdExhbmdDaGFuZ2VTdWI6IFN1YnNjcmlwdGlvbjtcbiAgb25UcmFuc2xhdGlvbkNoYW5nZVN1YjogU3Vic2NyaXB0aW9uO1xuXG4gIEBJbnB1dCgpIHNldCB0cmFuc2xhdGUoa2V5OiBzdHJpbmcpIHtcbiAgICBpZiAoa2V5KSB7XG4gICAgICB0aGlzLmtleSA9IGtleTtcbiAgICAgIHRoaXMuY2hlY2tOb2RlcygpO1xuICAgIH1cbiAgfVxuXG4gIEBJbnB1dCgpIHNldCB0cmFuc2xhdGVQYXJhbXMocGFyYW1zOiBhbnkpIHtcbiAgICBpZiAoIWVxdWFscyh0aGlzLmN1cnJlbnRQYXJhbXMsIHBhcmFtcykpIHtcbiAgICAgIHRoaXMuY3VycmVudFBhcmFtcyA9IHBhcmFtcztcbiAgICAgIHRoaXMuY2hlY2tOb2Rlcyh0cnVlKTtcbiAgICB9XG4gIH1cblxuICBjb25zdHJ1Y3Rvcihwcml2YXRlIHRyYW5zbGF0ZVNlcnZpY2U6IFRyYW5zbGF0ZVNlcnZpY2UsIHByaXZhdGUgZWxlbWVudDogRWxlbWVudFJlZiwgcHJpdmF0ZSBfcmVmOiBDaGFuZ2VEZXRlY3RvclJlZikge1xuICAgIC8vIHN1YnNjcmliZSB0byBvblRyYW5zbGF0aW9uQ2hhbmdlIGV2ZW50LCBpbiBjYXNlIHRoZSB0cmFuc2xhdGlvbnMgb2YgdGhlIGN1cnJlbnQgbGFuZyBjaGFuZ2VcbiAgICBpZiAoIXRoaXMub25UcmFuc2xhdGlvbkNoYW5nZVN1Yikge1xuICAgICAgdGhpcy5vblRyYW5zbGF0aW9uQ2hhbmdlU3ViID0gdGhpcy50cmFuc2xhdGVTZXJ2aWNlLm9uVHJhbnNsYXRpb25DaGFuZ2Uuc3Vic2NyaWJlKChldmVudDogVHJhbnNsYXRpb25DaGFuZ2VFdmVudCkgPT4ge1xuICAgICAgICBpZiAoZXZlbnQubGFuZyA9PT0gdGhpcy50cmFuc2xhdGVTZXJ2aWNlLmN1cnJlbnRMYW5nKSB7XG4gICAgICAgICAgdGhpcy5jaGVja05vZGVzKHRydWUsIGV2ZW50LnRyYW5zbGF0aW9ucyk7XG4gICAgICAgIH1cbiAgICAgIH0pO1xuICAgIH1cblxuICAgIC8vIHN1YnNjcmliZSB0byBvbkxhbmdDaGFuZ2UgZXZlbnQsIGluIGNhc2UgdGhlIGxhbmd1YWdlIGNoYW5nZXNcbiAgICBpZiAoIXRoaXMub25MYW5nQ2hhbmdlU3ViKSB7XG4gICAgICB0aGlzLm9uTGFuZ0NoYW5nZVN1YiA9IHRoaXMudHJhbnNsYXRlU2VydmljZS5vbkxhbmdDaGFuZ2Uuc3Vic2NyaWJlKChldmVudDogTGFuZ0NoYW5nZUV2ZW50KSA9PiB7XG4gICAgICAgIHRoaXMuY2hlY2tOb2Rlcyh0cnVlLCBldmVudC50cmFuc2xhdGlvbnMpO1xuICAgICAgfSk7XG4gICAgfVxuXG4gICAgLy8gc3Vic2NyaWJlIHRvIG9uRGVmYXVsdExhbmdDaGFuZ2UgZXZlbnQsIGluIGNhc2UgdGhlIGRlZmF1bHQgbGFuZ3VhZ2UgY2hhbmdlc1xuICAgIGlmICghdGhpcy5vbkRlZmF1bHRMYW5nQ2hhbmdlU3ViKSB7XG4gICAgICB0aGlzLm9uRGVmYXVsdExhbmdDaGFuZ2VTdWIgPSB0aGlzLnRyYW5zbGF0ZVNlcnZpY2Uub25EZWZhdWx0TGFuZ0NoYW5nZS5zdWJzY3JpYmUoKGV2ZW50OiBEZWZhdWx0TGFuZ0NoYW5nZUV2ZW50KSA9PiB7XG4gICAgICAgIHRoaXMuY2hlY2tOb2Rlcyh0cnVlKTtcbiAgICAgIH0pO1xuICAgIH1cbiAgfVxuXG4gIG5nQWZ0ZXJWaWV3Q2hlY2tlZCgpIHtcbiAgICB0aGlzLmNoZWNrTm9kZXMoKTtcbiAgfVxuXG4gIGNoZWNrTm9kZXMoZm9yY2VVcGRhdGUgPSBmYWxzZSwgdHJhbnNsYXRpb25zPzogYW55KSB7XG4gICAgbGV0IG5vZGVzOiBOb2RlTGlzdCA9IHRoaXMuZWxlbWVudC5uYXRpdmVFbGVtZW50LmNoaWxkTm9kZXM7XG4gICAgLy8gaWYgdGhlIGVsZW1lbnQgaXMgZW1wdHlcbiAgICBpZiAoIW5vZGVzLmxlbmd0aCkge1xuICAgICAgLy8gd2UgYWRkIHRoZSBrZXkgYXMgY29udGVudFxuICAgICAgdGhpcy5zZXRDb250ZW50KHRoaXMuZWxlbWVudC5uYXRpdmVFbGVtZW50LCB0aGlzLmtleSk7XG4gICAgICBub2RlcyA9IHRoaXMuZWxlbWVudC5uYXRpdmVFbGVtZW50LmNoaWxkTm9kZXM7XG4gICAgfVxuICAgIGZvciAobGV0IGkgPSAwOyBpIDwgbm9kZXMubGVuZ3RoOyArK2kpIHtcbiAgICAgIGxldCBub2RlOiBhbnkgPSBub2Rlc1tpXTtcbiAgICAgIGlmIChub2RlLm5vZGVUeXBlID09PSAzKSB7IC8vIG5vZGUgdHlwZSAzIGlzIGEgdGV4dCBub2RlXG4gICAgICAgIGxldCBrZXk6IHN0cmluZztcbiAgICAgICAgaWYgKHRoaXMua2V5KSB7XG4gICAgICAgICAga2V5ID0gdGhpcy5rZXk7XG4gICAgICAgICAgaWYgKGZvcmNlVXBkYXRlKSB7XG4gICAgICAgICAgICBub2RlLmxhc3RLZXkgPSBudWxsO1xuICAgICAgICAgIH1cbiAgICAgICAgfSBlbHNlIHtcbiAgICAgICAgICBsZXQgY29udGVudCA9IHRoaXMuZ2V0Q29udGVudChub2RlKTtcbiAgICAgICAgICBsZXQgdHJpbW1lZENvbnRlbnQgPSBjb250ZW50LnRyaW0oKTtcbiAgICAgICAgICBpZiAodHJpbW1lZENvbnRlbnQubGVuZ3RoKSB7XG4gICAgICAgICAgICAvLyB3ZSB3YW50IHRvIHVzZSB0aGUgY29udGVudCBhcyBhIGtleSwgbm90IHRoZSB0cmFuc2xhdGlvbiB2YWx1ZVxuICAgICAgICAgICAgaWYgKGNvbnRlbnQgIT09IG5vZGUuY3VycmVudFZhbHVlKSB7XG4gICAgICAgICAgICAgIGtleSA9IHRyaW1tZWRDb250ZW50O1xuICAgICAgICAgICAgICAvLyB0aGUgY29udGVudCB3YXMgY2hhbmdlZCBmcm9tIHRoZSB1c2VyLCB3ZSdsbCB1c2UgaXQgYXMgYSByZWZlcmVuY2UgaWYgbmVlZGVkXG4gICAgICAgICAgICAgIG5vZGUub3JpZ2luYWxDb250ZW50ID0gdGhpcy5nZXRDb250ZW50KG5vZGUpO1xuICAgICAgICAgICAgfSBlbHNlIGlmIChub2RlLm9yaWdpbmFsQ29udGVudCAmJiBmb3JjZVVwZGF0ZSkgeyAvLyB0aGUgY29udGVudCBzZWVtcyBvaywgYnV0IHRoZSBsYW5nIGhhcyBjaGFuZ2VkXG4gICAgICAgICAgICAgIG5vZGUubGFzdEtleSA9IG51bGw7XG4gICAgICAgICAgICAgIC8vIHRoZSBjdXJyZW50IGNvbnRlbnQgaXMgdGhlIHRyYW5zbGF0aW9uLCBub3QgdGhlIGtleSwgdXNlIHRoZSBsYXN0IHJlYWwgY29udGVudCBhcyBrZXlcbiAgICAgICAgICAgICAga2V5ID0gbm9kZS5vcmlnaW5hbENvbnRlbnQudHJpbSgpO1xuICAgICAgICAgICAgfVxuICAgICAgICAgIH1cbiAgICAgICAgfVxuICAgICAgICB0aGlzLnVwZGF0ZVZhbHVlKGtleSwgbm9kZSwgdHJhbnNsYXRpb25zKTtcbiAgICAgIH1cbiAgICB9XG4gIH1cblxuICB1cGRhdGVWYWx1ZShrZXk6IHN0cmluZywgbm9kZTogYW55LCB0cmFuc2xhdGlvbnM6IGFueSkge1xuICAgIGlmIChrZXkpIHtcbiAgICAgIGlmIChub2RlLmxhc3RLZXkgPT09IGtleSAmJiB0aGlzLmxhc3RQYXJhbXMgPT09IHRoaXMuY3VycmVudFBhcmFtcykge1xuICAgICAgICByZXR1cm47XG4gICAgICB9XG5cbiAgICAgIHRoaXMubGFzdFBhcmFtcyA9IHRoaXMuY3VycmVudFBhcmFtcztcblxuICAgICAgbGV0IG9uVHJhbnNsYXRpb24gPSAocmVzOiBzdHJpbmcpID0+IHtcbiAgICAgICAgaWYgKHJlcyAhPT0ga2V5KSB7XG4gICAgICAgICAgbm9kZS5sYXN0S2V5ID0ga2V5O1xuICAgICAgICB9XG4gICAgICAgIGlmICghbm9kZS5vcmlnaW5hbENvbnRlbnQpIHtcbiAgICAgICAgICBub2RlLm9yaWdpbmFsQ29udGVudCA9IHRoaXMuZ2V0Q29udGVudChub2RlKTtcbiAgICAgICAgfVxuICAgICAgICBub2RlLmN1cnJlbnRWYWx1ZSA9IGlzRGVmaW5lZChyZXMpID8gcmVzIDogKG5vZGUub3JpZ2luYWxDb250ZW50IHx8IGtleSk7XG4gICAgICAgIC8vIHdlIHJlcGxhY2UgaW4gdGhlIG9yaWdpbmFsIGNvbnRlbnQgdG8gcHJlc2VydmUgc3BhY2VzIHRoYXQgd2UgbWlnaHQgaGF2ZSB0cmltbWVkXG4gICAgICAgIHRoaXMuc2V0Q29udGVudChub2RlLCB0aGlzLmtleSA/IG5vZGUuY3VycmVudFZhbHVlIDogbm9kZS5vcmlnaW5hbENvbnRlbnQucmVwbGFjZShrZXksIG5vZGUuY3VycmVudFZhbHVlKSk7XG4gICAgICAgIHRoaXMuX3JlZi5tYXJrRm9yQ2hlY2soKTtcbiAgICAgIH07XG5cbiAgICAgIGlmIChpc0RlZmluZWQodHJhbnNsYXRpb25zKSkge1xuICAgICAgICBsZXQgcmVzID0gdGhpcy50cmFuc2xhdGVTZXJ2aWNlLmdldFBhcnNlZFJlc3VsdCh0cmFuc2xhdGlvbnMsIGtleSwgdGhpcy5jdXJyZW50UGFyYW1zKTtcbiAgICAgICAgaWYgKHR5cGVvZiByZXMuc3Vic2NyaWJlID09PSBcImZ1bmN0aW9uXCIpIHtcbiAgICAgICAgICByZXMuc3Vic2NyaWJlKG9uVHJhbnNsYXRpb24pO1xuICAgICAgICB9IGVsc2Uge1xuICAgICAgICAgIG9uVHJhbnNsYXRpb24ocmVzKTtcbiAgICAgICAgfVxuICAgICAgfSBlbHNlIHtcbiAgICAgICAgdGhpcy50cmFuc2xhdGVTZXJ2aWNlLmdldChrZXksIHRoaXMuY3VycmVudFBhcmFtcykuc3Vic2NyaWJlKG9uVHJhbnNsYXRpb24pO1xuICAgICAgfVxuICAgIH1cbiAgfVxuXG4gIGdldENvbnRlbnQobm9kZTogYW55KTogc3RyaW5nIHtcbiAgICByZXR1cm4gaXNEZWZpbmVkKG5vZGUudGV4dENvbnRlbnQpID8gbm9kZS50ZXh0Q29udGVudCA6IG5vZGUuZGF0YTtcbiAgfVxuXG4gIHNldENvbnRlbnQobm9kZTogYW55LCBjb250ZW50OiBzdHJpbmcpOiB2b2lkIHtcbiAgICBpZiAoaXNEZWZpbmVkKG5vZGUudGV4dENvbnRlbnQpKSB7XG4gICAgICBub2RlLnRleHRDb250ZW50ID0gY29udGVudDtcbiAgICB9IGVsc2Uge1xuICAgICAgbm9kZS5kYXRhID0gY29udGVudDtcbiAgICB9XG4gIH1cblxuICBuZ09uRGVzdHJveSgpIHtcbiAgICBpZiAodGhpcy5vbkxhbmdDaGFuZ2VTdWIpIHtcbiAgICAgIHRoaXMub25MYW5nQ2hhbmdlU3ViLnVuc3Vic2NyaWJlKCk7XG4gICAgfVxuXG4gICAgaWYgKHRoaXMub25EZWZhdWx0TGFuZ0NoYW5nZVN1Yikge1xuICAgICAgdGhpcy5vbkRlZmF1bHRMYW5nQ2hhbmdlU3ViLnVuc3Vic2NyaWJlKCk7XG4gICAgfVxuXG4gICAgaWYgKHRoaXMub25UcmFuc2xhdGlvbkNoYW5nZVN1Yikge1xuICAgICAgdGhpcy5vblRyYW5zbGF0aW9uQ2hhbmdlU3ViLnVuc3Vic2NyaWJlKCk7XG4gICAgfVxuICB9XG59XG4iLCJpbXBvcnQge0NoYW5nZURldGVjdG9yUmVmLCBFdmVudEVtaXR0ZXIsIEluamVjdGFibGUsIE9uRGVzdHJveSwgUGlwZSwgUGlwZVRyYW5zZm9ybX0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XG5pbXBvcnQge0RlZmF1bHRMYW5nQ2hhbmdlRXZlbnQsIExhbmdDaGFuZ2VFdmVudCwgVHJhbnNsYXRlU2VydmljZSwgVHJhbnNsYXRpb25DaGFuZ2VFdmVudH0gZnJvbSAnLi90cmFuc2xhdGUuc2VydmljZSc7XG5pbXBvcnQge2VxdWFscywgaXNEZWZpbmVkfSBmcm9tICcuL3V0aWwnO1xuXG5ASW5qZWN0YWJsZSgpXG5AUGlwZSh7XG4gIG5hbWU6ICd0cmFuc2xhdGUnLFxuICBwdXJlOiBmYWxzZSAvLyByZXF1aXJlZCB0byB1cGRhdGUgdGhlIHZhbHVlIHdoZW4gdGhlIHByb21pc2UgaXMgcmVzb2x2ZWRcbn0pXG5leHBvcnQgY2xhc3MgVHJhbnNsYXRlUGlwZSBpbXBsZW1lbnRzIFBpcGVUcmFuc2Zvcm0sIE9uRGVzdHJveSB7XG4gIHZhbHVlOiBzdHJpbmcgPSAnJztcbiAgbGFzdEtleTogc3RyaW5nO1xuICBsYXN0UGFyYW1zOiBhbnlbXTtcbiAgb25UcmFuc2xhdGlvbkNoYW5nZTogRXZlbnRFbWl0dGVyPFRyYW5zbGF0aW9uQ2hhbmdlRXZlbnQ+O1xuICBvbkxhbmdDaGFuZ2U6IEV2ZW50RW1pdHRlcjxMYW5nQ2hhbmdlRXZlbnQ+O1xuICBvbkRlZmF1bHRMYW5nQ2hhbmdlOiBFdmVudEVtaXR0ZXI8RGVmYXVsdExhbmdDaGFuZ2VFdmVudD47XG5cbiAgY29uc3RydWN0b3IocHJpdmF0ZSB0cmFuc2xhdGU6IFRyYW5zbGF0ZVNlcnZpY2UsIHByaXZhdGUgX3JlZjogQ2hhbmdlRGV0ZWN0b3JSZWYpIHtcbiAgfVxuXG4gIHVwZGF0ZVZhbHVlKGtleTogc3RyaW5nLCBpbnRlcnBvbGF0ZVBhcmFtcz86IE9iamVjdCwgdHJhbnNsYXRpb25zPzogYW55KTogdm9pZCB7XG4gICAgbGV0IG9uVHJhbnNsYXRpb24gPSAocmVzOiBzdHJpbmcpID0+IHtcbiAgICAgIHRoaXMudmFsdWUgPSByZXMgIT09IHVuZGVmaW5lZCA/IHJlcyA6IGtleTtcbiAgICAgIHRoaXMubGFzdEtleSA9IGtleTtcbiAgICAgIHRoaXMuX3JlZi5tYXJrRm9yQ2hlY2soKTtcbiAgICB9O1xuICAgIGlmICh0cmFuc2xhdGlvbnMpIHtcbiAgICAgIGxldCByZXMgPSB0aGlzLnRyYW5zbGF0ZS5nZXRQYXJzZWRSZXN1bHQodHJhbnNsYXRpb25zLCBrZXksIGludGVycG9sYXRlUGFyYW1zKTtcbiAgICAgIGlmICh0eXBlb2YgcmVzLnN1YnNjcmliZSA9PT0gJ2Z1bmN0aW9uJykge1xuICAgICAgICByZXMuc3Vic2NyaWJlKG9uVHJhbnNsYXRpb24pO1xuICAgICAgfSBlbHNlIHtcbiAgICAgICAgb25UcmFuc2xhdGlvbihyZXMpO1xuICAgICAgfVxuICAgIH1cbiAgICB0aGlzLnRyYW5zbGF0ZS5nZXQoa2V5LCBpbnRlcnBvbGF0ZVBhcmFtcykuc3Vic2NyaWJlKG9uVHJhbnNsYXRpb24pO1xuICB9XG5cbiAgdHJhbnNmb3JtKHF1ZXJ5OiBzdHJpbmcsIC4uLmFyZ3M6IGFueVtdKTogYW55IHtcbiAgICBpZiAoIXF1ZXJ5IHx8IHF1ZXJ5Lmxlbmd0aCA9PT0gMCkge1xuICAgICAgcmV0dXJuIHF1ZXJ5O1xuICAgIH1cblxuICAgIC8vIGlmIHdlIGFzayBhbm90aGVyIHRpbWUgZm9yIHRoZSBzYW1lIGtleSwgcmV0dXJuIHRoZSBsYXN0IHZhbHVlXG4gICAgaWYgKGVxdWFscyhxdWVyeSwgdGhpcy5sYXN0S2V5KSAmJiBlcXVhbHMoYXJncywgdGhpcy5sYXN0UGFyYW1zKSkge1xuICAgICAgcmV0dXJuIHRoaXMudmFsdWU7XG4gICAgfVxuXG4gICAgbGV0IGludGVycG9sYXRlUGFyYW1zOiBPYmplY3Q7XG4gICAgaWYgKGlzRGVmaW5lZChhcmdzWzBdKSAmJiBhcmdzLmxlbmd0aCkge1xuICAgICAgaWYgKHR5cGVvZiBhcmdzWzBdID09PSAnc3RyaW5nJyAmJiBhcmdzWzBdLmxlbmd0aCkge1xuICAgICAgICAvLyB3ZSBhY2NlcHQgb2JqZWN0cyB3cml0dGVuIGluIHRoZSB0ZW1wbGF0ZSBzdWNoIGFzIHtuOjF9LCB7J24nOjF9LCB7bjondid9XG4gICAgICAgIC8vIHdoaWNoIGlzIHdoeSB3ZSBtaWdodCBuZWVkIHRvIGNoYW5nZSBpdCB0byByZWFsIEpTT04gb2JqZWN0cyBzdWNoIGFzIHtcIm5cIjoxfSBvciB7XCJuXCI6XCJ2XCJ9XG4gICAgICAgIGxldCB2YWxpZEFyZ3M6IHN0cmluZyA9IGFyZ3NbMF1cbiAgICAgICAgICAucmVwbGFjZSgvKFxcJyk/KFthLXpBLVowLTlfXSspKFxcJyk/KFxccyk/Oi9nLCAnXCIkMlwiOicpXG4gICAgICAgICAgLnJlcGxhY2UoLzooXFxzKT8oXFwnKSguKj8pKFxcJykvZywgJzpcIiQzXCInKTtcbiAgICAgICAgdHJ5IHtcbiAgICAgICAgICBpbnRlcnBvbGF0ZVBhcmFtcyA9IEpTT04ucGFyc2UodmFsaWRBcmdzKTtcbiAgICAgICAgfSBjYXRjaCAoZSkge1xuICAgICAgICAgIHRocm93IG5ldyBTeW50YXhFcnJvcihgV3JvbmcgcGFyYW1ldGVyIGluIFRyYW5zbGF0ZVBpcGUuIEV4cGVjdGVkIGEgdmFsaWQgT2JqZWN0LCByZWNlaXZlZDogJHthcmdzWzBdfWApO1xuICAgICAgICB9XG4gICAgICB9IGVsc2UgaWYgKHR5cGVvZiBhcmdzWzBdID09PSAnb2JqZWN0JyAmJiAhQXJyYXkuaXNBcnJheShhcmdzWzBdKSkge1xuICAgICAgICBpbnRlcnBvbGF0ZVBhcmFtcyA9IGFyZ3NbMF07XG4gICAgICB9XG4gICAgfVxuXG4gICAgLy8gc3RvcmUgdGhlIHF1ZXJ5LCBpbiBjYXNlIGl0IGNoYW5nZXNcbiAgICB0aGlzLmxhc3RLZXkgPSBxdWVyeTtcblxuICAgIC8vIHN0b3JlIHRoZSBwYXJhbXMsIGluIGNhc2UgdGhleSBjaGFuZ2VcbiAgICB0aGlzLmxhc3RQYXJhbXMgPSBhcmdzO1xuXG4gICAgLy8gc2V0IHRoZSB2YWx1ZVxuICAgIHRoaXMudXBkYXRlVmFsdWUocXVlcnksIGludGVycG9sYXRlUGFyYW1zKTtcblxuICAgIC8vIGlmIHRoZXJlIGlzIGEgc3Vic2NyaXB0aW9uIHRvIG9uTGFuZ0NoYW5nZSwgY2xlYW4gaXRcbiAgICB0aGlzLl9kaXNwb3NlKCk7XG5cbiAgICAvLyBzdWJzY3JpYmUgdG8gb25UcmFuc2xhdGlvbkNoYW5nZSBldmVudCwgaW4gY2FzZSB0aGUgdHJhbnNsYXRpb25zIGNoYW5nZVxuICAgIGlmICghdGhpcy5vblRyYW5zbGF0aW9uQ2hhbmdlKSB7XG4gICAgICB0aGlzLm9uVHJhbnNsYXRpb25DaGFuZ2UgPSB0aGlzLnRyYW5zbGF0ZS5vblRyYW5zbGF0aW9uQ2hhbmdlLnN1YnNjcmliZSgoZXZlbnQ6IFRyYW5zbGF0aW9uQ2hhbmdlRXZlbnQpID0+IHtcbiAgICAgICAgaWYgKHRoaXMubGFzdEtleSAmJiBldmVudC5sYW5nID09PSB0aGlzLnRyYW5zbGF0ZS5jdXJyZW50TGFuZykge1xuICAgICAgICAgIHRoaXMubGFzdEtleSA9IG51bGw7XG4gICAgICAgICAgdGhpcy51cGRhdGVWYWx1ZShxdWVyeSwgaW50ZXJwb2xhdGVQYXJhbXMsIGV2ZW50LnRyYW5zbGF0aW9ucyk7XG4gICAgICAgIH1cbiAgICAgIH0pO1xuICAgIH1cblxuICAgIC8vIHN1YnNjcmliZSB0byBvbkxhbmdDaGFuZ2UgZXZlbnQsIGluIGNhc2UgdGhlIGxhbmd1YWdlIGNoYW5nZXNcbiAgICBpZiAoIXRoaXMub25MYW5nQ2hhbmdlKSB7XG4gICAgICB0aGlzLm9uTGFuZ0NoYW5nZSA9IHRoaXMudHJhbnNsYXRlLm9uTGFuZ0NoYW5nZS5zdWJzY3JpYmUoKGV2ZW50OiBMYW5nQ2hhbmdlRXZlbnQpID0+IHtcbiAgICAgICAgaWYgKHRoaXMubGFzdEtleSkge1xuICAgICAgICAgIHRoaXMubGFzdEtleSA9IG51bGw7IC8vIHdlIHdhbnQgdG8gbWFrZSBzdXJlIGl0IGRvZXNuJ3QgcmV0dXJuIHRoZSBzYW1lIHZhbHVlIHVudGlsIGl0J3MgYmVlbiB1cGRhdGVkXG4gICAgICAgICAgdGhpcy51cGRhdGVWYWx1ZShxdWVyeSwgaW50ZXJwb2xhdGVQYXJhbXMsIGV2ZW50LnRyYW5zbGF0aW9ucyk7XG4gICAgICAgIH1cbiAgICAgIH0pO1xuICAgIH1cblxuICAgIC8vIHN1YnNjcmliZSB0byBvbkRlZmF1bHRMYW5nQ2hhbmdlIGV2ZW50LCBpbiBjYXNlIHRoZSBkZWZhdWx0IGxhbmd1YWdlIGNoYW5nZXNcbiAgICBpZiAoIXRoaXMub25EZWZhdWx0TGFuZ0NoYW5nZSkge1xuICAgICAgdGhpcy5vbkRlZmF1bHRMYW5nQ2hhbmdlID0gdGhpcy50cmFuc2xhdGUub25EZWZhdWx0TGFuZ0NoYW5nZS5zdWJzY3JpYmUoKCkgPT4ge1xuICAgICAgICBpZiAodGhpcy5sYXN0S2V5KSB7XG4gICAgICAgICAgdGhpcy5sYXN0S2V5ID0gbnVsbDsgLy8gd2Ugd2FudCB0byBtYWtlIHN1cmUgaXQgZG9lc24ndCByZXR1cm4gdGhlIHNhbWUgdmFsdWUgdW50aWwgaXQncyBiZWVuIHVwZGF0ZWRcbiAgICAgICAgICB0aGlzLnVwZGF0ZVZhbHVlKHF1ZXJ5LCBpbnRlcnBvbGF0ZVBhcmFtcyk7XG4gICAgICAgIH1cbiAgICAgIH0pO1xuICAgIH1cblxuICAgIHJldHVybiB0aGlzLnZhbHVlO1xuICB9XG5cbiAgLyoqXG4gICAqIENsZWFuIGFueSBleGlzdGluZyBzdWJzY3JpcHRpb24gdG8gY2hhbmdlIGV2ZW50c1xuICAgKi9cbiAgcHJpdmF0ZSBfZGlzcG9zZSgpOiB2b2lkIHtcbiAgICBpZiAodHlwZW9mIHRoaXMub25UcmFuc2xhdGlvbkNoYW5nZSAhPT0gJ3VuZGVmaW5lZCcpIHtcbiAgICAgIHRoaXMub25UcmFuc2xhdGlvbkNoYW5nZS51bnN1YnNjcmliZSgpO1xuICAgICAgdGhpcy5vblRyYW5zbGF0aW9uQ2hhbmdlID0gdW5kZWZpbmVkO1xuICAgIH1cbiAgICBpZiAodHlwZW9mIHRoaXMub25MYW5nQ2hhbmdlICE9PSAndW5kZWZpbmVkJykge1xuICAgICAgdGhpcy5vbkxhbmdDaGFuZ2UudW5zdWJzY3JpYmUoKTtcbiAgICAgIHRoaXMub25MYW5nQ2hhbmdlID0gdW5kZWZpbmVkO1xuICAgIH1cbiAgICBpZiAodHlwZW9mIHRoaXMub25EZWZhdWx0TGFuZ0NoYW5nZSAhPT0gJ3VuZGVmaW5lZCcpIHtcbiAgICAgIHRoaXMub25EZWZhdWx0TGFuZ0NoYW5nZS51bnN1YnNjcmliZSgpO1xuICAgICAgdGhpcy5vbkRlZmF1bHRMYW5nQ2hhbmdlID0gdW5kZWZpbmVkO1xuICAgIH1cbiAgfVxuXG4gIG5nT25EZXN0cm95KCk6IHZvaWQge1xuICAgIHRoaXMuX2Rpc3Bvc2UoKTtcbiAgfVxufVxuIiwiaW1wb3J0IHtOZ01vZHVsZSwgTW9kdWxlV2l0aFByb3ZpZGVycywgUHJvdmlkZXJ9IGZyb20gXCJAYW5ndWxhci9jb3JlXCI7XG5pbXBvcnQge1RyYW5zbGF0ZUxvYWRlciwgVHJhbnNsYXRlRmFrZUxvYWRlcn0gZnJvbSBcIi4vbGliL3RyYW5zbGF0ZS5sb2FkZXJcIjtcbmltcG9ydCB7VHJhbnNsYXRlU2VydmljZX0gZnJvbSBcIi4vbGliL3RyYW5zbGF0ZS5zZXJ2aWNlXCI7XG5pbXBvcnQge01pc3NpbmdUcmFuc2xhdGlvbkhhbmRsZXIsIEZha2VNaXNzaW5nVHJhbnNsYXRpb25IYW5kbGVyfSBmcm9tIFwiLi9saWIvbWlzc2luZy10cmFuc2xhdGlvbi1oYW5kbGVyXCI7XG5pbXBvcnQge1RyYW5zbGF0ZVBhcnNlciwgVHJhbnNsYXRlRGVmYXVsdFBhcnNlcn0gZnJvbSBcIi4vbGliL3RyYW5zbGF0ZS5wYXJzZXJcIjtcbmltcG9ydCB7VHJhbnNsYXRlQ29tcGlsZXIsIFRyYW5zbGF0ZUZha2VDb21waWxlcn0gZnJvbSBcIi4vbGliL3RyYW5zbGF0ZS5jb21waWxlclwiO1xuaW1wb3J0IHtUcmFuc2xhdGVEaXJlY3RpdmV9IGZyb20gXCIuL2xpYi90cmFuc2xhdGUuZGlyZWN0aXZlXCI7XG5pbXBvcnQge1RyYW5zbGF0ZVBpcGV9IGZyb20gXCIuL2xpYi90cmFuc2xhdGUucGlwZVwiO1xuaW1wb3J0IHtUcmFuc2xhdGVTdG9yZX0gZnJvbSBcIi4vbGliL3RyYW5zbGF0ZS5zdG9yZVwiO1xuaW1wb3J0IHtVU0VfU1RPUkV9IGZyb20gXCIuL2xpYi90cmFuc2xhdGUuc2VydmljZVwiO1xuaW1wb3J0IHtVU0VfREVGQVVMVF9MQU5HfSBmcm9tIFwiLi9saWIvdHJhbnNsYXRlLnNlcnZpY2VcIjtcblxuZXhwb3J0ICogZnJvbSBcIi4vbGliL3RyYW5zbGF0ZS5sb2FkZXJcIjtcbmV4cG9ydCAqIGZyb20gXCIuL2xpYi90cmFuc2xhdGUuc2VydmljZVwiO1xuZXhwb3J0ICogZnJvbSBcIi4vbGliL21pc3NpbmctdHJhbnNsYXRpb24taGFuZGxlclwiO1xuZXhwb3J0ICogZnJvbSBcIi4vbGliL3RyYW5zbGF0ZS5wYXJzZXJcIjtcbmV4cG9ydCAqIGZyb20gXCIuL2xpYi90cmFuc2xhdGUuY29tcGlsZXJcIjtcbmV4cG9ydCAqIGZyb20gXCIuL2xpYi90cmFuc2xhdGUuZGlyZWN0aXZlXCI7XG5leHBvcnQgKiBmcm9tIFwiLi9saWIvdHJhbnNsYXRlLnBpcGVcIjtcbmV4cG9ydCAqIGZyb20gXCIuL2xpYi90cmFuc2xhdGUuc3RvcmVcIjtcblxuZXhwb3J0IGludGVyZmFjZSBUcmFuc2xhdGVNb2R1bGVDb25maWcge1xuICBsb2FkZXI/OiBQcm92aWRlcjtcbiAgY29tcGlsZXI/OiBQcm92aWRlcjtcbiAgcGFyc2VyPzogUHJvdmlkZXI7XG4gIG1pc3NpbmdUcmFuc2xhdGlvbkhhbmRsZXI/OiBQcm92aWRlcjtcbiAgLy8gaXNvbGF0ZSB0aGUgc2VydmljZSBpbnN0YW5jZSwgb25seSB3b3JrcyBmb3IgbGF6eSBsb2FkZWQgbW9kdWxlcyBvciBjb21wb25lbnRzIHdpdGggdGhlIFwicHJvdmlkZXJzXCIgcHJvcGVydHlcbiAgaXNvbGF0ZT86IGJvb2xlYW47XG4gIHVzZURlZmF1bHRMYW5nPzogYm9vbGVhbjtcbn1cblxuQE5nTW9kdWxlKHtcbiAgZGVjbGFyYXRpb25zOiBbXG4gICAgVHJhbnNsYXRlUGlwZSxcbiAgICBUcmFuc2xhdGVEaXJlY3RpdmVcbiAgXSxcbiAgZXhwb3J0czogW1xuICAgIFRyYW5zbGF0ZVBpcGUsXG4gICAgVHJhbnNsYXRlRGlyZWN0aXZlXG4gIF1cbn0pXG5leHBvcnQgY2xhc3MgVHJhbnNsYXRlTW9kdWxlIHtcbiAgLyoqXG4gICAqIFVzZSB0aGlzIG1ldGhvZCBpbiB5b3VyIHJvb3QgbW9kdWxlIHRvIHByb3ZpZGUgdGhlIFRyYW5zbGF0ZVNlcnZpY2VcbiAgICovXG4gIHN0YXRpYyBmb3JSb290KGNvbmZpZzogVHJhbnNsYXRlTW9kdWxlQ29uZmlnID0ge30pOiBNb2R1bGVXaXRoUHJvdmlkZXJzIHtcbiAgICByZXR1cm4ge1xuICAgICAgbmdNb2R1bGU6IFRyYW5zbGF0ZU1vZHVsZSxcbiAgICAgIHByb3ZpZGVyczogW1xuICAgICAgICBjb25maWcubG9hZGVyIHx8IHtwcm92aWRlOiBUcmFuc2xhdGVMb2FkZXIsIHVzZUNsYXNzOiBUcmFuc2xhdGVGYWtlTG9hZGVyfSxcbiAgICAgICAgY29uZmlnLmNvbXBpbGVyIHx8IHtwcm92aWRlOiBUcmFuc2xhdGVDb21waWxlciwgdXNlQ2xhc3M6IFRyYW5zbGF0ZUZha2VDb21waWxlcn0sXG4gICAgICAgIGNvbmZpZy5wYXJzZXIgfHwge3Byb3ZpZGU6IFRyYW5zbGF0ZVBhcnNlciwgdXNlQ2xhc3M6IFRyYW5zbGF0ZURlZmF1bHRQYXJzZXJ9LFxuICAgICAgICBjb25maWcubWlzc2luZ1RyYW5zbGF0aW9uSGFuZGxlciB8fCB7cHJvdmlkZTogTWlzc2luZ1RyYW5zbGF0aW9uSGFuZGxlciwgdXNlQ2xhc3M6IEZha2VNaXNzaW5nVHJhbnNsYXRpb25IYW5kbGVyfSxcbiAgICAgICAgVHJhbnNsYXRlU3RvcmUsXG4gICAgICAgIHtwcm92aWRlOiBVU0VfU1RPUkUsIHVzZVZhbHVlOiBjb25maWcuaXNvbGF0ZX0sXG4gICAgICAgIHtwcm92aWRlOiBVU0VfREVGQVVMVF9MQU5HLCB1c2VWYWx1ZTogY29uZmlnLnVzZURlZmF1bHRMYW5nfSxcbiAgICAgICAgVHJhbnNsYXRlU2VydmljZVxuICAgICAgXVxuICAgIH07XG4gIH1cblxuICAvKipcbiAgICogVXNlIHRoaXMgbWV0aG9kIGluIHlvdXIgb3RoZXIgKG5vbiByb290KSBtb2R1bGVzIHRvIGltcG9ydCB0aGUgZGlyZWN0aXZlL3BpcGVcbiAgICovXG4gIHN0YXRpYyBmb3JDaGlsZChjb25maWc6IFRyYW5zbGF0ZU1vZHVsZUNvbmZpZyA9IHt9KTogTW9kdWxlV2l0aFByb3ZpZGVycyB7XG4gICAgcmV0dXJuIHtcbiAgICAgIG5nTW9kdWxlOiBUcmFuc2xhdGVNb2R1bGUsXG4gICAgICBwcm92aWRlcnM6IFtcbiAgICAgICAgY29uZmlnLmxvYWRlciB8fCB7cHJvdmlkZTogVHJhbnNsYXRlTG9hZGVyLCB1c2VDbGFzczogVHJhbnNsYXRlRmFrZUxvYWRlcn0sXG4gICAgICAgIGNvbmZpZy5jb21waWxlciB8fCB7cHJvdmlkZTogVHJhbnNsYXRlQ29tcGlsZXIsIHVzZUNsYXNzOiBUcmFuc2xhdGVGYWtlQ29tcGlsZXJ9LFxuICAgICAgICBjb25maWcucGFyc2VyIHx8IHtwcm92aWRlOiBUcmFuc2xhdGVQYXJzZXIsIHVzZUNsYXNzOiBUcmFuc2xhdGVEZWZhdWx0UGFyc2VyfSxcbiAgICAgICAgY29uZmlnLm1pc3NpbmdUcmFuc2xhdGlvbkhhbmRsZXIgfHwge3Byb3ZpZGU6IE1pc3NpbmdUcmFuc2xhdGlvbkhhbmRsZXIsIHVzZUNsYXNzOiBGYWtlTWlzc2luZ1RyYW5zbGF0aW9uSGFuZGxlcn0sXG4gICAgICAgIHtwcm92aWRlOiBVU0VfU1RPUkUsIHVzZVZhbHVlOiBjb25maWcuaXNvbGF0ZX0sXG4gICAgICAgIHtwcm92aWRlOiBVU0VfREVGQVVMVF9MQU5HLCB1c2VWYWx1ZTogY29uZmlnLnVzZURlZmF1bHRMYW5nfSxcbiAgICAgICAgVHJhbnNsYXRlU2VydmljZVxuICAgICAgXVxuICAgIH07XG4gIH1cbn1cbiJdLCJuYW1lcyI6WyJ0c2xpYl8xLl9fZXh0ZW5kcyIsInRzbGliXzEuX192YWx1ZXMiXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7OztBQUdBOzs7O0lBQUE7S0FFQztJQUFELHNCQUFDO0NBQUEsSUFBQTs7OztBQUtEO0lBQ3lDQSx1Q0FBZTtJQUR4RDs7S0FLQzs7Ozs7SUFIQyw0Q0FBYzs7OztJQUFkLFVBQWUsSUFBWTtRQUN6QixPQUFPLEVBQUUsQ0FBQyxFQUFFLENBQUMsQ0FBQztLQUNmOztnQkFKRixVQUFVOztJQUtYLDBCQUFDO0NBQUEsQ0FKd0MsZUFBZTs7Ozs7O0FDWHhEOzs7QUFvQkE7Ozs7SUFBQTtLQVdDO0lBQUQsZ0NBQUM7Q0FBQSxJQUFBOzs7O0FBS0Q7SUFBQTtLQUtDOzs7OztJQUhDLDhDQUFNOzs7O0lBQU4sVUFBTyxNQUF1QztRQUM1QyxPQUFPLE1BQU0sQ0FBQyxHQUFHLENBQUM7S0FDbkI7O2dCQUpGLFVBQVU7O0lBS1gsb0NBQUM7Q0FMRDs7Ozs7Ozs7O0FDbENBOzs7O0lBQUE7S0FJQztJQUFELHdCQUFDO0NBQUEsSUFBQTs7OztBQUtEO0lBQzJDQSx5Q0FBaUI7SUFENUQ7O0tBU0M7Ozs7OztJQVBDLHVDQUFPOzs7OztJQUFQLFVBQVEsS0FBYSxFQUFFLElBQVk7UUFDakMsT0FBTyxLQUFLLENBQUM7S0FDZDs7Ozs7O0lBRUQsbURBQW1COzs7OztJQUFuQixVQUFvQixZQUFpQixFQUFFLElBQVk7UUFDakQsT0FBTyxZQUFZLENBQUM7S0FDckI7O2dCQVJGLFVBQVU7O0lBU1gsNEJBQUM7Q0FBQSxDQVIwQyxpQkFBaUI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FDRTVELFNBQWdC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
+
+/***/ }),
+
+/***/ "./node_modules/@ngx-translate/http-loader/fesm5/ngx-translate-http-loader.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@ngx-translate/http-loader/fesm5/ngx-translate-http-loader.js ***!
+  \************************************************************************************/
+/*! exports provided: TranslateHttpLoader */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TranslateHttpLoader", function() { return TranslateHttpLoader; });
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,uselessCode} checked by tsc
+ */
+var TranslateHttpLoader = /** @class */ (function () {
+    function TranslateHttpLoader(http, prefix, suffix) {
+        if (prefix === void 0) { prefix = "/assets/i18n/"; }
+        if (suffix === void 0) { suffix = ".json"; }
+        this.http = http;
+        this.prefix = prefix;
+        this.suffix = suffix;
+    }
+    /**
+     * Gets the translations from the server
+     */
+    /**
+     * Gets the translations from the server
+     * @param {?} lang
+     * @return {?}
+     */
+    TranslateHttpLoader.prototype.getTranslation = /**
+     * Gets the translations from the server
+     * @param {?} lang
+     * @return {?}
+     */
+    function (lang) {
+        return this.http.get("" + this.prefix + lang + this.suffix);
+    };
+    return TranslateHttpLoader;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,uselessCode} checked by tsc
+ */
+
+
+
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibmd4LXRyYW5zbGF0ZS1odHRwLWxvYWRlci5qcy5tYXAiLCJzb3VyY2VzIjpbIm5nOi8vQG5neC10cmFuc2xhdGUvaHR0cC1sb2FkZXIvbGliL2h0dHAtbG9hZGVyLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7SHR0cENsaWVudH0gZnJvbSBcIkBhbmd1bGFyL2NvbW1vbi9odHRwXCI7XG5pbXBvcnQge1RyYW5zbGF0ZUxvYWRlcn0gZnJvbSBcIkBuZ3gtdHJhbnNsYXRlL2NvcmVcIjtcbmltcG9ydCB7T2JzZXJ2YWJsZX0gZnJvbSAncnhqcyc7XG5cbmV4cG9ydCBjbGFzcyBUcmFuc2xhdGVIdHRwTG9hZGVyIGltcGxlbWVudHMgVHJhbnNsYXRlTG9hZGVyIHtcbiAgY29uc3RydWN0b3IocHJpdmF0ZSBodHRwOiBIdHRwQ2xpZW50LCBwdWJsaWMgcHJlZml4OiBzdHJpbmcgPSBcIi9hc3NldHMvaTE4bi9cIiwgcHVibGljIHN1ZmZpeDogc3RyaW5nID0gXCIuanNvblwiKSB7fVxuXG4gIC8qKlxuICAgKiBHZXRzIHRoZSB0cmFuc2xhdGlvbnMgZnJvbSB0aGUgc2VydmVyXG4gICAqL1xuICBwdWJsaWMgZ2V0VHJhbnNsYXRpb24obGFuZzogc3RyaW5nKTogT2JzZXJ2YWJsZTxPYmplY3Q+IHtcbiAgICByZXR1cm4gdGhpcy5odHRwLmdldChgJHt0aGlzLnByZWZpeH0ke2xhbmd9JHt0aGlzLnN1ZmZpeH1gKTtcbiAgfVxufVxuIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFJQTtJQUNFLDZCQUFvQixJQUFnQixFQUFTLE1BQWdDLEVBQVMsTUFBd0I7UUFBakUsdUJBQUEsRUFBQSx3QkFBZ0M7UUFBUyx1QkFBQSxFQUFBLGdCQUF3QjtRQUExRixTQUFJLEdBQUosSUFBSSxDQUFZO1FBQVMsV0FBTSxHQUFOLE1BQU0sQ0FBMEI7UUFBUyxXQUFNLEdBQU4sTUFBTSxDQUFrQjtLQUFJOzs7Ozs7Ozs7SUFLM0csNENBQWM7Ozs7O0lBQXJCLFVBQXNCLElBQVk7UUFDaEMsT0FBTyxJQUFJLENBQUMsSUFBSSxDQUFDLEdBQUcsQ0FBQyxLQUFHLElBQUksQ0FBQyxNQUFNLEdBQUcsSUFBSSxHQUFHLElBQUksQ0FBQyxNQUFRLENBQUMsQ0FBQztLQUM3RDtJQUNILDBCQUFDO0NBQUE7Ozs7Ozs7Ozs7Ozs7OyJ9
+
+/***/ }),
+
 /***/ "./node_modules/rxjs/_esm5/index.js":
 /*!******************************************!*\
   !*** ./node_modules/rxjs/_esm5/index.js ***!
   \******************************************/
-/*! exports provided: Observable, ConnectableObservable, GroupedObservable, observable, Subject, BehaviorSubject, ReplaySubject, AsyncSubject, asapScheduler, asyncScheduler, queueScheduler, animationFrameScheduler, VirtualTimeScheduler, VirtualAction, Scheduler, Subscription, Subscriber, Notification, pipe, noop, identity, isObservable, ArgumentOutOfRangeError, EmptyError, ObjectUnsubscribedError, UnsubscriptionError, TimeoutError, bindCallback, bindNodeCallback, combineLatest, concat, defer, empty, forkJoin, from, fromEvent, fromEventPattern, generate, iif, interval, merge, never, of, onErrorResumeNext, pairs, race, range, throwError, timer, using, zip, EMPTY, NEVER, config */
+/*! exports provided: Observable, ConnectableObservable, GroupedObservable, observable, Subject, BehaviorSubject, ReplaySubject, AsyncSubject, asapScheduler, asyncScheduler, queueScheduler, animationFrameScheduler, VirtualTimeScheduler, VirtualAction, Scheduler, Subscription, Subscriber, Notification, NotificationKind, pipe, noop, identity, isObservable, ArgumentOutOfRangeError, EmptyError, ObjectUnsubscribedError, UnsubscriptionError, TimeoutError, bindCallback, bindNodeCallback, combineLatest, concat, defer, empty, forkJoin, from, fromEvent, fromEventPattern, generate, iif, interval, merge, never, of, onErrorResumeNext, pairs, partition, race, range, throwError, timer, using, zip, scheduled, EMPTY, NEVER, config */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -69174,6 +71454,8 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony import */ var _internal_Notification__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./internal/Notification */ "./node_modules/rxjs/_esm5/internal/Notification.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Notification", function() { return _internal_Notification__WEBPACK_IMPORTED_MODULE_16__["Notification"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "NotificationKind", function() { return _internal_Notification__WEBPACK_IMPORTED_MODULE_16__["NotificationKind"]; });
 
 /* harmony import */ var _internal_util_pipe__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./internal/util/pipe */ "./node_modules/rxjs/_esm5/internal/util/pipe.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "pipe", function() { return _internal_util_pipe__WEBPACK_IMPORTED_MODULE_17__["pipe"]; });
@@ -69256,32 +71538,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _internal_observable_pairs__WEBPACK_IMPORTED_MODULE_43__ = __webpack_require__(/*! ./internal/observable/pairs */ "./node_modules/rxjs/_esm5/internal/observable/pairs.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "pairs", function() { return _internal_observable_pairs__WEBPACK_IMPORTED_MODULE_43__["pairs"]; });
 
-/* harmony import */ var _internal_observable_race__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ./internal/observable/race */ "./node_modules/rxjs/_esm5/internal/observable/race.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "race", function() { return _internal_observable_race__WEBPACK_IMPORTED_MODULE_44__["race"]; });
+/* harmony import */ var _internal_observable_partition__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ./internal/observable/partition */ "./node_modules/rxjs/_esm5/internal/observable/partition.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "partition", function() { return _internal_observable_partition__WEBPACK_IMPORTED_MODULE_44__["partition"]; });
 
-/* harmony import */ var _internal_observable_range__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./internal/observable/range */ "./node_modules/rxjs/_esm5/internal/observable/range.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "range", function() { return _internal_observable_range__WEBPACK_IMPORTED_MODULE_45__["range"]; });
+/* harmony import */ var _internal_observable_race__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./internal/observable/race */ "./node_modules/rxjs/_esm5/internal/observable/race.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "race", function() { return _internal_observable_race__WEBPACK_IMPORTED_MODULE_45__["race"]; });
 
-/* harmony import */ var _internal_observable_throwError__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./internal/observable/throwError */ "./node_modules/rxjs/_esm5/internal/observable/throwError.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "throwError", function() { return _internal_observable_throwError__WEBPACK_IMPORTED_MODULE_46__["throwError"]; });
+/* harmony import */ var _internal_observable_range__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./internal/observable/range */ "./node_modules/rxjs/_esm5/internal/observable/range.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "range", function() { return _internal_observable_range__WEBPACK_IMPORTED_MODULE_46__["range"]; });
 
-/* harmony import */ var _internal_observable_timer__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./internal/observable/timer */ "./node_modules/rxjs/_esm5/internal/observable/timer.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "timer", function() { return _internal_observable_timer__WEBPACK_IMPORTED_MODULE_47__["timer"]; });
+/* harmony import */ var _internal_observable_throwError__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./internal/observable/throwError */ "./node_modules/rxjs/_esm5/internal/observable/throwError.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "throwError", function() { return _internal_observable_throwError__WEBPACK_IMPORTED_MODULE_47__["throwError"]; });
 
-/* harmony import */ var _internal_observable_using__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./internal/observable/using */ "./node_modules/rxjs/_esm5/internal/observable/using.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "using", function() { return _internal_observable_using__WEBPACK_IMPORTED_MODULE_48__["using"]; });
+/* harmony import */ var _internal_observable_timer__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./internal/observable/timer */ "./node_modules/rxjs/_esm5/internal/observable/timer.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "timer", function() { return _internal_observable_timer__WEBPACK_IMPORTED_MODULE_48__["timer"]; });
 
-/* harmony import */ var _internal_observable_zip__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./internal/observable/zip */ "./node_modules/rxjs/_esm5/internal/observable/zip.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "zip", function() { return _internal_observable_zip__WEBPACK_IMPORTED_MODULE_49__["zip"]; });
+/* harmony import */ var _internal_observable_using__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./internal/observable/using */ "./node_modules/rxjs/_esm5/internal/observable/using.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "using", function() { return _internal_observable_using__WEBPACK_IMPORTED_MODULE_49__["using"]; });
+
+/* harmony import */ var _internal_observable_zip__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./internal/observable/zip */ "./node_modules/rxjs/_esm5/internal/observable/zip.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "zip", function() { return _internal_observable_zip__WEBPACK_IMPORTED_MODULE_50__["zip"]; });
+
+/* harmony import */ var _internal_scheduled_scheduled__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./internal/scheduled/scheduled */ "./node_modules/rxjs/_esm5/internal/scheduled/scheduled.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "scheduled", function() { return _internal_scheduled_scheduled__WEBPACK_IMPORTED_MODULE_51__["scheduled"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EMPTY", function() { return _internal_observable_empty__WEBPACK_IMPORTED_MODULE_31__["EMPTY"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "NEVER", function() { return _internal_observable_never__WEBPACK_IMPORTED_MODULE_40__["NEVER"]; });
 
-/* harmony import */ var _internal_config__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./internal/config */ "./node_modules/rxjs/_esm5/internal/config.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "config", function() { return _internal_config__WEBPACK_IMPORTED_MODULE_50__["config"]; });
+/* harmony import */ var _internal_config__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./internal/config */ "./node_modules/rxjs/_esm5/internal/config.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "config", function() { return _internal_config__WEBPACK_IMPORTED_MODULE_52__["config"]; });
 
 /** PURE_IMPORTS_START  PURE_IMPORTS_END */
+
+
 
 
 
@@ -69512,11 +71802,12 @@ var InnerSubscriber = /*@__PURE__*/ (function (_super) {
 /*!**********************************************************!*\
   !*** ./node_modules/rxjs/_esm5/internal/Notification.js ***!
   \**********************************************************/
-/*! exports provided: Notification */
+/*! exports provided: NotificationKind, Notification */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NotificationKind", function() { return NotificationKind; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Notification", function() { return Notification; });
 /* harmony import */ var _observable_empty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observable/empty */ "./node_modules/rxjs/_esm5/internal/observable/empty.js");
 /* harmony import */ var _observable_of__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./observable/of */ "./node_modules/rxjs/_esm5/internal/observable/of.js");
@@ -69525,6 +71816,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+var NotificationKind;
+/*@__PURE__*/ (function (NotificationKind) {
+    NotificationKind["NEXT"] = "N";
+    NotificationKind["ERROR"] = "E";
+    NotificationKind["COMPLETE"] = "C";
+})(NotificationKind || (NotificationKind = {}));
 var Notification = /*@__PURE__*/ (function () {
     function Notification(kind, value, error) {
         this.kind = kind;
@@ -69607,10 +71904,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Observable", function() { return Observable; });
 /* harmony import */ var _util_canReportError__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./util/canReportError */ "./node_modules/rxjs/_esm5/internal/util/canReportError.js");
 /* harmony import */ var _util_toSubscriber__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./util/toSubscriber */ "./node_modules/rxjs/_esm5/internal/util/toSubscriber.js");
-/* harmony import */ var _internal_symbol_observable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../internal/symbol/observable */ "./node_modules/rxjs/_esm5/internal/symbol/observable.js");
+/* harmony import */ var _symbol_observable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./symbol/observable */ "./node_modules/rxjs/_esm5/internal/symbol/observable.js");
 /* harmony import */ var _util_pipe__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./util/pipe */ "./node_modules/rxjs/_esm5/internal/util/pipe.js");
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./config */ "./node_modules/rxjs/_esm5/internal/config.js");
-/** PURE_IMPORTS_START _util_canReportError,_util_toSubscriber,_internal_symbol_observable,_util_pipe,_config PURE_IMPORTS_END */
+/** PURE_IMPORTS_START _util_canReportError,_util_toSubscriber,_symbol_observable,_util_pipe,_config PURE_IMPORTS_END */
 
 
 
@@ -69633,7 +71930,7 @@ var Observable = /*@__PURE__*/ (function () {
         var operator = this.operator;
         var sink = Object(_util_toSubscriber__WEBPACK_IMPORTED_MODULE_1__["toSubscriber"])(observerOrNext, error, complete);
         if (operator) {
-            operator.call(sink, this.source);
+            sink.add(operator.call(sink, this.source));
         }
         else {
             sink.add(this.source || (_config__WEBPACK_IMPORTED_MODULE_4__["config"].useDeprecatedSynchronousErrorHandling && !sink.syncErrorThrowable) ?
@@ -69689,7 +71986,7 @@ var Observable = /*@__PURE__*/ (function () {
         var source = this.source;
         return source && source.subscribe(subscriber);
     };
-    Observable.prototype[_internal_symbol_observable__WEBPACK_IMPORTED_MODULE_2__["observable"]] = function () {
+    Observable.prototype[_symbol_observable__WEBPACK_IMPORTED_MODULE_2__["observable"]] = function () {
         return this;
     };
     Observable.prototype.pipe = function () {
@@ -70234,7 +72531,6 @@ var Subscriber = /*@__PURE__*/ (function (_super) {
         _this.syncErrorThrown = false;
         _this.syncErrorThrowable = false;
         _this.isStopped = false;
-        _this._parentSubscription = null;
         switch (arguments.length) {
             case 0:
                 _this.destination = _Observer__WEBPACK_IMPORTED_MODULE_2__["empty"];
@@ -70305,15 +72601,12 @@ var Subscriber = /*@__PURE__*/ (function (_super) {
         this.unsubscribe();
     };
     Subscriber.prototype._unsubscribeAndRecycle = function () {
-        var _a = this, _parent = _a._parent, _parents = _a._parents;
-        this._parent = null;
-        this._parents = null;
+        var _parentOrParents = this._parentOrParents;
+        this._parentOrParents = null;
         this.unsubscribe();
         this.closed = false;
         this.isStopped = false;
-        this._parent = _parent;
-        this._parents = _parents;
-        this._parentSubscription = null;
+        this._parentOrParents = _parentOrParents;
         return this;
     };
     return Subscriber;
@@ -70472,12 +72765,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _util_isArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./util/isArray */ "./node_modules/rxjs/_esm5/internal/util/isArray.js");
 /* harmony import */ var _util_isObject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./util/isObject */ "./node_modules/rxjs/_esm5/internal/util/isObject.js");
 /* harmony import */ var _util_isFunction__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./util/isFunction */ "./node_modules/rxjs/_esm5/internal/util/isFunction.js");
-/* harmony import */ var _util_tryCatch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./util/tryCatch */ "./node_modules/rxjs/_esm5/internal/util/tryCatch.js");
-/* harmony import */ var _util_errorObject__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./util/errorObject */ "./node_modules/rxjs/_esm5/internal/util/errorObject.js");
-/* harmony import */ var _util_UnsubscriptionError__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./util/UnsubscriptionError */ "./node_modules/rxjs/_esm5/internal/util/UnsubscriptionError.js");
-/** PURE_IMPORTS_START _util_isArray,_util_isObject,_util_isFunction,_util_tryCatch,_util_errorObject,_util_UnsubscriptionError PURE_IMPORTS_END */
-
-
+/* harmony import */ var _util_UnsubscriptionError__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./util/UnsubscriptionError */ "./node_modules/rxjs/_esm5/internal/util/UnsubscriptionError.js");
+/** PURE_IMPORTS_START _util_isArray,_util_isObject,_util_isFunction,_util_UnsubscriptionError PURE_IMPORTS_END */
 
 
 
@@ -70485,94 +72774,112 @@ __webpack_require__.r(__webpack_exports__);
 var Subscription = /*@__PURE__*/ (function () {
     function Subscription(unsubscribe) {
         this.closed = false;
-        this._parent = null;
-        this._parents = null;
+        this._parentOrParents = null;
         this._subscriptions = null;
         if (unsubscribe) {
             this._unsubscribe = unsubscribe;
         }
     }
     Subscription.prototype.unsubscribe = function () {
-        var hasErrors = false;
         var errors;
         if (this.closed) {
             return;
         }
-        var _a = this, _parent = _a._parent, _parents = _a._parents, _unsubscribe = _a._unsubscribe, _subscriptions = _a._subscriptions;
+        var _a = this, _parentOrParents = _a._parentOrParents, _unsubscribe = _a._unsubscribe, _subscriptions = _a._subscriptions;
         this.closed = true;
-        this._parent = null;
-        this._parents = null;
+        this._parentOrParents = null;
         this._subscriptions = null;
-        var index = -1;
-        var len = _parents ? _parents.length : 0;
-        while (_parent) {
-            _parent.remove(this);
-            _parent = ++index < len && _parents[index] || null;
+        if (_parentOrParents instanceof Subscription) {
+            _parentOrParents.remove(this);
+        }
+        else if (_parentOrParents !== null) {
+            for (var index = 0; index < _parentOrParents.length; ++index) {
+                var parent_1 = _parentOrParents[index];
+                parent_1.remove(this);
+            }
         }
         if (Object(_util_isFunction__WEBPACK_IMPORTED_MODULE_2__["isFunction"])(_unsubscribe)) {
-            var trial = Object(_util_tryCatch__WEBPACK_IMPORTED_MODULE_3__["tryCatch"])(_unsubscribe).call(this);
-            if (trial === _util_errorObject__WEBPACK_IMPORTED_MODULE_4__["errorObject"]) {
-                hasErrors = true;
-                errors = errors || (_util_errorObject__WEBPACK_IMPORTED_MODULE_4__["errorObject"].e instanceof _util_UnsubscriptionError__WEBPACK_IMPORTED_MODULE_5__["UnsubscriptionError"] ?
-                    flattenUnsubscriptionErrors(_util_errorObject__WEBPACK_IMPORTED_MODULE_4__["errorObject"].e.errors) : [_util_errorObject__WEBPACK_IMPORTED_MODULE_4__["errorObject"].e]);
+            try {
+                _unsubscribe.call(this);
+            }
+            catch (e) {
+                errors = e instanceof _util_UnsubscriptionError__WEBPACK_IMPORTED_MODULE_3__["UnsubscriptionError"] ? flattenUnsubscriptionErrors(e.errors) : [e];
             }
         }
         if (Object(_util_isArray__WEBPACK_IMPORTED_MODULE_0__["isArray"])(_subscriptions)) {
-            index = -1;
-            len = _subscriptions.length;
+            var index = -1;
+            var len = _subscriptions.length;
             while (++index < len) {
                 var sub = _subscriptions[index];
                 if (Object(_util_isObject__WEBPACK_IMPORTED_MODULE_1__["isObject"])(sub)) {
-                    var trial = Object(_util_tryCatch__WEBPACK_IMPORTED_MODULE_3__["tryCatch"])(sub.unsubscribe).call(sub);
-                    if (trial === _util_errorObject__WEBPACK_IMPORTED_MODULE_4__["errorObject"]) {
-                        hasErrors = true;
+                    try {
+                        sub.unsubscribe();
+                    }
+                    catch (e) {
                         errors = errors || [];
-                        var err = _util_errorObject__WEBPACK_IMPORTED_MODULE_4__["errorObject"].e;
-                        if (err instanceof _util_UnsubscriptionError__WEBPACK_IMPORTED_MODULE_5__["UnsubscriptionError"]) {
-                            errors = errors.concat(flattenUnsubscriptionErrors(err.errors));
+                        if (e instanceof _util_UnsubscriptionError__WEBPACK_IMPORTED_MODULE_3__["UnsubscriptionError"]) {
+                            errors = errors.concat(flattenUnsubscriptionErrors(e.errors));
                         }
                         else {
-                            errors.push(err);
+                            errors.push(e);
                         }
                     }
                 }
             }
         }
-        if (hasErrors) {
-            throw new _util_UnsubscriptionError__WEBPACK_IMPORTED_MODULE_5__["UnsubscriptionError"](errors);
+        if (errors) {
+            throw new _util_UnsubscriptionError__WEBPACK_IMPORTED_MODULE_3__["UnsubscriptionError"](errors);
         }
     };
     Subscription.prototype.add = function (teardown) {
-        if (!teardown || (teardown === Subscription.EMPTY)) {
+        var subscription = teardown;
+        if (!teardown) {
             return Subscription.EMPTY;
         }
-        if (teardown === this) {
-            return this;
-        }
-        var subscription = teardown;
         switch (typeof teardown) {
             case 'function':
                 subscription = new Subscription(teardown);
             case 'object':
-                if (subscription.closed || typeof subscription.unsubscribe !== 'function') {
+                if (subscription === this || subscription.closed || typeof subscription.unsubscribe !== 'function') {
                     return subscription;
                 }
                 else if (this.closed) {
                     subscription.unsubscribe();
                     return subscription;
                 }
-                else if (typeof subscription._addParent !== 'function') {
+                else if (!(subscription instanceof Subscription)) {
                     var tmp = subscription;
                     subscription = new Subscription();
                     subscription._subscriptions = [tmp];
                 }
                 break;
-            default:
+            default: {
                 throw new Error('unrecognized teardown ' + teardown + ' added to Subscription.');
+            }
         }
-        var subscriptions = this._subscriptions || (this._subscriptions = []);
-        subscriptions.push(subscription);
-        subscription._addParent(this);
+        var _parentOrParents = subscription._parentOrParents;
+        if (_parentOrParents === null) {
+            subscription._parentOrParents = this;
+        }
+        else if (_parentOrParents instanceof Subscription) {
+            if (_parentOrParents === this) {
+                return subscription;
+            }
+            subscription._parentOrParents = [_parentOrParents, this];
+        }
+        else if (_parentOrParents.indexOf(this) === -1) {
+            _parentOrParents.push(this);
+        }
+        else {
+            return subscription;
+        }
+        var subscriptions = this._subscriptions;
+        if (subscriptions === null) {
+            this._subscriptions = [subscription];
+        }
+        else {
+            subscriptions.push(subscription);
+        }
         return subscription;
     };
     Subscription.prototype.remove = function (subscription) {
@@ -70584,18 +72891,6 @@ var Subscription = /*@__PURE__*/ (function () {
             }
         }
     };
-    Subscription.prototype._addParent = function (parent) {
-        var _a = this, _parent = _a._parent, _parents = _a._parents;
-        if (!_parent || _parent === parent) {
-            this._parent = parent;
-        }
-        else if (!_parents) {
-            this._parents = [parent];
-        }
-        else if (_parents.indexOf(parent) === -1) {
-            _parents.push(parent);
-        }
-    };
     Subscription.EMPTY = (function (empty) {
         empty.closed = true;
         return empty;
@@ -70604,7 +72899,7 @@ var Subscription = /*@__PURE__*/ (function () {
 }());
 
 function flattenUnsubscriptionErrors(errors) {
-    return errors.reduce(function (errs, err) { return errs.concat((err instanceof _util_UnsubscriptionError__WEBPACK_IMPORTED_MODULE_5__["UnsubscriptionError"]) ? err.errors : err); }, []);
+    return errors.reduce(function (errs, err) { return errs.concat((err instanceof _util_UnsubscriptionError__WEBPACK_IMPORTED_MODULE_3__["UnsubscriptionError"]) ? err.errors : err); }, []);
 }
 //# sourceMappingURL=Subscription.js.map
 
@@ -70698,9 +72993,6 @@ var ConnectableObservable = /*@__PURE__*/ (function (_super) {
             if (connection.closed) {
                 this._connection = null;
                 connection = _Subscription__WEBPACK_IMPORTED_MODULE_4__["Subscription"].EMPTY;
-            }
-            else {
-                this._connection = connection;
             }
         }
         return connection;
@@ -71268,13 +73560,9 @@ var CombineLatestSubscriber = /*@__PURE__*/ (function (_super) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "concat", function() { return concat; });
-/* harmony import */ var _util_isScheduler__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/isScheduler */ "./node_modules/rxjs/_esm5/internal/util/isScheduler.js");
-/* harmony import */ var _of__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./of */ "./node_modules/rxjs/_esm5/internal/observable/of.js");
-/* harmony import */ var _from__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./from */ "./node_modules/rxjs/_esm5/internal/observable/from.js");
-/* harmony import */ var _operators_concatAll__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../operators/concatAll */ "./node_modules/rxjs/_esm5/internal/operators/concatAll.js");
-/** PURE_IMPORTS_START _util_isScheduler,_of,_from,_operators_concatAll PURE_IMPORTS_END */
-
-
+/* harmony import */ var _of__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./of */ "./node_modules/rxjs/_esm5/internal/observable/of.js");
+/* harmony import */ var _operators_concatAll__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../operators/concatAll */ "./node_modules/rxjs/_esm5/internal/operators/concatAll.js");
+/** PURE_IMPORTS_START _of,_operators_concatAll PURE_IMPORTS_END */
 
 
 function concat() {
@@ -71282,10 +73570,7 @@ function concat() {
     for (var _i = 0; _i < arguments.length; _i++) {
         observables[_i] = arguments[_i];
     }
-    if (observables.length === 1 || (observables.length === 2 && Object(_util_isScheduler__WEBPACK_IMPORTED_MODULE_0__["isScheduler"])(observables[1]))) {
-        return Object(_from__WEBPACK_IMPORTED_MODULE_2__["from"])(observables[0]);
-    }
-    return Object(_operators_concatAll__WEBPACK_IMPORTED_MODULE_3__["concatAll"])()(_of__WEBPACK_IMPORTED_MODULE_1__["of"].apply(void 0, observables));
+    return Object(_operators_concatAll__WEBPACK_IMPORTED_MODULE_1__["concatAll"])()(_of__WEBPACK_IMPORTED_MODULE_0__["of"].apply(void 0, observables));
 }
 //# sourceMappingURL=concat.js.map
 
@@ -71332,14 +73617,13 @@ function defer(observableFactory) {
 /*!**************************************************************!*\
   !*** ./node_modules/rxjs/_esm5/internal/observable/empty.js ***!
   \**************************************************************/
-/*! exports provided: EMPTY, empty, emptyScheduled */
+/*! exports provided: EMPTY, empty */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EMPTY", function() { return EMPTY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "empty", function() { return empty; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "emptyScheduled", function() { return emptyScheduled; });
 /* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
 /** PURE_IMPORTS_START _Observable PURE_IMPORTS_END */
 
@@ -71365,16 +73649,12 @@ function emptyScheduled(scheduler) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "forkJoin", function() { return forkJoin; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
-/* harmony import */ var _util_isArray__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/isArray */ "./node_modules/rxjs/_esm5/internal/util/isArray.js");
-/* harmony import */ var _empty__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./empty */ "./node_modules/rxjs/_esm5/internal/observable/empty.js");
-/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
-/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
-/* harmony import */ var _operators_map__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../operators/map */ "./node_modules/rxjs/_esm5/internal/operators/map.js");
-/** PURE_IMPORTS_START tslib,_Observable,_util_isArray,_empty,_util_subscribeToResult,_OuterSubscriber,_operators_map PURE_IMPORTS_END */
-
-
+/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
+/* harmony import */ var _util_isArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/isArray */ "./node_modules/rxjs/_esm5/internal/util/isArray.js");
+/* harmony import */ var _operators_map__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../operators/map */ "./node_modules/rxjs/_esm5/internal/operators/map.js");
+/* harmony import */ var _util_isObject__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/isObject */ "./node_modules/rxjs/_esm5/internal/util/isObject.js");
+/* harmony import */ var _from__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./from */ "./node_modules/rxjs/_esm5/internal/observable/from.js");
+/** PURE_IMPORTS_START _Observable,_util_isArray,_operators_map,_util_isObject,_from PURE_IMPORTS_END */
 
 
 
@@ -71385,66 +73665,63 @@ function forkJoin() {
     for (var _i = 0; _i < arguments.length; _i++) {
         sources[_i] = arguments[_i];
     }
-    var resultSelector;
+    if (sources.length === 1) {
+        var first_1 = sources[0];
+        if (Object(_util_isArray__WEBPACK_IMPORTED_MODULE_1__["isArray"])(first_1)) {
+            return forkJoinInternal(first_1, null);
+        }
+        if (Object(_util_isObject__WEBPACK_IMPORTED_MODULE_3__["isObject"])(first_1) && Object.getPrototypeOf(first_1) === Object.prototype) {
+            var keys = Object.keys(first_1);
+            return forkJoinInternal(keys.map(function (key) { return first_1[key]; }), keys);
+        }
+    }
     if (typeof sources[sources.length - 1] === 'function') {
-        resultSelector = sources.pop();
+        var resultSelector_1 = sources.pop();
+        sources = (sources.length === 1 && Object(_util_isArray__WEBPACK_IMPORTED_MODULE_1__["isArray"])(sources[0])) ? sources[0] : sources;
+        return forkJoinInternal(sources, null).pipe(Object(_operators_map__WEBPACK_IMPORTED_MODULE_2__["map"])(function (args) { return resultSelector_1.apply(void 0, args); }));
     }
-    if (sources.length === 1 && Object(_util_isArray__WEBPACK_IMPORTED_MODULE_2__["isArray"])(sources[0])) {
-        sources = sources[0];
-    }
-    if (sources.length === 0) {
-        return _empty__WEBPACK_IMPORTED_MODULE_3__["EMPTY"];
-    }
-    if (resultSelector) {
-        return forkJoin(sources).pipe(Object(_operators_map__WEBPACK_IMPORTED_MODULE_6__["map"])(function (args) { return resultSelector.apply(void 0, args); }));
-    }
-    return new _Observable__WEBPACK_IMPORTED_MODULE_1__["Observable"](function (subscriber) {
-        return new ForkJoinSubscriber(subscriber, sources);
+    return forkJoinInternal(sources, null);
+}
+function forkJoinInternal(sources, keys) {
+    return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](function (subscriber) {
+        var len = sources.length;
+        if (len === 0) {
+            subscriber.complete();
+            return;
+        }
+        var values = new Array(len);
+        var completed = 0;
+        var emitted = 0;
+        var _loop_1 = function (i) {
+            var source = Object(_from__WEBPACK_IMPORTED_MODULE_4__["from"])(sources[i]);
+            var hasValue = false;
+            subscriber.add(source.subscribe({
+                next: function (value) {
+                    if (!hasValue) {
+                        hasValue = true;
+                        emitted++;
+                    }
+                    values[i] = value;
+                },
+                error: function (err) { return subscriber.error(err); },
+                complete: function () {
+                    completed++;
+                    if (completed === len || !hasValue) {
+                        if (emitted === len) {
+                            subscriber.next(keys ?
+                                keys.reduce(function (result, key, i) { return (result[key] = values[i], result); }, {}) :
+                                values);
+                        }
+                        subscriber.complete();
+                    }
+                }
+            }));
+        };
+        for (var i = 0; i < len; i++) {
+            _loop_1(i);
+        }
     });
 }
-var ForkJoinSubscriber = /*@__PURE__*/ (function (_super) {
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](ForkJoinSubscriber, _super);
-    function ForkJoinSubscriber(destination, sources) {
-        var _this = _super.call(this, destination) || this;
-        _this.sources = sources;
-        _this.completed = 0;
-        _this.haveValues = 0;
-        var len = sources.length;
-        _this.values = new Array(len);
-        for (var i = 0; i < len; i++) {
-            var source = sources[i];
-            var innerSubscription = Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_4__["subscribeToResult"])(_this, source, null, i);
-            if (innerSubscription) {
-                _this.add(innerSubscription);
-            }
-        }
-        return _this;
-    }
-    ForkJoinSubscriber.prototype.notifyNext = function (outerValue, innerValue, outerIndex, innerIndex, innerSub) {
-        this.values[outerIndex] = innerValue;
-        if (!innerSub._hasValue) {
-            innerSub._hasValue = true;
-            this.haveValues++;
-        }
-    };
-    ForkJoinSubscriber.prototype.notifyComplete = function (innerSub) {
-        var _a = this, destination = _a.destination, haveValues = _a.haveValues, values = _a.values;
-        var len = values.length;
-        if (!innerSub._hasValue) {
-            destination.complete();
-            return;
-        }
-        this.completed++;
-        if (this.completed !== len) {
-            return;
-        }
-        if (haveValues === len) {
-            destination.next(values);
-        }
-        destination.complete();
-    };
-    return ForkJoinSubscriber;
-}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_5__["OuterSubscriber"]));
 //# sourceMappingURL=forkJoin.js.map
 
 
@@ -71461,23 +73738,9 @@ var ForkJoinSubscriber = /*@__PURE__*/ (function (_super) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "from", function() { return from; });
 /* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
-/* harmony import */ var _util_isPromise__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/isPromise */ "./node_modules/rxjs/_esm5/internal/util/isPromise.js");
-/* harmony import */ var _util_isArrayLike__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/isArrayLike */ "./node_modules/rxjs/_esm5/internal/util/isArrayLike.js");
-/* harmony import */ var _util_isInteropObservable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/isInteropObservable */ "./node_modules/rxjs/_esm5/internal/util/isInteropObservable.js");
-/* harmony import */ var _util_isIterable__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/isIterable */ "./node_modules/rxjs/_esm5/internal/util/isIterable.js");
-/* harmony import */ var _fromArray__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./fromArray */ "./node_modules/rxjs/_esm5/internal/observable/fromArray.js");
-/* harmony import */ var _fromPromise__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./fromPromise */ "./node_modules/rxjs/_esm5/internal/observable/fromPromise.js");
-/* harmony import */ var _fromIterable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./fromIterable */ "./node_modules/rxjs/_esm5/internal/observable/fromIterable.js");
-/* harmony import */ var _fromObservable__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./fromObservable */ "./node_modules/rxjs/_esm5/internal/observable/fromObservable.js");
-/* harmony import */ var _util_subscribeTo__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../util/subscribeTo */ "./node_modules/rxjs/_esm5/internal/util/subscribeTo.js");
-/** PURE_IMPORTS_START _Observable,_util_isPromise,_util_isArrayLike,_util_isInteropObservable,_util_isIterable,_fromArray,_fromPromise,_fromIterable,_fromObservable,_util_subscribeTo PURE_IMPORTS_END */
-
-
-
-
-
-
-
+/* harmony import */ var _util_subscribeTo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/subscribeTo */ "./node_modules/rxjs/_esm5/internal/util/subscribeTo.js");
+/* harmony import */ var _scheduled_scheduled__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../scheduled/scheduled */ "./node_modules/rxjs/_esm5/internal/scheduled/scheduled.js");
+/** PURE_IMPORTS_START _Observable,_util_subscribeTo,_scheduled_scheduled PURE_IMPORTS_END */
 
 
 
@@ -71486,23 +73749,11 @@ function from(input, scheduler) {
         if (input instanceof _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"]) {
             return input;
         }
-        return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](Object(_util_subscribeTo__WEBPACK_IMPORTED_MODULE_9__["subscribeTo"])(input));
+        return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](Object(_util_subscribeTo__WEBPACK_IMPORTED_MODULE_1__["subscribeTo"])(input));
     }
-    if (input != null) {
-        if (Object(_util_isInteropObservable__WEBPACK_IMPORTED_MODULE_3__["isInteropObservable"])(input)) {
-            return Object(_fromObservable__WEBPACK_IMPORTED_MODULE_8__["fromObservable"])(input, scheduler);
-        }
-        else if (Object(_util_isPromise__WEBPACK_IMPORTED_MODULE_1__["isPromise"])(input)) {
-            return Object(_fromPromise__WEBPACK_IMPORTED_MODULE_6__["fromPromise"])(input, scheduler);
-        }
-        else if (Object(_util_isArrayLike__WEBPACK_IMPORTED_MODULE_2__["isArrayLike"])(input)) {
-            return Object(_fromArray__WEBPACK_IMPORTED_MODULE_5__["fromArray"])(input, scheduler);
-        }
-        else if (Object(_util_isIterable__WEBPACK_IMPORTED_MODULE_4__["isIterable"])(input) || typeof input === 'string') {
-            return Object(_fromIterable__WEBPACK_IMPORTED_MODULE_7__["fromIterable"])(input, scheduler);
-        }
+    else {
+        return Object(_scheduled_scheduled__WEBPACK_IMPORTED_MODULE_2__["scheduled"])(input, scheduler);
     }
-    throw new TypeError((input !== null && typeof input || input) + ' is not observable');
 }
 //# sourceMappingURL=from.js.map
 
@@ -71520,32 +73771,18 @@ function from(input, scheduler) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromArray", function() { return fromArray; });
 /* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
-/* harmony import */ var _Subscription__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subscription */ "./node_modules/rxjs/_esm5/internal/Subscription.js");
-/* harmony import */ var _util_subscribeToArray__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/subscribeToArray */ "./node_modules/rxjs/_esm5/internal/util/subscribeToArray.js");
-/** PURE_IMPORTS_START _Observable,_Subscription,_util_subscribeToArray PURE_IMPORTS_END */
+/* harmony import */ var _util_subscribeToArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/subscribeToArray */ "./node_modules/rxjs/_esm5/internal/util/subscribeToArray.js");
+/* harmony import */ var _scheduled_scheduleArray__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../scheduled/scheduleArray */ "./node_modules/rxjs/_esm5/internal/scheduled/scheduleArray.js");
+/** PURE_IMPORTS_START _Observable,_util_subscribeToArray,_scheduled_scheduleArray PURE_IMPORTS_END */
 
 
 
 function fromArray(input, scheduler) {
     if (!scheduler) {
-        return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](Object(_util_subscribeToArray__WEBPACK_IMPORTED_MODULE_2__["subscribeToArray"])(input));
+        return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](Object(_util_subscribeToArray__WEBPACK_IMPORTED_MODULE_1__["subscribeToArray"])(input));
     }
     else {
-        return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](function (subscriber) {
-            var sub = new _Subscription__WEBPACK_IMPORTED_MODULE_1__["Subscription"]();
-            var i = 0;
-            sub.add(scheduler.schedule(function () {
-                if (i === input.length) {
-                    subscriber.complete();
-                    return;
-                }
-                subscriber.next(input[i++]);
-                if (!subscriber.closed) {
-                    sub.add(this.schedule());
-                }
-            }));
-            return sub;
-        });
+        return Object(_scheduled_scheduleArray__WEBPACK_IMPORTED_MODULE_2__["scheduleArray"])(input, scheduler);
     }
 }
 //# sourceMappingURL=fromArray.js.map
@@ -71680,162 +73917,6 @@ function fromEventPattern(addHandler, removeHandler, resultSelector) {
     });
 }
 //# sourceMappingURL=fromEventPattern.js.map
-
-
-/***/ }),
-
-/***/ "./node_modules/rxjs/_esm5/internal/observable/fromIterable.js":
-/*!*********************************************************************!*\
-  !*** ./node_modules/rxjs/_esm5/internal/observable/fromIterable.js ***!
-  \*********************************************************************/
-/*! exports provided: fromIterable */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromIterable", function() { return fromIterable; });
-/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
-/* harmony import */ var _Subscription__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subscription */ "./node_modules/rxjs/_esm5/internal/Subscription.js");
-/* harmony import */ var _symbol_iterator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../symbol/iterator */ "./node_modules/rxjs/_esm5/internal/symbol/iterator.js");
-/* harmony import */ var _util_subscribeToIterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/subscribeToIterable */ "./node_modules/rxjs/_esm5/internal/util/subscribeToIterable.js");
-/** PURE_IMPORTS_START _Observable,_Subscription,_symbol_iterator,_util_subscribeToIterable PURE_IMPORTS_END */
-
-
-
-
-function fromIterable(input, scheduler) {
-    if (!input) {
-        throw new Error('Iterable cannot be null');
-    }
-    if (!scheduler) {
-        return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](Object(_util_subscribeToIterable__WEBPACK_IMPORTED_MODULE_3__["subscribeToIterable"])(input));
-    }
-    else {
-        return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](function (subscriber) {
-            var sub = new _Subscription__WEBPACK_IMPORTED_MODULE_1__["Subscription"]();
-            var iterator;
-            sub.add(function () {
-                if (iterator && typeof iterator.return === 'function') {
-                    iterator.return();
-                }
-            });
-            sub.add(scheduler.schedule(function () {
-                iterator = input[_symbol_iterator__WEBPACK_IMPORTED_MODULE_2__["iterator"]]();
-                sub.add(scheduler.schedule(function () {
-                    if (subscriber.closed) {
-                        return;
-                    }
-                    var value;
-                    var done;
-                    try {
-                        var result = iterator.next();
-                        value = result.value;
-                        done = result.done;
-                    }
-                    catch (err) {
-                        subscriber.error(err);
-                        return;
-                    }
-                    if (done) {
-                        subscriber.complete();
-                    }
-                    else {
-                        subscriber.next(value);
-                        this.schedule();
-                    }
-                }));
-            }));
-            return sub;
-        });
-    }
-}
-//# sourceMappingURL=fromIterable.js.map
-
-
-/***/ }),
-
-/***/ "./node_modules/rxjs/_esm5/internal/observable/fromObservable.js":
-/*!***********************************************************************!*\
-  !*** ./node_modules/rxjs/_esm5/internal/observable/fromObservable.js ***!
-  \***********************************************************************/
-/*! exports provided: fromObservable */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromObservable", function() { return fromObservable; });
-/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
-/* harmony import */ var _Subscription__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subscription */ "./node_modules/rxjs/_esm5/internal/Subscription.js");
-/* harmony import */ var _symbol_observable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../symbol/observable */ "./node_modules/rxjs/_esm5/internal/symbol/observable.js");
-/* harmony import */ var _util_subscribeToObservable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/subscribeToObservable */ "./node_modules/rxjs/_esm5/internal/util/subscribeToObservable.js");
-/** PURE_IMPORTS_START _Observable,_Subscription,_symbol_observable,_util_subscribeToObservable PURE_IMPORTS_END */
-
-
-
-
-function fromObservable(input, scheduler) {
-    if (!scheduler) {
-        return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](Object(_util_subscribeToObservable__WEBPACK_IMPORTED_MODULE_3__["subscribeToObservable"])(input));
-    }
-    else {
-        return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](function (subscriber) {
-            var sub = new _Subscription__WEBPACK_IMPORTED_MODULE_1__["Subscription"]();
-            sub.add(scheduler.schedule(function () {
-                var observable = input[_symbol_observable__WEBPACK_IMPORTED_MODULE_2__["observable"]]();
-                sub.add(observable.subscribe({
-                    next: function (value) { sub.add(scheduler.schedule(function () { return subscriber.next(value); })); },
-                    error: function (err) { sub.add(scheduler.schedule(function () { return subscriber.error(err); })); },
-                    complete: function () { sub.add(scheduler.schedule(function () { return subscriber.complete(); })); },
-                }));
-            }));
-            return sub;
-        });
-    }
-}
-//# sourceMappingURL=fromObservable.js.map
-
-
-/***/ }),
-
-/***/ "./node_modules/rxjs/_esm5/internal/observable/fromPromise.js":
-/*!********************************************************************!*\
-  !*** ./node_modules/rxjs/_esm5/internal/observable/fromPromise.js ***!
-  \********************************************************************/
-/*! exports provided: fromPromise */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromPromise", function() { return fromPromise; });
-/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
-/* harmony import */ var _Subscription__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subscription */ "./node_modules/rxjs/_esm5/internal/Subscription.js");
-/* harmony import */ var _util_subscribeToPromise__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/subscribeToPromise */ "./node_modules/rxjs/_esm5/internal/util/subscribeToPromise.js");
-/** PURE_IMPORTS_START _Observable,_Subscription,_util_subscribeToPromise PURE_IMPORTS_END */
-
-
-
-function fromPromise(input, scheduler) {
-    if (!scheduler) {
-        return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](Object(_util_subscribeToPromise__WEBPACK_IMPORTED_MODULE_2__["subscribeToPromise"])(input));
-    }
-    else {
-        return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](function (subscriber) {
-            var sub = new _Subscription__WEBPACK_IMPORTED_MODULE_1__["Subscription"]();
-            sub.add(scheduler.schedule(function () {
-                return input.then(function (value) {
-                    sub.add(scheduler.schedule(function () {
-                        subscriber.next(value);
-                        sub.add(scheduler.schedule(function () { return subscriber.complete(); }));
-                    }));
-                }, function (err) {
-                    sub.add(scheduler.schedule(function () { return subscriber.error(err); }));
-                });
-            }));
-            return sub;
-        });
-    }
-}
-//# sourceMappingURL=fromPromise.js.map
 
 
 /***/ }),
@@ -72139,10 +74220,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "of", function() { return of; });
 /* harmony import */ var _util_isScheduler__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/isScheduler */ "./node_modules/rxjs/_esm5/internal/util/isScheduler.js");
 /* harmony import */ var _fromArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./fromArray */ "./node_modules/rxjs/_esm5/internal/observable/fromArray.js");
-/* harmony import */ var _empty__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./empty */ "./node_modules/rxjs/_esm5/internal/observable/empty.js");
-/* harmony import */ var _scalar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./scalar */ "./node_modules/rxjs/_esm5/internal/observable/scalar.js");
-/** PURE_IMPORTS_START _util_isScheduler,_fromArray,_empty,_scalar PURE_IMPORTS_END */
-
+/* harmony import */ var _scheduled_scheduleArray__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../scheduled/scheduleArray */ "./node_modules/rxjs/_esm5/internal/scheduled/scheduleArray.js");
+/** PURE_IMPORTS_START _util_isScheduler,_fromArray,_scheduled_scheduleArray PURE_IMPORTS_END */
 
 
 
@@ -72154,17 +74233,10 @@ function of() {
     var scheduler = args[args.length - 1];
     if (Object(_util_isScheduler__WEBPACK_IMPORTED_MODULE_0__["isScheduler"])(scheduler)) {
         args.pop();
+        return Object(_scheduled_scheduleArray__WEBPACK_IMPORTED_MODULE_2__["scheduleArray"])(args, scheduler);
     }
     else {
-        scheduler = undefined;
-    }
-    switch (args.length) {
-        case 0:
-            return Object(_empty__WEBPACK_IMPORTED_MODULE_2__["empty"])(scheduler);
-        case 1:
-            return scheduler ? Object(_fromArray__WEBPACK_IMPORTED_MODULE_1__["fromArray"])(args, scheduler) : Object(_scalar__WEBPACK_IMPORTED_MODULE_3__["scalar"])(args[0]);
-        default:
-            return Object(_fromArray__WEBPACK_IMPORTED_MODULE_1__["fromArray"])(args, scheduler);
+        return Object(_fromArray__WEBPACK_IMPORTED_MODULE_1__["fromArray"])(args);
     }
 }
 //# sourceMappingURL=of.js.map
@@ -72269,6 +74341,36 @@ function dispatch(state) {
     }
 }
 //# sourceMappingURL=pairs.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/rxjs/_esm5/internal/observable/partition.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/rxjs/_esm5/internal/observable/partition.js ***!
+  \******************************************************************/
+/*! exports provided: partition */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "partition", function() { return partition; });
+/* harmony import */ var _util_not__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/not */ "./node_modules/rxjs/_esm5/internal/util/not.js");
+/* harmony import */ var _util_subscribeTo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/subscribeTo */ "./node_modules/rxjs/_esm5/internal/util/subscribeTo.js");
+/* harmony import */ var _operators_filter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../operators/filter */ "./node_modules/rxjs/_esm5/internal/operators/filter.js");
+/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
+/** PURE_IMPORTS_START _util_not,_util_subscribeTo,_operators_filter,_Observable PURE_IMPORTS_END */
+
+
+
+
+function partition(source, predicate, thisArg) {
+    return [
+        Object(_operators_filter__WEBPACK_IMPORTED_MODULE_2__["filter"])(predicate, thisArg)(new _Observable__WEBPACK_IMPORTED_MODULE_3__["Observable"](Object(_util_subscribeTo__WEBPACK_IMPORTED_MODULE_1__["subscribeTo"])(source))),
+        Object(_operators_filter__WEBPACK_IMPORTED_MODULE_2__["filter"])(Object(_util_not__WEBPACK_IMPORTED_MODULE_0__["not"])(predicate, thisArg))(new _Observable__WEBPACK_IMPORTED_MODULE_3__["Observable"](Object(_util_subscribeTo__WEBPACK_IMPORTED_MODULE_1__["subscribeTo"])(source)))
+    ];
+}
+//# sourceMappingURL=partition.js.map
 
 
 /***/ }),
@@ -72390,10 +74492,11 @@ function range(start, count, scheduler) {
     if (start === void 0) {
         start = 0;
     }
-    if (count === void 0) {
-        count = 0;
-    }
     return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](function (subscriber) {
+        if (count === undefined) {
+            count = start;
+            start = 0;
+        }
         var index = 0;
         var current = start;
         if (scheduler) {
@@ -72431,33 +74534,6 @@ function dispatch(state) {
     this.schedule(state);
 }
 //# sourceMappingURL=range.js.map
-
-
-/***/ }),
-
-/***/ "./node_modules/rxjs/_esm5/internal/observable/scalar.js":
-/*!***************************************************************!*\
-  !*** ./node_modules/rxjs/_esm5/internal/observable/scalar.js ***!
-  \***************************************************************/
-/*! exports provided: scalar */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "scalar", function() { return scalar; });
-/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
-/** PURE_IMPORTS_START _Observable PURE_IMPORTS_END */
-
-function scalar(value) {
-    var result = new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](function (subscriber) {
-        subscriber.next(value);
-        subscriber.complete();
-    });
-    result._isScalar = true;
-    result.value = value;
-    return result;
-}
-//# sourceMappingURL=scalar.js.map
 
 
 /***/ }),
@@ -72853,13 +74929,9 @@ var ZipBufferIterator = /*@__PURE__*/ (function (_super) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "audit", function() { return audit; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _util_tryCatch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/tryCatch */ "./node_modules/rxjs/_esm5/internal/util/tryCatch.js");
-/* harmony import */ var _util_errorObject__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/errorObject */ "./node_modules/rxjs/_esm5/internal/util/errorObject.js");
-/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
-/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
-/** PURE_IMPORTS_START tslib,_util_tryCatch,_util_errorObject,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
-
-
+/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
+/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
+/** PURE_IMPORTS_START tslib,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
 
 
 
@@ -72889,18 +74961,20 @@ var AuditSubscriber = /*@__PURE__*/ (function (_super) {
         this.value = value;
         this.hasValue = true;
         if (!this.throttled) {
-            var duration = Object(_util_tryCatch__WEBPACK_IMPORTED_MODULE_1__["tryCatch"])(this.durationSelector)(value);
-            if (duration === _util_errorObject__WEBPACK_IMPORTED_MODULE_2__["errorObject"]) {
-                this.destination.error(_util_errorObject__WEBPACK_IMPORTED_MODULE_2__["errorObject"].e);
+            var duration = void 0;
+            try {
+                var durationSelector = this.durationSelector;
+                duration = durationSelector(value);
+            }
+            catch (err) {
+                return this.destination.error(err);
+            }
+            var innerSubscription = Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_2__["subscribeToResult"])(this, duration);
+            if (!innerSubscription || innerSubscription.closed) {
+                this.clearThrottle();
             }
             else {
-                var innerSubscription = Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_4__["subscribeToResult"])(this, duration);
-                if (!innerSubscription || innerSubscription.closed) {
-                    this.clearThrottle();
-                }
-                else {
-                    this.add(this.throttled = innerSubscription);
-                }
+                this.add(this.throttled = innerSubscription);
             }
         }
     };
@@ -72924,7 +74998,7 @@ var AuditSubscriber = /*@__PURE__*/ (function (_super) {
         this.clearThrottle();
     };
     return AuditSubscriber;
-}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_3__["OuterSubscriber"]));
+}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_1__["OuterSubscriber"]));
 //# sourceMappingURL=audit.js.map
 
 
@@ -73421,13 +75495,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bufferWhen", function() { return bufferWhen; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _Subscription__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subscription */ "./node_modules/rxjs/_esm5/internal/Subscription.js");
-/* harmony import */ var _util_tryCatch__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/tryCatch */ "./node_modules/rxjs/_esm5/internal/util/tryCatch.js");
-/* harmony import */ var _util_errorObject__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/errorObject */ "./node_modules/rxjs/_esm5/internal/util/errorObject.js");
-/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
-/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
-/** PURE_IMPORTS_START tslib,_Subscription,_util_tryCatch,_util_errorObject,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
-
-
+/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
+/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
+/** PURE_IMPORTS_START tslib,_Subscription,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
 
 
 
@@ -73491,21 +75561,23 @@ var BufferWhenSubscriber = /*@__PURE__*/ (function (_super) {
             this.destination.next(buffer);
         }
         this.buffer = [];
-        var closingNotifier = Object(_util_tryCatch__WEBPACK_IMPORTED_MODULE_2__["tryCatch"])(this.closingSelector)();
-        if (closingNotifier === _util_errorObject__WEBPACK_IMPORTED_MODULE_3__["errorObject"]) {
-            this.error(_util_errorObject__WEBPACK_IMPORTED_MODULE_3__["errorObject"].e);
+        var closingNotifier;
+        try {
+            var closingSelector = this.closingSelector;
+            closingNotifier = closingSelector();
         }
-        else {
-            closingSubscription = new _Subscription__WEBPACK_IMPORTED_MODULE_1__["Subscription"]();
-            this.closingSubscription = closingSubscription;
-            this.add(closingSubscription);
-            this.subscribing = true;
-            closingSubscription.add(Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_5__["subscribeToResult"])(this, closingNotifier));
-            this.subscribing = false;
+        catch (err) {
+            return this.error(err);
         }
+        closingSubscription = new _Subscription__WEBPACK_IMPORTED_MODULE_1__["Subscription"]();
+        this.closingSubscription = closingSubscription;
+        this.add(closingSubscription);
+        this.subscribing = true;
+        closingSubscription.add(Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_3__["subscribeToResult"])(this, closingNotifier));
+        this.subscribing = false;
     };
     return BufferWhenSubscriber;
-}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_4__["OuterSubscriber"]));
+}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_2__["OuterSubscriber"]));
 //# sourceMappingURL=bufferWhen.js.map
 
 
@@ -74423,11 +76495,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "distinctUntilChanged", function() { return distinctUntilChanged; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _Subscriber__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subscriber */ "./node_modules/rxjs/_esm5/internal/Subscriber.js");
-/* harmony import */ var _util_tryCatch__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/tryCatch */ "./node_modules/rxjs/_esm5/internal/util/tryCatch.js");
-/* harmony import */ var _util_errorObject__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/errorObject */ "./node_modules/rxjs/_esm5/internal/util/errorObject.js");
-/** PURE_IMPORTS_START tslib,_Subscriber,_util_tryCatch,_util_errorObject PURE_IMPORTS_END */
-
-
+/** PURE_IMPORTS_START tslib,_Subscriber PURE_IMPORTS_END */
 
 
 function distinctUntilChanged(compare, keySelector) {
@@ -74458,25 +76526,28 @@ var DistinctUntilChangedSubscriber = /*@__PURE__*/ (function (_super) {
         return x === y;
     };
     DistinctUntilChangedSubscriber.prototype._next = function (value) {
-        var keySelector = this.keySelector;
-        var key = value;
-        if (keySelector) {
-            key = Object(_util_tryCatch__WEBPACK_IMPORTED_MODULE_2__["tryCatch"])(this.keySelector)(value);
-            if (key === _util_errorObject__WEBPACK_IMPORTED_MODULE_3__["errorObject"]) {
-                return this.destination.error(_util_errorObject__WEBPACK_IMPORTED_MODULE_3__["errorObject"].e);
-            }
+        var key;
+        try {
+            var keySelector = this.keySelector;
+            key = keySelector ? keySelector(value) : value;
+        }
+        catch (err) {
+            return this.destination.error(err);
         }
         var result = false;
         if (this.hasKey) {
-            result = Object(_util_tryCatch__WEBPACK_IMPORTED_MODULE_2__["tryCatch"])(this.compare)(this.key, key);
-            if (result === _util_errorObject__WEBPACK_IMPORTED_MODULE_3__["errorObject"]) {
-                return this.destination.error(_util_errorObject__WEBPACK_IMPORTED_MODULE_3__["errorObject"].e);
+            try {
+                var compare = this.compare;
+                result = compare(this.key, key);
+            }
+            catch (err) {
+                return this.destination.error(err);
             }
         }
         else {
             this.hasKey = true;
         }
-        if (Boolean(result) === false) {
+        if (!result) {
             this.key = key;
             this.destination.next(value);
         }
@@ -74556,15 +76627,9 @@ function elementAt(index, defaultValue) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "endWith", function() { return endWith; });
-/* harmony import */ var _observable_fromArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../observable/fromArray */ "./node_modules/rxjs/_esm5/internal/observable/fromArray.js");
-/* harmony import */ var _observable_scalar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../observable/scalar */ "./node_modules/rxjs/_esm5/internal/observable/scalar.js");
-/* harmony import */ var _observable_empty__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../observable/empty */ "./node_modules/rxjs/_esm5/internal/observable/empty.js");
-/* harmony import */ var _observable_concat__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../observable/concat */ "./node_modules/rxjs/_esm5/internal/observable/concat.js");
-/* harmony import */ var _util_isScheduler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/isScheduler */ "./node_modules/rxjs/_esm5/internal/util/isScheduler.js");
-/** PURE_IMPORTS_START _observable_fromArray,_observable_scalar,_observable_empty,_observable_concat,_util_isScheduler PURE_IMPORTS_END */
-
-
-
+/* harmony import */ var _observable_concat__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../observable/concat */ "./node_modules/rxjs/_esm5/internal/observable/concat.js");
+/* harmony import */ var _observable_of__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../observable/of */ "./node_modules/rxjs/_esm5/internal/observable/of.js");
+/** PURE_IMPORTS_START _observable_concat,_observable_of PURE_IMPORTS_END */
 
 
 function endWith() {
@@ -74572,25 +76637,7 @@ function endWith() {
     for (var _i = 0; _i < arguments.length; _i++) {
         array[_i] = arguments[_i];
     }
-    return function (source) {
-        var scheduler = array[array.length - 1];
-        if (Object(_util_isScheduler__WEBPACK_IMPORTED_MODULE_4__["isScheduler"])(scheduler)) {
-            array.pop();
-        }
-        else {
-            scheduler = null;
-        }
-        var len = array.length;
-        if (len === 1 && !scheduler) {
-            return Object(_observable_concat__WEBPACK_IMPORTED_MODULE_3__["concat"])(source, Object(_observable_scalar__WEBPACK_IMPORTED_MODULE_1__["scalar"])(array[0]));
-        }
-        else if (len > 0) {
-            return Object(_observable_concat__WEBPACK_IMPORTED_MODULE_3__["concat"])(source, Object(_observable_fromArray__WEBPACK_IMPORTED_MODULE_0__["fromArray"])(array, scheduler));
-        }
-        else {
-            return Object(_observable_concat__WEBPACK_IMPORTED_MODULE_3__["concat"])(source, Object(_observable_empty__WEBPACK_IMPORTED_MODULE_2__["empty"])(scheduler));
-        }
-    };
+    return function (source) { return Object(_observable_concat__WEBPACK_IMPORTED_MODULE_0__["concat"])(source, _observable_of__WEBPACK_IMPORTED_MODULE_1__["of"].apply(void 0, array)); };
 }
 //# sourceMappingURL=endWith.js.map
 
@@ -74754,17 +76801,17 @@ function exhaustMap(project, resultSelector) {
         return function (source) { return source.pipe(exhaustMap(function (a, i) { return Object(_observable_from__WEBPACK_IMPORTED_MODULE_5__["from"])(project(a, i)).pipe(Object(_map__WEBPACK_IMPORTED_MODULE_4__["map"])(function (b, ii) { return resultSelector(a, b, i, ii); })); })); };
     }
     return function (source) {
-        return source.lift(new ExhauseMapOperator(project));
+        return source.lift(new ExhaustMapOperator(project));
     };
 }
-var ExhauseMapOperator = /*@__PURE__*/ (function () {
-    function ExhauseMapOperator(project) {
+var ExhaustMapOperator = /*@__PURE__*/ (function () {
+    function ExhaustMapOperator(project) {
         this.project = project;
     }
-    ExhauseMapOperator.prototype.call = function (subscriber, source) {
+    ExhaustMapOperator.prototype.call = function (subscriber, source) {
         return source.subscribe(new ExhaustMapSubscriber(subscriber, this.project));
     };
-    return ExhauseMapOperator;
+    return ExhaustMapOperator;
 }());
 var ExhaustMapSubscriber = /*@__PURE__*/ (function (_super) {
     tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](ExhaustMapSubscriber, _super);
@@ -74841,13 +76888,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ExpandOperator", function() { return ExpandOperator; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ExpandSubscriber", function() { return ExpandSubscriber; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _util_tryCatch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/tryCatch */ "./node_modules/rxjs/_esm5/internal/util/tryCatch.js");
-/* harmony import */ var _util_errorObject__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/errorObject */ "./node_modules/rxjs/_esm5/internal/util/errorObject.js");
-/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
-/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
-/** PURE_IMPORTS_START tslib,_util_tryCatch,_util_errorObject,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
-
-
+/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
+/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
+/** PURE_IMPORTS_START tslib,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
 
 
 
@@ -74901,17 +76944,20 @@ var ExpandSubscriber = /*@__PURE__*/ (function (_super) {
         var index = this.index++;
         if (this.active < this.concurrent) {
             destination.next(value);
-            var result = Object(_util_tryCatch__WEBPACK_IMPORTED_MODULE_1__["tryCatch"])(this.project)(value, index);
-            if (result === _util_errorObject__WEBPACK_IMPORTED_MODULE_2__["errorObject"]) {
-                destination.error(_util_errorObject__WEBPACK_IMPORTED_MODULE_2__["errorObject"].e);
+            try {
+                var project = this.project;
+                var result = project(value, index);
+                if (!this.scheduler) {
+                    this.subscribeToProjection(result, value, index);
+                }
+                else {
+                    var state = { subscriber: this, result: result, value: value, index: index };
+                    var destination_1 = this.destination;
+                    destination_1.add(this.scheduler.schedule(ExpandSubscriber.dispatch, 0, state));
+                }
             }
-            else if (!this.scheduler) {
-                this.subscribeToProjection(result, value, index);
-            }
-            else {
-                var state = { subscriber: this, result: result, value: value, index: index };
-                var destination_1 = this.destination;
-                destination_1.add(this.scheduler.schedule(ExpandSubscriber.dispatch, 0, state));
+            catch (e) {
+                destination.error(e);
             }
         }
         else {
@@ -74921,7 +76967,7 @@ var ExpandSubscriber = /*@__PURE__*/ (function (_super) {
     ExpandSubscriber.prototype.subscribeToProjection = function (result, value, index) {
         this.active++;
         var destination = this.destination;
-        destination.add(Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_4__["subscribeToResult"])(this, result, value, index));
+        destination.add(Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_2__["subscribeToResult"])(this, result, value, index));
     };
     ExpandSubscriber.prototype._complete = function () {
         this.hasCompleted = true;
@@ -74946,7 +76992,7 @@ var ExpandSubscriber = /*@__PURE__*/ (function (_super) {
         }
     };
     return ExpandSubscriber;
-}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_3__["OuterSubscriber"]));
+}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_1__["OuterSubscriber"]));
 
 //# sourceMappingURL=expand.js.map
 
@@ -75911,14 +77957,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MergeScanOperator", function() { return MergeScanOperator; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MergeScanSubscriber", function() { return MergeScanSubscriber; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _util_tryCatch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/tryCatch */ "./node_modules/rxjs/_esm5/internal/util/tryCatch.js");
-/* harmony import */ var _util_errorObject__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/errorObject */ "./node_modules/rxjs/_esm5/internal/util/errorObject.js");
-/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
-/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
-/* harmony import */ var _InnerSubscriber__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../InnerSubscriber */ "./node_modules/rxjs/_esm5/internal/InnerSubscriber.js");
-/** PURE_IMPORTS_START tslib,_util_tryCatch,_util_errorObject,_util_subscribeToResult,_OuterSubscriber,_InnerSubscriber PURE_IMPORTS_END */
-
-
+/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
+/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
+/* harmony import */ var _InnerSubscriber__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../InnerSubscriber */ "./node_modules/rxjs/_esm5/internal/InnerSubscriber.js");
+/** PURE_IMPORTS_START tslib,_util_subscribeToResult,_OuterSubscriber,_InnerSubscriber PURE_IMPORTS_END */
 
 
 
@@ -75958,25 +78000,27 @@ var MergeScanSubscriber = /*@__PURE__*/ (function (_super) {
     MergeScanSubscriber.prototype._next = function (value) {
         if (this.active < this.concurrent) {
             var index = this.index++;
-            var ish = Object(_util_tryCatch__WEBPACK_IMPORTED_MODULE_1__["tryCatch"])(this.accumulator)(this.acc, value);
             var destination = this.destination;
-            if (ish === _util_errorObject__WEBPACK_IMPORTED_MODULE_2__["errorObject"]) {
-                destination.error(_util_errorObject__WEBPACK_IMPORTED_MODULE_2__["errorObject"].e);
+            var ish = void 0;
+            try {
+                var accumulator = this.accumulator;
+                ish = accumulator(this.acc, value, index);
             }
-            else {
-                this.active++;
-                this._innerSub(ish, value, index);
+            catch (e) {
+                return destination.error(e);
             }
+            this.active++;
+            this._innerSub(ish, value, index);
         }
         else {
             this.buffer.push(value);
         }
     };
     MergeScanSubscriber.prototype._innerSub = function (ish, value, index) {
-        var innerSubscriber = new _InnerSubscriber__WEBPACK_IMPORTED_MODULE_5__["InnerSubscriber"](this, undefined, undefined);
+        var innerSubscriber = new _InnerSubscriber__WEBPACK_IMPORTED_MODULE_3__["InnerSubscriber"](this, undefined, undefined);
         var destination = this.destination;
         destination.add(innerSubscriber);
-        Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_3__["subscribeToResult"])(this, ish, value, index, innerSubscriber);
+        Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_1__["subscribeToResult"])(this, ish, value, index, innerSubscriber);
     };
     MergeScanSubscriber.prototype._complete = function () {
         this.hasCompleted = true;
@@ -76010,7 +78054,7 @@ var MergeScanSubscriber = /*@__PURE__*/ (function (_super) {
         }
     };
     return MergeScanSubscriber;
-}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_4__["OuterSubscriber"]));
+}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_2__["OuterSubscriber"]));
 
 //# sourceMappingURL=mergeScan.js.map
 
@@ -76263,7 +78307,7 @@ var OnErrorResumeNextSubscriber = /*@__PURE__*/ (function (_super) {
     };
     OnErrorResumeNextSubscriber.prototype.subscribeToNextSource = function () {
         var next = this.nextSources.shift();
-        if (next) {
+        if (!!next) {
             var innerSubscriber = new _InnerSubscriber__WEBPACK_IMPORTED_MODULE_4__["InnerSubscriber"](this, undefined, undefined);
             var destination = this.destination;
             destination.add(innerSubscriber);
@@ -76314,13 +78358,17 @@ var PairwiseSubscriber = /*@__PURE__*/ (function (_super) {
         return _this;
     }
     PairwiseSubscriber.prototype._next = function (value) {
+        var pair;
         if (this.hasPrev) {
-            this.destination.next([this.prev, value]);
+            pair = [this.prev, value];
         }
         else {
             this.hasPrev = true;
         }
         this.prev = value;
+        if (pair) {
+            this.destination.next(pair);
+        }
     };
     return PairwiseSubscriber;
 }(_Subscriber__WEBPACK_IMPORTED_MODULE_1__["Subscriber"]));
@@ -76723,13 +78771,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "repeatWhen", function() { return repeatWhen; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _Subject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subject */ "./node_modules/rxjs/_esm5/internal/Subject.js");
-/* harmony import */ var _util_tryCatch__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/tryCatch */ "./node_modules/rxjs/_esm5/internal/util/tryCatch.js");
-/* harmony import */ var _util_errorObject__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/errorObject */ "./node_modules/rxjs/_esm5/internal/util/errorObject.js");
-/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
-/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
-/** PURE_IMPORTS_START tslib,_Subject,_util_tryCatch,_util_errorObject,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
-
-
+/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
+/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
+/** PURE_IMPORTS_START tslib,_Subject,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
 
 
 
@@ -76798,15 +78842,19 @@ var RepeatWhenSubscriber = /*@__PURE__*/ (function (_super) {
     };
     RepeatWhenSubscriber.prototype.subscribeToRetries = function () {
         this.notifications = new _Subject__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
-        var retries = Object(_util_tryCatch__WEBPACK_IMPORTED_MODULE_2__["tryCatch"])(this.notifier)(this.notifications);
-        if (retries === _util_errorObject__WEBPACK_IMPORTED_MODULE_3__["errorObject"]) {
+        var retries;
+        try {
+            var notifier = this.notifier;
+            retries = notifier(this.notifications);
+        }
+        catch (e) {
             return _super.prototype.complete.call(this);
         }
         this.retries = retries;
-        this.retriesSubscription = Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_5__["subscribeToResult"])(this, retries);
+        this.retriesSubscription = Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_3__["subscribeToResult"])(this, retries);
     };
     return RepeatWhenSubscriber;
-}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_4__["OuterSubscriber"]));
+}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_2__["OuterSubscriber"]));
 //# sourceMappingURL=repeatWhen.js.map
 
 
@@ -76882,13 +78930,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "retryWhen", function() { return retryWhen; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _Subject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subject */ "./node_modules/rxjs/_esm5/internal/Subject.js");
-/* harmony import */ var _util_tryCatch__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/tryCatch */ "./node_modules/rxjs/_esm5/internal/util/tryCatch.js");
-/* harmony import */ var _util_errorObject__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/errorObject */ "./node_modules/rxjs/_esm5/internal/util/errorObject.js");
-/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
-/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
-/** PURE_IMPORTS_START tslib,_Subject,_util_tryCatch,_util_errorObject,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
-
-
+/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
+/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
+/** PURE_IMPORTS_START tslib,_Subject,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
 
 
 
@@ -76921,11 +78965,14 @@ var RetryWhenSubscriber = /*@__PURE__*/ (function (_super) {
             var retriesSubscription = this.retriesSubscription;
             if (!retries) {
                 errors = new _Subject__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
-                retries = Object(_util_tryCatch__WEBPACK_IMPORTED_MODULE_2__["tryCatch"])(this.notifier)(errors);
-                if (retries === _util_errorObject__WEBPACK_IMPORTED_MODULE_3__["errorObject"]) {
-                    return _super.prototype.error.call(this, _util_errorObject__WEBPACK_IMPORTED_MODULE_3__["errorObject"].e);
+                try {
+                    var notifier = this.notifier;
+                    retries = notifier(errors);
                 }
-                retriesSubscription = Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_5__["subscribeToResult"])(this, retries);
+                catch (e) {
+                    return _super.prototype.error.call(this, e);
+                }
+                retriesSubscription = Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_3__["subscribeToResult"])(this, retries);
             }
             else {
                 this.errors = null;
@@ -76958,7 +79005,7 @@ var RetryWhenSubscriber = /*@__PURE__*/ (function (_super) {
         this.source.subscribe(this);
     };
     return RetryWhenSubscriber;
-}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_4__["OuterSubscriber"]));
+}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_2__["OuterSubscriber"]));
 //# sourceMappingURL=retryWhen.js.map
 
 
@@ -77192,33 +79239,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SequenceEqualSubscriber", function() { return SequenceEqualSubscriber; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _Subscriber__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subscriber */ "./node_modules/rxjs/_esm5/internal/Subscriber.js");
-/* harmony import */ var _util_tryCatch__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/tryCatch */ "./node_modules/rxjs/_esm5/internal/util/tryCatch.js");
-/* harmony import */ var _util_errorObject__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/errorObject */ "./node_modules/rxjs/_esm5/internal/util/errorObject.js");
-/** PURE_IMPORTS_START tslib,_Subscriber,_util_tryCatch,_util_errorObject PURE_IMPORTS_END */
+/** PURE_IMPORTS_START tslib,_Subscriber PURE_IMPORTS_END */
 
 
-
-
-function sequenceEqual(compareTo, comparor) {
-    return function (source) { return source.lift(new SequenceEqualOperator(compareTo, comparor)); };
+function sequenceEqual(compareTo, comparator) {
+    return function (source) { return source.lift(new SequenceEqualOperator(compareTo, comparator)); };
 }
 var SequenceEqualOperator = /*@__PURE__*/ (function () {
-    function SequenceEqualOperator(compareTo, comparor) {
+    function SequenceEqualOperator(compareTo, comparator) {
         this.compareTo = compareTo;
-        this.comparor = comparor;
+        this.comparator = comparator;
     }
     SequenceEqualOperator.prototype.call = function (subscriber, source) {
-        return source.subscribe(new SequenceEqualSubscriber(subscriber, this.compareTo, this.comparor));
+        return source.subscribe(new SequenceEqualSubscriber(subscriber, this.compareTo, this.comparator));
     };
     return SequenceEqualOperator;
 }());
 
 var SequenceEqualSubscriber = /*@__PURE__*/ (function (_super) {
     tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](SequenceEqualSubscriber, _super);
-    function SequenceEqualSubscriber(destination, compareTo, comparor) {
+    function SequenceEqualSubscriber(destination, compareTo, comparator) {
         var _this = _super.call(this, destination) || this;
         _this.compareTo = compareTo;
-        _this.comparor = comparor;
+        _this.comparator = comparator;
         _this._a = [];
         _this._b = [];
         _this._oneComplete = false;
@@ -77244,19 +79287,16 @@ var SequenceEqualSubscriber = /*@__PURE__*/ (function (_super) {
         this.unsubscribe();
     };
     SequenceEqualSubscriber.prototype.checkValues = function () {
-        var _c = this, _a = _c._a, _b = _c._b, comparor = _c.comparor;
+        var _c = this, _a = _c._a, _b = _c._b, comparator = _c.comparator;
         while (_a.length > 0 && _b.length > 0) {
             var a = _a.shift();
             var b = _b.shift();
             var areEqual = false;
-            if (comparor) {
-                areEqual = Object(_util_tryCatch__WEBPACK_IMPORTED_MODULE_2__["tryCatch"])(comparor)(a, b);
-                if (areEqual === _util_errorObject__WEBPACK_IMPORTED_MODULE_3__["errorObject"]) {
-                    this.destination.error(_util_errorObject__WEBPACK_IMPORTED_MODULE_3__["errorObject"].e);
-                }
+            try {
+                areEqual = comparator ? comparator(a, b) : a === b;
             }
-            else {
-                areEqual = a === b;
+            catch (e) {
+                this.destination.error(e);
             }
             if (!areEqual) {
                 this.emit(false);
@@ -77354,16 +79394,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ReplaySubject__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../ReplaySubject */ "./node_modules/rxjs/_esm5/internal/ReplaySubject.js");
 /** PURE_IMPORTS_START _ReplaySubject PURE_IMPORTS_END */
 
-function shareReplay(bufferSize, windowTime, scheduler) {
-    if (bufferSize === void 0) {
-        bufferSize = Number.POSITIVE_INFINITY;
+function shareReplay(configOrBufferSize, windowTime, scheduler) {
+    var config;
+    if (configOrBufferSize && typeof configOrBufferSize === 'object') {
+        config = configOrBufferSize;
     }
-    if (windowTime === void 0) {
-        windowTime = Number.POSITIVE_INFINITY;
+    else {
+        config = {
+            bufferSize: configOrBufferSize,
+            windowTime: windowTime,
+            refCount: false,
+            scheduler: scheduler
+        };
     }
-    return function (source) { return source.lift(shareReplayOperator(bufferSize, windowTime, scheduler)); };
+    return function (source) { return source.lift(shareReplayOperator(config)); };
 }
-function shareReplayOperator(bufferSize, windowTime, scheduler) {
+function shareReplayOperator(_a) {
+    var _b = _a.bufferSize, bufferSize = _b === void 0 ? Number.POSITIVE_INFINITY : _b, _c = _a.windowTime, windowTime = _c === void 0 ? Number.POSITIVE_INFINITY : _c, useRefCount = _a.refCount, scheduler = _a.scheduler;
     var subject;
     var refCount = 0;
     var subscription;
@@ -77387,13 +79434,15 @@ function shareReplayOperator(bufferSize, windowTime, scheduler) {
             });
         }
         var innerSub = subject.subscribe(this);
-        return function () {
+        this.add(function () {
             refCount--;
             innerSub.unsubscribe();
-            if (subscription && refCount === 0 && isComplete) {
+            if (subscription && !isComplete && useRefCount && refCount === 0) {
                 subscription.unsubscribe();
+                subscription = undefined;
+                subject = undefined;
             }
-        };
+        });
     };
 }
 //# sourceMappingURL=shareReplay.js.map
@@ -77733,15 +79782,9 @@ var SkipWhileSubscriber = /*@__PURE__*/ (function (_super) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startWith", function() { return startWith; });
-/* harmony import */ var _observable_fromArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../observable/fromArray */ "./node_modules/rxjs/_esm5/internal/observable/fromArray.js");
-/* harmony import */ var _observable_scalar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../observable/scalar */ "./node_modules/rxjs/_esm5/internal/observable/scalar.js");
-/* harmony import */ var _observable_empty__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../observable/empty */ "./node_modules/rxjs/_esm5/internal/observable/empty.js");
-/* harmony import */ var _observable_concat__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../observable/concat */ "./node_modules/rxjs/_esm5/internal/observable/concat.js");
-/* harmony import */ var _util_isScheduler__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/isScheduler */ "./node_modules/rxjs/_esm5/internal/util/isScheduler.js");
-/** PURE_IMPORTS_START _observable_fromArray,_observable_scalar,_observable_empty,_observable_concat,_util_isScheduler PURE_IMPORTS_END */
-
-
-
+/* harmony import */ var _observable_concat__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../observable/concat */ "./node_modules/rxjs/_esm5/internal/observable/concat.js");
+/* harmony import */ var _util_isScheduler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/isScheduler */ "./node_modules/rxjs/_esm5/internal/util/isScheduler.js");
+/** PURE_IMPORTS_START _observable_concat,_util_isScheduler PURE_IMPORTS_END */
 
 
 function startWith() {
@@ -77749,25 +79792,14 @@ function startWith() {
     for (var _i = 0; _i < arguments.length; _i++) {
         array[_i] = arguments[_i];
     }
-    return function (source) {
-        var scheduler = array[array.length - 1];
-        if (Object(_util_isScheduler__WEBPACK_IMPORTED_MODULE_4__["isScheduler"])(scheduler)) {
-            array.pop();
-        }
-        else {
-            scheduler = null;
-        }
-        var len = array.length;
-        if (len === 1 && !scheduler) {
-            return Object(_observable_concat__WEBPACK_IMPORTED_MODULE_3__["concat"])(Object(_observable_scalar__WEBPACK_IMPORTED_MODULE_1__["scalar"])(array[0]), source);
-        }
-        else if (len > 0) {
-            return Object(_observable_concat__WEBPACK_IMPORTED_MODULE_3__["concat"])(Object(_observable_fromArray__WEBPACK_IMPORTED_MODULE_0__["fromArray"])(array, scheduler), source);
-        }
-        else {
-            return Object(_observable_concat__WEBPACK_IMPORTED_MODULE_3__["concat"])(Object(_observable_empty__WEBPACK_IMPORTED_MODULE_2__["empty"])(scheduler), source);
-        }
-    };
+    var scheduler = array[array.length - 1];
+    if (Object(_util_isScheduler__WEBPACK_IMPORTED_MODULE_1__["isScheduler"])(scheduler)) {
+        array.pop();
+        return function (source) { return Object(_observable_concat__WEBPACK_IMPORTED_MODULE_0__["concat"])(array, source, scheduler); };
+    }
+    else {
+        return function (source) { return Object(_observable_concat__WEBPACK_IMPORTED_MODULE_0__["concat"])(array, source); };
+    }
 }
 //# sourceMappingURL=startWith.js.map
 
@@ -78169,23 +80201,30 @@ __webpack_require__.r(__webpack_exports__);
 /** PURE_IMPORTS_START tslib,_Subscriber PURE_IMPORTS_END */
 
 
-function takeWhile(predicate) {
-    return function (source) { return source.lift(new TakeWhileOperator(predicate)); };
+function takeWhile(predicate, inclusive) {
+    if (inclusive === void 0) {
+        inclusive = false;
+    }
+    return function (source) {
+        return source.lift(new TakeWhileOperator(predicate, inclusive));
+    };
 }
 var TakeWhileOperator = /*@__PURE__*/ (function () {
-    function TakeWhileOperator(predicate) {
+    function TakeWhileOperator(predicate, inclusive) {
         this.predicate = predicate;
+        this.inclusive = inclusive;
     }
     TakeWhileOperator.prototype.call = function (subscriber, source) {
-        return source.subscribe(new TakeWhileSubscriber(subscriber, this.predicate));
+        return source.subscribe(new TakeWhileSubscriber(subscriber, this.predicate, this.inclusive));
     };
     return TakeWhileOperator;
 }());
 var TakeWhileSubscriber = /*@__PURE__*/ (function (_super) {
     tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](TakeWhileSubscriber, _super);
-    function TakeWhileSubscriber(destination, predicate) {
+    function TakeWhileSubscriber(destination, predicate, inclusive) {
         var _this = _super.call(this, destination) || this;
         _this.predicate = predicate;
+        _this.inclusive = inclusive;
         _this.index = 0;
         return _this;
     }
@@ -78207,6 +80246,9 @@ var TakeWhileSubscriber = /*@__PURE__*/ (function (_super) {
             destination.next(value);
         }
         else {
+            if (this.inclusive) {
+                destination.next(value);
+            }
             destination.complete();
         }
     };
@@ -78383,7 +80425,7 @@ var ThrottleSubscriber = /*@__PURE__*/ (function (_super) {
     };
     ThrottleSubscriber.prototype.throttle = function (value) {
         var duration = this.tryDurationSelector(value);
-        if (duration) {
+        if (!!duration) {
             this.add(this._throttled = Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_2__["subscribeToResult"])(this, duration));
         }
     };
@@ -78483,6 +80525,10 @@ var ThrottleTimeSubscriber = /*@__PURE__*/ (function (_super) {
             if (this.leading) {
                 this.destination.next(value);
             }
+            else if (this.trailing) {
+                this._trailingValue = value;
+                this._hasTrailingValue = true;
+            }
         }
     };
     ThrottleTimeSubscriber.prototype._complete = function () {
@@ -78528,25 +80574,59 @@ function dispatchNext(arg) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "throwIfEmpty", function() { return throwIfEmpty; });
-/* harmony import */ var _tap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tap */ "./node_modules/rxjs/_esm5/internal/operators/tap.js");
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _util_EmptyError__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/EmptyError */ "./node_modules/rxjs/_esm5/internal/util/EmptyError.js");
-/** PURE_IMPORTS_START _tap,_util_EmptyError PURE_IMPORTS_END */
+/* harmony import */ var _Subscriber__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Subscriber */ "./node_modules/rxjs/_esm5/internal/Subscriber.js");
+/** PURE_IMPORTS_START tslib,_util_EmptyError,_Subscriber PURE_IMPORTS_END */
 
 
-var throwIfEmpty = function (errorFactory) {
+
+function throwIfEmpty(errorFactory) {
     if (errorFactory === void 0) {
         errorFactory = defaultErrorFactory;
     }
-    return Object(_tap__WEBPACK_IMPORTED_MODULE_0__["tap"])({
-        hasValue: false,
-        next: function () { this.hasValue = true; },
-        complete: function () {
-            if (!this.hasValue) {
-                throw errorFactory();
+    return function (source) {
+        return source.lift(new ThrowIfEmptyOperator(errorFactory));
+    };
+}
+var ThrowIfEmptyOperator = /*@__PURE__*/ (function () {
+    function ThrowIfEmptyOperator(errorFactory) {
+        this.errorFactory = errorFactory;
+    }
+    ThrowIfEmptyOperator.prototype.call = function (subscriber, source) {
+        return source.subscribe(new ThrowIfEmptySubscriber(subscriber, this.errorFactory));
+    };
+    return ThrowIfEmptyOperator;
+}());
+var ThrowIfEmptySubscriber = /*@__PURE__*/ (function (_super) {
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](ThrowIfEmptySubscriber, _super);
+    function ThrowIfEmptySubscriber(destination, errorFactory) {
+        var _this = _super.call(this, destination) || this;
+        _this.errorFactory = errorFactory;
+        _this.hasValue = false;
+        return _this;
+    }
+    ThrowIfEmptySubscriber.prototype._next = function (value) {
+        this.hasValue = true;
+        this.destination.next(value);
+    };
+    ThrowIfEmptySubscriber.prototype._complete = function () {
+        if (!this.hasValue) {
+            var err = void 0;
+            try {
+                err = this.errorFactory();
             }
+            catch (e) {
+                err = e;
+            }
+            this.destination.error(err);
         }
-    });
-};
+        else {
+            return this.destination.complete();
+        }
+    };
+    return ThrowIfEmptySubscriber;
+}(_Subscriber__WEBPACK_IMPORTED_MODULE_2__["Subscriber"]));
 function defaultErrorFactory() {
     return new _util_EmptyError__WEBPACK_IMPORTED_MODULE_1__["EmptyError"]();
 }
@@ -79152,13 +81232,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _Subject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subject */ "./node_modules/rxjs/_esm5/internal/Subject.js");
 /* harmony import */ var _Subscription__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Subscription */ "./node_modules/rxjs/_esm5/internal/Subscription.js");
-/* harmony import */ var _util_tryCatch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/tryCatch */ "./node_modules/rxjs/_esm5/internal/util/tryCatch.js");
-/* harmony import */ var _util_errorObject__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/errorObject */ "./node_modules/rxjs/_esm5/internal/util/errorObject.js");
-/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
-/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
-/** PURE_IMPORTS_START tslib,_Subject,_Subscription,_util_tryCatch,_util_errorObject,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
-
-
+/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
+/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
+/** PURE_IMPORTS_START tslib,_Subject,_Subscription,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
 
 
 
@@ -79184,7 +81260,7 @@ var WindowToggleSubscriber = /*@__PURE__*/ (function (_super) {
         _this.openings = openings;
         _this.closingSelector = closingSelector;
         _this.contexts = [];
-        _this.add(_this.openSubscription = Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_6__["subscribeToResult"])(_this, openings, openings));
+        _this.add(_this.openSubscription = Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_4__["subscribeToResult"])(_this, openings, openings));
         return _this;
     }
     WindowToggleSubscriber.prototype._next = function (value) {
@@ -79239,26 +81315,27 @@ var WindowToggleSubscriber = /*@__PURE__*/ (function (_super) {
     };
     WindowToggleSubscriber.prototype.notifyNext = function (outerValue, innerValue, outerIndex, innerIndex, innerSub) {
         if (outerValue === this.openings) {
-            var closingSelector = this.closingSelector;
-            var closingNotifier = Object(_util_tryCatch__WEBPACK_IMPORTED_MODULE_3__["tryCatch"])(closingSelector)(innerValue);
-            if (closingNotifier === _util_errorObject__WEBPACK_IMPORTED_MODULE_4__["errorObject"]) {
-                return this.error(_util_errorObject__WEBPACK_IMPORTED_MODULE_4__["errorObject"].e);
+            var closingNotifier = void 0;
+            try {
+                var closingSelector = this.closingSelector;
+                closingNotifier = closingSelector(innerValue);
+            }
+            catch (e) {
+                return this.error(e);
+            }
+            var window_1 = new _Subject__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
+            var subscription = new _Subscription__WEBPACK_IMPORTED_MODULE_2__["Subscription"]();
+            var context_4 = { window: window_1, subscription: subscription };
+            this.contexts.push(context_4);
+            var innerSubscription = Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_4__["subscribeToResult"])(this, closingNotifier, context_4);
+            if (innerSubscription.closed) {
+                this.closeWindow(this.contexts.length - 1);
             }
             else {
-                var window_1 = new _Subject__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
-                var subscription = new _Subscription__WEBPACK_IMPORTED_MODULE_2__["Subscription"]();
-                var context_4 = { window: window_1, subscription: subscription };
-                this.contexts.push(context_4);
-                var innerSubscription = Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_6__["subscribeToResult"])(this, closingNotifier, context_4);
-                if (innerSubscription.closed) {
-                    this.closeWindow(this.contexts.length - 1);
-                }
-                else {
-                    innerSubscription.context = context_4;
-                    subscription.add(innerSubscription);
-                }
-                this.destination.next(window_1);
+                innerSubscription.context = context_4;
+                subscription.add(innerSubscription);
             }
+            this.destination.next(window_1);
         }
         else {
             this.closeWindow(this.contexts.indexOf(outerValue));
@@ -79284,7 +81361,7 @@ var WindowToggleSubscriber = /*@__PURE__*/ (function (_super) {
         subscription.unsubscribe();
     };
     return WindowToggleSubscriber;
-}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_5__["OuterSubscriber"]));
+}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_3__["OuterSubscriber"]));
 //# sourceMappingURL=windowToggle.js.map
 
 
@@ -79302,13 +81379,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "windowWhen", function() { return windowWhen; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _Subject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subject */ "./node_modules/rxjs/_esm5/internal/Subject.js");
-/* harmony import */ var _util_tryCatch__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/tryCatch */ "./node_modules/rxjs/_esm5/internal/util/tryCatch.js");
-/* harmony import */ var _util_errorObject__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/errorObject */ "./node_modules/rxjs/_esm5/internal/util/errorObject.js");
-/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
-/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
-/** PURE_IMPORTS_START tslib,_Subject,_util_tryCatch,_util_errorObject,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
-
-
+/* harmony import */ var _OuterSubscriber__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../OuterSubscriber */ "./node_modules/rxjs/_esm5/internal/OuterSubscriber.js");
+/* harmony import */ var _util_subscribeToResult__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/subscribeToResult */ "./node_modules/rxjs/_esm5/internal/util/subscribeToResult.js");
+/** PURE_IMPORTS_START tslib,_Subject,_OuterSubscriber,_util_subscribeToResult PURE_IMPORTS_END */
 
 
 
@@ -79377,18 +81450,20 @@ var WindowSubscriber = /*@__PURE__*/ (function (_super) {
         }
         var window = this.window = new _Subject__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
         this.destination.next(window);
-        var closingNotifier = Object(_util_tryCatch__WEBPACK_IMPORTED_MODULE_2__["tryCatch"])(this.closingSelector)();
-        if (closingNotifier === _util_errorObject__WEBPACK_IMPORTED_MODULE_3__["errorObject"]) {
-            var err = _util_errorObject__WEBPACK_IMPORTED_MODULE_3__["errorObject"].e;
-            this.destination.error(err);
-            this.window.error(err);
+        var closingNotifier;
+        try {
+            var closingSelector = this.closingSelector;
+            closingNotifier = closingSelector();
         }
-        else {
-            this.add(this.closingNotification = Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_5__["subscribeToResult"])(this, closingNotifier));
+        catch (e) {
+            this.destination.error(e);
+            this.window.error(e);
+            return;
         }
+        this.add(this.closingNotification = Object(_util_subscribeToResult__WEBPACK_IMPORTED_MODULE_3__["subscribeToResult"])(this, closingNotifier));
     };
     return WindowSubscriber;
-}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_4__["OuterSubscriber"]));
+}(_OuterSubscriber__WEBPACK_IMPORTED_MODULE_2__["OuterSubscriber"]));
 //# sourceMappingURL=windowWhen.js.map
 
 
@@ -79538,6 +81613,227 @@ function zipAll(project) {
     return function (source) { return source.lift(new _observable_zip__WEBPACK_IMPORTED_MODULE_0__["ZipOperator"](project)); };
 }
 //# sourceMappingURL=zipAll.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/rxjs/_esm5/internal/scheduled/scheduleArray.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/rxjs/_esm5/internal/scheduled/scheduleArray.js ***!
+  \*********************************************************************/
+/*! exports provided: scheduleArray */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "scheduleArray", function() { return scheduleArray; });
+/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
+/* harmony import */ var _Subscription__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subscription */ "./node_modules/rxjs/_esm5/internal/Subscription.js");
+/** PURE_IMPORTS_START _Observable,_Subscription PURE_IMPORTS_END */
+
+
+function scheduleArray(input, scheduler) {
+    return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](function (subscriber) {
+        var sub = new _Subscription__WEBPACK_IMPORTED_MODULE_1__["Subscription"]();
+        var i = 0;
+        sub.add(scheduler.schedule(function () {
+            if (i === input.length) {
+                subscriber.complete();
+                return;
+            }
+            subscriber.next(input[i++]);
+            if (!subscriber.closed) {
+                sub.add(this.schedule());
+            }
+        }));
+        return sub;
+    });
+}
+//# sourceMappingURL=scheduleArray.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/rxjs/_esm5/internal/scheduled/scheduleIterable.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/rxjs/_esm5/internal/scheduled/scheduleIterable.js ***!
+  \************************************************************************/
+/*! exports provided: scheduleIterable */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "scheduleIterable", function() { return scheduleIterable; });
+/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
+/* harmony import */ var _Subscription__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subscription */ "./node_modules/rxjs/_esm5/internal/Subscription.js");
+/* harmony import */ var _symbol_iterator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../symbol/iterator */ "./node_modules/rxjs/_esm5/internal/symbol/iterator.js");
+/** PURE_IMPORTS_START _Observable,_Subscription,_symbol_iterator PURE_IMPORTS_END */
+
+
+
+function scheduleIterable(input, scheduler) {
+    if (!input) {
+        throw new Error('Iterable cannot be null');
+    }
+    return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](function (subscriber) {
+        var sub = new _Subscription__WEBPACK_IMPORTED_MODULE_1__["Subscription"]();
+        var iterator;
+        sub.add(function () {
+            if (iterator && typeof iterator.return === 'function') {
+                iterator.return();
+            }
+        });
+        sub.add(scheduler.schedule(function () {
+            iterator = input[_symbol_iterator__WEBPACK_IMPORTED_MODULE_2__["iterator"]]();
+            sub.add(scheduler.schedule(function () {
+                if (subscriber.closed) {
+                    return;
+                }
+                var value;
+                var done;
+                try {
+                    var result = iterator.next();
+                    value = result.value;
+                    done = result.done;
+                }
+                catch (err) {
+                    subscriber.error(err);
+                    return;
+                }
+                if (done) {
+                    subscriber.complete();
+                }
+                else {
+                    subscriber.next(value);
+                    this.schedule();
+                }
+            }));
+        }));
+        return sub;
+    });
+}
+//# sourceMappingURL=scheduleIterable.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/rxjs/_esm5/internal/scheduled/scheduleObservable.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/rxjs/_esm5/internal/scheduled/scheduleObservable.js ***!
+  \**************************************************************************/
+/*! exports provided: scheduleObservable */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "scheduleObservable", function() { return scheduleObservable; });
+/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
+/* harmony import */ var _Subscription__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subscription */ "./node_modules/rxjs/_esm5/internal/Subscription.js");
+/* harmony import */ var _symbol_observable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../symbol/observable */ "./node_modules/rxjs/_esm5/internal/symbol/observable.js");
+/** PURE_IMPORTS_START _Observable,_Subscription,_symbol_observable PURE_IMPORTS_END */
+
+
+
+function scheduleObservable(input, scheduler) {
+    return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](function (subscriber) {
+        var sub = new _Subscription__WEBPACK_IMPORTED_MODULE_1__["Subscription"]();
+        sub.add(scheduler.schedule(function () {
+            var observable = input[_symbol_observable__WEBPACK_IMPORTED_MODULE_2__["observable"]]();
+            sub.add(observable.subscribe({
+                next: function (value) { sub.add(scheduler.schedule(function () { return subscriber.next(value); })); },
+                error: function (err) { sub.add(scheduler.schedule(function () { return subscriber.error(err); })); },
+                complete: function () { sub.add(scheduler.schedule(function () { return subscriber.complete(); })); },
+            }));
+        }));
+        return sub;
+    });
+}
+//# sourceMappingURL=scheduleObservable.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/rxjs/_esm5/internal/scheduled/schedulePromise.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/rxjs/_esm5/internal/scheduled/schedulePromise.js ***!
+  \***********************************************************************/
+/*! exports provided: schedulePromise */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "schedulePromise", function() { return schedulePromise; });
+/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
+/* harmony import */ var _Subscription__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Subscription */ "./node_modules/rxjs/_esm5/internal/Subscription.js");
+/** PURE_IMPORTS_START _Observable,_Subscription PURE_IMPORTS_END */
+
+
+function schedulePromise(input, scheduler) {
+    return new _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"](function (subscriber) {
+        var sub = new _Subscription__WEBPACK_IMPORTED_MODULE_1__["Subscription"]();
+        sub.add(scheduler.schedule(function () {
+            return input.then(function (value) {
+                sub.add(scheduler.schedule(function () {
+                    subscriber.next(value);
+                    sub.add(scheduler.schedule(function () { return subscriber.complete(); }));
+                }));
+            }, function (err) {
+                sub.add(scheduler.schedule(function () { return subscriber.error(err); }));
+            });
+        }));
+        return sub;
+    });
+}
+//# sourceMappingURL=schedulePromise.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/rxjs/_esm5/internal/scheduled/scheduled.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/rxjs/_esm5/internal/scheduled/scheduled.js ***!
+  \*****************************************************************/
+/*! exports provided: scheduled */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "scheduled", function() { return scheduled; });
+/* harmony import */ var _scheduleObservable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scheduleObservable */ "./node_modules/rxjs/_esm5/internal/scheduled/scheduleObservable.js");
+/* harmony import */ var _schedulePromise__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./schedulePromise */ "./node_modules/rxjs/_esm5/internal/scheduled/schedulePromise.js");
+/* harmony import */ var _scheduleArray__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./scheduleArray */ "./node_modules/rxjs/_esm5/internal/scheduled/scheduleArray.js");
+/* harmony import */ var _scheduleIterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./scheduleIterable */ "./node_modules/rxjs/_esm5/internal/scheduled/scheduleIterable.js");
+/* harmony import */ var _util_isInteropObservable__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/isInteropObservable */ "./node_modules/rxjs/_esm5/internal/util/isInteropObservable.js");
+/* harmony import */ var _util_isPromise__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../util/isPromise */ "./node_modules/rxjs/_esm5/internal/util/isPromise.js");
+/* harmony import */ var _util_isArrayLike__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../util/isArrayLike */ "./node_modules/rxjs/_esm5/internal/util/isArrayLike.js");
+/* harmony import */ var _util_isIterable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../util/isIterable */ "./node_modules/rxjs/_esm5/internal/util/isIterable.js");
+/** PURE_IMPORTS_START _scheduleObservable,_schedulePromise,_scheduleArray,_scheduleIterable,_util_isInteropObservable,_util_isPromise,_util_isArrayLike,_util_isIterable PURE_IMPORTS_END */
+
+
+
+
+
+
+
+
+function scheduled(input, scheduler) {
+    if (input != null) {
+        if (Object(_util_isInteropObservable__WEBPACK_IMPORTED_MODULE_4__["isInteropObservable"])(input)) {
+            return Object(_scheduleObservable__WEBPACK_IMPORTED_MODULE_0__["scheduleObservable"])(input, scheduler);
+        }
+        else if (Object(_util_isPromise__WEBPACK_IMPORTED_MODULE_5__["isPromise"])(input)) {
+            return Object(_schedulePromise__WEBPACK_IMPORTED_MODULE_1__["schedulePromise"])(input, scheduler);
+        }
+        else if (Object(_util_isArrayLike__WEBPACK_IMPORTED_MODULE_6__["isArrayLike"])(input)) {
+            return Object(_scheduleArray__WEBPACK_IMPORTED_MODULE_2__["scheduleArray"])(input, scheduler);
+        }
+        else if (Object(_util_isIterable__WEBPACK_IMPORTED_MODULE_7__["isIterable"])(input) || typeof input === 'string') {
+            return Object(_scheduleIterable__WEBPACK_IMPORTED_MODULE_3__["scheduleIterable"])(input, scheduler);
+        }
+    }
+    throw new TypeError((input !== null && typeof input || input) + ' is not observable');
+}
+//# sourceMappingURL=scheduled.js.map
 
 
 /***/ }),
@@ -79840,6 +82136,7 @@ var AsyncAction = /*@__PURE__*/ (function (_super) {
             return id;
         }
         clearInterval(id);
+        return undefined;
     };
     AsyncAction.prototype.execute = function (state, delay) {
         if (this.closed) {
@@ -80089,7 +82386,9 @@ var VirtualTimeScheduler = /*@__PURE__*/ (function (_super) {
     VirtualTimeScheduler.prototype.flush = function () {
         var _a = this, actions = _a.actions, maxFrames = _a.maxFrames;
         var error, action;
-        while ((action = actions.shift()) && (this.frame = action.delay) <= maxFrames) {
+        while ((action = actions[0]) && action.delay <= maxFrames) {
+            actions.shift();
+            this.frame = action.delay;
             if (error = action.execute(action.state, action.delay)) {
                 break;
             }
@@ -80517,23 +82816,6 @@ function canReportError(observer) {
 
 /***/ }),
 
-/***/ "./node_modules/rxjs/_esm5/internal/util/errorObject.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/rxjs/_esm5/internal/util/errorObject.js ***!
-  \**************************************************************/
-/*! exports provided: errorObject */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "errorObject", function() { return errorObject; });
-/** PURE_IMPORTS_START  PURE_IMPORTS_END */
-var errorObject = { e: {} };
-//# sourceMappingURL=errorObject.js.map
-
-
-/***/ }),
-
 /***/ "./node_modules/rxjs/_esm5/internal/util/hostReportError.js":
 /*!******************************************************************!*\
   !*** ./node_modules/rxjs/_esm5/internal/util/hostReportError.js ***!
@@ -80546,7 +82828,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hostReportError", function() { return hostReportError; });
 /** PURE_IMPORTS_START  PURE_IMPORTS_END */
 function hostReportError(err) {
-    setTimeout(function () { throw err; });
+    setTimeout(function () { throw err; }, 0);
 }
 //# sourceMappingURL=hostReportError.js.map
 
@@ -80719,7 +83001,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isObject", function() { return isObject; });
 /** PURE_IMPORTS_START  PURE_IMPORTS_END */
 function isObject(x) {
-    return x != null && typeof x === 'object';
+    return x !== null && typeof x === 'object';
 }
 //# sourceMappingURL=isObject.js.map
 
@@ -80759,7 +83041,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPromise", function() { return isPromise; });
 /** PURE_IMPORTS_START  PURE_IMPORTS_END */
 function isPromise(value) {
-    return value && typeof value.subscribe !== 'function' && typeof value.then === 'function';
+    return !!value && typeof value.subscribe !== 'function' && typeof value.then === 'function';
 }
 //# sourceMappingURL=isPromise.js.map
 
@@ -80873,18 +83155,16 @@ function pipeFromArray(fns) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeTo", function() { return subscribeTo; });
-/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
-/* harmony import */ var _subscribeToArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./subscribeToArray */ "./node_modules/rxjs/_esm5/internal/util/subscribeToArray.js");
-/* harmony import */ var _subscribeToPromise__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./subscribeToPromise */ "./node_modules/rxjs/_esm5/internal/util/subscribeToPromise.js");
-/* harmony import */ var _subscribeToIterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./subscribeToIterable */ "./node_modules/rxjs/_esm5/internal/util/subscribeToIterable.js");
-/* harmony import */ var _subscribeToObservable__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./subscribeToObservable */ "./node_modules/rxjs/_esm5/internal/util/subscribeToObservable.js");
-/* harmony import */ var _isArrayLike__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./isArrayLike */ "./node_modules/rxjs/_esm5/internal/util/isArrayLike.js");
-/* harmony import */ var _isPromise__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./isPromise */ "./node_modules/rxjs/_esm5/internal/util/isPromise.js");
-/* harmony import */ var _isObject__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./isObject */ "./node_modules/rxjs/_esm5/internal/util/isObject.js");
-/* harmony import */ var _symbol_iterator__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../symbol/iterator */ "./node_modules/rxjs/_esm5/internal/symbol/iterator.js");
-/* harmony import */ var _symbol_observable__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../symbol/observable */ "./node_modules/rxjs/_esm5/internal/symbol/observable.js");
-/** PURE_IMPORTS_START _Observable,_subscribeToArray,_subscribeToPromise,_subscribeToIterable,_subscribeToObservable,_isArrayLike,_isPromise,_isObject,_symbol_iterator,_symbol_observable PURE_IMPORTS_END */
-
+/* harmony import */ var _subscribeToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./subscribeToArray */ "./node_modules/rxjs/_esm5/internal/util/subscribeToArray.js");
+/* harmony import */ var _subscribeToPromise__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./subscribeToPromise */ "./node_modules/rxjs/_esm5/internal/util/subscribeToPromise.js");
+/* harmony import */ var _subscribeToIterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./subscribeToIterable */ "./node_modules/rxjs/_esm5/internal/util/subscribeToIterable.js");
+/* harmony import */ var _subscribeToObservable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./subscribeToObservable */ "./node_modules/rxjs/_esm5/internal/util/subscribeToObservable.js");
+/* harmony import */ var _isArrayLike__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./isArrayLike */ "./node_modules/rxjs/_esm5/internal/util/isArrayLike.js");
+/* harmony import */ var _isPromise__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./isPromise */ "./node_modules/rxjs/_esm5/internal/util/isPromise.js");
+/* harmony import */ var _isObject__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./isObject */ "./node_modules/rxjs/_esm5/internal/util/isObject.js");
+/* harmony import */ var _symbol_iterator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../symbol/iterator */ "./node_modules/rxjs/_esm5/internal/symbol/iterator.js");
+/* harmony import */ var _symbol_observable__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../symbol/observable */ "./node_modules/rxjs/_esm5/internal/symbol/observable.js");
+/** PURE_IMPORTS_START _subscribeToArray,_subscribeToPromise,_subscribeToIterable,_subscribeToObservable,_isArrayLike,_isPromise,_isObject,_symbol_iterator,_symbol_observable PURE_IMPORTS_END */
 
 
 
@@ -80895,32 +83175,20 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var subscribeTo = function (result) {
-    if (result instanceof _Observable__WEBPACK_IMPORTED_MODULE_0__["Observable"]) {
-        return function (subscriber) {
-            if (result._isScalar) {
-                subscriber.next(result.value);
-                subscriber.complete();
-                return undefined;
-            }
-            else {
-                return result.subscribe(subscriber);
-            }
-        };
+    if (!!result && typeof result[_symbol_observable__WEBPACK_IMPORTED_MODULE_8__["observable"]] === 'function') {
+        return Object(_subscribeToObservable__WEBPACK_IMPORTED_MODULE_3__["subscribeToObservable"])(result);
     }
-    else if (result && typeof result[_symbol_observable__WEBPACK_IMPORTED_MODULE_9__["observable"]] === 'function') {
-        return Object(_subscribeToObservable__WEBPACK_IMPORTED_MODULE_4__["subscribeToObservable"])(result);
+    else if (Object(_isArrayLike__WEBPACK_IMPORTED_MODULE_4__["isArrayLike"])(result)) {
+        return Object(_subscribeToArray__WEBPACK_IMPORTED_MODULE_0__["subscribeToArray"])(result);
     }
-    else if (Object(_isArrayLike__WEBPACK_IMPORTED_MODULE_5__["isArrayLike"])(result)) {
-        return Object(_subscribeToArray__WEBPACK_IMPORTED_MODULE_1__["subscribeToArray"])(result);
+    else if (Object(_isPromise__WEBPACK_IMPORTED_MODULE_5__["isPromise"])(result)) {
+        return Object(_subscribeToPromise__WEBPACK_IMPORTED_MODULE_1__["subscribeToPromise"])(result);
     }
-    else if (Object(_isPromise__WEBPACK_IMPORTED_MODULE_6__["isPromise"])(result)) {
-        return Object(_subscribeToPromise__WEBPACK_IMPORTED_MODULE_2__["subscribeToPromise"])(result);
-    }
-    else if (result && typeof result[_symbol_iterator__WEBPACK_IMPORTED_MODULE_8__["iterator"]] === 'function') {
-        return Object(_subscribeToIterable__WEBPACK_IMPORTED_MODULE_3__["subscribeToIterable"])(result);
+    else if (!!result && typeof result[_symbol_iterator__WEBPACK_IMPORTED_MODULE_7__["iterator"]] === 'function') {
+        return Object(_subscribeToIterable__WEBPACK_IMPORTED_MODULE_2__["subscribeToIterable"])(result);
     }
     else {
-        var value = Object(_isObject__WEBPACK_IMPORTED_MODULE_7__["isObject"])(result) ? 'an invalid object' : "'" + result + "'";
+        var value = Object(_isObject__WEBPACK_IMPORTED_MODULE_6__["isObject"])(result) ? 'an invalid object' : "'" + result + "'";
         var msg = "You provided " + value + " where a stream was expected."
             + ' You can provide an Observable, Promise, Array, or Iterable.';
         throw new TypeError(msg);
@@ -80947,9 +83215,7 @@ var subscribeToArray = function (array) {
         for (var i = 0, len = array.length; i < len && !subscriber.closed; i++) {
             subscriber.next(array[i]);
         }
-        if (!subscriber.closed) {
-            subscriber.complete();
-        }
+        subscriber.complete();
     };
 };
 //# sourceMappingURL=subscribeToArray.js.map
@@ -81070,7 +83336,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToResult", function() { return subscribeToResult; });
 /* harmony import */ var _InnerSubscriber__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../InnerSubscriber */ "./node_modules/rxjs/_esm5/internal/InnerSubscriber.js");
 /* harmony import */ var _subscribeTo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./subscribeTo */ "./node_modules/rxjs/_esm5/internal/util/subscribeTo.js");
-/** PURE_IMPORTS_START _InnerSubscriber,_subscribeTo PURE_IMPORTS_END */
+/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
+/** PURE_IMPORTS_START _InnerSubscriber,_subscribeTo,_Observable PURE_IMPORTS_END */
+
 
 
 function subscribeToResult(outerSubscriber, result, outerValue, outerIndex, destination) {
@@ -81078,7 +83346,10 @@ function subscribeToResult(outerSubscriber, result, outerValue, outerIndex, dest
         destination = new _InnerSubscriber__WEBPACK_IMPORTED_MODULE_0__["InnerSubscriber"](outerSubscriber, outerValue, outerIndex);
     }
     if (destination.closed) {
-        return;
+        return undefined;
+    }
+    if (result instanceof _Observable__WEBPACK_IMPORTED_MODULE_2__["Observable"]) {
+        return result.subscribe(destination);
     }
     return Object(_subscribeTo__WEBPACK_IMPORTED_MODULE_1__["subscribeTo"])(result)(destination);
 }
@@ -81119,38 +83390,6 @@ function toSubscriber(nextOrObserver, error, complete) {
     return new _Subscriber__WEBPACK_IMPORTED_MODULE_0__["Subscriber"](nextOrObserver, error, complete);
 }
 //# sourceMappingURL=toSubscriber.js.map
-
-
-/***/ }),
-
-/***/ "./node_modules/rxjs/_esm5/internal/util/tryCatch.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/rxjs/_esm5/internal/util/tryCatch.js ***!
-  \***********************************************************/
-/*! exports provided: tryCatch */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tryCatch", function() { return tryCatch; });
-/* harmony import */ var _errorObject__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./errorObject */ "./node_modules/rxjs/_esm5/internal/util/errorObject.js");
-/** PURE_IMPORTS_START _errorObject PURE_IMPORTS_END */
-
-var tryCatchTarget;
-function tryCatcher() {
-    try {
-        return tryCatchTarget.apply(this, arguments);
-    }
-    catch (e) {
-        _errorObject__WEBPACK_IMPORTED_MODULE_0__["errorObject"].e = e;
-        return _errorObject__WEBPACK_IMPORTED_MODULE_0__["errorObject"];
-    }
-}
-function tryCatch(fn) {
-    tryCatchTarget = fn;
-    return tryCatcher;
-}
-//# sourceMappingURL=tryCatch.js.map
 
 
 /***/ }),

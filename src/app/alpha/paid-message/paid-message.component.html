@@ -1,10 +1,10 @@
 
-<div id="header" [ngStyle]="{'background-color':getColor()}" class="style-scope yt-live-chat-paid-message-renderer">
-  <yt-img-shadow height="40" width="40" id="author-photo" class="no-transition style-scope yt-live-chat-paid-message-renderer" [userid]="item.uid"></yt-img-shadow>
+<div id="header" [ngStyle]="{'background-color':item.color}" class="style-scope yt-live-chat-paid-message-renderer">
+  <yt-img-shadow height="40" width="40" id="author-photo" class="no-transition style-scope yt-live-chat-paid-message-renderer"  [avatarUrl]="item.avatarUrl"></yt-img-shadow>
   <div id="header-content" class="style-scope yt-live-chat-paid-message-renderer">
     <div id="header-content-primary-column" class="no-transition style-scope yt-live-chat-paid-message-renderer" >
-      <div id="author-name" class="style-scope yt-live-chat-paid-message-renderer">{{item.username}}</div>
-    <div id="purchase-amount" class="style-scope yt-live-chat-paid-message-renderer" style="transform:scale(0.9);transform-origin: left;">赠送 {{item.gift}} ×{{item.amount}}</div>
+      <div id="author-name" class="style-scope yt-live-chat-paid-message-renderer">{{title}}</div>
+    <div id="purchase-amount" class="style-scope yt-live-chat-paid-message-renderer" style="transform:scale(0.9);transform-origin: left;">{{subtitle}}</div>
     </div>
   </div>
 </div>

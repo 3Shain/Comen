@@ -1,35 +1,53 @@
-interface IMessage{
-    uid:number;
-    username:string;
-    type:string;
+interface IMessage {
+    uid: number;
+    username: string;
+    type: string;
+    mode: DisplayMode;
+    avatarUrl: string;
 }
 
-class DanmakuMessage implements IMessage{
+class DanmakuMessage implements IMessage {
     constructor(
-        public uid:number,
-        public username:string,
-        public message:string,
-        public guard:number,
-        public is_admin:boolean,
-        public type="danmaku"){}
+        public uid: number,
+        public username: string,
+        public message: string,
+        public guard: number,
+        public is_admin: boolean,
+        public emotionUrl: string,
+        public avatarUrl: string= 'https://static.hdslb.com/images/member/noface.gif',
+        public type= 'danmaku',
+        public mode= 1,
+        public repeat= 1) {}
 }
 
-class GiftMessage implements IMessage{
+class GiftMessage implements IMessage {
     constructor(
-        public uid:number,
-        public username:string,
-        public gift:string,
-        public amount:number,
-        public value:number,
-        public type="gift"){}
+        public uid: number,
+        public username: string,
+        public gift: string,
+        public amount: number,
+        public value: number,
+        public guard_type: number,
+        public color: string,
+        public avatarUrl: string= 'https://static.hdslb.com/images/member/noface.gif',
+        public type= 'gift',
+        public mode= 2) {}
 }
 
-class ConnectedMessage implements IMessage{
+class ConnectedMessage implements IMessage {
     constructor(
-        public uid:number=0,
-        public username:string=null,
-        public type="connected"
-    ){}
+        public uid: number= 0,
+        public username: string= null,
+        public avatarUrl: string = null,
+        public type= 'connected',
+        public mode= 1
+    ) {}
 }
 
-export {IMessage,DanmakuMessage,GiftMessage,ConnectedMessage}
+enum DisplayMode {
+    Danmaku= 1,
+    Gift= 2,
+    Both= 3
+}
+
+export {IMessage, DanmakuMessage, GiftMessage, ConnectedMessage, DisplayMode};

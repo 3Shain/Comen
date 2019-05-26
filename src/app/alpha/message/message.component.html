@@ -1,5 +1,5 @@
 <yt-img-shadow height="24" width="24" id="author-photo" class="no-transition style-scope yt-live-chat-text-message-renderer"
-  userid="{{item.uid}}"></yt-img-shadow>
+[avatarUrl]="item.avatarUrl"></yt-img-shadow>
 <div id="content" class="style-scope yt-live-chat-text-message-renderer">
   <div id="timestamp"></div>
   <yt-live-chat-author-chip class="style-scope yt-live-chat-text-message-renderer">
@@ -26,6 +26,8 @@
       </yt-live-chat-author-badge-renderer>
     </span>
   </yt-live-chat-author-chip>
-  <span id="message" class="style-scope yt-live-chat-text-message-renderer">{{item.message}}</span>
+  <span id="message" *ngIf="!item.emotionUrl" class="style-scope yt-live-chat-text-message-renderer">{{item.message}}</span>
+  <img referrerpolicy="no-referer" id="emotion" *ngIf="item.emotionUrl" [src]="item.emotionUrl" class="style-scope yt-live-chat-text-message-renderer">
+  <span id="repeat_count" class="style-scope yt-live-chat-text-message-renderer" *ngIf="item.repeat>1" [ngStyle]="{'background-color':getRepeatGradientColor()}">{{item.repeat}}</span>
   <a id="show-original"></a>
 </div>

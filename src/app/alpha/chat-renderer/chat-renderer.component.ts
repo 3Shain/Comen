@@ -1,15 +1,12 @@
-import { Component, OnInit, ViewEncapsulation, Input, PLATFORM_ID, Inject } from '@angular/core';
-import { BiliwsService } from '../../biliws.service';
+import { Component, OnInit, Input, Inject , PLATFORM_ID, Output, EventEmitter } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { IMessage, DanmakuMessage, GiftMessage } from '../../../app/danmaku.def';
+import { IMessage, DanmakuMessage } from '../../../app/danmaku.def';
 
 @Component({
   selector: 'yt-live-chat-renderer',
   templateUrl: './chat-renderer.component.html',
   styleUrls: ['./chat-renderer.component.css'],
-  encapsulation: ViewEncapsulation.None
+  // encapsulation: ViewEncapsulation.None
 })
 export class ChatRendererComponent implements OnInit {
 
@@ -17,96 +14,96 @@ export class ChatRendererComponent implements OnInit {
 
   waitForRendering: Array<IMessage>;
 
-  private _roomId: number;//这个不是真正的roomId
+  groupSimilarCache: Array<DanmakuMessage>;
 
-  @Input()
-  public set roomId(v: number) {
-    this._roomId = v;
-  }
+  @Input() public maxDammakuNum = 100;
 
-  constructor(private bili: BiliwsService,
-    @Inject(PLATFORM_ID) private plat: Object,
-    private http: HttpClient) {
+  @Input() public displayMode = 3;
+
+  @Input() public groupSimilar = true;
+
+  @Output() public onawake: EventEmitter<any>;
+
+  @Input() public groupSimilarWindow = 5;
+
+  constructor(@Inject(PLATFORM_ID) private plat: Object) {
     this.danmakuList = [];
     this.waitForRendering = [];
+    this.groupSimilarCache = [];
+    this.onawake = new EventEmitter();
   }
 
-  private lastRender: number = Date.now();
+  private lastRenderInvoke: number;
+  private lastRenderPush: number;
 
-  public render() {
-    while (this.waitForRendering.length > 0) {
-      this.danmakuList.push(this.waitForRendering.shift());
-      while (this.danmakuList.length > 100) {//最大渲染数量100
-        this.danmakuList.shift();
+  onFrame() {
+    if (Date.now() - this.lastRenderInvoke > 1000) {// 窗口不在active状态时，此方法不会被调用。
+      this.waitForRendering = [];
+      // this.sendSystemInfo('窗口已恢复激活');
+    }
+    this.lastRenderInvoke = Date.now();
+    if (this.waitForRendering.length > 0) {
+      if (Date.now() - this.lastRenderPush >= (1000.0 / this.waitForRendering.length)) {
+        this.lastRenderPush = Date.now();
+        while (this.danmakuList.length > this.maxDammakuNum) {
+          this.danmakuList.shift();
+        }
+        this.danmakuList.push(this.waitForRendering.shift());
       }
     }
-    window.scrollTo(0, document.body.scrollHeight);
-    setTimeout(this.render.bind(this), 1000);
+    requestAnimationFrame(this.onFrame.bind(this));
   }
 
   ngOnInit() {
     if (!isPlatformBrowser(this.plat)) {
-      console.log('server env.');
       return;
     }
-    if (this._roomId <= 0) {
-      this.sendSystemInfo("直播间ID格式错误");
-      return;
-    }
-    this.sendSystemInfo("正在获取直播间信息...");
-    this.http.get(`${environment.api_server}/stat/${this._roomId}`).subscribe(
-      (x: any) => {
-        if (x.room_id) {
-          this.start(x.room_id);
-        }
-        else {
-          this.sendSystemInfo("直播间信息获取失败:" + x);
-        }
-      },
-      e => {
-        this.sendSystemInfo("直播间信息获取失败,尝试rawId");
-        this.start(this._roomId);
-      }
-    )
-
-    requestAnimationFrame(this.render.bind(this));
+    requestAnimationFrame(this.awake.bind(this));
   }
 
-  start(realRoomId: number) {
-    this.sendSystemInfo(`正在连接到直播间${realRoomId}...`);
-    this.bili.connect(Number(realRoomId)).subscribe(
-      x => {
-        if (x.type == 'connected') {
-          this.sendSystemInfo('成功连接到直播间!');
-        }
-        else {
-          this.sendDanmaku(x);
-        }
-      },
-      e => {
-        if (e.target.readyState == WebSocket.CLOSED) {
-          this.sendSystemInfo('无法连接到直播间,5秒后重试');
-          setTimeout(() => this.start(realRoomId), 5000);
-        }
-      },
-      () => {
-        this.sendSystemInfo('检测到服务器断开,尝试重连中...');
-        this.start(realRoomId);//重连
-      }
-    );
+  awake() {
+    this.onawake.emit();
+
+    this.lastRenderInvoke = Date.now();
+    this.lastRenderPush = Date.now();
+    requestAnimationFrame(this.onFrame.bind(this));
   }
 
-  private sendSystemInfo(msg: string) {
+  public sendSystemInfo(msg: string, force: boolean = false) {
     this.sendDanmaku(new DanmakuMessage(
       -1,
       'BILICHAT',
       msg,
       0,
-      true
-    ));
+      true,
+      undefined,
+      'assets/logo_icon.png'
+    ), force);
   }
 
-  private sendDanmaku(msg: IMessage) {
-    this.waitForRendering.push(msg);
+  public sendDanmaku(msg: IMessage, force: boolean = false) {
+    if ((this.displayMode & <number>msg.mode) === 0 && msg.uid !== -1) {
+      return;
+    }
+    if (msg.type === 'danmaku' && msg.uid > 0) {
+      for (const c of this.groupSimilarCache) {
+        if (this.groupSimilar
+          && (c.message.indexOf((<DanmakuMessage>msg).message) !== -1 || (<DanmakuMessage>msg).message.indexOf(c.message) !== -1)
+          && (Math.abs(c.message.length - (<DanmakuMessage>msg).message.length) < Math.min(c.message.length, (<DanmakuMessage>msg).message.length))
+        ) {
+          c.repeat++;
+          return; // 如果存在相似元素,会在这里被截断
+        }
+      }
+      this.groupSimilarCache.unshift(<DanmakuMessage>msg);
+      while (this.groupSimilarCache.length > this.groupSimilarWindow) {
+        this.groupSimilarCache.pop();
+      }
+    }
+    if (force) {
+      this.danmakuList.push(msg);
+    } else {
+      this.waitForRendering.push(msg);
+    }
   }
 }

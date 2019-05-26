@@ -13,26 +13,39 @@ export class BiliwsService {
 
   private heartbeatHandler: any;
 
+  public lastRenderInvoke: number;
+  public lastRenderPush: number;
+
+  private _ownerId: number;
+  public get ownerId(): number {
+    return this._ownerId;
+  }
+  public set ownerId(v: number) {
+    this._ownerId = v;
+  }
+
+
+
   constructor(private http: HttpClient,
     private proc: MessageProcessorService) {
   }
 
   connect(roomid: number): Observable<IMessage> {
-    this.ws = new WebSocket("wss://tx-hk-live-comet-01.chat.bilibili.com/sub");
+    this.ws = new WebSocket('wss://broadcastlv.chat.bilibili.com/sub');
     this.ws.binaryType = "blob";
     return new Observable(
       observer => {
         let that = this;
         this.ws.onopen = (e) => {
-          let obj = {
+          const obj = {
             uid: 0,
             roomid: Number(roomid),
             protover: 1,
-            platform: "web",
-            clientver: "1.5.15"
+            platform: 'web',
+            clientver: '1.5.15'
           };
           this.sendPackageObj(7, obj);
-          this.heartbeatHandler = setInterval(() => { this.sendHeartbeat() }, 30000);
+          this.heartbeatHandler = setInterval(() => { this.sendHeartbeat(); }, 30000);
           observer.next(new ConnectedMessage());
         };
         this.ws.onmessage = (e) => {
@@ -66,20 +79,20 @@ export class BiliwsService {
   }
 
   private sendHeartbeat() {
-    let body = new TextEncoder().encode("[object Object]");
+    const body = new TextEncoder().encode('[object Object]');
     this.sendPackageBinary(2, body);
   }
 
   private sendPackageBinary(type: number, body: Uint8Array) {
-    let head = new ArrayBuffer(16);
-    let headDataView = new DataView(head);
+    const head = new ArrayBuffer(16);
+    const headDataView = new DataView(head);
     headDataView.setInt32(0, head.byteLength + body.byteLength);
     headDataView.setInt16(4, 16);
     headDataView.setInt16(6, 1);
-    headDataView.setInt32(8, type);//verify
+    headDataView.setInt32(8, type); // verify
     headDataView.setInt32(12, 1);
 
-    let tmp = new Uint8Array(16 + body.byteLength);
+    const tmp = new Uint8Array(16 + body.byteLength);
     tmp.set(new Uint8Array(head), 0);
     tmp.set(body, 16);
 

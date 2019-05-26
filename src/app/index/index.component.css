@@ -1,3 +1,79 @@
-.container{
-    margin:1em;
+.container {
+    max-width:900px;
+    margin:0em auto;
+    padding:1em;
+    padding-top:165px;
+    /*background-color:white;*/
+    /*border-radius: 1em;*/
+    /*box-shadow:0 1px 1px 1px #bbbbbb;*/
+}
+
+:host {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color:#ff4081;
+    overflow-y: scroll;
+    /*background-image: url("https://api.i-meto.com/bing?[object Object]");*/
+}
+
+.entry:not(:last-child){
+    padding-bottom: 0.5em;
+    margin-bottom: 0.5em;
+    border-bottom:1px solid #bbbbbb ;
+}
+
+.list{
+    margin-top:1em;
+}
+
+.entry{
+    display: flex;
+
+}
+
+.entry > img{
+    width:3em;
+    height: 3em;
+    border-radius: 50%;
+    flex:none;
+}
+
+.entry > .info{
+    padding-left: 0.5em;
+    flex:1 1 auto;
+}
+
+.entry > .info > .intro{
+    color:#555555;
+}
+
+.entry > .info > .user > a{
+    color:#777777;
+    margin-left: 0.5em;
+    text-decoration: none;
+}
+
+.def{
+    font-size: 0.8em;
+    color:#555555;
+    margin:0.4em;
+}
+
+.info_card{
+    padding:1pc;
+}
+
+.mybutton{
+    /*width:100px;*/
+    display: inline-block;
+    margin:0.5em;
+}
+
+.display{
+    padding-top:1pc;
+}
+
+.display > yt-live-chat-renderer {
+    height: calc(100% - 20px);
 }
