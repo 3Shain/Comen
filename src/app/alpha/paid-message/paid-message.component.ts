@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewEncapsulation, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, AfterViewInit, ElementRef, Renderer2 } from '@angular/core';
 import { GiftMessage } from '../../../app/danmaku.def';
 
 @Component({
@@ -11,9 +11,17 @@ export class LegacyPaidMessageComponent implements OnInit , AfterViewInit {
 
   @Input() item: GiftMessage;
 
-  constructor() { }
+  constructor(private ele:ElementRef,
+    private renderer:Renderer2) { }
 
   ngOnInit() {
+    this.renderer.setAttribute(this.ele.nativeElement,"style",`
+    --yt-live-chat-paid-message-primary-color: ${this.item.color_theme.color_primary};
+    --yt-live-chat-paid-message-secondary-color: ${this.item.color_theme.color_secondary};
+    --yt-live-chat-paid-message-header-color: ${this.item.color_theme.color_header};
+    --yt-live-chat-paid-message-color: ${this.item.color_theme.color_message};
+    --yt-live-chat-paid-message-author-name-color: ${this.item.color_theme.color_author_name};
+    `);
   }
 
   get title() {
