@@ -105,7 +105,7 @@ export class MessageProcessorService {
   constructor(private http: HttpClient) { }
 
   formMessage(rawData: any, observer: Subscriber<IMessage>) {
-    if (rawData.cmd === 'DANMU_MSG') {
+    if (rawData.cmd.startsWith('DANMU_MSG')) {
       if (this.blackList.indexOf(rawData.info[2][0]) !== -1) {
         return; // blackList
       }
