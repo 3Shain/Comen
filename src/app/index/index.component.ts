@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -10,19 +10,20 @@ import { DanmakuMessage, GiftMessage } from '../danmaku.def';
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css']
 })
-export class IndexComponent implements OnInit {
+export class IndexComponent {
 
   entrys: Array<any>;
 
-  @ViewChild('renderer')
+  @ViewChild('renderer',{static: false})
   public renderer: ChatRendererComponent;
 
   constructor(@Inject(PLATFORM_ID) private plat: Object, private http: HttpClient) { }
 
-  ngOnInit() {
-    /*if (!isPlatformBrowser(this.plat)) {
+  ngAfterViewInit() {
+    /* TODO: Server State Transit */
+    if (!isPlatformBrowser(this.plat)) {
       return;
-    }*/
+    }
     this.http.get<Array<any>>(`${environment.api_server}/history`).subscribe(
       resp => {
         this.entrys = resp;
