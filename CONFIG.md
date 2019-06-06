@@ -79,19 +79,22 @@ UID黑名单。
 ## minGiftValue : number
 最低会显示的礼物价值,默认20
 
-## customGiftLevel : Array<{ value:number , color:string }>
-设置礼物弹幕的不同等级及其颜色,默认值
+## customGiftLevel : Array<{ value:number , color:object }>
+设置礼物弹幕的不同等级及其颜色,默认值见源代码
 ```json
 [
-    { "value": 1245, "color": "#e62117" },
-    { "value": 450, "color": "#c2185b" },
-    { "value": 300, "color": "#e65110" },
-    { "value": 100, "color": "#ffca28" },
-    { "value": 50, "color": "#00bfa5" },
-    { "value": 0, "color": "#00b8d4" }
+    {
+      "value": 0, "color": {
+        "color_header": "rgba(0,0,0,1)", //
+        "color_primary": "rgba(0,229,255,1)", //上半部分背景色
+        "color_secondary": "rgba(0,184,212,1)", //下半部分(留言)背景颜色
+        "color_message": "rgba(0,0,0,1)", //留言文字颜色
+        "color_author_name": "rgba(0,0,0,0.701961)" //用户名颜色
+      }
+    }
 ]
 ```
-value表示该等级的最低价值(RMB),color为对应hex颜色值(注意#符号)
+value表示该等级的最低价值(RMB),color为对应颜色值(允许rgba hsl hex等由css直接提供支持的参数)
 
 ## silverGiftRatio : number
 银瓜子价值换算为金瓜子的比例,默认`0`,即任何数量银瓜子*0=0金瓜子,等于不显示任何银瓜子礼物。  
