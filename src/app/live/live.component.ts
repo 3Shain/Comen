@@ -10,9 +10,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { IMessage, GiftMessage, DanmakuMessage } from '../danmaku.def';
 
 @Component({
-  selector: 'app-alpha',
-  templateUrl: './alpha.component.html',
-  styleUrls: ['./alpha.component.css'],
+  selector: 'app-live',
+  templateUrl: './live.component.html',
+  styleUrls: ['./live.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class AlphaComponent {

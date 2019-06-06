@@ -33,8 +33,8 @@ bilichat
 ![1](https://user-images.githubusercontent.com/20179549/57980507-17b91c80-7a5f-11e9-9033-621c2eecfa9c.gif)
 
 1. 在场景中新建浏览器源
-2. 在URL处填写 ` https://bilichat.3shain.com/alpha/<你的直播间ID> `  
-如果是本地运行的服务,替换上面的域名即可,如  ` http://localhost:5000/alpha/<你的直播间ID> `  
+2. 在URL处填写 ` https://bilichat.3shain.com/live/<你的直播间ID> `  
+如果是本地运行的服务,替换上面的域名即可,如  ` http://localhost:5000/live/<你的直播间ID> `  
 到这一步就已经基本完成了。此时的样式与youtube网页直播间的chatbox完 全 一 致
 3. 设置自定义CSS参数  
 你可以从Google上搜索  ` youtube livechat css ` 找现成的代码  
@@ -60,7 +60,7 @@ bilichat
 * `minGiftValue` 最低显示礼物价值,默认20
 * `silverGiftRatio` 银瓜子折算金瓜子价值比例,默认0,即不显示任何银瓜子礼物
 
-例子: https://your.domain/alpha/114514?loadAvatar=false&levelFilter=20&showGift=false&wordFilter=屏蔽词1,屏蔽词2
+例子: https://your.domain/live/114514?loadAvatar=false&levelFilter=20&showGift=false&wordFilter=屏蔽词1,屏蔽词2
 
 ## 🔬 **[实验性功能|EXPERIMENTAL]** 本地配置文件
 

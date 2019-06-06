@@ -135,5 +135,5 @@ app.get('*', (req, res) => {
 // Start up the Node server
 app.listen(PORT, () => {
   console.log(`bilichat正运行在 http://localhost:${PORT}`);
-  console.log(`在浏览器或OBS浏览器源中输入URL为http://localhost:${PORT}/alpha/<你的直播间号> 即可`);
+  console.log(`在浏览器或OBS浏览器源中输入URL为http://localhost:${PORT}/live/<你的直播间号> 即可`);
 });

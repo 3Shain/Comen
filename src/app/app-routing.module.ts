@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AlphaComponent } from './alpha/alpha.component';
+import { AlphaComponent } from './live/live.component';
 import { IndexComponent } from './index/index.component';
 import { ViewerComponent } from './viewer/viewer.component';
 import { environment } from '../environments/environment';
 import { IndexLocalComponent } from './index-local/index-local.component';
 
 const routes: Routes = [
-  { path: 'alpha/:id', component: AlphaComponent},
+  { path: 'live/:id', component: AlphaComponent},
   { path: 'viewer/:id', component: ViewerComponent},
   { path: 'official', component: IndexComponent},
   { path: '', component: environment.official ? IndexComponent : IndexLocalComponent},
