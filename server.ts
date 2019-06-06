@@ -17,7 +17,7 @@ enableProdMode();
 const app = express();
 
 const PORT = process.env.PORT || 4000;
-const VERSION = 1022;
+const VERSION = 1023;
 const DIST_FOLDER = join(__dirname, 'browser');
 
 request('https://bilichat.3shain.com/version', { json: true }, (error, response, body) => {

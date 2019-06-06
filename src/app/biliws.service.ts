@@ -49,7 +49,7 @@ export class BiliwsService {
         };
         this.ws.onmessage = (e) => {
           if (Date.now() - this.lastRenderInvoke > 1000) {
-            console.log('Window Inavtive');
+            console.log('Window Inactive');
             return;
           }
           const arr = new Uint8Array(e.data);

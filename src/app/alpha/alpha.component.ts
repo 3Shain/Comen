@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, ViewEncapsulation, ViewChild, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MessageProcessorService } from '../message-processor.service';
@@ -15,11 +15,11 @@ import { IMessage, GiftMessage, DanmakuMessage } from '../danmaku.def';
   styleUrls: ['./alpha.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class AlphaComponent implements OnInit {
+export class AlphaComponent {
 
   currentRoomId: number;
 
-  @ViewChild('renderer')
+  @ViewChild('renderer',{static: false})
   private renderer: ChatRendererComponent;
 
   private lastMessage: { [index: number]: { time: number, message: DanmakuMessage } } = {};
@@ -31,7 +31,7 @@ export class AlphaComponent implements OnInit {
     private http: HttpClient,
     private translate: TranslateService) { }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.currentRoomId = this.route.snapshot.params['id'];
     this.translate.get('ROOM').subscribe((value) => {
       this.title.setTitle(value + ' ' + this.currentRoomId);
