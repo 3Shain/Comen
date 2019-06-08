@@ -28,10 +28,17 @@ class GiftMessage implements IMessage {
         public amount: number,
         public value: number,
         public guard_type: number,
-        public color: string,
+        public color_theme: {
+            color_header:string,
+            color_primary:string,
+            color_secondary:string,
+            color_message:string,
+            color_author_name:string
+        },
         public avatarUrl: string= 'https://static.hdslb.com/images/member/noface.gif',
         public type= 'gift',
-        public mode= 2) {}
+        public mode= 2,
+        public paid_message=null) {}
 }
 
 class ConnectedMessage implements IMessage {

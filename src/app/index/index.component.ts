@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -10,19 +10,20 @@ import { DanmakuMessage, GiftMessage } from '../danmaku.def';
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css']
 })
-export class IndexComponent implements OnInit {
+export class IndexComponent {
 
   entrys: Array<any>;
 
-  @ViewChild('renderer')
+  @ViewChild('renderer',{static: false})
   public renderer: ChatRendererComponent;
 
   constructor(@Inject(PLATFORM_ID) private plat: Object, private http: HttpClient) { }
 
-  ngOnInit() {
-    /*if (!isPlatformBrowser(this.plat)) {
+  ngAfterViewInit() {
+    /* TODO: Server State Transit */
+    if (!isPlatformBrowser(this.plat)) {
       return;
-    }*/
+    }
     this.http.get<Array<any>>(`${environment.api_server}/history`).subscribe(
       resp => {
         this.entrys = resp;
@@ -34,7 +35,15 @@ export class IndexComponent implements OnInit {
 
     this.renderer.sendSystemInfo('以下为白上吹雪第一次B限名场景复刻');
     this.renderer.sendDanmaku(new DanmakuMessage(0, 'DD0', 'awsl', 0, false, undefined));
-    this.renderer.sendDanmaku(new GiftMessage(109402, '绊爱厨', '小电视', 2, 1245000, 0, '#e62117', 'https://i2.hdslb.com/bfs/face/bd02e3ed33bb93bddb146441a04f212f77f0cb4d.jpg'));
+    let g = new GiftMessage(109402, '绊爱厨', '小电视', 2, 1245000, 0, {
+      color_header: 'rgba(255,255,255,1)',
+      color_primary: 'rgba(230,33,23,1)',
+      color_secondary: 'rgba(208,0,0,1)',
+      color_message: 'rgba(255,255,255,1)',
+      color_author_name: 'rgba(255,255,255,0.701961)'
+    }, 'https://i2.hdslb.com/bfs/face/bd02e3ed33bb93bddb146441a04f212f77f0cb4d.jpg');
+    //g.paid_message='23333';
+    this.renderer.sendDanmaku(g);
     this.renderer.sendDanmaku(new DanmakuMessage(0, 'DD1', '草', 0, false, undefined));
     this.renderer.sendDanmaku(new DanmakuMessage(0, 'DD2', '石油佬你来啦', 0, false, undefined));
     this.renderer.sendDanmaku(new DanmakuMessage(0, 'DD3', '草', 3, false, undefined));
@@ -46,6 +55,6 @@ export class IndexComponent implements OnInit {
   }
 
   getTimeString(time) {
-    return  (new Date(time)).toLocaleDateString() + ' ' + (new Date(time)).toLocaleTimeString();
+    return (new Date(time)).toLocaleDateString() + ' ' + (new Date(time)).toLocaleTimeString();
   }
 }
