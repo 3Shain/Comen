@@ -16,7 +16,7 @@
 表面上似乎是个弹幕姬  
 实际上是youtube chatbox的高仿(指样式表直接照搬)实现，不过把内容换成了b站直播弹幕2333  
 **所以在OBS中对于youtube livechat的自定义CSS代码可以直接copy**  
-自豪地使用好文明Angular 7  
+自豪地使用好文明Angular 8  
 感谢logo提供者:[@Afanyiyu](https://github.com/Afanyiyu)
 
 ## 本地部署版下载
