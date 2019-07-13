@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, ViewEncapsulation, AfterViewInit, ElementRef, Renderer2 } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { GiftMessage } from '../../../app/danmaku.def';
 
 @Component({
@@ -12,7 +13,8 @@ export class LegacyPaidMessageComponent implements OnInit , AfterViewInit {
   @Input() item: GiftMessage;
 
   constructor(private ele:ElementRef,
-    private renderer:Renderer2) { }
+    private renderer:Renderer2,
+    private translate: TranslateService) { }
 
   ngOnInit() {
     this.renderer.setAttribute(this.ele.nativeElement,"style",`
@@ -26,17 +28,17 @@ export class LegacyPaidMessageComponent implements OnInit , AfterViewInit {
 
   get title() {
     if (this.item.guard_type > 0) {
-      return `新的${this.item.gift}`;
+      return this.translate.instant('NEW_MEMBER_TITLE').replace('{memberType}', this.item.gift);
     } else {
-      return this.item.username;
+      return this.translate.instant('NEW_GIFT_TITLE').replace('{username}', this.item.username);
     }
   }
 
   get subtitle() {
     if (this.item.guard_type > 0) {
-      return `欢迎 ${this.item.username} 上舰`;
+      return this.translate.instant('NEW_MEMBER_SUBTITLE').replace('{username}', this.item.username);
     } else {
-      return `赠送 ${this.item.gift} ×${this.item.amount}`;
+      return this.translate.instant('NEW_GIFT_SUBTITLE').replace('{gift}', this.item.gift).replace('{amount}', this.item.amount);
     }
   }
 

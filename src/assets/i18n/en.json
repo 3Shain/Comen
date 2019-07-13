@@ -1,12 +1,21 @@
 {
     "CONNECTCLOSED": "Connetion failed, retry in 5 seconds.",
     "CONNECTED": "Successfully connected!",
-    "CONNECTING": "Connecting to channel ",
-    "DISCONNECTED": "Server disconnected, retry connecting...",
+    "CONNECTING": "Connecting to channel {realRoomId}...",
+    "DISCONNECTED": "Server disconnected, reconnecting...",
     "GETROOMINFO": "Fetching channel information...",
     "IDFORMATERROR": "ID is not a valid value.",
     "ROOMINFORAWID": "Fetch information failed, retry with rawID",
 
-    "ROOM": "Channel",
-    "INDEX":"Index"
+    "ROOM": "Channel {roomId}",
+    "INDEX": "Index",
+
+    "NEW_MEMBER_TITLE": "New membership ({memberType})",
+    "NEW_MEMBER_SUBTITLE": "Welcome, {username}!",
+    "NEW_GIFT_TITLE": "{username}",
+    "NEW_GIFT_SUBTITLE": "Gift {gift} ×{amount}",
+
+    "MEMBER_TYPE_1": "General",
+    "MEMBER_TYPE_2": "Prefect",
+    "MEMBER_TYPE_3": "Captian"
 }

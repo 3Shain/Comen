@@ -1,12 +1,21 @@
 {
     "CONNECTCLOSED": "无法连接到直播间,5秒后重试。",
     "CONNECTED": "成功连接到直播间!",
-    "CONNECTING": "正在连接到直播间",
+    "CONNECTING": "正在连接到直播间{realRoomId}...",
     "DISCONNECTED": "检测到服务器断开,尝试重连中...",
     "GETROOMINFO": "正在获取直播间信息...",
     "IDFORMATERROR": "直播间ID格式错误",
-    "ROOMINFORAWID": "直播间信息获取失败,尝试rawId",
-    
-    "ROOM": "直播间",
-    "INDEX": "主页"
+    "ROOMINFORAWID": "直播间信息获取失败,尝试rawID",
+
+    "ROOM": "直播间 {roomId}",
+    "INDEX": "主页",
+
+    "NEW_MEMBER_TITLE": "新的{memberType}",
+    "NEW_MEMBER_SUBTITLE": "欢迎 {username} 上舰！",
+    "NEW_GIFT_TITLE": "{username}",
+    "NEW_GIFT_SUBTITLE": "赠送 {gift} ×{amount}",
+
+    "MEMBER_TYPE_1": "总督",
+    "MEMBER_TYPE_2": "提督",
+    "MEMBER_TYPE_3": "舰长"
 }

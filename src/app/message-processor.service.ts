@@ -4,6 +4,7 @@ import { Observable, race, timer, fromEvent, Subscriber, of } from 'rxjs';
 import { map, mergeMap, catchError } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -102,7 +103,8 @@ export class MessageProcessorService {
 
   pure = false;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+    private translate: TranslateService) { }
 
   formMessage(rawData: any, observer: Subscriber<IMessage>) {
     if (rawData.cmd.startsWith('DANMU_MSG')) {
@@ -218,11 +220,11 @@ export class MessageProcessorService {
     // i18n
     switch (level) {
       case 1:
-        return '总督';
+        return this.translate.instant('MEMBER_TYPE_1'); // 总督
       case 2:
-        return '提督';
+        return this.translate.instant('MEMBER_TYPE_2'); // 提督
       case 3:
-        return '舰长';
+        return this.translate.instant('MEMBER_TYPE_3'); // 舰长
       default:
         return null;
     }
