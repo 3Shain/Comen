@@ -34,7 +34,7 @@ export class AlphaComponent {
   ngAfterViewInit() {
     this.currentRoomId = this.route.snapshot.params['id'];
     this.translate.get('ROOM').subscribe((value) => {
-      this.title.setTitle(value + ' ' + this.currentRoomId);
+      this.title.setTitle(value.replace('{roomId}', this.currentRoomId));
     });
 
     if (this.route.snapshot.queryParamMap.has('loadAvatar')) {
@@ -119,7 +119,7 @@ export class AlphaComponent {
 
   start(realRoomId: number) {
     this.translate.get('CONNECTING').subscribe((value) => {
-      this.renderer.sendSystemInfo(value + realRoomId + '...');
+      this.renderer.sendSystemInfo(value.replace('{realRoomId}', realRoomId));
     });
     this.bili.connect(Number(realRoomId)).subscribe(
       message => {

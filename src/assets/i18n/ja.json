@@ -1,12 +1,21 @@
 {
-    "CONNECTCLOSED": "ライブルームに接続できません。5秒後にもう一度試します。",
-    "CONNECTED": "チャンネルへの接続に成功しました！",
-    "CONNECTING": "チャンネルへの接続",
-    "DISCONNECTED": "検出されたサーバーが切断されました。再接続を試みています...",
-    "GETROOMINFO": "チャンネル情報の取得中...",
-    "IDFORMATERROR": "チャンネルIDのフォーマットが正しくありません",
-    "ROOMINFORAWID": "チャンネルで得られた情報が失敗しました、rawIdが試みられます",
+    "CONNECTCLOSED": "チャットに接続できません。5秒後に再接続を試みます",
+    "CONNECTED": "チャットに接続しました！",
+    "CONNECTING": "チャンネル{realRoomId}へ接続しています...",
+    "DISCONNECTED": "チャットが切断されました。再接続するまでしばらくお待ちください...",
+    "GETROOMINFO": "チャンネル情報取得中...",
+    "IDFORMATERROR": "無効なビリビリ生放送チャンネルIDです",
+    "ROOMINFORAWID": "チャンネル情報の取得が失敗しました。rawIDで試みます",
 
-    "ROOM": "チャンネル",
-    "INDEX": "インデックス"
+    "ROOM": "チャンネル {roomId}",
+    "INDEX": "ホームページ",
+
+    "NEW_MEMBER_TITLE": "新規メンバー ({memberType})",
+    "NEW_MEMBER_SUBTITLE": "ようこそ、{username} さん！",
+    "NEW_GIFT_TITLE": "{username} さんが",
+    "NEW_GIFT_SUBTITLE": "{gift} ×{amount} を送りました！",
+
+    "MEMBER_TYPE_1": "総督",
+    "MEMBER_TYPE_2": "提督",
+    "MEMBER_TYPE_3": "艦長"
 }
