@@ -89,10 +89,16 @@ export class AlphaComponent {
         (x: any) => {
           this.bili.ownerId = x.uid;
           if (x.config) {
-            this.proc.loadAvatar = x.config.loadAvatar || this.proc.loadAvatar;
+            if (x.config.loadAvatar !== undefined && !this.route.snapshot.queryParamMap.has('loadAvatar')) {
+              this.proc.loadAvatar = x.config.loadAvatar;
+            }
             this.proc.userLevelFilter = x.config.levelFilter || this.proc.userLevelFilter;
-            this.proc.hideGiftDanmaku = x.config.hideGiftDanmaku || this.proc.hideGiftDanmaku;
-            this.proc.showGift = x.config.showGift || this.proc.showGift;
+            if (x.config.hideGiftDanmaku !== undefined && !this.route.snapshot.queryParamMap.has('hideGiftDanmaku')) {
+              this.proc.hideGiftDanmaku = x.config.hideGiftDanmaku;
+            }
+            if (x.config.showGift !== undefined && !this.route.snapshot.queryParamMap.has('showGift')) {
+              this.proc.showGift = x.config.showGift;
+            }
             this.proc.minGiftValue = x.config.minGiftValue || this.proc.minGiftValue;
             this.proc.silverGiftRatio = x.config.silverGiftRatio || this.proc.silverGiftRatio;
             this.proc.wordFilter = this.proc.wordFilter.concat(x.config.wordFilter || []);
@@ -101,7 +107,9 @@ export class AlphaComponent {
             this.proc.customGiftLevel = x.config.customGiftLevel || this.proc.customGiftLevel;
             this.proc.customGiftLevel.sort((a, b) => b.value - a.value); // sort from large to small
             this.renderer.displayMode = x.config.displayMode || this.renderer.displayMode;
-            this.renderer.groupSimilar = x.config.groupSimilar || this.renderer.groupSimilar;
+            if (x.config.groupSimilar !== undefined && !this.route.snapshot.queryParamMap.has('groupSimilar')) {
+              this.renderer.groupSimilar = x.config.groupSimilar;
+            }
             this.renderer.groupSimilarWindow = x.config.groupSimilarWindow || this.renderer.groupSimilarWindow;
             this.renderer.maxDammakuNum = x.config.maxDammakuNumber || this.renderer.maxDammakuNum;
           }
