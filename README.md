@@ -19,6 +19,8 @@
 自豪地使用好文明Angular 8  
 感谢logo提供者:[@Afanyiyu](https://github.com/Afanyiyu)
 
+**交流群 906600901**
+
 ## 本地部署版下载
 可以在[Release]()获取压缩包(bilichat-\*.*.zip)
 
