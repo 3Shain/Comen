@@ -1,0 +1,17 @@
+<div id="card" class="style-scope yt-live-chat-paid-message-renderer">
+  <div id="header" [ngClass]="{'no_content':item.paid_message==null}"
+    class="style-scope yt-live-chat-paid-message-renderer">
+    <yt-img-shadow height="40" width="40" id="author-photo"
+      class="no-transition style-scope yt-live-chat-paid-message-renderer" [avatarUrl]="item.avatarUrl"></yt-img-shadow>
+    <div id="header-content" class="style-scope yt-live-chat-paid-message-renderer">
+      <div id="header-content-primary-column" class="no-transition style-scope yt-live-chat-paid-message-renderer">
+        <div id="author-name" class="style-scope yt-live-chat-paid-message-renderer">{{title}}</div>
+        <div id="purchase-amount" class="style-scope yt-live-chat-paid-message-renderer"
+          style="transform:scale(0.9);transform-origin: left;">{{subtitle}}</div>
+      </div>
+    </div>
+  </div>
+  <div id="content" *ngIf='item.paid_message!=null' class="style-scope yt-live-chat-paid-message-renderer">
+    <div id="message" dir="auto" class="style-scope yt-live-chat-paid-message-renderer">{{item.paid_message}}</div>
+  </div>
+</div>

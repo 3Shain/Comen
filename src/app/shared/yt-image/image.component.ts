@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
-import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'yt-img-shadow',

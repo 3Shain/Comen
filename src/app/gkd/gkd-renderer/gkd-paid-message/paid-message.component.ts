@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewEncapsulation, AfterViewInit, ElementRef, Renderer2 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { GiftMessage } from '../../../app/danmaku.def';
+import { GiftMessage } from '../../../danmaku.def';
 
 @Component({
   selector: 'yt-live-chat-paid-message-renderer',
@@ -8,7 +8,7 @@ import { GiftMessage } from '../../../app/danmaku.def';
   styleUrls: ['./paid-message.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class LegacyPaidMessageComponent implements OnInit , AfterViewInit {
+export class GKDLegacyPaidMessageComponent implements OnInit , AfterViewInit {
 
   @Input() item: GiftMessage;
 
@@ -47,6 +47,6 @@ export class LegacyPaidMessageComponent implements OnInit , AfterViewInit {
     //  return;
     // }
     // document.documentElement.scrollTop=document.documentElement.scrollHeight;
-    window.scrollTo(0, document.documentElement.scrollHeight);
+    //window.scrollTo(0, document.documentElement.scrollHeight);
   }
 }

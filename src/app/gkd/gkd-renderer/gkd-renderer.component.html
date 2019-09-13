@@ -1,0 +1,12 @@
+<div id="items" class="style-scope yt-live-chat-item-list-render yt-live-chat-renderer" #items>
+  <ng-container *ngFor="let item of danmakuList" [ngSwitch]="item.type">
+    <yt-live-chat-text-message-renderer *ngSwitchCase="'danmaku'" [item]="item"></yt-live-chat-text-message-renderer>
+    <yt-live-chat-paid-message-renderer *ngSwitchCase="'gift'" [item]="item"></yt-live-chat-paid-message-renderer>
+  </ng-container>
+</div>
+<div class="shadow style-scope yt-live-chat-item-list-render yt-live-chat-renderer" #shadowItem>
+  <ng-container *ngIf="shadowMessage!=null" [ngSwitch]="shadowMessage.type">
+    <yt-live-chat-text-message-renderer *ngSwitchCase="'danmaku'" [item]="shadowMessage"></yt-live-chat-text-message-renderer>
+    <yt-live-chat-paid-message-renderer *ngSwitchCase="'gift'" [item]="shadowMessage"></yt-live-chat-paid-message-renderer>
+  </ng-container>
+</div>

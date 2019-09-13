@@ -1,17 +1,19 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AlphaComponent } from './alpha/alpha.component';
-import { IndexComponent } from './index/index.component';
 import { ViewerComponent } from './viewer/viewer.component';
 import { environment } from '../environments/environment';
-import { IndexLocalComponent } from './index-local/index-local.component';
 
 const routes: Routes = [
-  { path: 'alpha/:id', component: AlphaComponent},
-  { path: 'viewer/:id', component: ViewerComponent},
-  { path: 'official', component: IndexComponent},
-  { path: '', component: environment.official ? IndexComponent : IndexLocalComponent},
-  { path: '**', redirectTo: '', pathMatch: 'full'}
+  { path: 'alpha/:id', loadChildren: () => import('./alpha/alpha.module').then(m => m.AlphaModule) },
+  { path: 'gkd/:id', loadChildren: () => import('./gkd/gkd.module').then(m => m.GkdModule) },
+  { path: 'viewer/:id', component: ViewerComponent },
+  { path: 'official', loadChildren: () => import('./index/index.module').then(m => m.IndexModule) },
+  {
+    path: '', loadChildren: environment.official ?
+      () => import('./index/index.module').then(m => m.IndexModule) :
+      () => import('./index-local/index-local.module').then(m => m.IndexLocalModule)
+  },
+  { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 
 @NgModule({

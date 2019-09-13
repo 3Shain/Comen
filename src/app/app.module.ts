@@ -1,16 +1,11 @@
 import { BrowserModule, TransferState, StateKey, makeStateKey, BrowserTransferStateModule } from '@angular/platform-browser';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AlphaComponent } from './alpha/alpha.component';
-import { MessageComponent } from './alpha/message/message.component';
-import { ImageComponent } from './alpha/image/image.component';
 import { IndexComponent } from './index/index.component';
-import { ChatRendererComponent } from './alpha/chat-renderer/chat-renderer.component';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { LegacyPaidMessageComponent } from './alpha/paid-message/paid-message.component';
 import { ViewerComponent } from './viewer/viewer.component';
 import { IndexLocalComponent } from './index-local/index-local.component';
 import { Observable } from 'rxjs';
@@ -38,14 +33,7 @@ export function HttpLoaderFactory(http: HttpClient, state: TransferState) {
 @NgModule({
   declarations: [
     AppComponent,
-    AlphaComponent,
-    MessageComponent,
-    ImageComponent,
-    IndexComponent,
-    ChatRendererComponent,
-    LegacyPaidMessageComponent,
-    ViewerComponent,
-    IndexLocalComponent
+    ViewerComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
@@ -61,7 +49,6 @@ export function HttpLoaderFactory(http: HttpClient, state: TransferState) {
     })
   ],
   providers: [],
-  bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

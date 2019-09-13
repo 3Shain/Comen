@@ -1,0 +1,16 @@
+:host{
+    position: relative;
+    display: block;
+    width:100vw;
+    height:100vh;
+}
+
+.shadow{
+    opacity: 0.1;
+}
+
+#items {
+    /*min-height: 100vh;*/
+    position: absolute;
+    bottom: 0;
+}

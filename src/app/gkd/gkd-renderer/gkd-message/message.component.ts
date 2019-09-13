@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewEncapsulation, AfterViewInit } from '@angular/core';
-import { DanmakuMessage } from '../../../app/danmaku.def';
-import { BiliwsService } from '../../../app/biliws.service';
+import { DanmakuMessage } from '../../../danmaku.def';
+import { BiliwsService } from '../../../biliws.service';
 
 @Component({
   selector: 'yt-live-chat-text-message-renderer',
@@ -8,7 +8,7 @@ import { BiliwsService } from '../../../app/biliws.service';
   styleUrls: ['./message.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class MessageComponent implements OnInit , AfterViewInit {
+export class GKDMessageComponent implements OnInit , AfterViewInit {
 
   @Input() item: DanmakuMessage;
 
@@ -44,7 +44,7 @@ export class MessageComponent implements OnInit , AfterViewInit {
       // return;
     // }
     // document.documentElement.scrollTop=document.documentElement.scrollHeight;
-    window.scrollTo(0, document.documentElement.scrollHeight);
+    //window.scrollTo(0, document.documentElement.scrollHeight);
   }
 
   getRepeatGradientColor() {
