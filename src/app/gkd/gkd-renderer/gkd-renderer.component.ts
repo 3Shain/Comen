@@ -81,7 +81,7 @@ export class GKDRendererComponent {
     if (!this.animating && ttw <= 0 && this.shadowMessage != null) {
       //render it
 
-      const height: number = this.shadowItem.nativeElement.offsetHeight;
+      const height: number = this.shadowItem.nativeElement.offsetHeight - 2;
       this.animationHeight = height;
 
       while (this.danmakuList.length > this.maxDammakuNum) {
