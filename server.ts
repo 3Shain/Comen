@@ -1,9 +1,11 @@
 import 'zone.js/dist/zone-node';
+
+/*
 import { enableProdMode } from '@angular/core';
 // Express Engine
 import { ngExpressEngine } from '@nguniversal/express-engine';
 // Import module map for lazy loading
-import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
+import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';*/
 
 import * as express from 'express';
 import { join } from 'path';
@@ -11,7 +13,7 @@ import * as request from 'request';
 import { readFile, existsSync } from 'fs';
 
 // Faster server renders w/ Prod mode (dev mode never needed)
-enableProdMode();
+//enableProdMode();
 
 // Express server
 const app = express();
@@ -19,6 +21,9 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 const VERSION = 1023;
 const DIST_FOLDER = join(__dirname, 'browser');
+
+// * NOTE :: leave this as require() since this file is built Dynamically from webpack
+const {AppServerModuleNgFactory, LAZY_MODULE_MAP, ngExpressEngine, provideModuleMap} = require('./dist/server/main');
 
 request('https://bilichat.3shain.com/version', { json: true }, (error, response, body) => {
   if (!error && response.statusCode == 200) {
@@ -29,8 +34,6 @@ request('https://bilichat.3shain.com/version', { json: true }, (error, response,
   }
 });
 
-// * NOTE :: leave this as require() since this file is built Dynamically from webpack
-const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require('./dist/server/main');
 
 // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
 app.engine('html', ngExpressEngine({

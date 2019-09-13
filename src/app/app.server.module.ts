@@ -13,7 +13,8 @@ export function universalLoader(state: TransferState): TranslateLoader {
   return {
     getTranslation: (lang: string) => {
       return new Observable(observer => {
-        const jsonData = JSON.parse(readFileSync(join(__dirname,`browser/assets/i18n/${lang}.json`), 'utf8'));
+        //method executed in server/main.js
+        const jsonData = JSON.parse(readFileSync(join(__dirname,'..',`browser/assets/i18n/${lang}.json`), 'utf8'));
         const key: StateKey<number> = makeStateKey<number>('transfer-translate-' + lang);
         state.set(key, jsonData);
         observer.next(jsonData);

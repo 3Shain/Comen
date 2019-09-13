@@ -6,11 +6,34 @@
 }
 
 .shadow{
-    opacity: 0.1;
+    opacity: 0;
 }
 
 #items {
     /*min-height: 100vh;*/
     position: absolute;
     bottom: 0;
+}
+
+
+yt-live-chat-renderer {
+    font-family: 'Microsoft YaHei';
+    font-size: 13px;
+    --yt-emoji-picker-renderer-height: 30%;
+    --yt-button-default-text-color: var(--yt-live-chat-button-default-text-color);
+    --yt-button-default-background-color: var(--yt-live-chat-button-default-background-color);
+    --yt-button-dark-text-color: var(--yt-live-chat-button-dark-text-color);
+    --yt-button-dark-background-color: var(--yt-live-chat-button-dark-background-color);
+    --yt-button-payment-background-color: var(--yt-live-chat-sponsor-color);
+}
+
+yt-live-chat-paid-message-renderer {
+    position: relative;
+    display: block;
+    padding: 4px 24px;
+    font-size: 15px;
+    --yt-live-chat-paid-message-background-color: var(--yt-live-chat-paid-message-primary-color);
+    --yt-live-chat-paid-message-header-background-color: var(--yt-live-chat-paid-message-secondary-color);
+    --yt-live-chat-text-input-field-placeholder-color: var(--yt-live-chat-paid-message-color);
+    --yt-live-chat-item-timestamp-display: var(--yt-live-chat-paid-message-timestamp-display, none);
 }

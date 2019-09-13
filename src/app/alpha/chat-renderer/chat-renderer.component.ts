@@ -55,10 +55,9 @@ export class ChatRendererComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (!isPlatformBrowser(this.plat)) {
-      return;
+    if (isPlatformBrowser(this.plat)) {
+      requestAnimationFrame(this.awake.bind(this));
     }
-    requestAnimationFrame(this.awake.bind(this));
   }
 
   awake() {

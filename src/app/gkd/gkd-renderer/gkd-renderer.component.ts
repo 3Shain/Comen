@@ -1,5 +1,6 @@
-import { Component, OnInit, Renderer2, ViewChild, ElementRef, Input, Output, EventEmitter, HostListener } from '@angular/core';
-import { IMessage, DanmakuMessage } from 'src/app/danmaku.def';
+import { Component, OnInit, Renderer2, ViewChild, ElementRef, Input, Output, EventEmitter, HostListener, Inject, PLATFORM_ID } from '@angular/core';
+import { IMessage, DanmakuMessage } from '../../danmaku.def';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'yt-live-chat-renderer',
@@ -17,7 +18,7 @@ export class GKDRendererComponent {
 
   @ViewChild('shadowItem', { static: true }) shadowItem: ElementRef;
 
-  constructor(private renderer2: Renderer2) {
+  constructor(private renderer2: Renderer2,@Inject(PLATFORM_ID) private plat: Object) {
     this.danmakuList = [];
     this.waitForRendering = [];
     this.groupSimilarCache = [];
@@ -25,9 +26,10 @@ export class GKDRendererComponent {
     this.shadowMessage = null;
   }
 
-  ngAfterViewInit() {
-    requestAnimationFrame(this.onFrame.bind(this,window.performance.now(),0));
-    this.onawake.emit(null);
+  ngOnInit() {
+    if (isPlatformBrowser(this.plat)) {
+      requestAnimationFrame(this.awake.bind(this));
+    }
   }
 
   @Input() public maxDammakuNum = 100;
@@ -50,7 +52,12 @@ export class GKDRendererComponent {
 
   private baseSpeed: number = 0.45;
 
-  onFrame(lastFrame: number,ttw:number) {
+  awake() {
+    this.onawake.emit();
+    requestAnimationFrame(this.onFrame.bind(this, window.performance.now(), 0));
+  }
+
+  onFrame(lastFrame: number, ttw: number) {
     const now: number = window.performance.now();
     const interval: number = now - lastFrame;
     this.animationSumup += interval;
@@ -71,9 +78,9 @@ export class GKDRendererComponent {
     }
 
     //pipe 1
-    if (!this.animating && ttw<=0 && this.shadowMessage != null) {
+    if (!this.animating && ttw <= 0 && this.shadowMessage != null) {
       //render it
-      
+
       const height: number = this.shadowItem.nativeElement.offsetHeight;
       this.animationHeight = height;
 
@@ -84,7 +91,7 @@ export class GKDRendererComponent {
       this.shadowMessage = null;
 
       const timeR: number = height / this.baseSpeed;
-      const timeL: number = 1000 / ((this.waitForRendering.length>0)?this.waitForRendering.length:1);
+      const timeL: number = 1000 / ((this.waitForRendering.length > 0) ? this.waitForRendering.length : 1);
       if (timeR * 2.33 < timeL) {
         // 2.33真是一个非常随便的系数呢->为的只是让弹幕*不*匀速弹出来
         this.animating = true;
@@ -101,7 +108,7 @@ export class GKDRendererComponent {
       this.shadowMessage = this.waitForRendering.shift();
     }
 
-    ttw-=interval;
+    ttw -= interval;
 
     requestAnimationFrame(this.onFrame.bind(this, now, ttw));
   }

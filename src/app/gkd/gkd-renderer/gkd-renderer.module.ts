@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { GKDMessageComponent } from './gkd-message/message.component';
 import { GKDLegacyPaidMessageComponent } from './gkd-paid-message/paid-message.component';
 import { GKDRendererComponent } from './gkd-renderer.component';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   declarations: [

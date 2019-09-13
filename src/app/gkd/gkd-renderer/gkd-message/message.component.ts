@@ -8,7 +8,7 @@ import { BiliwsService } from '../../../biliws.service';
   styleUrls: ['./message.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class GKDMessageComponent implements OnInit , AfterViewInit {
+export class GKDMessageComponent implements OnInit {
 
   @Input() item: DanmakuMessage;
 
@@ -38,13 +38,6 @@ export class GKDMessageComponent implements OnInit , AfterViewInit {
     } else {
       return '';
     }
-  }
-  ngAfterViewInit() {
-    // if (!isPlatformBrowser(this.plat)) {
-      // return;
-    // }
-    // document.documentElement.scrollTop=document.documentElement.scrollHeight;
-    //window.scrollTo(0, document.documentElement.scrollHeight);
   }
 
   getRepeatGradientColor() {

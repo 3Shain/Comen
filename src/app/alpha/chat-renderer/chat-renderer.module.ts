@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChatRendererComponent } from './chat-renderer.component';
 import { MessageComponent } from './message/message.component';
 import { LegacyPaidMessageComponent } from './paid-message/paid-message.component';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   declarations: [

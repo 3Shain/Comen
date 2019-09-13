@@ -8,7 +8,7 @@ import { GiftMessage } from '../../../danmaku.def';
   styleUrls: ['./paid-message.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class GKDLegacyPaidMessageComponent implements OnInit , AfterViewInit {
+export class GKDLegacyPaidMessageComponent implements OnInit {
 
   @Input() item: GiftMessage;
 
@@ -40,13 +40,5 @@ export class GKDLegacyPaidMessageComponent implements OnInit , AfterViewInit {
     } else {
       return this.translate.instant('NEW_GIFT_SUBTITLE').replace('{gift}', this.item.gift).replace('{amount}', this.item.amount);
     }
-  }
-
-  ngAfterViewInit() {
-    // if (!isPlatformBrowser(this.plat)) {
-    //  return;
-    // }
-    // document.documentElement.scrollTop=document.documentElement.scrollHeight;
-    //window.scrollTo(0, document.documentElement.scrollHeight);
   }
 }
