@@ -130,7 +130,6 @@ export class GKDComponent {
           if (environment.official) {
             // this.renderer.sendSystemInfo('你正在使用公共服务器提供的服务，为了更高的稳定性，建议使用本地部署版本。详情访问https://bilichat.3shain.com');
           }
-          this.renderer.sendSystemInfo('gkd-renderer仍然是实验性功能');
         } else {
           /* 礼物显示上一条发言 */
           if (message.type === 'danmaku') {

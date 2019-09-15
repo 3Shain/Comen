@@ -4,7 +4,8 @@ import { ViewerComponent } from './viewer/viewer.component';
 import { environment } from '../environments/environment';
 
 const routes: Routes = [
-  { path: 'alpha/:id', loadChildren: () => import('./alpha/alpha.module').then(m => m.AlphaModule) },
+  { path: 'legacy/:id', loadChildren: () => import('./alpha/alpha.module').then(m => m.AlphaModule) },
+  { path: 'alpha/:id', loadChildren: () => import('./gkd/gkd.module').then(m => m.GkdModule) },
   { path: 'gkd/:id', loadChildren: () => import('./gkd/gkd.module').then(m => m.GkdModule) },
   { path: 'viewer/:id', component: ViewerComponent },
   { path: 'official', loadChildren: () => import('./index/index.module').then(m => m.IndexModule) },
