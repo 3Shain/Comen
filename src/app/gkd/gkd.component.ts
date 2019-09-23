@@ -137,7 +137,7 @@ export class GKDComponent {
               time: Date.now(),
               message: <DanmakuMessage>message
             };
-          } else if (message.type === 'gift' && this.lastMessage[message.uid] != null && (Date.now() - this.lastMessage[message.uid].time < 60 * 1000)) {
+          } else if (message.type === 'gift' && !(<GiftMessage>message).superchat && this.lastMessage[message.uid] != null && (Date.now() - this.lastMessage[message.uid].time < 60 * 1000)) {
             (<GiftMessage>message).paid_message = this.lastMessage[message.uid].message.message;
             this.lastMessage[message.uid] = null;
           }

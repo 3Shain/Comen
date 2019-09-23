@@ -25,6 +25,8 @@ export class MessageProcessorService {
 
   loadAvatar = true;
 
+  showJapanese = false;
+
   wordFilter: Array<string> = [
     'kimo', '风暴',
     '弹幕姬', '弹幕机',
@@ -175,7 +177,22 @@ export class MessageProcessorService {
           ));
         }
       );
+    } else if (rawData.cmd === 'SUPER_CHAT_MESSAGE_JPN') {
+      let msg = new GiftMessage(
+        rawData.data.uid,
+        rawData.data.user_info.uname,
+        undefined,
+        0,
+        rawData.data.price,
+        0,
+        this.getGiftColor(rawData.data.price),
+        rawData.data.user_info.face,
+        true
+      );
+      msg.paid_message = this.showJapanese ? rawData.data.message_jpn : rawData.data.message;
+      observer.next(msg);
     }
+    console.log(rawData);
   }
 
   avatarPreload(userid: number): Observable<string> {

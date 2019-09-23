@@ -27,7 +27,10 @@ export class GKDLegacyPaidMessageComponent implements OnInit {
   }
 
   get title() {
-    if (this.item.guard_type > 0) {
+    if(this.item.superchat){
+      return this.item.username;
+    }
+    else if (this.item.guard_type > 0) {
       return this.translate.instant('NEW_MEMBER_TITLE').replace('{memberType}', this.item.gift);
     } else {
       return this.translate.instant('NEW_GIFT_TITLE').replace('{username}', this.item.username);
@@ -35,7 +38,10 @@ export class GKDLegacyPaidMessageComponent implements OnInit {
   }
 
   get subtitle() {
-    if (this.item.guard_type > 0) {
+    if(this.item.superchat){
+      return `CN¥${this.item.value}`;
+    }
+    else if (this.item.guard_type > 0) {
       return this.translate.instant('NEW_MEMBER_SUBTITLE').replace('{username}', this.item.username);
     } else {
       return this.translate.instant('NEW_GIFT_SUBTITLE').replace('{gift}', this.item.gift).replace('{amount}', this.item.amount);
