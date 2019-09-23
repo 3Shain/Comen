@@ -192,7 +192,6 @@ export class MessageProcessorService {
       msg.paid_message = this.showJapanese ? rawData.data.message_jpn : rawData.data.message;
       observer.next(msg);
     }
-    console.log(rawData);
   }
 
   avatarPreload(userid: number): Observable<string> {

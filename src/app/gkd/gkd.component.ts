@@ -64,6 +64,9 @@ export class GKDComponent {
     if (this.route.snapshot.queryParamMap.has('pure')) {
       this.proc.pure = this.route.snapshot.queryParamMap.get('pure').toLowerCase() === 'true';
     }
+    if (this.route.snapshot.queryParamMap.has('showJapanese')) {
+      this.proc.showJapanese = this.route.snapshot.queryParamMap.get('showJapanese').toLowerCase() === 'true';
+    }
     if (this.route.snapshot.queryParamMap.has('minGiftValue')) {
       this.proc.minGiftValue = Number(this.route.snapshot.queryParamMap.get('minGiftValue'));
     }
@@ -94,6 +97,7 @@ export class GKDComponent {
             this.proc.hideGiftDanmaku = x.config.hideGiftDanmaku !=undefined? x.config.hideGiftDanmaku : this.proc.hideGiftDanmaku;
             this.proc.showGift = x.config.showGift !=undefined?  x.config.showGift : this.proc.showGift;
             this.proc.minGiftValue = x.config.minGiftValue || this.proc.minGiftValue;
+            this.proc.showJapanese = x.config.showJapanese || this.proc.showJapanese;
             this.proc.silverGiftRatio = x.config.silverGiftRatio || this.proc.silverGiftRatio;
             this.proc.wordFilter = this.proc.wordFilter.concat(x.config.wordFilter || []);
             this.proc.blackList = this.proc.blackList.concat(x.config.blackList || []);
