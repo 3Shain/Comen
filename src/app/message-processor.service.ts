@@ -74,19 +74,19 @@ export class MessageProcessorService {
     },
     {
       value: 100, color: {
-        color_header: 'rgba(0,0,0,1)',
-        color_primary: 'rgba(29,233,182,1)',
-        color_secondary: 'rgba(0,191,165,1)',
-        color_message: 'rgba(0,0,0,1)',
+        color_header: 'rgba(0,0,0,0.87451)',
+        color_primary: 'rgba(255,202,40,1)',
+        color_secondary: 'rgba(255,179,0,1)',
+        color_message: 'rgba(0,0,0,0.87451)',
         color_author_name: 'rgba(0,0,0,0.541176)'
       }
     },
     {
       value: 50, color: {
-        color_header: 'rgba(0,0,0,0.87451)',
-        color_primary: 'rgba(255,202,40,1)',
-        color_secondary: 'rgba(255,179,0,1)',
-        color_message: 'rgba(0,0,0,0.87451)',
+        color_header: 'rgba(0,0,0,1)',
+        color_primary: 'rgba(29,233,182,1)',
+        color_secondary: 'rgba(0,191,165,1)',
+        color_message: 'rgba(0,0,0,1)',
         color_author_name: 'rgba(0,0,0,0.541176)'
       }
     },
