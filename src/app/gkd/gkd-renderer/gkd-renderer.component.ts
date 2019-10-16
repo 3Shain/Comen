@@ -28,7 +28,10 @@ export class GKDRendererComponent {
 
   ngOnInit() {
     if (isPlatformBrowser(this.plat)) {
-      requestAnimationFrame(this.awake.bind(this));
+      requestAnimationFrame(()=>{
+        //empty frame
+        requestAnimationFrame(this.awake.bind(this));
+      });
     }
   }
 
