@@ -19,7 +19,7 @@ import { readFile, existsSync } from 'fs';
 const app = express();
 
 const PORT = process.env.PORT || 4000;
-const VERSION = 1023;
+const VERSION = 1032;
 const DIST_FOLDER = join(__dirname, 'browser');
 
 // * NOTE :: leave this as require() since this file is built Dynamically from webpack
