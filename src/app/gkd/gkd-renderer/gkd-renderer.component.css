@@ -1,8 +1,17 @@
-:host{
+
+yt-live-chat-item-list-renderer {
     position: relative;
     display: block;
-    width:100vw;
-    height:100vh;
+    overflow: hidden;
+    z-index: 0;
+}
+
+yt-live-chat-item-list-renderer.yt-live-chat-renderer, yt-live-chat-ninja-message-renderer.yt-live-chat-renderer {
+    -ms-flex: 1 1 0.000000001px;
+    -webkit-flex: 1;
+    flex: 1;
+    -webkit-flex-basis: 0.000000001px;
+    flex-basis: 0.000000001px;
 }
 
 .shadow{
@@ -10,23 +19,12 @@
     border:solid 1px transparent;
 }
 
-#items {
+#items.yt-live-chat-renderer {
     /*min-height: 100vh;*/
     position: absolute;
     bottom: 0;
 }
 
-
-yt-live-chat-renderer {
-    font-family: 'Microsoft YaHei';
-    font-size: 13px;
-    --yt-emoji-picker-renderer-height: 30%;
-    --yt-button-default-text-color: var(--yt-live-chat-button-default-text-color);
-    --yt-button-default-background-color: var(--yt-live-chat-button-default-background-color);
-    --yt-button-dark-text-color: var(--yt-live-chat-button-dark-text-color);
-    --yt-button-dark-background-color: var(--yt-live-chat-button-dark-background-color);
-    --yt-button-payment-background-color: var(--yt-live-chat-sponsor-color);
-}
 
 yt-live-chat-paid-message-renderer {
     position: relative;

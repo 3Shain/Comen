@@ -1,0 +1,5 @@
+<div id="items" class="style-scope yt-live-chat-ticker-renderer">
+    <ng-container *ngFor="let item of danmakuList">
+        <yt-live-chat-ticker-paid-message-item-renderer *ngIf="item.tickerValid" class="style-scope yt-live-chat-ticker-renderer" [item]="item"></yt-live-chat-ticker-paid-message-item-renderer>
+    </ng-container>
+</div>

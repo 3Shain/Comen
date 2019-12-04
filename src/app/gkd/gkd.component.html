@@ -1,1 +1,9 @@
-<yt-live-chat-renderer [displayMode]=3 (onawake)="onload()" #renderer></yt-live-chat-renderer>
+<div id="ticker" class="style-scope yt-live-chat-renderer">
+    <yt-live-chat-ticker-renderer class="yt-live-chat-renderer" #tickerRenderer></yt-live-chat-ticker-renderer>
+</div>
+<div id="separator" class="style-scope yt-live-chat-renderer">
+
+</div>
+<div id="chat" class="style-scope yt-live-chat-renderer">
+    <yt-live-chat-item-list-renderer class="yt-live-chat-renderer" [displayMode]=3 (onawake)="onload()" #renderer></yt-live-chat-item-list-renderer>
+</div>

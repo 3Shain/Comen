@@ -1,11 +1,12 @@
-import { Component, OnInit, Renderer2, ViewChild, ElementRef, Input, Output, EventEmitter, HostListener, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Renderer2, ViewChild, ElementRef, Input, Output, EventEmitter, HostListener, Inject, PLATFORM_ID, ViewEncapsulation } from '@angular/core';
 import { IMessage, DanmakuMessage } from '../../danmaku.def';
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
-  selector: 'yt-live-chat-renderer',
+  selector: 'yt-live-chat-item-list-renderer',
   templateUrl: './gkd-renderer.component.html',
-  styleUrls: ['./gkd-renderer.component.css']
+  styleUrls: ['./gkd-renderer.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class GKDRendererComponent {
 

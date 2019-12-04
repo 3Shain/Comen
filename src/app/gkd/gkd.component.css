@@ -1,0 +1,43 @@
+yt-live-chat-renderer {
+  display: flex;
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -ms-flex: 1 1 0.000000001px;
+  -webkit-flex: 1;
+  flex: 1;
+  -webkit-flex-basis: 0.000000001px;
+  flex-basis: 0.000000001px;
+
+  /* ADDED */
+  height: 100vh;
+}
+
+yt-live-chat-renderer {
+  font-size: 13px;
+  --yt-emoji-picker-renderer-height: 180px;
+  --yt-button-default-text-color: var(--yt-live-chat-button-default-text-color);
+  --yt-button-default-background-color: var(--yt-live-chat-button-default-background-color);
+  --yt-button-dark-text-color: var(--yt-live-chat-button-dark-text-color);
+  --yt-button-dark-background-color: var(--yt-live-chat-button-dark-background-color);
+  --yt-button-payment-background-color: var(--yt-live-chat-sponsor-color);
+}
+
+#ticker.yt-live-chat-renderer {
+  z-index: 1;
+}
+
+#separator.yt-live-chat-renderer {
+  border-bottom: var(--yt-live-chat-header-bottom-border, none);
+}
+
+#chat.yt-live-chat-renderer {
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  /*-ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;*/
+  flex: 1;
+  flex-basis: 0.000000001px;
+}

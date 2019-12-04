@@ -8,9 +8,10 @@ import { environment } from '../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { GiftMessage, DanmakuMessage } from '../danmaku.def';
 import { GKDRendererComponent } from './gkd-renderer/gkd-renderer.component';
+import { GkdTickerRendererComponent } from './gkd-ticker-renderer/gkd-ticker-renderer.component';
 
 @Component({
-  selector: 'app-gkd',
+  selector: 'yt-live-chat-renderer',
   templateUrl: './gkd.component.html',
   styleUrls: ['./gkd.component.css'],
   encapsulation: ViewEncapsulation.None
@@ -21,6 +22,9 @@ export class GKDComponent {
 
   @ViewChild('renderer',{static: true})
   private renderer: GKDRendererComponent;
+
+  @ViewChild('tickerRenderer',{static: true})
+  private tickerRenderer: GkdTickerRendererComponent;
 
   private lastMessage: { [index: number]: { time: number, message: DanmakuMessage } } = {};
 
@@ -146,6 +150,7 @@ export class GKDComponent {
             this.lastMessage[message.uid] = null;
           }
           this.renderer.sendDanmaku(message);
+          this.tickerRenderer.appendGift(<GiftMessage>message);
         }
       },
       e => {

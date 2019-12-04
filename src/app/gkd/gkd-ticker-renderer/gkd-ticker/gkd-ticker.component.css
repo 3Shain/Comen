@@ -1,0 +1,39 @@
+yt-live-chat-ticker-paid-message-item-renderer {
+  display: inline-block;
+  font-size: 14px;
+  outline: none;
+  transition: width 0.2s;
+  vertical-align: top;
+  cursor: pointer;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#container.yt-live-chat-ticker-paid-message-item-renderer {
+    border-radius: 999px;
+    padding: 4px;
+}
+
+#content.yt-live-chat-ticker-paid-message-item-renderer {
+    height: 24px;
+    display: flex;
+    -ms-flex-direction: row;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+yt-img-shadow.yt-live-chat-ticker-paid-message-item-renderer {
+    margin-right: -4px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+#text.yt-live-chat-ticker-paid-message-item-renderer {
+    margin: 0 8px;
+    font-weight: 500;
+}

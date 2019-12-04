@@ -1,0 +1,15 @@
+yt-live-chat-ticker-renderer {
+  display: block;
+  /*background-color: var(--yt-live-chat-header-background-color);*/
+}
+
+#items.yt-live-chat-ticker-renderer {
+  height: 32px;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0 24px 8px 24px;
+}
+
+#items.yt-live-chat-ticker-renderer > *.yt-live-chat-ticker-renderer {
+    margin-right: 8px;
+}
