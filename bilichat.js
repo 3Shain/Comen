@@ -44,10 +44,10 @@ app.get('/api/stat/:roomid', (req, res) => {
         if (!error && response.statusCode == 200) {
             let ret = body.data;
             let configPath = './config.json';
-            if (existsSync(`./config.${req.params.roomid}.json`)) {
+            if (fs.existsSync(`./config.${req.params.roomid}.json`)) {
                 configPath = `./config.${req.params.roomid}.json`;
             }
-            readFile(configPath, 'utf8', (err, data) => {
+            fs.readFile(configPath, 'utf8', (err, data) => {
                 if (!err)
                     ret.config = JSON.parse(data);
                 res.send(ret);
