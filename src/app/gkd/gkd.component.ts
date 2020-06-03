@@ -19,6 +19,7 @@ import { GkdTickerRendererComponent } from './gkd-ticker-renderer/gkd-ticker-ren
 export class GKDComponent {
 
   currentRoomId: number;
+  retry_time: number = 0;
 
   @ViewChild('renderer',{static: true})
   private renderer: GKDRendererComponent;
@@ -86,8 +87,14 @@ export class GKDComponent {
       });
       return;
     }
+    let danmu_host_list = [{ host: 'broadcastlv.chat.bilibili.com' }]
+    let token = ''
+    this.http.get(`${environment.api_server}/room_config/${this.currentRoomId}`).subscribe((data: { data: { host_server_list: { host: string; }[]; token: string; }; }) => {
+      danmu_host_list = data.data.host_server_list
+      token = data.data.token
+    })
     if (this.proc.pure) {
-      this.start(this.currentRoomId);
+      this.start(this.currentRoomId, danmu_host_list[this.retry_time % danmu_host_list.length].host, token);
     } else {
       this.translate.get('GETROOMINFO').subscribe((value) => {
         this.renderer.sendSystemInfo(value);
@@ -113,25 +120,26 @@ export class GKDComponent {
             this.renderer.groupSimilarWindow = x.config.groupSimilarWindow || this.renderer.groupSimilarWindow;
             this.renderer.maxDammakuNum = x.config.maxDammakuNumber || this.renderer.maxDammakuNum;
           }
-          this.start(x.room_id);
+          this.start(x.room_id, danmu_host_list[this.retry_time % danmu_host_list.length].host, token);
         },
         e => {
           this.translate.get('ROOMINFORAWID').subscribe((value) => {
             this.renderer.sendSystemInfo(value);
           });
-          this.start(this.currentRoomId);
+          this.start(this.currentRoomId, danmu_host_list[this.retry_time % danmu_host_list.length].host, token);
         }
       );
     }
   }
 
-  start(realRoomId: number) {
+  start(realRoomId: number, danmu_host: string, token: string) {
     this.translate.get('CONNECTING').subscribe((value) => {
       this.renderer.sendSystemInfo(value.replace('{realRoomId}', realRoomId));
     });
-    this.bili.connect(Number(realRoomId)).subscribe(
+    this.bili.connect(Number(realRoomId), String(danmu_host), String(token)).subscribe(
       message => {
         if (message.type === 'connected') {
+          this.retry_time = 0;
           this.translate.get('CONNECTED').subscribe((value) => {
             this.renderer.sendSystemInfo(value);
           });
@@ -158,14 +166,15 @@ export class GKDComponent {
           this.translate.get('CONNECTCLOSED').subscribe((value) => {
             this.renderer.sendSystemInfo(value);
           });
-          setTimeout(() => this.start(realRoomId), 5000);
+          setTimeout(() => this.start(realRoomId, danmu_host, token), 5000);
         }
       },
       () => {
         this.translate.get('DISCONNECTED').subscribe((value) => {
           this.renderer.sendSystemInfo(value);
         });
-        this.start(realRoomId); // 重连
+        this.retry_time += 1;
+        this.start(realRoomId, danmu_host, token); // 重连
       }
     );
   }

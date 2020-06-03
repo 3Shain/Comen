@@ -53,8 +53,8 @@ export class BiliwsService {
     private proc: MessageProcessorService) {
   }
 
-  connect(roomid: number): Observable<IMessage> {
-    this.ws = new WebSocket('wss://broadcastlv.chat.bilibili.com/sub');
+  connect(roomid: number, danmu_host: string, token: string): Observable<IMessage> {
+    this.ws = new WebSocket('wss://' + danmu_host + '/sub');
     this.ws.binaryType = 'arraybuffer';
     return new Observable(
       observer => {
@@ -64,7 +64,8 @@ export class BiliwsService {
             roomid: Number(roomid),
             protover: 2,
             platform: 'web',
-            clientver: '1.5.15'
+            clientver: '1.5.15',
+            key: token
           };
           this.sendPackageObj(7, obj);
           this.heartbeatHandler = setInterval(() => { this.sendHeartbeat(); }, 30000);

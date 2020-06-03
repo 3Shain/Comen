@@ -74,6 +74,18 @@ app.get('/api/avatar/:userid', (req, res) => {
   })
 });
 
+app.get('/api/room_config/:roomid', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Content-Type', 'application/json;charset=utf-8');
+  request('https://api.live.bilibili.com/room/v1/Danmu/getConf?room_id=' + req.params.roomid, { json: true }, (error, response, body) => {
+    if (!error && response.statusCode == 200) {
+      res.send(body)
+    } else {
+      res.sendStatus(403)
+    }
+  })
+})
+
 app.get('/api/stat/:roomid', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json;charset=utf-8');
