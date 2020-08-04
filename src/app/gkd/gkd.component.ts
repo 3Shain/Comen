@@ -57,7 +57,13 @@ export class GKDComponent {
       this.renderer.displayMode = this.route.snapshot.queryParamMap.get('giftOnly').toLowerCase() === 'true' ? 2 : 3;
     }
     if (this.route.snapshot.queryParamMap.has('wordFilter')) {
-      this.proc.wordFilter = this.proc.wordFilter.concat(String(this.route.snapshot.queryParamMap.get('wordFilter')).split(','));
+      const worldFilter = String(this.route.snapshot.queryParamMap.get('wordFilter'));
+      // 空参数时解除默认关键词设置
+      if ( worldFilter.length === 0 ) {
+        this.proc.wordFilter = new Array<string>(0);
+      } else {
+        this.proc.wordFilter = this.proc.wordFilter.concat(String(this.route.snapshot.queryParamMap.get('wordFilter')).split(','));
+      }
     }
     if (this.route.snapshot.queryParamMap.has('blackList')) {
       this.proc.blackList = this.proc.blackList.concat(String(this.route.snapshot.queryParamMap.get('blackList')).split(',').map(x => Number(x)));
