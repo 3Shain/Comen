@@ -1,7 +1,4 @@
 # <img src="https://raw.githubusercontent.com/3Shain/BiliChat/master/src/favicon.ico" width="48" style="vertical-align:text-bottom"> BILICHAT 
-![fubuki!](https://raw.githubusercontent.com/3Shain/BiliChat/master/doc/fubuki.jpg)
-> 第一次就实装在小狐狸的b站限定直播我能吹一年(虽然中途因压力过大服务器被干掉两次，果然还是膨胀了)
-
 
 
 <p align="center"><a href="https://github.com/3Shain/BiliChat"><img alt="star this repo" src="http://githubbadges.com/star.svg?user=3Shain&amp;repo=BiliChat&amp;style=flat"/></a>
