@@ -61,3 +61,31 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+
+declare global {
+    interface Window {
+        obsstudio: {
+            pluginVersion:string;
+            getCurrentScene(cb:(scene:{
+                name:string;
+                width:number;
+                height:number;
+            })=>unknown):void;
+            getStatus(cb:(scene:{
+                recording:boolean;
+                recordingPaused:boolean;
+                streaming:boolean;
+                replaybuffer:boolean;
+            })=>unknown):void;
+            saveReplayBuffer():void;
+            onVisibilityChange: (visibility:boolean)=>void;
+            onActiveChange: (active:boolean)=>void;
+        };
+        addEventListener(event:'obsSceneChanged'|'obsSourceVisibleChanged'|'obsSourceActiveChanged'
+        |'obsStreamingStarting'|'obsStreamingStarted'|'obsStreamingStopping'
+        |'obsStreamingStopped'|'obsRecordingStarting'|'obsRecordingStarted'
+        |'obsRecordingPaused'|'obsRecordingUnpaused'|'obsRecordingStopping'
+        |'obsRecordingStopped'|'obsReplaybufferStarting'|'obsReplayingbufferStarted'
+        |'obsReplaybufferStopping'|'obsReplaybufferStopped',handler:(event:any)=>unknown):void;
+    }
+}

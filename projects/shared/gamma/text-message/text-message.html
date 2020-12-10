@@ -1,0 +1,37 @@
+<yt-img-shadow id="author-photo" class="no-transition style-scope yt-live-chat-text-message-renderer" height="24"
+    width="24" style="background-color: transparent;" loaded="">
+    <!-- Avatar -->
+   <!-- <img id="img" class="style-scope yt-img-shadow" alt="" height="24" width="24"
+        src="https://yt3.ggpht.com/ytc/AAUvwnhz8jpeuuwo8YFj8amfPVsOuLxouFj66QaGjg=s64-c-k-c0xffffffff-no-rj-mo"> -->
+</yt-img-shadow>
+<div id="content" class="style-scope yt-live-chat-text-message-renderer">
+    <span id="timestamp" class="style-scope yt-live-chat-text-message-renderer">
+        {{date | date:'hh:mm a'}}</span>
+    <yt-live-chat-author-chip class="style-scope yt-live-chat-text-message-renderer">
+        <span id="author-name" dir="auto" class="moderator style-scope yt-live-chat-author-chip"
+        [ngClass]="{'member':message.usertype==1,'moderator':message.usertype==2}">{{message.username}}
+            <span id="chip-badges" class="style-scope yt-live-chat-author-chip"></span>
+        </span>
+        <span id="chat-badges" class="style-scope yt-live-chat-author-chip">
+            <ng-container *ngFor="let badge of message.badges">
+                <!--  -->
+            </ng-container>
+            <yt-live-chat-author-badge-renderer class="style-scope yt-live-chat-author-chip" aria-label="会员（7 个月）"
+                type="member">
+                <!--css-build:shady-->
+                <!-- <div id="image" class="style-scope yt-live-chat-author-badge-renderer">
+                    <img src="https://yt3.ggpht.com/ZnXHFR77CK5kDKLSMAmZimDJZ_fY0Ezr8pPVCirG5toX10SD6zRRAVFiBsamWHDN_Vx1aVX6-Q=s16-c-k"
+                        class="style-scope yt-live-chat-author-badge-renderer" alt="会员（7 个月）"></div> -->
+
+            </yt-live-chat-author-badge-renderer>
+        </span></yt-live-chat-author-chip>&#8203;
+    <span id="message" dir="auto" class="style-scope yt-live-chat-text-message-renderer">{{message.content}}
+        <!-- emoji extension -->
+        <!-- <img
+            class="emoji yt-formatted-string style-scope yt-live-chat-text-message-renderer"
+            src="https://yt3.ggpht.com/TnPlJLiCqNWvUYFLZ_BqFJS0zHdzIBdZK1oy4PTBBs0iO_O3KO3_TloLQ3vsNgQu7FLdboegfw=w48-h48-c-k-nd"
+            alt=":_きゅん:" data-emoji-id="UCl_gCybOJRIgOXw6Qb4qJzQ/zwBGX4iOC42y-wPK36fADg" shared-tooltip-text=":_きゅん:"
+            id="emoji-0"> -->
+
+    </span>
+</div>
