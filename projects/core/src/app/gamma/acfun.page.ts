@@ -8,28 +8,31 @@ import { MessageProvider, MESSAGE_PROVIDER } from 'shared/gamma/message-provider
 import { waitUntilVisible } from 'shared/utils/visibility';
 import { commentFilter, smoother } from '../core/filter';
 import { CommentSource, SOURCE_PROVIDER } from '../core/source';
+import { SSRService } from '../core/ssr';
 
 @Component({
-    selector: "comen-gamma",
+    selector: "comen-acfun",
     template: `<yt-live-chat-app></yt-live-chat-app>`,
     viewProviders: [{
         provide: MESSAGE_PROVIDER,
-        useExisting: GammaPage
+        useExisting: AcfunPage
     }]
 })
-export class GammaPage implements MessageProvider {
+export class AcfunPage implements MessageProvider {
 
     constructor(
         private activatedRoute: ActivatedRoute,
         private http: HttpClient,
-        @Inject(SOURCE_PROVIDER) private sources: CommentSource[]
+        @Inject(SOURCE_PROVIDER) private sources: CommentSource[],
+        private ssr: SSRService
     ) {
         combineLatest([activatedRoute.params, activatedRoute.queryParams]).pipe(
+            ssr.serverSideForbidden(),
             waitUntilVisible(),
             switchMap(([param, query]) => {
-                return http.get<{data}>(`api/acfun/info_prefetch?roomid=${param.id}`).pipe(
-                    switchMap(({data})=>{
-                        return sources[1].connect(data);
+                return http.get<{ data }>(`api/acfun/info_prefetch?roomid=${param.id}`).pipe(
+                    switchMap(({ data }) => {
+                        return sources.find(x => x.type == "acfun").connect(data);
                     })
                 )
                 // return sources[0].connect({

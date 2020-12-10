@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { AcfunSource } from './acfun';
 import { BilibiliSource } from './bilibili';
 import { SOURCE_PROVIDER } from './source';
+import { SSRService } from './ssr';
 
 //feature module 
 @NgModule({
@@ -14,6 +15,10 @@ import { SOURCE_PROVIDER } from './source';
             provide: SOURCE_PROVIDER,
             multi: true,
             useClass: AcfunSource
+        },
+        {
+            provide: SSRService,
+            useClass: SSRService
         }
     ]
 })

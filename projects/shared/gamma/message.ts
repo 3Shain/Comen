@@ -22,7 +22,8 @@ type PaidMessage = {
     avatar: string | Blob;
     username: string;
     itemInfo: string; // e.g.: $500
-
+    price: number;
+    
     // extension
     platformUserId: number;
 }
@@ -32,16 +33,26 @@ type MemberMessage = {
     avatar: string | Blob;
     username: string;
     itemInfo: string; // e.g.: Welcome to ...
-
+    
     //extension
     platformMemberType: number;
     platformUserId: number;
+    platformPrice: number;
 }
 
 type StickerMessage = {
     type: "sticker";
+    avatar: string | Blob;
+    username: string;
     sticker: string | Blob;
-    itemInfo: string;
+    itemInfo: string; // name:
+    price: number;
+    amount: number;
+
+    //extension
+    platformUserId: number;
+    // 非真实价值
+    platformPrice: number;
 }
 
 // Special

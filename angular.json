@@ -43,7 +43,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -125,12 +124,16 @@
             "main": "projects/core/server.ts",
             "tsConfig": "projects/core/tsconfig.server.json",
             "externalDependencies": [
+              "@nestjs/core",
+              "@nestjs/common",
               "@nestjs/microservices",
               "@nestjs/microservices/microservices-module",
               "@nestjs/websockets",
               "@nestjs/websockets/socket-module",
               "cache-manager",
-              "isomorphic-danmaku"
+              "isomorphic-danmaku",
+              "keyv",
+              "protobufjs"
             ]
           },
           "configurations": {

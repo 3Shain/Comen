@@ -1,4 +1,6 @@
-import { Component, ElementRef, Inject, Input, OnInit, Optional, ViewChild, ViewEncapsulation } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, ElementRef, Inject, Input, OnInit, Optional, PLATFORM_ID, ViewChild, ViewEncapsulation } from '@angular/core';
+import { platform } from 'process';
 import { Message } from './message';
 import { MessageProvider, MESSAGE_PROVIDER } from './message-provider';
 
@@ -84,11 +86,12 @@ export class GammaApp {
     }
   }
 
-  constructor(@Optional() @Inject(MESSAGE_PROVIDER) provider:MessageProvider) { 
-    if(provider){
-      provider.registerOnMessage(m=>{
+  constructor(@Optional() @Inject(MESSAGE_PROVIDER) provider: MessageProvider,
+    @Inject(PLATFORM_ID) platform: Object) {
+    if (provider) {
+      provider.registerOnMessage(m => {
         this.messages.push(m);
-        while(this.messages.length>this.maxLength){
+        while (this.messages.length > this.maxLength) {
           this.messages.shift();
         }
       });
@@ -96,6 +99,9 @@ export class GammaApp {
   }
 
   ngAfterViewInit(): void {
+    if (!isPlatformBrowser(platform)) {
+      return;
+    }
     const obs = new ResizeObserver(entry => {
       this.offset.nativeElement.style.height = entry[0].contentRect.height + 'px';
     });

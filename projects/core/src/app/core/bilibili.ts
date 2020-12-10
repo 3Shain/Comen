@@ -1,107 +1,139 @@
-import { Observable } from 'rxjs';
-import { AsWebSocket } from './ws';
-import { inflate } from 'pako';
-import { Message, TextMessage } from 'shared/gamma/message';
+import { Observable, OperatorFunction } from 'rxjs';
+import { Message, TextMessage, StickerMessage, PaidMessage, MemberMessage } from 'shared/gamma/message';
 import { CommentSource } from './source';
-import { BilibiliWebSocket } from 'isomorphic-danmaku';
+import { connectBilibiliLiveWs } from 'isomorphic-danmaku';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { switchMap } from 'rxjs/operators';
 
-export class BilibiliSource implements CommentSource{
+@Injectable()
+export class BilibiliSource implements CommentSource {
 
     readonly type = "bilibili";
 
-    connect({ roomId, server, showJapaneseSC,  }) {
+    constructor(private http: HttpClient) { }
+
+    connect({ roomId }) {
+        return this.http.get<unknown>(`/api/bili/info_prefetch?roomid=${roomId}`).pipe(
+            switchMap((msg) => {
+                console.log('?');
+                return this._connect(msg as any);
+            }),
+            this.avatarPreload()
+        );
+    }
+
+    _connect({ roomId }) {
         return new Observable((observer) => {
-            const ws = new AsWebSocket();
-            // 简易coroutine模型
+            const abortController = new AbortController();
             (async () => {
-                let errorCounter = 0;
-                if(errorCounter>3){
-                    observer.error(new Error('Failed to connect to server.'));
-                    observer.complete();
-                    return;
-                }
-                while (!observer.closed) {
-                    try{
-                        for await (let msg of BilibiliWebSocket({
-                            roomId: roomId
-                        })){
-                            if(msg.cmd==="DANMU_MSG") {
-                                observer.next({
-                                    type:"text",
-                                    username: msg.info[2][1],
-                                    avatar: msg.info[2][0], 
-                                    //need to further process,in fact it is uid
-                                    badges:[],
-                                    content:msg.info[1]
-                                } as TextMessage);
-                            } else if(msg.cmd==="SEND_GIFT"){
-
-                            } else if(msg.cmd==="SUPER_CHAT_MESSAGE_JPN"){
-
-                            } else if(msg.cmd==="GUARD_BUY"){
-
-                            }
-                             else {
-                                console.log(msg);
+                while (true) {
+                    try {
+                        for await (const msg of connectBilibiliLiveWs({
+                            roomId: roomId,
+                            abort: abortController
+                        }) as AsyncGenerator<BilibiliMsg, unknown, unknown>) {
+                            switch (msg.cmd) {
+                                case "DANMU_MSG":
+                                    observer.next({
+                                        type: "text",
+                                        content: msg.info[1],
+                                        avatar: "",
+                                        badges: [
+                                            ...[guardType[msg.info[7]]] // TODO: custom badge
+                                        ],
+                                        username: msg.info[2][1],
+                                        usertype: (
+                                            (msg.info[7] > 0 ? 0x1 : 0x0) // member
+                                            | (msg.info[2][2] == 1 ? 0x2 : 0x0) // moderator
+                                        ),
+                                        platformUserId: msg.info[2][0],
+                                        platformUserExtra: {}
+                                    } as TextMessage);
+                                    break;
+                                case "SEND_GIFT":
+                                    observer.next({
+                                        type: "sticker",
+                                        sticker: "",
+                                        avatar: "",
+                                        username: msg.data.uname,
+                                        amount: msg.data.num,
+                                        price: msg.data.coin_type == "gold" ? msg.data.total_coin : 0,
+                                        platformPrice: msg.data.coin_type == "silver" ? msg.data.total_coin : 0,
+                                        platformUserId: msg.data.uid
+                                    } as StickerMessage);
+                                    break;
+                                case "GUARD_BUY":
+                                    observer.next({
+                                        type: "member",
+                                        avatar: "",
+                                        username: msg.data.username,
+                                        platformUserId: msg.data.uid,
+                                        platformMemberType: msg.data.guard_level,
+                                        platformPrice: msg.data.price
+                                    } as MemberMessage);
+                                    break;
+                                case "COMBO_SEND":
+                                    break;
+                                case "SUPER_CHAT_MESSAGE_JPN":
+                                    observer.next({
+                                        type: "paid",
+                                        avatar: msg.data.user_info.face,
+                                        username: msg.data.user_info.uname,
+                                        content: msg.data.message,
+                                        price: msg.data.price,
+                                        platformUserId: msg.data.uid,
+                                    } as PaidMessage)
+                                    break;
                             }
                         }
-                    }
-                    catch{
+                    } catch (e) {
 
                     }
-                    errorCounter++;
                 }
             })();
             return () => {
-                ws.close();
+                abortController.abort();
             };
         }).pipe() as Observable<Message>;
     }
-}
 
-
-function packageHeartbeat() {
-    const body = new TextEncoder().encode('[object Object]');
-    return packageBinary(2, body);
-}
-
-function packageBinary(type: number, body: Uint8Array) {
-    const tmp = new Uint8Array(16 + body.byteLength);
-    const headDataView = new DataView(tmp.buffer);
-    headDataView.setInt32(0, tmp.byteLength);
-    headDataView.setInt16(4, 16);
-    headDataView.setInt16(6, 1);
-    headDataView.setInt32(8, type); // verify
-    headDataView.setInt32(12, 1);
-    tmp.set(body, 16);
-    return tmp;
-}
-
-function packageObject(type: number, bufferObj: any) {
-    return packageBinary(type, new TextEncoder().encode(JSON.stringify(bufferObj)));
-}
-
-function decodeData(buffer: ArrayBuffer): Array<BilibiliMsg> {
-    const arr = new Uint8Array(buffer);
-    const view = new DataView(arr.buffer);
-    const packs = [];
-    let offset = 0;
-    while (offset < arr.byteLength) {
-        const protocol = view.getInt16(6 + offset);
-        const type = view.getInt32(8 + offset);
-        if (type === 5) {
-            const section = arr.slice(offset + view.getInt16(4 + offset), view.getInt32(offset) + offset);
-            if (protocol === 0) {
-                packs.push(JSON.parse(new TextDecoder().decode(section)));
-            }
-            if (protocol === 2) {
-                packs.push(...decodeData(inflate(section)));
-            }
+    avatarPreload(): OperatorFunction<Message, Message> {
+        return (upstream) => {
+            return new Observable((obs) => {
+                return upstream.subscribe({
+                    next: (x) => {
+                        if (x.type == "text" || x.type == "sticker"
+                            || x.type == "member") {
+                            this.http.get<{
+                                url: string
+                            }>(`/api/bili/avatar?uid=${x.platformUserId}`).subscribe((ret) => {
+                                x.avatar = ret.url;
+                                obs.next(x);
+                            });
+                        } else {
+                            obs.next(x);
+                        }
+                    },
+                    error: e => obs.error(e),
+                    complete: () => obs.complete()
+                });
+            });
         }
-        offset += view.getInt32(offset);
     }
-    return packs;
-};
+}
+
+const guardType = {
+    1: {
+        badge: "https://i0.hdslb.com/bfs/activity-plat/static/20200716/1d0c5a1b042efb59f46d4ba1286c6727/icon-guard1.png@44w_44h.webp"
+    },
+    2: {
+        badge: "https://i0.hdslb.com/bfs/activity-plat/static/20200716/1d0c5a1b042efb59f46d4ba1286c6727/icon-guard2.png@44w_44h.webp"
+    },
+    3: {
+        badge: "https://i0.hdslb.com/bfs/activity-plat/static/20200716/1d0c5a1b042efb59f46d4ba1286c6727/icon-guard3.png@44w_44h.webp"
+    }
+}
 
 type BilibiliMsg = {
     cmd: "DANMU_MSG";
@@ -113,7 +145,9 @@ type BilibiliMsg = {
         uid: number,
         uname: string,
         giftName: string;
-        num: number
+        num: number;
+        total_coin: number;
+        giftId: number;
     }
 } | {
     cmd: "GUARD_BUY";
@@ -154,13 +188,13 @@ type BilibiliMsg = {
         is_spread: number;
         msg_type: number;
         roomid: number;
-        uid:string;
+        uid: string;
         uname: string;
         uname_color: string;
     }
 } | {
     cmd: "COMBO_SEND",
-    data:{
+    data: {
         gift_id: number;
         gift_name: string;
         gift_nun: string;
@@ -170,7 +204,7 @@ type BilibiliMsg = {
         action: string;
         batch_combo_id: string;
         batch_combo_num: number;
-        combi_id:string;
+        combi_id: string;
         combo: number;
         combo_total_coin: number;
     }

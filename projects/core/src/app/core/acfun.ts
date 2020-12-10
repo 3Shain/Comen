@@ -1,8 +1,7 @@
 import { Observable } from 'rxjs';
-import { AsWebSocket } from './ws';
 import { Message, TextMessage } from 'shared/gamma/message';
 import { CommentSource } from './source';
-import { AcfunWebsocket } from 'isomorphic-danmaku';
+import { connectAcfunLiveWs } from 'isomorphic-danmaku';
 
 export class AcfunSource implements CommentSource {
 
@@ -11,8 +10,8 @@ export class AcfunSource implements CommentSource {
 
     connect({ liveId, serviceToken, acSecurity, userId, enterRoomAttach, tickets }) {
         return new Observable((observer) => {
-            const ws = new AsWebSocket();
             // 简易coroutine模型
+            const abort = new AbortController();
             (async () => {
                 let errorCounter = 0;
                 if (errorCounter > 3) {
@@ -22,33 +21,16 @@ export class AcfunSource implements CommentSource {
                 }
                 while (!observer.closed) {
                     try{
-                        for await (let msg of AcfunWebsocket({
+                        for await (let msg of connectAcfunLiveWs({
                            liveId,
                            serviceToken,
                            acSecurity,
                            enterRoomAttach,
                            tickets,
-                           userId
+                           userId,
+                           abort
                         } as any)){
-                            if(msg.cmd==="DANMU_MSG") {
-                                observer.next({
-                                    type:"text",
-                                    username: msg.info[2][1],
-                                    avatar: msg.info[2][0], 
-                                    //need to further process,in fact it is uid
-                                    badges:[],
-                                    content:msg.info[1]
-                                } as TextMessage);
-                            } else if(msg.cmd==="SEND_GIFT"){
-
-                            } else if(msg.cmd==="SUPER_CHAT_MESSAGE_JPN"){
-
-                            } else if(msg.cmd==="GUARD_BUY"){
-
-                            }
-                             else {
-                                console.log(msg);
-                            }
+                            
                         }
                     }
                     catch (e){
@@ -58,7 +40,7 @@ export class AcfunSource implements CommentSource {
                 }
             })();
             return () => {
-                ws.close();
+                abort.abort();
             };
         }).pipe() as Observable<Message>;
     }
