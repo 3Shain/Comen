@@ -1,11 +1,11 @@
-import { Observable, OperatorFunction } from "rxjs";
+import { Observable, OperatorFunction } from 'rxjs';
 
 export function waitUntilVisible<T>(): OperatorFunction<T, T> {
     return (upstream) => {
         return new Observable(observer => {
             return upstream.subscribe({
                 next(x) {
-                    if (document.visibilityState == "visible") {
+                    if (document.visibilityState == 'visible') {
                         observer.next(x);
                         return;
                     }
@@ -25,17 +25,17 @@ export function registerVisibilityChange(cb: (visible: boolean) => unknown) {
         const handler = (ev: CustomEvent) => {
             cb(ev.detail.visible);
         }
-        window.addEventListener("obsSourceVisibleChanged", handler);
+        window.addEventListener('obsSourceVisibleChanged', handler);
         return () => {
-            document.removeEventListener("obsSourceVisibleChanged", handler);
+            document.removeEventListener('obsSourceVisibleChanged', handler);
         }
     } else {
         const handler = (ev: Event) => {
-            cb(document.visibilityState === "visible");
+            cb(document.visibilityState === 'visible');
         };
-        document.addEventListener("visibilitychange", handler);
+        document.addEventListener('visibilitychange', handler);
         return () => {
-            document.removeEventListener("visibilitychange", handler);
+            document.removeEventListener('visibilitychange', handler);
         }
     }
 }

@@ -6,7 +6,7 @@ import { connectAcfunLiveWs } from 'isomorphic-danmaku';
 export class AcfunSource implements CommentSource {
 
     // avatar address cache?
-    readonly type = "acfun";
+    readonly type = 'acfun';
 
     connect({ liveId, serviceToken, acSecurity, userId, enterRoomAttach, tickets }) {
         return new Observable((observer) => {
@@ -21,7 +21,7 @@ export class AcfunSource implements CommentSource {
                 }
                 while (!observer.closed) {
                     try{
-                        for await (let msg of connectAcfunLiveWs({
+                        for await (const msg of connectAcfunLiveWs({
                            liveId,
                            serviceToken,
                            acSecurity,

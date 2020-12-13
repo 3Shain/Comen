@@ -17,11 +17,11 @@ function APPINITIAL() {
     BrowserAnimationsModule,
     HttpClientModule,
     RouterModule.forRoot([
-      {
+    {
         path: '',
         loadChildren: () => import('./gamma/gamma-page.module').then(m => m.GammaPageModule)
-      }
-    ]),
+    }
+], { relativeLinkResolution: 'legacy' }),
     ComenCoreModule
   ],
   providers: [{

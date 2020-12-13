@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from "@angular/core";
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { GammaModule } from '@comen/gamma';
 import { AcfunPage } from './acfun.page';

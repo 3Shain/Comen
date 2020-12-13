@@ -7,4 +7,4 @@ export interface CommentSource {
     connect(options:any):Observable<Message>;
 }
 
-export const SOURCE_PROVIDER = new InjectionToken<CommentSource[]>("comment sources");
+export const SOURCE_PROVIDER = new InjectionToken<CommentSource[]>('comment sources');

@@ -9,7 +9,7 @@ import { switchMap } from 'rxjs/operators';
 @Injectable()
 export class BilibiliSource implements CommentSource {
 
-    readonly type = "bilibili";
+    readonly type = 'bilibili';
 
     constructor(private http: HttpClient) { }
 
@@ -34,11 +34,11 @@ export class BilibiliSource implements CommentSource {
                             abort: abortController
                         }) as AsyncGenerator<BilibiliMsg, unknown, unknown>) {
                             switch (msg.cmd) {
-                                case "DANMU_MSG":
+                                case 'DANMU_MSG':
                                     observer.next({
-                                        type: "text",
+                                        type: 'text',
                                         content: msg.info[1],
-                                        avatar: "",
+                                        avatar: '',
                                         badges: [
                                             ...[guardType[msg.info[7]]] // TODO: custom badge
                                         ],
@@ -51,33 +51,33 @@ export class BilibiliSource implements CommentSource {
                                         platformUserExtra: {}
                                     } as TextMessage);
                                     break;
-                                case "SEND_GIFT":
+                                case 'SEND_GIFT':
                                     observer.next({
-                                        type: "sticker",
-                                        sticker: "",
-                                        avatar: "",
+                                        type: 'sticker',
+                                        sticker: '',
+                                        avatar: '',
                                         username: msg.data.uname,
                                         amount: msg.data.num,
-                                        price: msg.data.coin_type == "gold" ? msg.data.total_coin : 0,
-                                        platformPrice: msg.data.coin_type == "silver" ? msg.data.total_coin : 0,
+                                        price: msg.data.coin_type == 'gold' ? msg.data.total_coin : 0,
+                                        platformPrice: msg.data.coin_type == 'silver' ? msg.data.total_coin : 0,
                                         platformUserId: msg.data.uid
                                     } as StickerMessage);
                                     break;
-                                case "GUARD_BUY":
+                                case 'GUARD_BUY':
                                     observer.next({
-                                        type: "member",
-                                        avatar: "",
+                                        type: 'member',
+                                        avatar: '',
                                         username: msg.data.username,
                                         platformUserId: msg.data.uid,
                                         platformMemberType: msg.data.guard_level,
                                         platformPrice: msg.data.price
                                     } as MemberMessage);
                                     break;
-                                case "COMBO_SEND":
+                                case 'COMBO_SEND':
                                     break;
-                                case "SUPER_CHAT_MESSAGE_JPN":
+                                case 'SUPER_CHAT_MESSAGE_JPN':
                                     observer.next({
-                                        type: "paid",
+                                        type: 'paid',
                                         avatar: msg.data.user_info.face,
                                         username: msg.data.user_info.uname,
                                         content: msg.data.message,
@@ -103,8 +103,8 @@ export class BilibiliSource implements CommentSource {
             return new Observable((obs) => {
                 return upstream.subscribe({
                     next: (x) => {
-                        if (x.type == "text" || x.type == "sticker"
-                            || x.type == "member") {
+                        if (x.type == 'text' || x.type == 'sticker'
+                            || x.type == 'member') {
                             this.http.get<{
                                 url: string
                             }>(`/api/bili/avatar?uid=${x.platformUserId}`).subscribe((ret) => {
@@ -125,23 +125,23 @@ export class BilibiliSource implements CommentSource {
 
 const guardType = {
     1: {
-        badge: "https://i0.hdslb.com/bfs/activity-plat/static/20200716/1d0c5a1b042efb59f46d4ba1286c6727/icon-guard1.png@44w_44h.webp"
+        badge: 'https://i0.hdslb.com/bfs/activity-plat/static/20200716/1d0c5a1b042efb59f46d4ba1286c6727/icon-guard1.png@44w_44h.webp'
     },
     2: {
-        badge: "https://i0.hdslb.com/bfs/activity-plat/static/20200716/1d0c5a1b042efb59f46d4ba1286c6727/icon-guard2.png@44w_44h.webp"
+        badge: 'https://i0.hdslb.com/bfs/activity-plat/static/20200716/1d0c5a1b042efb59f46d4ba1286c6727/icon-guard2.png@44w_44h.webp'
     },
     3: {
-        badge: "https://i0.hdslb.com/bfs/activity-plat/static/20200716/1d0c5a1b042efb59f46d4ba1286c6727/icon-guard3.png@44w_44h.webp"
+        badge: 'https://i0.hdslb.com/bfs/activity-plat/static/20200716/1d0c5a1b042efb59f46d4ba1286c6727/icon-guard3.png@44w_44h.webp'
     }
 }
 
 type BilibiliMsg = {
-    cmd: "DANMU_MSG";
+    cmd: 'DANMU_MSG';
     info: any[];
 } | {
-    cmd: "SEND_GIFT";
+    cmd: 'SEND_GIFT';
     data: {
-        coin_type: "gold" | "silver",
+        coin_type: 'gold' | 'silver',
         uid: number,
         uname: string,
         giftName: string;
@@ -150,7 +150,7 @@ type BilibiliMsg = {
         giftId: number;
     }
 } | {
-    cmd: "GUARD_BUY";
+    cmd: 'GUARD_BUY';
     data: {
         uid: number;
         username: string;
@@ -160,7 +160,7 @@ type BilibiliMsg = {
         guard_level: number;
     }
 } | {
-    cmd: "SUPER_CHAT_MESSAGE_JPN";
+    cmd: 'SUPER_CHAT_MESSAGE_JPN';
     data: {
         uid: number;
         user_info: {
@@ -172,14 +172,14 @@ type BilibiliMsg = {
         message: string;
     }
 } | {
-    cmd: "WELCOME_GUARD";
+    cmd: 'WELCOME_GUARD';
     data: {
         uid: number;
         username: string;
         guard_level: number;
     }
 } | {
-    cmd: "INTERACT_WORD";
+    cmd: 'INTERACT_WORD';
     data: {
         contribution: {
             grade: number;
@@ -193,7 +193,7 @@ type BilibiliMsg = {
         uname_color: string;
     }
 } | {
-    cmd: "COMBO_SEND",
+    cmd: 'COMBO_SEND',
     data: {
         gift_id: number;
         gift_name: string;
@@ -209,7 +209,7 @@ type BilibiliMsg = {
         combo_total_coin: number;
     }
 } | {
-    cmd: "ROOM_REAL_TIME_MESSAGE_UPDATA";
+    cmd: 'ROOM_REAL_TIME_MESSAGE_UPDATA';
     data: {
         fans: number;
         fans_club: number;
@@ -217,6 +217,6 @@ type BilibiliMsg = {
         red_notice: number;
     }
 } | {
-    cmd: "PREPARING";
+    cmd: 'PREPARING';
     roomid: number;
 }

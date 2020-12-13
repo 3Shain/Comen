@@ -10,7 +10,7 @@ export function commentFilter(options: {
     }
 }): OperatorFunction<Message, Message> {
     return (upstream) => upstream.pipe(filter(comment => {
-        if(comment.type=="text"||comment.type=="paid"){
+        if(comment.type=='text'||comment.type=='paid'){
             if(options.wordBlacklist){
                 if(options.wordBlacklist.some(s=>{
                    return comment.content.indexOf(s)!=-1;
@@ -43,7 +43,7 @@ export function smoother(options: {
             })();
 
             return upstream.subscribe(comment => {
-                if (comment.type == "text") {
+                if (comment.type == 'text') {
                     messageBuffer.push(comment);
                 } else {
                     // ignore non text comment
@@ -60,7 +60,7 @@ export function folder(options:{
     return (upstream) => {
         return new Observable(observer => {
             return upstream.subscribe(comment => {
-                if (comment.type === "text") {
+                if (comment.type === 'text') {
                     // folding logic
                     observer.next(comment);
                 } else {
