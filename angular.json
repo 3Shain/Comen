@@ -116,65 +116,6 @@
               "devServerTarget": "core:serve:production"
             }
           }
-        },
-        "server": {
-          "builder": "@angular-devkit/build-angular:server",
-          "options": {
-            "outputPath": "dist/core/server",
-            "main": "projects/core/server.ts",
-            "tsConfig": "projects/core/tsconfig.server.json",
-            "externalDependencies": [
-              "@nestjs/core",
-              "@nestjs/common",
-              "@nestjs/microservices",
-              "@nestjs/microservices/microservices-module",
-              "@nestjs/websockets",
-              "@nestjs/websockets/socket-module",
-              "cache-manager",
-              "isomorphic-danmaku",
-              "keyv",
-              "protobufjs"
-            ]
-          },
-          "configurations": {
-            "production": {
-              "outputHashing": "media",
-              "fileReplacements": [
-                {
-                  "replace": "projects/core/src/environments/environment.ts",
-                  "with": "projects/core/src/environments/environment.prod.ts"
-                }
-              ],
-              "sourceMap": false,
-              "optimization": false
-            }
-          }
-        },
-        "serve-ssr": {
-          "builder": "@nguniversal/builders:ssr-dev-server",
-          "options": {
-            "browserTarget": "core:build",
-            "serverTarget": "core:server"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "core:build:production",
-              "serverTarget": "core:server:production"
-            }
-          }
-        },
-        "prerender": {
-          "builder": "@nguniversal/builders:prerender",
-          "options": {
-            "browserTarget": "core:build:production",
-            "serverTarget": "core:server:production",
-            "routes": [
-              "/"
-            ]
-          },
-          "configurations": {
-            "production": {}
-          }
         }
       }
     }},

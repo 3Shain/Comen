@@ -16,9 +16,7 @@ function APPINITIAL() {
     AppComponent
   ],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     BrowserAnimationsModule,
-    BrowserTransferStateModule,
     HttpClientModule,
     RouterModule.forRoot([
       {

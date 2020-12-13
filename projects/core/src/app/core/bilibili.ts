@@ -16,7 +16,7 @@ export class BilibiliSource implements CommentSource {
     connect({ roomId }) {
         return this.http.get<unknown>(`/api/bili/info_prefetch?roomid=${roomId}`).pipe(
             switchMap((msg) => {
-                console.log('?');
+                console.log('test!!!!!');
                 return this._connect(msg as any);
             }),
             this.avatarPreload()
