@@ -1,7 +1,5 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "newProjectRoot": "projects",
   "projects": {
     "core": {
       "projectType": "application",
@@ -10,39 +8,35 @@
           "style": "scss"
         }
       },
-      "root": "projects/core",
-      "sourceRoot": "projects/core/src",
+      "root": "apps/core",
+      "sourceRoot": "apps/core/src",
       "prefix": "comen",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/core/browser",
-            "index": "projects/core/src/index.html",
-            "main": "projects/core/src/main.ts",
-            "polyfills": "projects/core/src/polyfills.ts",
-            "tsConfig": "projects/core/tsconfig.app.json",
+            "outputPath": "dist/apps/core",
+            "index": "apps/core/src/index.html",
+            "main": "apps/core/src/main.ts",
+            "polyfills": "apps/core/src/polyfills.ts",
+            "tsConfig": "apps/core/tsconfig.app.json",
             "aot": true,
-            "assets": [
-              "projects/core/src/favicon.ico",
-              "projects/core/src/assets"
-            ],
-            "styles": [
-              "projects/core/src/styles.scss"
-            ],
+            "assets": ["apps/core/src/favicon.ico", "apps/core/src/assets"],
+            "styles": ["apps/core/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/core/src/environments/environment.ts",
-                  "with": "projects/core/src/environments/environment.prod.ts"
+                  "replace": "apps/core/src/environments/environment.ts",
+                  "with": "apps/core/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
+              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -52,6 +46,11 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
                 }
               ]
             }
@@ -74,41 +73,31 @@
             "browserTarget": "core:build"
           }
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/core/src/test.ts",
-            "polyfills": "projects/core/src/polyfills.ts",
-            "tsConfig": "projects/core/tsconfig.spec.json",
-            "karmaConfig": "projects/core/karma.conf.js",
-            "assets": [
-              "projects/core/src/favicon.ico",
-              "projects/core/src/assets"
-            ],
-            "styles": [
-              "projects/core/src/styles.scss"
-            ],
-            "scripts": []
-          }
-        },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "projects/core/tsconfig.app.json",
-              "projects/core/tsconfig.spec.json",
-              "projects/core/e2e/tsconfig.json",
-              "projects/core/tsconfig.server.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "lintFilePatterns": ["apps/core/src/**/*.ts"]
           }
         },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
+        "test": {
+          "builder": "@nrwl/jest:jest",
           "options": {
-            "protractorConfig": "projects/core/e2e/protractor.conf.js",
+            "jestConfig": "apps/core/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "core-e2e": {
+      "root": "apps/core-e2e",
+      "sourceRoot": "apps/core-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/core-e2e/cypress.json",
+            "tsConfig": "apps/core-e2e/tsconfig.e2e.json",
             "devServerTarget": "core:serve"
           },
           "configurations": {
@@ -116,8 +105,64 @@
               "devServerTarget": "core:serve:production"
             }
           }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/core-e2e/**/*.{js,ts}"]
+          }
         }
       }
-    }},
+    },
+    "gamma": {
+      "projectType": "library",
+      "root": "libs/gamma",
+      "sourceRoot": "libs/gamma/src",
+      "prefix": "comen",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/gamma/src/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/gamma/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "schematics": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "unitTestRunner": "jest"
+    }
+  },
   "defaultProject": "core"
 }
