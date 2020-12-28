@@ -23,7 +23,10 @@
             "aot": true,
             "assets": ["apps/core/src/favicon.ico", "apps/core/src/assets"],
             "styles": ["apps/core/src/styles.scss"],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "protobufjs"
+            ]
           },
           "configurations": {
             "production": {

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ApplicationRef, Component, ɵdetectChanges} from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'comen-root',
@@ -7,4 +8,17 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'core';
+
+  constructor(private app: ApplicationRef,
+    private router:Router){
+      /**
+       * temporary workaround for zoneless router
+       */
+      router.events.subscribe((event)=>{
+        if(event instanceof NavigationEnd){
+          // app.tick();
+          ɵdetectChanges(this);
+        }
+      });
+  }
 }

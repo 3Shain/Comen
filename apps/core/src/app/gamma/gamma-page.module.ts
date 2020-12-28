@@ -1,34 +1,54 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Injectable, NgModule } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { GammaModule } from '@comen/gamma';
-import { AcfunPage } from './acfun.page';
-import { BilibiliPage } from './bilibili.page';
+import { PlatformPage } from './bilibili.page';
 
-/**
- * 关于BilibiliPage与AcfunPage的逻辑复用
- * 3shain: 确实有很大部分代码是相同的，后续会合并成一个组件。
- */
+@Injectable()
+class CompatibleRoutes implements CanActivate {
+    constructor(private router: Router) { }
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): UrlTree {
+        switch (route.url[0].path) {
+            case "gkd":
+            case "alpha":
+            case "bilibili":
+                return this.router.createUrlTree(['/', 'platform'], {
+                    queryParams: {
+                        ...route.queryParams,
+                        p: 'bilibili',
+                        id: +route.params.id
+                    }
+                });
+        }
+        throw new Error('NOT EXPECTED ROUTE');
+    }
+
+}
+
 @NgModule({
-    declarations: [BilibiliPage, AcfunPage],
+    declarations: [PlatformPage],
     imports: [
         CommonModule,
         GammaModule,
         RouterModule.forChild([{
+            path: 'platform', //compatiability
+            component: PlatformPage
+        },
+        /** (bilichat) compatible routes  */
+        {
+            path: 'gkd/:id',
+            canActivate: [CompatibleRoutes]
+        }, {
+            path: 'alpha/:id',
+            canActivate: [CompatibleRoutes]
+        }, {
             path: 'bilibili/:id',
-            component: BilibiliPage
-        }, {
-            path: 'acfun/:id',
-            component: AcfunPage
-        }, {
-            path: 'gdk/:id', //compatiability
-            redirectTo: 'bilibili'
-        }, {
-            path: 'alpha/:id', //compatiability
-            redirectTo: 'bilibili'
+            canActivate: [CompatibleRoutes]
         }])
+    ],
+    providers: [
+        CompatibleRoutes
     ]
 })
 export class GammaPageModule {
-
 }
