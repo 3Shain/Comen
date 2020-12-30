@@ -33,7 +33,13 @@
     "gamma": {
       "tags": []
     },
-    "api": {
+    "node-backend": {
+      "tags": []
+    },
+    "backend-core": {
+      "tags": []
+    },
+    "knexy": {
       "tags": []
     }
   }

@@ -16,7 +16,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@comen/gamma": ["libs/gamma/src/index.ts"]
+      "@comen/gamma": ["libs/gamma/src/index.ts"],
+      "@comen/backend-core": ["libs/backend-core/src/index.ts"],
+      "knexy": ["libs/knexy/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

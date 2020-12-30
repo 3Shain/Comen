@@ -1,13 +1,13 @@
-import { Module, CacheModule, Post } from '@nestjs/common';
-
-import { BilibiliController } from './bilibili.controller';
+import { Module, CacheModule } from '@nestjs/common';
+import { BilibiliController } from './controllers/bilibili.controller';
 import * as redisStore from 'cache-manager-redis-store';
-import { environment } from '../environments/environment.prod';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { environment } from './environment';
+import { AcfunController } from './controllers/acfun.controller';
 
-@Module({
-  imports: [
+function configure() {
+  return [
     CacheModule.registerAsync({
       useFactory: () => {
         if (process.env.COMEN_REDIS_HOST) {
@@ -24,12 +24,16 @@ import { join } from 'path';
         };
       }
     }),
-    environment.production ?
+    environment.flags.static_file ?
       ServeStaticModule.forRoot({
         rootPath: join(process.cwd(), 'dist/apps/core')
       }) : undefined
-  ],
-  controllers: [BilibiliController],
+  ].filter(Boolean);
+}
+
+@Module({
+  imports: configure(),
+  controllers: [AcfunController, BilibiliController],
   providers: [],
 })
-export class AppModule { }
+export class BackendCoreModule { }

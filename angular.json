@@ -24,9 +24,7 @@
             "assets": ["apps/core/src/favicon.ico", "apps/core/src/assets"],
             "styles": ["apps/core/src/styles.scss"],
             "scripts": [],
-            "allowedCommonJsDependencies": [
-              "protobufjs"
-            ]
+            "allowedCommonJsDependencies": ["protobufjs"]
           },
           "configurations": {
             "production": {
@@ -152,9 +150,9 @@
         }
       }
     },
-    "api": {
-      "root": "apps/api",
-      "sourceRoot": "apps/api/src",
+    "node-backend": {
+      "root": "apps/node-backend",
+      "sourceRoot": "apps/node-backend/src",
       "projectType": "application",
       "prefix": "api",
       "architect": {
@@ -162,10 +160,11 @@
           "builder": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/apps/api",
-            "main": "apps/api/src/main.ts",
-            "tsConfig": "apps/api/tsconfig.app.json",
-            "assets": ["apps/api/src/assets"]
+            "outputPath": "dist/apps/node-backend",
+            "main": "apps/node-backend/src/main.ts",
+            "tsConfig": "apps/node-backend/tsconfig.app.json",
+            "assets": ["apps/node-backend/src/assets"],
+            "generatePackageJson": true
           },
           "configurations": {
             "production": {
@@ -174,8 +173,8 @@
               "inspect": false,
               "fileReplacements": [
                 {
-                  "replace": "apps/api/src/environments/environment.ts",
-                  "with": "apps/api/src/environments/environment.prod.ts"
+                  "replace": "apps/node-backend/src/environments/environment.ts",
+                  "with": "apps/node-backend/src/environments/environment.prod.ts"
                 }
               ]
             }
@@ -184,21 +183,74 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "api:build"
+            "buildTarget": "node-backend:build"
           }
         },
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/api/**/*.ts"]
+            "lintFilePatterns": ["apps/node-backend/**/*.ts"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/api"],
+          "outputs": ["coverage/apps/node-backend"],
           "options": {
-            "jestConfig": "apps/api/jest.config.js",
+            "jestConfig": "apps/node-backend/jest.config.js",
             "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "backend-core": {
+      "root": "libs/backend-core",
+      "sourceRoot": "libs/backend-core/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/backend-core/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/backend-core"],
+          "options": {
+            "jestConfig": "libs/backend-core/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "knexy": {
+      "root": "libs/knexy",
+      "sourceRoot": "libs/knexy/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/knexy/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/knexy"],
+          "options": {
+            "jestConfig": "libs/knexy/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/knexy",
+            "tsConfig": "libs/knexy/tsconfig.lib.json",
+            "packageJson": "libs/knexy/package.json",
+            "main": "libs/knexy/src/index.ts",
+            "assets": ["libs/knexy/*.md"]
           }
         }
       }

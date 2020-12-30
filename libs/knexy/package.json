@@ -1,0 +1,22 @@
+{
+  "name": "knexy",
+  "version": "0.0.2",
+  "devDependencies": {
+    "testcontainers": "~4.2.0",
+    "@directus/schema": "^9.0.0-rc.27"
+  },
+  "peerDependencies": {
+    "pg": "*",
+    "sqlite3": "*",
+    "knex": "*",
+    "@nestjs/common": "*"
+  },
+  "peerDependenciesMeta": {
+    "pg": {
+      "optional": true
+    },
+    "sqlite3": {
+      "optional": true
+    }
+  }
+}

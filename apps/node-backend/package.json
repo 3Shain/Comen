@@ -1,0 +1,17 @@
+{
+  "name": "comen",
+  "version": "0.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "@nestjs/common": "^7.0.0",
+    "@nestjs/core": "^7.0.0",
+    "@nestjs/platform-express": "^7.0.0",
+    "@nestjs/serve-static": "^2.1.4",
+    "cache-manager": "^3.4.0",
+    "cache-manager-redis-store": "^2.0.0",
+    "isomorphic-danmaku": "0.0.7",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "~6.5.5",
+    "tslib": "^2.0.0"
+  }
+}

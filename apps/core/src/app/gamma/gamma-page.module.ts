@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Injectable, NgModule } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { GammaModule } from '@comen/gamma';
-import { PlatformPage } from './bilibili.page';
+import { PlatformPage } from './platform.page';
 
 @Injectable()
 class CompatibleRoutes implements CanActivate {
