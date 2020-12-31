@@ -6,7 +6,7 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { BackendCoreModule } from './backend-core.module';
-
+import * as knex from 'knex';
 
 export async function bootstrapBackendCore() {
     const app = await NestFactory.create(BackendCoreModule);
@@ -16,4 +16,8 @@ export async function bootstrapBackendCore() {
     await app.listen(port, () => {
         Logger.log('Listening at http://localhost:' + port + '/' + globalPrefix);
     });
+}
+
+export async function performDatabaseMigration(dbInfo: knex.StaticConnectionConfig) {
+    // TODO
 }

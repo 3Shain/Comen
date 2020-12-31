@@ -10,11 +10,11 @@ export function commentFilter(options: {
     }
 }): OperatorFunction<Message, Message> {
     return (upstream) => upstream.pipe(filter(comment => {
-        if(comment.type=='text'||comment.type=='paid'){
-            if(options.wordBlacklist){
-                if(options.wordBlacklist.some(s=>{
-                   return comment.content.indexOf(s)!=-1;
-                })){
+        if (comment.type == 'text' || comment.type == 'paid') {
+            if (options.wordBlacklist) {
+                if (options.wordBlacklist.some(s => {
+                    return comment.content.indexOf(s) != -1;
+                })) {
                     return false;
                 }
             }
@@ -29,12 +29,12 @@ export function smoother(options: {
     return (upstream) => {
         return new Observable(observer => {
             const messageBuffer = [] as TextMessage[];
-            (async ()=>{
-                while(!observer.closed){
-                    if(messageBuffer.length){
+            (async () => {
+                while (!observer.closed) {
+                    if (messageBuffer.length) {
                         observer.next(messageBuffer.shift());
-                        // TODO: dynamic
-                        for(let i=0;i<10;i++){
+                        const time = performance.now();
+                        for (let i = 0; i < 12 - (messageBuffer.length * 0.4)/* pressure */; i++) {
                             await nextFrame();
                         }
                     }
@@ -54,9 +54,9 @@ export function smoother(options: {
     }
 }
 
-export function folder(options:{
-    searchRange:number
-}):OperatorFunction<Message,Message> {
+export function folder(options: {
+    searchRange: number
+}): OperatorFunction<Message, Message> {
     return (upstream) => {
         return new Observable(observer => {
             return upstream.subscribe(comment => {
@@ -72,8 +72,8 @@ export function folder(options:{
     }
 }
 
-function nextFrame(){
-    return new Promise(res=>{
+function nextFrame() {
+    return new Promise(res => {
         requestAnimationFrame(res);
     })
 }

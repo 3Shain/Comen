@@ -18,4 +18,11 @@ export class TextMessageRenderer {
 
   readonly date = new Date();
 
+  get isMember(){
+    return (this.message.usertype & 1 ) === 1;
+  }
+
+  get isModerator(){
+    return (this.message.usertype & 2) === 2;
+  }
 }

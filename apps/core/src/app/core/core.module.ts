@@ -17,7 +17,6 @@ import { SOURCE_PROVIDER } from './source';
         }
     ]
 })
-// disclaimer: 叫core的怎么这么多。。。
 export class ComenCoreModule {
 
 }

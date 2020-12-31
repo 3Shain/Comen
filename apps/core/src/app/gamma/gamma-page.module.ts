@@ -9,13 +9,21 @@ class CompatibleRoutes implements CanActivate {
     constructor(private router: Router) { }
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): UrlTree {
         switch (route.url[0].path) {
-            case "gkd":
-            case "alpha":
-            case "bilibili":
+            case 'gkd':
+            case 'alpha':
+            case 'bilibili':
                 return this.router.createUrlTree(['/', 'platform'], {
                     queryParams: {
                         ...route.queryParams,
                         p: 'bilibili',
+                        id: +route.params.id
+                    }
+                });
+            case 'acfun':
+                return this.router.createUrlTree(['/', 'platform'], {
+                    queryParams: {
+                        ...route.queryParams,
+                        p: 'acfun',
                         id: +route.params.id
                     }
                 });
@@ -43,6 +51,9 @@ class CompatibleRoutes implements CanActivate {
             canActivate: [CompatibleRoutes]
         }, {
             path: 'bilibili/:id',
+            canActivate: [CompatibleRoutes]
+        }, {
+            path: 'acfun/:id',
             canActivate: [CompatibleRoutes]
         }])
     ],

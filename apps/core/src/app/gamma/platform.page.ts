@@ -1,12 +1,11 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, Subject } from 'rxjs';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Message, MessageProvider, MESSAGE_PROVIDER } from '@comen/gamma';
 import { waitUntilVisible } from '../utils/visibility';
-import { commentFilter, smoother } from '../core/filter';
 import { CommentSource, SOURCE_PROVIDER } from '../core/source';
+import { smoother } from '../core/filter';
 
 @Component({
     selector: 'comen-bilibili',
@@ -19,18 +18,18 @@ import { CommentSource, SOURCE_PROVIDER } from '../core/source';
 export class PlatformPage implements MessageProvider {
 
     constructor(
-        private activatedRoute: ActivatedRoute,
-        private http: HttpClient,
-        @Inject(SOURCE_PROVIDER) private sources: CommentSource[]
+        activatedRoute: ActivatedRoute,
+        @Inject(SOURCE_PROVIDER) sources: CommentSource[]
     ) {
-        combineLatest([activatedRoute.queryParams]).pipe(
+        combineLatest([activatedRoute.queryParams, this.configuration$]).pipe(
             waitUntilVisible(),
-            //     switchMap(([param, query]) => {
-            //         return sources.find(x => x.type == 'bilibili').connect({ roomId: param.id })
-            //     }),
-            //     tap((msg) => {
-            //         this.showMessage(msg);
-            //     }),
+            switchMap(([query]) => {
+                return sources.find(x => x.type == query.p ?? 'bilibili').connect({ roomId: query.id })
+            }),
+            smoother({}),
+            tap((msg) => {
+                this.showMessage(msg);
+            }),
             takeUntil(this.destroy$)
         ).subscribe();
     }
@@ -46,11 +45,10 @@ export class PlatformPage implements MessageProvider {
         this.showMessage = fnMsg;
     }
 
-    /**
-     * always patch
-     */
-    configure(configs: Partial<PlatformConfiguration>) {
-
+    private configuration$: Subject<unknown> = new Subject();
+    configure(val: unknown) {
+        this.configuration$.next(val);
+        this.configuration$.complete();
     }
 }
 
@@ -78,11 +76,11 @@ interface PlatformConfiguration {
      * Renderer settings
      */
 
-     maxDanmakuNumber: number;
+    maxDanmakuNumber: number;
 
-     // TODO: color configrations
-     // TODO: badges configrations
-     // TODO: image assets configrations
+    // TODO: color configrations
+    // TODO: badges configrations
+    // TODO: image assets configrations
 
     /**
      * Bilibili
@@ -96,3 +94,5 @@ interface PlatformConfiguration {
      * Acfun
      */
 }
+
+

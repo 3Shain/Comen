@@ -43,8 +43,7 @@ export class GammaApp implements AfterViewInit, OnDestroy {
         const insertedMessage = this.bufferQueue.shift();
         this.renderedQueue.push({
           id: 0,
-          message: insertedMessage,
-          height: -1 //不觉得这个设计反而会导致重绘吗...不会...因为设置了onpush...
+          message: insertedMessage
         });
         while (this.atBottom && this.renderedQueue.length > this.maxLength) {
           this.renderedQueue.shift();
@@ -66,18 +65,21 @@ export class GammaApp implements AfterViewInit, OnDestroy {
           //start animation step? or jump over?
           if (scrollerHeight < itemsHeight) {
             this.scroller.nativeElement.scrollTop = (itemsHeight - scrollerHeight); //write
-            // calculate the length to move
-            const animationOffset = Math.min(itemsHeight - scrollerHeight, insertedHeight);
-            this.items.nativeElement.setAttribute('style', `transform: translateY(${animationOffset}px)`);
-            // now it's safe to do animations
-            let acc = 0;
-            /** mofify any DOM structure while animation is not expected */
-            while (acc < ANIMATION_SMOOTH_INTERVAL) {
-              acc -= (performance.now() - await nextFrame());
-              this.items.nativeElement.setAttribute('style',
-                `transform: translateY(${easeInOutSine(1 - acc / ANIMATION_SMOOTH_INTERVAL) * animationOffset}px)`);
+            if (this.bufferQueue.length < 1) { // do animation
+              // calculate the length to move
+              const animationOffset = Math.min(itemsHeight - scrollerHeight, insertedHeight);
+              this.items.nativeElement.setAttribute('style', `transform: translateY(${animationOffset}px)`);
+              // now it's safe to do animations
+              let acc = 0;
+              /** mofify any DOM structure while animation is not expected */
+              while (acc < ANIMATION_SMOOTH_INTERVAL) {
+                acc -= (performance.now() - await nextFrame());
+                this.items.nativeElement.setAttribute('style',
+                  `transform: translateY(${easeInOutSine(1 - acc / ANIMATION_SMOOTH_INTERVAL) * animationOffset}px)`);
+              }
+              this.items.nativeElement.setAttribute('style', `transform: translateY(${0}px)`);
             }
-            this.items.nativeElement.setAttribute('style', `transform: translateY(${0}px)`);
+
           }
         }
       }
@@ -134,7 +136,7 @@ export class GammaApp implements AfterViewInit, OnDestroy {
     }
   }
 
-  constructor(@Optional() @Inject(MESSAGE_PROVIDER) provider: MessageProvider,
+  constructor(@Optional() @Inject(MESSAGE_PROVIDER) private provider: MessageProvider,
     private changeDetector: ChangeDetectorRef,
     private config: GammaConfigService) {
     if (provider) {
@@ -146,36 +148,26 @@ export class GammaApp implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        // console.log(getComputedStyle(this.data.nativeElement, ':after').content);
-      }))
-    });
-
-    //test code
-    // setInterval(() => {
-    //   this.bufferQueue.push({
-    //     type: "text",
-    //     content: "Test",
-    //     username: "USER_NAME",
-    //     avatar: "",
-    //     badges: [],
-    //     usertype: 0,
-    //     platformUserId: 0,
-    //     platformUserExtra: {}
-    //   });
-    // }, 1500);
-    // setInterval(() => {
-    //   this.bufferQueue.push({
-    //     type: "paid",
-    //     content: "Test",
-    //     username: "USER_NAME",
-    //     avatar: "",
-    //     platformUserId: 0,
-    //     itemInfo: "",
-    //     price: 100
-    //   });
-    // }, 2500);
+    // config in css
+    if ('obsstudio' in window) {
+      let retryCount = 0;
+      (async () => {
+        // wait 10 frame to fetch
+        while (retryCount < 10) {
+          await nextFrame();
+          const ret = getComputedStyle(this.data.nativeElement, ':after').content;
+          if (ret != 'none') {
+            // TODO: parse 
+            this.provider.configure({});
+            return;
+          }
+          retryCount++;
+        }
+        this.provider.configure({});
+      })();
+    } else {
+      this.provider.configure({});
+    }
 
     this.rendererCoroutine();
     this.tickerCoroutine();
@@ -187,7 +179,6 @@ export class GammaApp implements AfterViewInit, OnDestroy {
 
 type QueuedMessage = {
   id: number,
-  height: number,
   message: Message
 };
 

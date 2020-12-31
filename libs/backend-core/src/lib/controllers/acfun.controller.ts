@@ -1,14 +1,13 @@
-import { Controller, Get, ParseIntPipe, Query } from "@nestjs/common";
+import { Controller, Get, ParseIntPipe, Query, Res } from "@nestjs/common";
+import { Response } from "express";
 import { getAcfunRoomInfo } from 'isomorphic-danmaku/server';
 
 @Controller('acfun')
 export class AcfunController {
-    constructor(){
-        
-    }
 
     @Get('getRoomInfo')
-    async getRoomInfo(@Query('roomid', ParseIntPipe) roomid: number) {
-        await getAcfunRoomInfo(roomid);
+    async getRoomInfo(@Query('roomid', ParseIntPipe) roomid: number,
+        @Res() res: Response) {
+        return res.json(await getAcfunRoomInfo(roomid));
     }
 }

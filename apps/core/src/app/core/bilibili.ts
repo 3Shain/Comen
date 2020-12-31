@@ -5,6 +5,7 @@ import { connectBilibiliLiveWs } from 'isomorphic-danmaku';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
+import { MODERATOR_BADGE } from './common';
 
 @Injectable()
 export class BilibiliSource implements CommentSource {
@@ -14,23 +15,28 @@ export class BilibiliSource implements CommentSource {
     constructor(private http: HttpClient) { }
 
     connect({ roomId }) {
-        return this.http.get<unknown>(`/api/bili/info_prefetch?roomid=${roomId}`).pipe(
+        return this.http.get<BilibiliRoominfoResponse>(`/api/bili/getRoomInfo?roomid=${roomId}`).pipe(
             switchMap((msg) => {
-                console.log('test!!!!!');
-                return this._connect(msg as any);
+                return this._connect(msg);
             }),
-            this.avatarPreload()
+            this._avatarPreloadPipe()
         );
     }
 
-    _connect({ roomId }) {
+    private _connect(resp: BilibiliRoominfoResponse) {
         return new Observable((observer) => {
             const abortController = new AbortController();
             (async () => {
-                while (true) {
+                let errorCounter = 0;
+                if (errorCounter > 3) {
+                    observer.error(new Error('Failed to connect to server.'));
+                    observer.complete();
+                    return;
+                }
+                while (!observer.closed) {
                     try {
                         for await (const msg of connectBilibiliLiveWs({
-                            roomId: roomId,
+                            roomId: resp.roomInfo.room_id,
                             abort: abortController
                         }) as AsyncGenerator<BilibiliMsg, unknown, unknown>) {
                             switch (msg.cmd) {
@@ -40,7 +46,9 @@ export class BilibiliSource implements CommentSource {
                                         content: msg.info[1],
                                         avatar: '',
                                         badges: [
-                                            ...[guardType[msg.info[7]]] // TODO: custom badge
+                                            ...[guardType[msg.info[7]],
+                                            msg.info[2][2] == 1 ? MODERATOR_BADGE : undefined
+                                            ].filter(Boolean) // TODO: custom badge
                                         ],
                                         username: msg.info[2][1],
                                         usertype: (
@@ -52,25 +60,30 @@ export class BilibiliSource implements CommentSource {
                                     } as TextMessage);
                                     break;
                                 case 'SEND_GIFT':
+                                    console.log(msg);
                                     observer.next({
                                         type: 'sticker',
-                                        sticker: '',
+                                        sticker: resp.giftInfo.list.find(x => x.id == msg.data.giftId).webp,
                                         avatar: '',
                                         username: msg.data.uname,
                                         amount: msg.data.num,
-                                        price: msg.data.coin_type == 'gold' ? msg.data.total_coin : 0,
-                                        platformPrice: msg.data.coin_type == 'silver' ? msg.data.total_coin : 0,
+                                        itemInfo: `${msg.data.action} ${msg.data.giftName} ×${msg.data.num}`,
+                                        price: msg.data.coin_type == 'gold' ? msg.data.total_coin * msg.data.num / 1000 : 0,
+                                        platformPrice: msg.data.coin_type == 'silver' ? msg.data.total_coin * msg.data.num : 0,
                                         platformUserId: msg.data.uid
                                     } as StickerMessage);
                                     break;
                                 case 'GUARD_BUY':
+                                    console.log(msg);
                                     observer.next({
                                         type: 'member',
                                         avatar: '',
                                         username: msg.data.username,
+                                        price: msg.data.price / 1000,
                                         platformUserId: msg.data.uid,
                                         platformMemberType: msg.data.guard_level,
-                                        platformPrice: msg.data.price
+                                        platformPrice: msg.data.price,
+                                        itemInfo: '欢迎加入大航海'
                                     } as MemberMessage);
                                     break;
                                 case 'COMBO_SEND':
@@ -81,6 +94,7 @@ export class BilibiliSource implements CommentSource {
                                         avatar: msg.data.user_info.face,
                                         username: msg.data.user_info.uname,
                                         content: msg.data.message,
+                                        itemInfo: `CN¥${msg.data.price}`,
                                         price: msg.data.price,
                                         platformUserId: msg.data.uid,
                                     } as PaidMessage)
@@ -88,7 +102,7 @@ export class BilibiliSource implements CommentSource {
                             }
                         }
                     } catch (e) {
-
+                        throw e;
                     }
                 }
             })();
@@ -98,7 +112,7 @@ export class BilibiliSource implements CommentSource {
         }).pipe() as Observable<Message>;
     }
 
-    avatarPreload(): OperatorFunction<Message, Message> {
+    private _avatarPreloadPipe(): OperatorFunction<Message, Message> {
         return (upstream) => {
             return new Observable((obs) => {
                 return upstream.subscribe({
@@ -107,7 +121,7 @@ export class BilibiliSource implements CommentSource {
                             || x.type == 'member') {
                             this.http.get<{
                                 url: string
-                            }>(`/api/bili/avatar?uid=${x.platformUserId}`).subscribe((ret) => {
+                            }>(`/api/bili/getAvatar?uid=${x.platformUserId}`).subscribe((ret) => {
                                 x.avatar = ret.url;
                                 obs.next(x);
                             });
@@ -125,12 +139,15 @@ export class BilibiliSource implements CommentSource {
 
 const guardType = {
     1: {
+        type: 'member',
         badge: 'https://i0.hdslb.com/bfs/activity-plat/static/20200716/1d0c5a1b042efb59f46d4ba1286c6727/icon-guard1.png@44w_44h.webp'
     },
     2: {
+        type: 'member',
         badge: 'https://i0.hdslb.com/bfs/activity-plat/static/20200716/1d0c5a1b042efb59f46d4ba1286c6727/icon-guard2.png@44w_44h.webp'
     },
     3: {
+        type: 'member',
         badge: 'https://i0.hdslb.com/bfs/activity-plat/static/20200716/1d0c5a1b042efb59f46d4ba1286c6727/icon-guard3.png@44w_44h.webp'
     }
 }
@@ -148,6 +165,7 @@ type BilibiliMsg = {
         num: number;
         total_coin: number;
         giftId: number;
+        action: string;
     }
 } | {
     cmd: 'GUARD_BUY';
@@ -219,4 +237,30 @@ type BilibiliMsg = {
 } | {
     cmd: 'PREPARING';
     roomid: number;
+}
+
+type BilibiliRoominfoResponse = {
+    roomInfo: {
+        room_id: number;
+    },
+    danmuInfo: {
+        token: string;
+        host_list: {
+            host: string;
+            port: number;
+            wss_port: number;
+            ws_port: number;
+        }[]
+    },
+    giftInfo: {
+        list: {
+            id: number;
+            number: string;
+            price: number;
+            coin_type: 'silver' | 'gold';
+            img_basic: string;
+            img_dynamic: string; gift: string;
+            webp: string;
+        }[]
+    }
 }
