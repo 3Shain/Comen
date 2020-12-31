@@ -1,129 +1,210 @@
-import { isPlatformBrowser } from '@angular/common';
-import { Component, ElementRef, Inject, Input, Optional, PLATFORM_ID, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef,
+  Inject, Input, OnDestroy, Optional, ViewChild, ViewEncapsulation
+} from '@angular/core';
+import { GammaConfigService } from './gamma-config.service';
 import { Message } from './message';
 import { MessageProvider, MESSAGE_PROVIDER } from './message-provider';
 
+const ANIMATION_SMOOTH_INTERVAL = 100;
+
 @Component({
+  // eslint-disable-next-line
   selector: 'yt-live-chat-app',
   templateUrl: './gamma.app.html',
   styleUrls: ['./gamma.app.css'],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GammaApp {
+// eslint-disable-next-line
+export class GammaApp implements AfterViewInit, OnDestroy {
+
+  private _destroyed = false;
 
   @ViewChild('offset') offset: ElementRef<HTMLDivElement>;
   @ViewChild('items') items: ElementRef<HTMLDivElement>;
   @ViewChild('scroller') scroller: ElementRef<HTMLDivElement>;
+  @ViewChild('data') data: ElementRef<HTMLDivElement>;
 
-  @Input('maxLength') maxLength: number = 50;
+  @Input() maxLength = 50;
 
-  messages: Message[] = [];
+  renderedQueue: QueuedMessage[] = [];
+  bufferQueue: Message[] = [];
 
-  private _msgId = 0;
-  get messageId() {
-    return this._msgId++;
-  }
+  tickers: TickerStatus[] = [];
 
   private atBottom = true;
 
-  onItemInitialized(id: number, size: number) {
-    if (this.atBottom) {
-      this.toScroll.push(size);
-    }
-  }
+  private async rendererCoroutine() {
+    while (!this._destroyed) {
+      if (this.bufferQueue.length) {
+        /** to avoid bug: is every 'frame loop' idempotent? */
+        const insertedMessage = this.bufferQueue.shift();
+        this.renderedQueue.push({
+          id: 0,
+          message: insertedMessage,
+          height: -1 //不觉得这个设计反而会导致重绘吗...不会...因为设置了onpush...
+        });
+        while (this.atBottom && this.renderedQueue.length > this.maxLength) {
+          this.renderedQueue.shift();
+        }
+        /** check ticker */
+        this.checkTicker(insertedMessage);
+        /** update DOM */
+        this.changeDetector.detectChanges();
+        const inserted = this.items.nativeElement.lastElementChild as HTMLElement;
 
-  //任意一个发生变化都会直接fuckedup
-  toScroll: number[] = [];
+        /** heavy DOM manipulation: batch read/write to avoid reflow  */
+        const insertedHeight = inserted.offsetHeight; // read
+        const itemsHeight = this.items.nativeElement.offsetHeight; //read
+        const scrollerHeight = this.scroller.nativeElement.offsetHeight; //read
 
-  private async onFrame() {
-    while (true) { //todo: control bits
-      const contentsHeight = this.offset.nativeElement.offsetHeight;
-      const scrollerHeight = this.scroller.nativeElement.offsetHeight; // almost keeping unchanged.
-      if (contentsHeight > scrollerHeight) {
-        if (this.toScroll.length > 1) { //阈值：
-          // const height = this.toScroll.shift();
-          this.scroller.nativeElement.scrollTop = contentsHeight - scrollerHeight;
-          this.toScroll = [];
-          console.log('no animations!');
-        } else if (this.toScroll.length > 0) {
-          //do animations in three frame
-          const height = this.toScroll.shift();
-          let counter = 6;
-          // let newOffset = this.toScroll.reduce((a, b) => a + b, 0);// sum;
-          this.scroller.nativeElement.scrollTop = contentsHeight - scrollerHeight - 0;
-          this.items.nativeElement.style.transform = `translateY(${height + 0}px)`;
-          // 全被这里扬了
-          while (counter > 0 && this.atBottom) {
-            console.log('animating');
-            counter -= 1;
-            await nextFrame();
-            //这里可能总高度变了，
-            // newOffset = this.toScroll.reduce((a, b) => a + b, 0);// sum; //总高度变化后就开始翻车
-            this.items.nativeElement.style.transform = `translateY(${(easeInOutSine(counter / 6)) * height + 0}px)`;
+        this.offset.nativeElement.setAttribute('style', `height: ${itemsHeight}px`); //write
+
+        if (this.atBottom) {
+          //start animation step? or jump over?
+          if (scrollerHeight < itemsHeight) {
+            this.scroller.nativeElement.scrollTop = (itemsHeight - scrollerHeight); //write
+            // calculate the length to move
+            const animationOffset = Math.min(itemsHeight - scrollerHeight, insertedHeight);
+            this.items.nativeElement.setAttribute('style', `transform: translateY(${animationOffset}px)`);
+            // now it's safe to do animations
+            let acc = 0;
+            /** mofify any DOM structure while animation is not expected */
+            while (acc < ANIMATION_SMOOTH_INTERVAL) {
+              acc -= (performance.now() - await nextFrame());
+              this.items.nativeElement.setAttribute('style',
+                `transform: translateY(${easeInOutSine(1 - acc / ANIMATION_SMOOTH_INTERVAL) * animationOffset}px)`);
+            }
+            this.items.nativeElement.setAttribute('style', `transform: translateY(${0}px)`);
           }
-          this.items.nativeElement.style.transform = `translateY(${0}px)`;
-          // 问题就出在newOffset大于0...
-          // await nextFrame();
-          // await nextFrame();
-          // await nextFrame();
-          // await nextFrame();
         }
       }
       await nextFrame();
     }
   }
 
+  checkTicker(msg: Message) {
+    if (msg.type == 'sticker' || msg.type == 'paid' || msg.type == 'member') {
+      const colorInfo = this.config.getColorInfo(msg.price);
+      this.tickers.unshift({
+        startTime: performance.now(),
+        message: msg,
+        interval: colorInfo.ticker_timeout,
+        status: {
+          primary_color: colorInfo.primary,
+          secondary_color: colorInfo.secondary,
+          text_color: colorInfo.message,
+          percent: 0
+        }
+      });
+    }
+  }
+
+  private async tickerCoroutine() {
+    while (!this._destroyed) {
+      const time = await nextFrame();
+      this.tickers = this.tickers.filter(ticker => {
+        // mutable state...
+        ticker.status = {
+          percent: (time - ticker.startTime) / ticker.interval / 1000,
+          primary_color: ticker.status.primary_color,
+          secondary_color: ticker.status.secondary_color,
+          text_color: ticker.status.text_color
+        };
+        if (ticker.status.percent >= 1) {
+          return false;
+        }
+        return true;
+      });
+      this.changeDetector.detectChanges();
+    }
+  }
+
+  // eslint-disable-next-line
   onScroll(event: WheelEvent) {
     const contentsHeight = this.offset.nativeElement.offsetHeight;
     const scrollerHeight = this.scroller.nativeElement.offsetHeight; // almost keeping unchanged.
     const scrollTop = this.scroller.nativeElement.scrollTop;
-    if (scrollTop + scrollerHeight + this.toScroll.reduce((a, b) => a + b, 0) < contentsHeight) {
+    if (scrollTop + scrollerHeight < contentsHeight) {
       this.atBottom = false;
-      console.log('shit');
     } else {
       this.atBottom = true;
     }
   }
 
   constructor(@Optional() @Inject(MESSAGE_PROVIDER) provider: MessageProvider,
-    @Inject(PLATFORM_ID) platform: Object) {
+    private changeDetector: ChangeDetectorRef,
+    private config: GammaConfigService) {
     if (provider) {
       provider.registerOnMessage(m => {
-        this.messages.push(m);
-        while (this.messages.length > this.maxLength) {
-          this.messages.shift();
-        }
+        this.bufferQueue.push(m);
       });
     }
   }
 
   ngAfterViewInit(): void {
-    const obs = new ResizeObserver(entry => {
-      this.offset.nativeElement.style.height = entry[0].contentRect.height + 'px';
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        // console.log(getComputedStyle(this.data.nativeElement, ':after').content);
+      }))
     });
-    obs.observe(this.items.nativeElement);
 
     //test code
     // setInterval(() => {
-    //   this.messages.push({
+    //   this.bufferQueue.push({
     //     type: "text",
     //     content: "Test",
     //     username: "USER_NAME",
     //     avatar: "",
     //     badges: [],
-    //     usertype:0,
-    //   })
-    //   while (this.messages.length > 50 && this.atBottom) {
-    //     this.messages.shift(); //shift to max_conments?
-    //   }
-    // }, 500);
+    //     usertype: 0,
+    //     platformUserId: 0,
+    //     platformUserExtra: {}
+    //   });
+    // }, 1500);
+    // setInterval(() => {
+    //   this.bufferQueue.push({
+    //     type: "paid",
+    //     content: "Test",
+    //     username: "USER_NAME",
+    //     avatar: "",
+    //     platformUserId: 0,
+    //     itemInfo: "",
+    //     price: 100
+    //   });
+    // }, 2500);
 
-    this.onFrame();
+    this.rendererCoroutine();
+    this.tickerCoroutine();
+  }
+  ngOnDestroy() {
+    this._destroyed = true;
   }
 }
 
+type QueuedMessage = {
+  id: number,
+  height: number,
+  message: Message
+};
+
+type TickerStatus = {
+  startTime: number;
+  interval: number;
+  message: Message;
+  status: {
+    primary_color: string;
+    secondary_color: string;
+    text_color: string;
+    percent: number;
+  }
+};
+
 function nextFrame() {
-  return new Promise((res) => {
+  return new Promise<number>((res) => {
     requestAnimationFrame(res);
   });
 }

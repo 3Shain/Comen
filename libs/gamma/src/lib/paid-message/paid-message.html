@@ -4,33 +4,27 @@
         <yt-img-shadow id="author-photo" height="40" width="40"
             class="style-scope yt-live-chat-paid-message-renderer no-transition" style="background-color: transparent;"
             loaded="">
-            <!--css-build:shady--><img id="img" class="style-scope yt-img-shadow" alt="" height="40" width="40"
-                src="https://yt3.ggpht.com/ytc/AAUvwnjiHmTcefLNSVyiMtPjbBfpBQQsI0HCZJnxTQ=s32-c-k-c0xffffffff-no-rj-mo">
+            <img id="img" class="style-scope yt-img-shadow" alt="" height="40" width="40" [src]="message.avatar">
         </yt-img-shadow>
         <div id="header-content" class="style-scope yt-live-chat-paid-message-renderer">
             <div id="header-content-primary-column" class="style-scope yt-live-chat-paid-message-renderer">
                 <div id="author-name" class="style-scope yt-live-chat-paid-message-renderer">
-                    バーニングしゃけお兄ちゃん</div>
+                    {{message.username}}</div>
                 <div id="purchase-amount-column" class="style-scope yt-live-chat-paid-message-renderer">
                     <yt-img-shadow id="currency-img" height="16" width="16"
                         class="style-scope yt-live-chat-paid-message-renderer no-transition" hidden="true">
-                        <!--css-build:shady--><img id="img" class="style-scope yt-img-shadow" alt="" height="16"
-                            width="16">
+                        <img id="img" class="style-scope yt-img-shadow" alt="" height="16" width="16">
                     </yt-img-shadow>
                     <div id="purchase-amount" class="style-scope yt-live-chat-paid-message-renderer">
-                        JP¥500</div>
+                        {{message.itemInfo}}</div>
                 </div>
             </div>
-            <span id="timestamp" class="style-scope yt-live-chat-paid-message-renderer">10:07 PM</span>
+            <span id="timestamp" class="style-scope yt-live-chat-paid-message-renderer">{{date | date:'hh:mm a'}}</span>
         </div>
     </div>
     <div id="content" class="style-scope yt-live-chat-paid-message-renderer">
         <div id="message" dir="auto" class="style-scope yt-live-chat-paid-message-renderer">
-            ただいま！開幕からるしあちゃんが可愛すぎて心臓が止まったよ！😇</div>
-        <!-- <div id="input-container" class="style-scope yt-live-chat-paid-message-renderer">
-            <dom-if class="style-scope yt-live-chat-paid-message-renderer">
-                <template is="dom-if"></template></dom-if>
-        </div> -->
+            {{message.content}}</div>
         <div id="footer" class="style-scope yt-live-chat-paid-message-renderer">
         </div>
     </div>

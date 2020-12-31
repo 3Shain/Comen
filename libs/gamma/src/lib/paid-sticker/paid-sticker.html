@@ -2,17 +2,17 @@
     <div id="author-info" tabindex="0" class="style-scope yt-live-chat-paid-sticker-renderer">
         <yt-img-shadow id="author-photo" class="no-transition style-scope yt-live-chat-paid-sticker-renderer" loaded=""
             style="background-color: transparent;">
-            <!--css-build:shady--><img id="img" class="style-scope yt-img-shadow" alt="" width="40" height="40"
-                src="https://yt3.ggpht.com/ytc/AAUvwnjcAOtp6_yqfK6I1rQdIKGps9I2FuAIcJnKISjM=s64-c-k-c0xffffffff-no-rj-mo">
+            <img id="img" class="style-scope yt-img-shadow" alt="" width="40" height="40" [src]="message.avatar">
         </yt-img-shadow>
         <div id="content" class="style-scope yt-live-chat-paid-sticker-renderer">
-            <span id="timestamp" class="style-scope yt-live-chat-paid-sticker-renderer">6:21</span>
+            <span id="timestamp" class="style-scope yt-live-chat-paid-sticker-renderer">{{date | date:'hh:mm'}}</span>
             <div id="content-primary-column" class="style-scope yt-live-chat-paid-sticker-renderer">
                 <div id="author-name" class="style-scope yt-live-chat-paid-sticker-renderer">
-                    Phantom[ファントム]</div><span id="price-column" class="style-scope yt-live-chat-paid-sticker-renderer">
+                    {{message.username}}</div><span id="price-column"
+                    class="style-scope yt-live-chat-paid-sticker-renderer">
                     <yt-formatted-string id="purchase-amount-chip"
                         class="style-scope yt-live-chat-paid-sticker-renderer">
-                        JP¥200</yt-formatted-string>
+                        {{message.itemInfo}}</yt-formatted-string>
                 </span>
             </div>
         </div>
@@ -21,8 +21,8 @@
         <yt-img-shadow id="sticker" notify-on-loaded="" tabindex="0"
             class="style-scope yt-live-chat-paid-sticker-renderer no-transition" loaded=""
             style="background-color: transparent;">
-            <img id="img" class="style-scope yt-img-shadow" width="72" height="72"
-                src="//lh3.googleusercontent.com/whWdCHvpK52qWkxadxxRiATHijar8KkJZCHtmwa3KeLyzf1hT3jqIGKE5FTJvvrmWWxneg1CGQ7VuQ624HKy=s144-rwa">
+            <img id="img" class="style-scope yt-img-shadow" [width]="colorInfo.sticker_size"
+                [height]="colorInfo.sticker_size" [src]="message.sticker">
         </yt-img-shadow>
     </div>
 </div>

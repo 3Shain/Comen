@@ -1,21 +1,20 @@
 import { Component, Input } from '@angular/core';
-import { TextMessage } from '../message';
+import { MemberMessage } from '../message';
 
 @Component({
   // eslint-disable-next-line
-  selector: 'yt-live-chat-text-message-renderer',
-  templateUrl: './text-message.html',
+  selector: 'yt-live-chat-membership-item-renderer',
+  templateUrl: './membership-item.html',
   // eslint-disable-next-line
   host: {
     class: 'style-scope yt-live-chat-item-list-renderer',
-    'author-type': 'member' // todo: type!
+    'show-only-header': ''
   }
 })
 // eslint-disable-next-line
-export class TextMessageRenderer {
+export class MembershipItemRenderer {
 
-  @Input() message: TextMessage;
+  @Input() message: MemberMessage;
 
   readonly date = new Date();
-
 }

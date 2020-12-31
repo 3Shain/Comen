@@ -8,9 +8,20 @@
                         <yt-live-chat-ticker-renderer class="style-scope yt-live-chat-renderer">
                             <div id="container" dir="ltr" class="style-scope yt-live-chat-ticker-renderer">
                                 <div id="items" class="style-scope yt-live-chat-ticker-renderer">
-                                     <!-- <yt-live-chat-ticker-paid-message-item-renderer></yt-live-chat-ticker-paid-message-item-renderer>
+                                    <!-- <yt-live-chat-ticker-paid-message-item-renderer></yt-live-chat-ticker-paid-message-item-renderer>
                                      <yt-live-chat-ticker-sponsor-item-renderer></yt-live-chat-ticker-sponsor-item-renderer>
                                      <yt-live-chat-ticker-paid-sticker-item-renderer></yt-live-chat-ticker-paid-sticker-item-renderer> -->
+                                    <ng-container *ngFor="let ticker of tickers" [ngSwitch]="ticker.message.type">
+                                        <yt-live-chat-ticker-paid-message-item-renderer [message]='ticker.message'
+                                            [status]="ticker.status" *ngSwitchCase="'paid'">
+                                        </yt-live-chat-ticker-paid-message-item-renderer>
+                                        <yt-live-chat-ticker-paid-sticker-item-renderer [message]='ticker.message'
+                                            [status]="ticker.status" *ngSwitchCase="'sticker'">
+                                        </yt-live-chat-ticker-paid-sticker-item-renderer>
+                                        <yt-live-chat-ticker-sponsor-item-renderer [message]='ticker.message'
+                                            [status]="ticker.status" *ngSwitchCase="'member'">
+                                        </yt-live-chat-ticker-sponsor-item-renderer>
+                                    </ng-container>
                                 </div>
                             </div>
                         </yt-live-chat-ticker-renderer>
@@ -23,21 +34,23 @@
                                 <div id="contents" class="style-scope yt-live-chat-item-list-renderer">
                                     <div id="item-scroller" (scroll)="onScroll($event)"
                                         class="style-scope yt-live-chat-item-list-renderer animated" #scroller>
-                                        <div id="item-offset" class="style-scope yt-live-chat-item-list-renderer" #offset>
+                                        <div id="item-offset" class="style-scope yt-live-chat-item-list-renderer"
+                                            #offset>
                                             <div id="items" class="style-scope yt-live-chat-item-list-renderer" #items>
                                                 <!-- Messages -->
-                                                <ng-container *ngFor="let message of messages" [ngSwitch]="message.type">
-                                                    <yt-live-chat-text-message-renderer [message]="message" *ngSwitchCase="'text'"
-                                                    (initialSize)="onItemInitialized(messageId,$event)" >
+                                                <ng-container *ngFor="let queuedMsg of renderedQueue"
+                                                    [ngSwitch]="queuedMsg.message.type">
+                                                    <yt-live-chat-text-message-renderer [message]="queuedMsg.message"
+                                                        *ngSwitchCase="'text'">
                                                     </yt-live-chat-text-message-renderer>
-                                                    <yt-live-chat-paid-message-renderer [message]="message" *ngSwitchCase="'paid'"
-                                                    (initialSize)="onItemInitialized(messageId,$event)">
+                                                    <yt-live-chat-paid-message-renderer [message]="queuedMsg.message"
+                                                        *ngSwitchCase="'paid'">
                                                     </yt-live-chat-paid-message-renderer>
-                                                    <yt-live-chat-membership-item-renderer [message]="message" *ngSwitchCase="'member'"
-                                                    (initialSize)="onItemInitialized(messageId,$event)">
+                                                    <yt-live-chat-membership-item-renderer [message]="queuedMsg.message"
+                                                        *ngSwitchCase="'member'">
                                                     </yt-live-chat-membership-item-renderer>
-                                                    <yt-live-chat-paid-sticker-renderer [message]="message" *ngSwitchCase="'member'"
-                                                    (initialSize)="onItemInitialized(messageId,$event)">
+                                                    <yt-live-chat-paid-sticker-renderer [message]="queuedMsg.message"
+                                                        *ngSwitchCase="'sticker'">
                                                     </yt-live-chat-paid-sticker-renderer>
                                                 </ng-container>
                                             </div>
@@ -51,4 +64,7 @@
             </div>
         </iron-pages>
     </yt-live-chat-renderer>
+</div>
+<div id="data" #data>
+
 </div>

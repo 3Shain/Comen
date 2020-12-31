@@ -1,19 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { GammaApp } from './gamma.app';
-import { TextMessageComponent } from './text-message/text-message';
-import { PaidMessage } from './paid-message/paid-message';
-import { MembershipMessage } from './membership-message/membership-message';
-import { StickerMessage } from './sticker-message/sticker-message';
-import { StickerSponsorItem } from './ticker-sponsor-item/sticker-sponsor-item';
-import { StickerPaidItem } from './ticker-paid-item/sticker-paid-item';
-import { TickerPaidSticker } from './ticker-paid-sticker/ticker-paid-sticker';
+import { TextMessageRenderer } from './text-message/text-message';
+import { PaidMessageRenderer } from './paid-message/paid-message';
+import { TickerPaidStickerItemRenderer } from './ticker-paid-sticker/ticker-paid-sticker';
+import { MembershipItemRenderer } from './membership-item/membership-item';
+import { PaidStickerRenderer } from './paid-sticker/paid-sticker';
+import { NzPipesModule } from 'ng-zorro-antd/pipes';
+import { GammaConfigService } from './gamma-config.service';
+import { TickerSponsorItemRenderer } from './ticker-sponsor-item/ticker-sponsor-item';
+import { TickerPaidMessageItemRenderer } from './ticker-paid-item/ticker-paid-item';
 
 @NgModule({
-    declarations: [GammaApp, TextMessageComponent, PaidMessage, MembershipMessage, StickerMessage, StickerSponsorItem, StickerPaidItem, TickerPaidSticker],
+    declarations: [GammaApp,
+        TextMessageRenderer, PaidMessageRenderer, MembershipItemRenderer, PaidStickerRenderer,
+        TickerSponsorItemRenderer, TickerPaidMessageItemRenderer, TickerPaidStickerItemRenderer],
     imports: [
-        CommonModule
+        CommonModule,
+        NzPipesModule
     ],
+    providers: [GammaConfigService],
     exports: [GammaApp],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

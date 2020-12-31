@@ -1,10 +1,12 @@
 
 type BadgeInfo = {
+    type: string;
+    aria_label?: string;
     badge: string | Blob;
 }
 
 type TextMessage = {
-    type: "text",
+    type: 'text',
     content: string
     avatar: string | Blob;
     username: string;
@@ -13,11 +15,11 @@ type TextMessage = {
     badges: BadgeInfo[];
     usertype: number; // 0 normal 1 member 2 mod 3 both (bit)
     platformUserId: number;
-    platformUserExtra: object;
+    platformUserExtra: unknown;
 }
 
 type PaidMessage = {
-    type: "paid",
+    type: 'paid',
     content: string;
     avatar: string | Blob;
     username: string;
@@ -29,11 +31,13 @@ type PaidMessage = {
 }
 
 type MemberMessage = {
-    type: "member",
+    type: 'member',
     avatar: string | Blob;
     username: string;
     itemInfo: string; // e.g.: Welcome to ...
     
+    price: number;
+
     //extension
     platformMemberType: number;
     platformUserId: number;
@@ -41,7 +45,7 @@ type MemberMessage = {
 }
 
 type StickerMessage = {
-    type: "sticker";
+    type: 'sticker';
     avatar: string | Blob;
     username: string;
     sticker: string | Blob;
@@ -57,7 +61,7 @@ type StickerMessage = {
 
 // Special
 type FoldMessage = {
-    type: "fold";
+    type: 'fold';
     targetMessage: TextMessage;
 }
 
@@ -66,21 +70,20 @@ type Message = TextMessage | PaidMessage | MemberMessage | StickerMessage | Fold
 export { TextMessage, PaidMessage, MemberMessage, StickerMessage, Message };
 
 type PaidTicker = {
-    type: "paid";
+    type: 'paid';
     relatedMessage: PaidMessage;
 }
 
 type MemberTicker = {
-    type: "member";
+    type: 'member';
     relatedMessage: MemberMessage;
 }
 
 type StickerTicker = {
-    type: "sticker";
+    type: 'sticker';
     relatedMessage: StickerMessage;
 }
 
 type Ticker = PaidTicker | MemberTicker | StickerTicker;
 
 export { MemberTicker, PaidTicker, StickerTicker, Ticker };
-

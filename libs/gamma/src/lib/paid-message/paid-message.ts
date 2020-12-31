@@ -1,29 +1,37 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { GammaConfigService } from '../gamma-config.service';
+import { PaidMessage } from '../message';
 
 @Component({
+  // eslint-disable-next-line
   selector: 'yt-live-chat-paid-message-renderer',
   templateUrl: './paid-message.html',
-  styleUrls: ['./paid-message.scss'],
-  host:{
-    'class':'style-scope yt-live-chat-item-list-renderer',
-    'allow-animations':''
+  // eslint-disable-next-line
+  host: {
+    class: 'style-scope yt-live-chat-item-list-renderer',
+    'allow-animations': '',
+    '[style]': 'colorStyle'
   }
 })
-export class PaidMessage implements OnInit {
+// eslint-disable-next-line
+export class PaidMessageRenderer {
 
-  
-  @Output('initialSize') initialSize = new EventEmitter<number>(false);
+  @Input() message: PaidMessage;
 
-  constructor(private elementRef:ElementRef<HTMLElement>) {
-    const obs = new ResizeObserver(entry=>{
-      this.initialSize.next(entry[0].borderBoxSize[0].blockSize);
-      this.initialSize.complete();
-      obs.disconnect();
-    });
-    obs.observe(elementRef.nativeElement);
+  constructor(private config: GammaConfigService) {
   }
 
-  ngOnInit(): void {
+  get colorStyle() {
+    const color = this.config.getColorInfo(this.message.price);
+    return `
+    --yt-live-chat-paid-message-primary-color: ${color.primary};
+    --yt-live-chat-paid-message-secondary-color: ${color.secondary};
+    --yt-live-chat-paid-message-header-color: ${color.header};
+    --yt-live-chat-paid-message-author-name-color: ${color.authorName};
+    --yt-live-chat-paid-message-timestamp-color: ${color.timestamp};
+    --yt-live-chat-paid-message-color: ${color.message};
+    `;
   }
 
+  readonly date = new Date();
 }
