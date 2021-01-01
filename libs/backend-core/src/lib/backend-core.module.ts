@@ -1,6 +1,7 @@
 import { Module, CacheModule } from '@nestjs/common';
 import { BilibiliController } from './controllers/bilibili.controller';
 import * as redisStore from 'cache-manager-redis';
+import * as fsStore from 'cache-manager-fs';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { environment } from './environment';
@@ -11,24 +12,21 @@ function configure() {
   return [
     CacheModule.registerAsync({
       useFactory: () => {
-        // if (process.env.COMEN_REDIS_HOST) {
-        //   return {
-        //     store: redisStore,
-        //     host: '',
-        //     port: '',
-        //     auth_pass: '',
-        //     db: 0
-        //   }
-        // }
-        // return {
-        //   store: 'memory'
-        // };
-        return {
-          store: redisStore,
-          host: '127.0.0.1',
-          port: 6379,
-          db: 0
+        if (process.env.REDIS_HOST) {
+          return {
+            store: redisStore,
+            host: process.env.REDIS_HOST,
+            port: parseInt(process.env.REDIS_PORT ?? "6379"),
+            auth_pass: process.env.REDIS_AUTH,
+            db: parseInt(process.env.REDIS_DB ?? "0")
+          }
         }
+        return {
+          store: fsStore,
+          maxsize: 1000 * 1000 * 1000, // 1Gib,
+          path: "tmp",
+          preventfill: true
+        };
       }
     }),
     environment.flags.static_file ?

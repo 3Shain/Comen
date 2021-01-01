@@ -55,7 +55,6 @@ export class BilibiliUserService {
                             ttl: CACHE_TIME / 1000
                         });
                     }
-                    console.log('backhed');
 
                     this.currentFetchJob = null;
                 }, this.lastFetch + MINIMUM_FETCH_INTERVAL - Date.now());
