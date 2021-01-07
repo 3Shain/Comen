@@ -254,6 +254,70 @@
           }
         }
       }
+    },
+    "isomorphic-danmaku": {
+      "root": "libs/isomorphic-danmaku",
+      "sourceRoot": "libs/isomorphic-danmaku/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/isomorphic-danmaku/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/isomorphic-danmaku"],
+          "options": {
+            "jestConfig": "libs/isomorphic-danmaku/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/isomorphic-danmaku",
+            "tsConfig": "libs/isomorphic-danmaku/tsconfig.lib.json",
+            "packageJson": "libs/isomorphic-danmaku/package.json",
+            "main": "libs/isomorphic-danmaku/src/index.ts",
+            "assets": ["libs/isomorphic-danmaku/*.md"]
+          }
+        }
+      }
+    },
+    "isomorphic-danmaku-server": {
+      "root": "libs/isomorphic-danmaku-server",
+      "sourceRoot": "libs/isomorphic-danmaku-server/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/isomorphic-danmaku-server/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/isomorphic-danmaku-server"],
+          "options": {
+            "jestConfig": "libs/isomorphic-danmaku-server/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/isomorphic-danmaku-server",
+            "tsConfig": "libs/isomorphic-danmaku-server/tsconfig.lib.json",
+            "packageJson": "libs/isomorphic-danmaku-server/package.json",
+            "main": "libs/isomorphic-danmaku-server/src/index.ts",
+            "assets": ["libs/isomorphic-danmaku-server/*.md"]
+          }
+        }
+      }
     }
   },
   "cli": {

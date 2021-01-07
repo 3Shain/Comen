@@ -1,0 +1,15 @@
+{
+  "name": "isomorphic-danmaku",
+  "version": "0.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "@peculiar/webcrypto": "^1.1.4",
+    "isomorphic-ws": "^4.0.1",
+    "pako": "^2.0.2",
+    "protobufjs": "^6.10.2",
+    "ws": "^7.4.1"
+  },
+  "devDependencies": {
+    
+  }
+}

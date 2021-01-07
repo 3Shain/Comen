@@ -6,5 +6,7 @@ module.exports = {
     '<rootDir>/libs/backend-core',
     '<rootDir>/libs/testing',
     '<rootDir>/libs/knexy',
+    '<rootDir>/libs/isomorphic-danmaku',
+    '<rootDir>/libs/isomorphic-danmaku-server',
   ],
 };

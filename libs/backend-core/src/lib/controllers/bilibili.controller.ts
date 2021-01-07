@@ -1,7 +1,7 @@
 import { Controller, Get, Query, ParseIntPipe, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { BilibiliUserService } from '../services/bili-user.service';
-import { getBilibiliRoomInfo } from 'isomorphic-danmaku/server';
+import { getBilibiliRoomInfo } from 'isomorphic-danmaku-server';
 
 @Controller('bili')
 export class BilibiliController {

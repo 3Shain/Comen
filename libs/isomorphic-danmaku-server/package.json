@@ -1,0 +1,9 @@
+{
+  "name": "isomorphic-danmaku-server",
+  "version": "0.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "got": "^11.8.0",
+    "tough-cookie": "^4.0.0"
+  }
+}
