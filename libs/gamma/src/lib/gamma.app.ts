@@ -8,6 +8,7 @@ import { Message } from './message';
 import { MessageProvider, MESSAGE_PROVIDER } from './message-provider';
 
 const ANIMATION_SMOOTH_INTERVAL = 100;
+const ANIMATION_BUFFER_INTERVAL = 500;
 
 @Component({
   // eslint-disable-next-line
@@ -28,7 +29,7 @@ export class GammaApp implements AfterViewInit, OnDestroy {
   @ViewChild('data') data: ElementRef<HTMLDivElement>;
 
   @Input() maxLength = 50;
-
+  
   renderedQueue: QueuedMessage[] = [];
   bufferQueue: Message[] = [];
 
@@ -37,6 +38,7 @@ export class GammaApp implements AfterViewInit, OnDestroy {
   private atBottom = true;
 
   private async rendererCoroutine() {
+    let lastItemInserted = 0;
     while (!this._destroyed) {
       if (this.bufferQueue.length) {
         /** to avoid bug: is every 'frame loop' idempotent? */
@@ -65,7 +67,7 @@ export class GammaApp implements AfterViewInit, OnDestroy {
           //start animation step? or jump over?
           if (scrollerHeight < itemsHeight) {
             this.scroller.nativeElement.scrollTop = (itemsHeight - scrollerHeight); //write
-            if (this.bufferQueue.length < 1) { // do animation
+            if (this.bufferQueue.length < 1 && performance.now() - lastItemInserted > ANIMATION_BUFFER_INTERVAL) { // do animation
               // calculate the length to move
               const animationOffset = Math.min(itemsHeight - scrollerHeight, insertedHeight);
               this.items.nativeElement.setAttribute('style', `transform: translateY(${animationOffset}px)`);
@@ -79,8 +81,8 @@ export class GammaApp implements AfterViewInit, OnDestroy {
               }
               this.items.nativeElement.setAttribute('style', `transform: translateY(${0}px)`);
             }
-
           }
+          lastItemInserted = performance.now();
         }
       }
       await nextFrame();

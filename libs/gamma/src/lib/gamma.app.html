@@ -8,9 +8,6 @@
                         <yt-live-chat-ticker-renderer class="style-scope yt-live-chat-renderer">
                             <div id="container" dir="ltr" class="style-scope yt-live-chat-ticker-renderer">
                                 <div id="items" class="style-scope yt-live-chat-ticker-renderer">
-                                    <!-- <yt-live-chat-ticker-paid-message-item-renderer></yt-live-chat-ticker-paid-message-item-renderer>
-                                     <yt-live-chat-ticker-sponsor-item-renderer></yt-live-chat-ticker-sponsor-item-renderer>
-                                     <yt-live-chat-ticker-paid-sticker-item-renderer></yt-live-chat-ticker-paid-sticker-item-renderer> -->
                                     <ng-container *ngFor="let ticker of tickers" [ngSwitch]="ticker.message.type">
                                         <yt-live-chat-ticker-paid-message-item-renderer [message]='ticker.message'
                                             [status]="ticker.status" *ngSwitchCase="'paid'">
