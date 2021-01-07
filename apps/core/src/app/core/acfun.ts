@@ -6,7 +6,6 @@ import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import * as Long from 'long';
-import { MODERATOR_BADGE } from './common';
 
 @Injectable()
 export class AcfunSource implements CommentSource {
@@ -58,32 +57,32 @@ export class AcfunSource implements CommentSource {
                                         type: 'text',
                                         content: msg.data.content,
                                         avatar: msg.data.userInfo.avatar[0].url,
-                                        badges: [
-                                            msg.data.userInfo.userIdentity.managerType == 1 ? MODERATOR_BADGE : undefined
-                                        ].filter(Boolean),
+                                        badges: [],
                                         username: msg.data.userInfo.nickname,
-                                        usertype: 0,
+                                        usertype: (msg.data.userInfo.userIdentity.managerType == 1 ? 0x2 : 0),
                                         platformUserId: msg.data.userInfo.userId.toNumber()
                                     } as TextMessage);
                                     break;
                                 case 'CommonActionSignalGift':
-                                    const giftInfo = resp.giftInfo.giftList.find
-                                        (x => x.giftId == msg.data.giftId.toNumber());
-                                    if (!giftInfo) {
-                                        break; // in case not found
+                                    {
+                                        const giftInfo = resp.giftInfo.giftList.find
+                                            (x => x.giftId == msg.data.giftId.toNumber());
+                                        if (!giftInfo) {
+                                            break; // in case not found
+                                        }
+                                        observer.next({
+                                            type: 'sticker',
+                                            avatar: msg.data.user.avatar[0].url,
+                                            sticker: giftInfo.webpPicList[0].url,
+                                            username: msg.data.user.nickname,
+                                            amount: msg.data.count,
+                                            itemInfo: `投喂 ${giftInfo.giftName} ×${msg.data.count}`,
+                                            price: giftInfo.payWalletType == 1 ? giftInfo.giftPrice : 0,
+                                            platformPrice: giftInfo.payWalletType == 2 ? giftInfo.giftPrice : 0,
+                                            platformUserId: msg.data.user.userId.toNumber(),
+                                        } as StickerMessage)
+                                        break;
                                     }
-                                    observer.next({
-                                        type: 'sticker',
-                                        avatar: msg.data.user.avatar[0].url,
-                                        sticker: giftInfo.webpPicList[0].url,
-                                        username: msg.data.user.nickname,
-                                        amount: msg.data.count,
-                                        itemInfo: `投喂 ${giftInfo.giftName} ×${msg.data.count}`,
-                                        price: giftInfo.payWalletType == 1 ? giftInfo.giftPrice : 0,
-                                        platformPrice: giftInfo.payWalletType == 2 ? giftInfo.giftPrice : 0,
-                                        platformUserId: msg.data.user.userId.toNumber(),
-                                    } as StickerMessage)
-                                    break;
                             }
                         }
                     }

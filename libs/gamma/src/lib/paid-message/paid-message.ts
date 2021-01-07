@@ -10,7 +10,8 @@ import { PaidMessage } from '../message';
   host: {
     class: 'style-scope yt-live-chat-item-list-renderer',
     'allow-animations': '',
-    '[style]': 'colorStyle'
+    '[style]': 'colorStyle',
+    '[show-only-header]': 'message.content==\'\'' // TO BE CHECKED
   }
 })
 // eslint-disable-next-line

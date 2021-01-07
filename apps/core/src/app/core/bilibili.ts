@@ -5,7 +5,6 @@ import { connectBilibiliLiveWs } from 'isomorphic-danmaku';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
-import { MODERATOR_BADGE } from './common';
 
 @Injectable()
 export class BilibiliSource implements CommentSource {
@@ -27,7 +26,7 @@ export class BilibiliSource implements CommentSource {
         return new Observable((observer) => {
             const abortController = new AbortController();
             (async () => {
-                let errorCounter = 0;
+                const errorCounter = 0;
                 if (errorCounter > 3) {
                     observer.error(new Error('Failed to connect to server.'));
                     observer.complete();
@@ -46,8 +45,7 @@ export class BilibiliSource implements CommentSource {
                                         content: msg.info[1],
                                         avatar: '',
                                         badges: [
-                                            ...[guardType[msg.info[7]],
-                                            msg.info[2][2] == 1 ? MODERATOR_BADGE : undefined
+                                            ...[guardType[msg.info[7]]
                                             ].filter(Boolean) // TODO: custom badge
                                         ],
                                         username: msg.info[2][1],
