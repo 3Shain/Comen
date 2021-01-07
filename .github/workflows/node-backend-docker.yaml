@@ -28,6 +28,6 @@ jobs:
         with:
           context: .
           file: ./apps/node-backend/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/386
+          platforms: linux/amd64
           push: true
           tags: 3shain/comen:latest
