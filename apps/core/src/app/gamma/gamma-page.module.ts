@@ -7,7 +7,7 @@ import { PlatformPage } from './platform.page';
 @Injectable()
 class CompatibleRoutes implements CanActivate {
     constructor(private router: Router) { }
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): UrlTree {
+    canActivate(route: ActivatedRouteSnapshot): UrlTree {
         switch (route.url[0].path) {
             case 'gkd':
             case 'alpha':
