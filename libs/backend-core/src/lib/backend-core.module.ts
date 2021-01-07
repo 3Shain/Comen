@@ -4,7 +4,6 @@ import * as redisStore from 'cache-manager-redis';
 import * as fsStore from 'cache-manager-fs';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { environment } from './environment';
 import { AcfunController } from './controllers/acfun.controller';
 import { BilibiliUserService } from './services/bili-user.service';
 
@@ -29,10 +28,10 @@ function configure() {
         };
       }
     }),
-    environment.flags.static_file ?
-      ServeStaticModule.forRoot({
+    process.env.DISABLE_FRONTEND ?
+      undefined : ServeStaticModule.forRoot({
         rootPath: join(process.cwd(), 'dist/apps/core')
-      }) : undefined
+      })
   ].filter(Boolean);
 }
 
