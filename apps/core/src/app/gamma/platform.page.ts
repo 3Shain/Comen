@@ -1,21 +1,40 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, Subject } from 'rxjs';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Message, MessageProvider, MESSAGE_PROVIDER } from '@comen/gamma';
 import { waitUntilVisible } from '../utils/visibility';
 import { CommentSource, SOURCE_PROVIDER } from '../core/source';
-import { smoother } from '../core/filter';
+import { commentFilter, smoother } from '../core/filter';
 
 @Component({
-    selector: 'comen-bilibili',
+    selector: 'comen-platform',
     template: `<yt-live-chat-app></yt-live-chat-app>`,
     viewProviders: [{
         provide: MESSAGE_PROVIDER,
         useExisting: PlatformPage
     }]
 })
-export class PlatformPage implements MessageProvider {
+// eslint-disable-next-line
+export class PlatformPage implements MessageProvider, OnDestroy {
+
+    private showMessage?: (msg: Message) => unknown;
+    private destroy$: Subject<void> = new Subject();
+    private configuration$: Subject<unknown> = new Subject();
+
+    ngOnDestroy() {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    registerOnMessage(fnMsg: (msg: Message) => unknown) {
+        this.showMessage = fnMsg;
+    }
+
+    configure(val: unknown) {
+        this.configuration$.next(val);
+        this.configuration$.complete();
+    }
 
     constructor(
         activatedRoute: ActivatedRoute,
@@ -24,9 +43,11 @@ export class PlatformPage implements MessageProvider {
         combineLatest([activatedRoute.queryParams, this.configuration$]).pipe(
             waitUntilVisible(),
             switchMap(([query]) => {
-                return sources.find(x => x.type == query.p ?? 'bilibili').connect({ roomId: query.id })
+                return sources.find(x => x.type == query.p ?? 'bilibili').connect({ roomId: query.id }).pipe(
+                    commentFilter({}),
+                    smoother({})
+                )
             }),
-            smoother({}),
             tap((msg) => {
                 this.showMessage(msg);
             }),
@@ -34,22 +55,6 @@ export class PlatformPage implements MessageProvider {
         ).subscribe();
     }
 
-    private destroy$: Subject<void> = new Subject();
-    ngOnDestroy() {
-        this.destroy$.next();
-        this.destroy$.complete();
-    }
-
-    private showMessage?: (msg: Message) => unknown;
-    registerOnMessage(fnMsg: (msg: Message) => unknown) {
-        this.showMessage = fnMsg;
-    }
-
-    private configuration$: Subject<unknown> = new Subject();
-    configure(val: unknown) {
-        this.configuration$.next(val);
-        this.configuration$.complete();
-    }
 }
 
 interface PlatformConfiguration {

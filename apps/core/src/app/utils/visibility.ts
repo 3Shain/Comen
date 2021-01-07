@@ -21,6 +21,7 @@ export function waitUntilVisible<T>(): OperatorFunction<T, T> {
 }
 
 export function registerVisibilityChange(cb: (visible: boolean) => unknown) {
+    // eslint-disable-next-line
     if ((window as any).obsstudio) {
         const handler = (ev: CustomEvent) => {
             cb(ev.detail.visible);
@@ -30,7 +31,7 @@ export function registerVisibilityChange(cb: (visible: boolean) => unknown) {
             document.removeEventListener('obsSourceVisibleChanged', handler);
         }
     } else {
-        const handler = (ev: Event) => {
+        const handler = () => {
             cb(document.visibilityState === 'visible');
         };
         document.addEventListener('visibilitychange', handler);

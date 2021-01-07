@@ -11,12 +11,22 @@ export function commentFilter(options: {
 }): OperatorFunction<Message, Message> {
     return (upstream) => upstream.pipe(filter(comment => {
         if (comment.type == 'text' || comment.type == 'paid') {
+            if (options.blacklist) {
+                if (options.blacklist.indexOf(comment.platformUserId) != -1) {
+                    return false;
+                }
+            }
             if (options.wordBlacklist) {
                 if (options.wordBlacklist.some(s => {
                     return comment.content.indexOf(s) != -1;
                 })) {
                     return false;
                 }
+            }
+        }
+        if (comment.type == 'sticker') {
+            if (comment.price <= 0 && !(options?.bilibili?.showSilverGift)) {
+                return false;
             }
         }
         return true;
