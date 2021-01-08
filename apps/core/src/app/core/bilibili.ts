@@ -66,8 +66,8 @@ export class BilibiliSource implements CommentSource {
                                         username: msg.data.uname,
                                         amount: msg.data.num,
                                         itemInfo: `${msg.data.action} ${msg.data.giftName} ×${msg.data.num}`,
-                                        price: msg.data.coin_type == 'gold' ? msg.data.total_coin * msg.data.num / 1000 : 0,
-                                        platformPrice: msg.data.coin_type == 'silver' ? msg.data.total_coin * msg.data.num : 0,
+                                        price: msg.data.coin_type == 'gold' ? msg.data.total_coin / 1000 : 0,
+                                        platformPrice: msg.data.coin_type == 'silver' ? msg.data.total_coin : 0,
                                         platformUserId: msg.data.uid
                                     } as StickerMessage);
                                     break;
