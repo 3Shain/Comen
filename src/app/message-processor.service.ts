@@ -5,6 +5,7 @@ import { map, mergeMap, catchError } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
+import posthog from 'posthog-js';
 
 @Injectable({
   providedIn: 'root'
@@ -105,6 +106,8 @@ export class MessageProcessorService {
 
   pure = false;
 
+  disableAnalytics = false;
+
   constructor(private http: HttpClient,
     private translate: TranslateService) { }
 
@@ -191,6 +194,14 @@ export class MessageProcessorService {
       );
       msg.paid_message = this.showJapanese ? rawData.data.message_jpn : rawData.data.message;
       observer.next(msg);
+    } else if (rawData.cmd === 'LIVE') {
+      if (!this.disableAnalytics) {
+        posthog.capture("Bilichat Live", rawData.data);
+      }
+    } else if (rawData.cmd === 'PREPARING') {
+      if (!this.disableAnalytics) {
+        posthog.capture("Bilichat Preparing", rawData.data);
+      }
     }
   }
 

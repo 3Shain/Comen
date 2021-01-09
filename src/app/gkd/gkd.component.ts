@@ -84,13 +84,18 @@ export class GKDComponent {
     if (this.route.snapshot.queryParamMap.has('silverGiftRatio')) {
       this.proc.silverGiftRatio = Number(this.route.snapshot.queryParamMap.get('silverGiftRatio'));
     }
+    if (this.route.snapshot.queryParamMap.has('disableAnalytics')) {
+      this.proc.disableAnalytics = true;
+    }
   }
 
   onload() {
     if (environment.production && !this.route.snapshot.queryParamMap.has('disableAnalytics')) {
-      posthog.init("whrt8_XCHW635Gq2UKtlOIVLOdjuhZVyy3UE-z-SYZc", { api_host: 'https://analytics.3shain.com',autocapture:false,loaded:()=>{
-        posthog.identify(`live_${this.currentRoomId}`);
-      } });
+      posthog.init("whrt8_XCHW635Gq2UKtlOIVLOdjuhZVyy3UE-z-SYZc", {
+        api_host: 'https://analytics.3shain.com', autocapture: false, loaded: () => {
+          posthog.identify(`live_${this.currentRoomId}`);
+        }
+      });
     }
     if (this.currentRoomId <= 0) {
       this.translate.get('IDFORMATERROR').subscribe((value) => {
@@ -127,11 +132,14 @@ export class GKDComponent {
           }
           if (environment.production && !this.route.snapshot.queryParamMap.has('disableAnalytics')) {
             setTimeout(() => {
-              posthog.people.set({"uid":x.uid});
-              posthog.capture("Bilichat usage",{
+              posthog.people.set({ "uid": x.uid });
+              posthog.capture("Bilichat usage", {
                 data: x, // server data
                 version: environment.version
               });
+              if (x.live_status === 1) {
+                posthog.capture("Bilichat Live");
+              }
             }, 1000);
           }
           this.start(x.room_id);
