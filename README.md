@@ -56,6 +56,8 @@ bilichat
 * `blackList` 以半角逗号分隔的数字UID字符串,对应用户的弹幕将会被屏蔽  
 * `minGiftValue` 最低显示礼物价值,默认20
 * `silverGiftRatio` 银瓜子折算金瓜子价值比例,默认0,即不显示任何银瓜子礼物
+* `disableAnalytics` 关闭数据收集
+    > 数据收集*仅包含软件使用记录相关内容*，且**完全由3Shain个人托管，数据托管者有责任保证任何第三方都无法获取到与用户绑定的数据（包括但不限于用户ID,房间号）**。
 
 例子: https://your.domain/gkd/114514?loadAvatar=false&levelFilter=20&showGift=false&wordFilter=屏蔽词1,屏蔽词2
 
