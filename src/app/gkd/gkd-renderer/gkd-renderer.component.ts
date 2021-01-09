@@ -1,6 +1,8 @@
 import { Component, OnInit, Renderer2, ViewChild, ElementRef, Input, Output, EventEmitter, HostListener, Inject, PLATFORM_ID, ViewEncapsulation } from '@angular/core';
 import { IMessage, DanmakuMessage } from '../../danmaku.def';
 import { isPlatformBrowser } from '@angular/common';
+import { of } from 'rxjs';
+import { waitUntilVisible } from '../visibility';
 
 @Component({
   selector: 'yt-live-chat-item-list-renderer',
@@ -19,7 +21,7 @@ export class GKDRendererComponent {
 
   @ViewChild('shadowItem', { static: true }) shadowItem: ElementRef;
 
-  constructor(private renderer2: Renderer2,@Inject(PLATFORM_ID) private plat: Object) {
+  constructor(private renderer2: Renderer2, @Inject(PLATFORM_ID) private plat: Object) {
     this.danmakuList = [];
     this.waitForRendering = [];
     this.groupSimilarCache = [];
@@ -27,12 +29,11 @@ export class GKDRendererComponent {
     this.shadowMessage = null;
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     if (isPlatformBrowser(this.plat)) {
       requestAnimationFrame(()=>{
-        //empty frame
-        requestAnimationFrame(this.awake.bind(this));
-      });
+        of(true).pipe(waitUntilVisible()).subscribe(this.awake.bind(this));
+      })
     }
   }
 

@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { GiftMessage, DanmakuMessage } from '../danmaku.def';
 import { GKDRendererComponent } from './gkd-renderer/gkd-renderer.component';
 import { GkdTickerRendererComponent } from './gkd-ticker-renderer/gkd-ticker-renderer.component';
+import posthog from 'posthog-js';
 
 @Component({
   selector: 'yt-live-chat-renderer',
@@ -20,10 +21,10 @@ export class GKDComponent {
 
   currentRoomId: number;
 
-  @ViewChild('renderer',{static: true})
+  @ViewChild('renderer', { static: true })
   private renderer: GKDRendererComponent;
 
-  @ViewChild('tickerRenderer',{static: true})
+  @ViewChild('tickerRenderer', { static: true })
   private tickerRenderer: GkdTickerRendererComponent;
 
   private lastMessage: { [index: number]: { time: number, message: DanmakuMessage } } = {};
@@ -59,7 +60,7 @@ export class GKDComponent {
     if (this.route.snapshot.queryParamMap.has('wordFilter')) {
       const worldFilter = String(this.route.snapshot.queryParamMap.get('wordFilter'));
       // 空参数时解除默认关键词设置
-      if ( worldFilter.length === 0 ) {
+      if (worldFilter.length === 0) {
         this.proc.wordFilter = new Array<string>(0);
       } else {
         this.proc.wordFilter = this.proc.wordFilter.concat(String(this.route.snapshot.queryParamMap.get('wordFilter')).split(','));
@@ -86,6 +87,11 @@ export class GKDComponent {
   }
 
   onload() {
+    if (environment.production && !this.route.snapshot.queryParamMap.has('disableAnalytics')) {
+      posthog.init("whrt8_XCHW635Gq2UKtlOIVLOdjuhZVyy3UE-z-SYZc", { api_host: 'https://analytics.3shain.com',autocapture:false,loaded:()=>{
+        posthog.identify(`live_${this.currentRoomId}`);
+      } });
+    }
     if (this.currentRoomId <= 0) {
       this.translate.get('IDFORMATERROR').subscribe((value) => {
         this.renderer.sendSystemInfo(value);
@@ -102,10 +108,10 @@ export class GKDComponent {
         (x: any) => {
           this.bili.ownerId = x.uid;
           if (x.config) {
-            this.proc.loadAvatar = x.config.loadAvatar!=undefined? x.config.loadAvatar : this.proc.loadAvatar;
+            this.proc.loadAvatar = x.config.loadAvatar != undefined ? x.config.loadAvatar : this.proc.loadAvatar;
             this.proc.userLevelFilter = x.config.levelFilter || this.proc.userLevelFilter;
-            this.proc.hideGiftDanmaku = x.config.hideGiftDanmaku !=undefined? x.config.hideGiftDanmaku : this.proc.hideGiftDanmaku;
-            this.proc.showGift = x.config.showGift !=undefined?  x.config.showGift : this.proc.showGift;
+            this.proc.hideGiftDanmaku = x.config.hideGiftDanmaku != undefined ? x.config.hideGiftDanmaku : this.proc.hideGiftDanmaku;
+            this.proc.showGift = x.config.showGift != undefined ? x.config.showGift : this.proc.showGift;
             this.proc.minGiftValue = x.config.minGiftValue || this.proc.minGiftValue;
             this.proc.showJapanese = x.config.showJapanese || this.proc.showJapanese;
             this.proc.silverGiftRatio = x.config.silverGiftRatio || this.proc.silverGiftRatio;
@@ -115,9 +121,18 @@ export class GKDComponent {
             this.proc.customGiftLevel = x.config.customGiftLevel || this.proc.customGiftLevel;
             this.proc.customGiftLevel.sort((a, b) => b.value - a.value); // sort from large to small
             this.renderer.displayMode = x.config.displayMode || this.renderer.displayMode;
-            this.renderer.groupSimilar = x.config.groupSimilar !=undefined? x.config.groupSimilar : this.renderer.groupSimilar;
+            this.renderer.groupSimilar = x.config.groupSimilar != undefined ? x.config.groupSimilar : this.renderer.groupSimilar;
             this.renderer.groupSimilarWindow = x.config.groupSimilarWindow || this.renderer.groupSimilarWindow;
             this.renderer.maxDammakuNum = x.config.maxDammakuNumber || this.renderer.maxDammakuNum;
+          }
+          if (environment.production && !this.route.snapshot.queryParamMap.has('disableAnalytics')) {
+            setTimeout(() => {
+              posthog.people.set({"uid":x.uid});
+              posthog.capture("Bilichat usage",{
+                data: x, // server data
+                version: environment.version
+              });
+            }, 1000);
           }
           this.start(x.room_id);
         },
