@@ -5,6 +5,7 @@
 export const environment = {
   official: false,
   production: false,
+  version: "1.3.3",
   api_server: 'http://127.0.0.1:5000/api', // bilichat.js 提供了一个简易后端服务实现
   default_avatar: 'https://static.hdslb.com/images/member/noface.gif'
 };
