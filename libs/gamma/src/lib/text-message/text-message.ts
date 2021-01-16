@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { GammaConfigService } from '../gamma-config.service';
 import { TextMessage } from '../message';
 
 @Component({
@@ -18,11 +19,17 @@ export class TextMessageRenderer {
 
   readonly date = new Date();
 
+  constructor(public config:GammaConfigService) {}
+
   get isMember() {
     return (this.message.usertype & 1) === 1;
   }
 
   get isModerator() {
     return (this.message.usertype & 2) === 2;
+  }
+
+  get isOwner() {
+    return (this.message.usertype & 4) === 4;
   }
 }

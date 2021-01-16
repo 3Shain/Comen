@@ -11,7 +11,7 @@ import { PaidMessage } from '../message';
     class: 'style-scope yt-live-chat-item-list-renderer',
     'allow-animations': '',
     '[style]': 'colorStyle',
-    '[show-only-header]': 'message.content==\'\'' // TO BE CHECKED
+    '[attr.show-only-header]': '(message.content==\'\'||!message.content)?\'\':null' // TO BE CHECKED
   }
 })
 // eslint-disable-next-line

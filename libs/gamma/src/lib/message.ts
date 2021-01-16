@@ -25,7 +25,7 @@ type PaidMessage = {
     username: string;
     itemInfo: string; // e.g.: $500
     price: number;
-    
+
     // extension
     platformUserId: number;
 }
@@ -35,7 +35,7 @@ type MemberMessage = {
     avatar: string | Blob;
     username: string;
     itemInfo: string; // e.g.: Welcome to ...
-    
+
     price: number;
 
     //extension
@@ -65,25 +65,6 @@ type FoldMessage = {
     targetMessage: TextMessage;
 }
 
-type Message = TextMessage | PaidMessage | MemberMessage | StickerMessage | FoldMessage;
+type Message = TextMessage | PaidMessage | MemberMessage | StickerMessage | FoldMessage | ({ type: 'blank' });
 
 export { TextMessage, PaidMessage, MemberMessage, StickerMessage, Message };
-
-type PaidTicker = {
-    type: 'paid';
-    relatedMessage: PaidMessage;
-}
-
-type MemberTicker = {
-    type: 'member';
-    relatedMessage: MemberMessage;
-}
-
-type StickerTicker = {
-    type: 'sticker';
-    relatedMessage: StickerMessage;
-}
-
-type Ticker = PaidTicker | MemberTicker | StickerTicker;
-
-export { MemberTicker, PaidTicker, StickerTicker, Ticker };

@@ -6,9 +6,17 @@ import {
 import { GammaConfigService } from './gamma-config.service';
 import { Message } from './message';
 import { MessageProvider, MESSAGE_PROVIDER } from './message-provider';
+import { nextFrame, easeInOutSine } from './utils';
 
 const ANIMATION_SMOOTH_INTERVAL = 100;
 const ANIMATION_BUFFER_INTERVAL = 500;
+const VALID_TYPE = {
+  'text': true,
+  'sticker': true,
+  'paid': true,
+  'member': true,
+  'blank': true
+};
 
 @Component({
   // eslint-disable-next-line
@@ -16,7 +24,10 @@ const ANIMATION_BUFFER_INTERVAL = 500;
   templateUrl: './gamma.app.html',
   styleUrls: ['./gamma.app.css'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers:[
+    GammaConfigService
+  ]
 })
 // eslint-disable-next-line
 export class GammaApp implements AfterViewInit, OnDestroy {
@@ -26,16 +37,20 @@ export class GammaApp implements AfterViewInit, OnDestroy {
   @ViewChild('offset') offset: ElementRef<HTMLDivElement>;
   @ViewChild('items') items: ElementRef<HTMLDivElement>;
   @ViewChild('scroller') scroller: ElementRef<HTMLDivElement>;
-  @ViewChild('data') data: ElementRef<HTMLDivElement>;
 
   @Input() maxLength = 50;
-  
+
   renderedQueue: QueuedMessage[] = [];
-  bufferQueue: Message[] = [];
+  bufferQueue: QueuedMessage[] = [];
 
   tickers: TickerStatus[] = [];
 
   private atBottom = true;
+  private trackIdGen = 0;
+
+  identifyMessage(index: number, item: Message) {
+    return item;
+  }
 
   private async rendererCoroutine() {
     let lastItemInserted = 0;
@@ -43,10 +58,7 @@ export class GammaApp implements AfterViewInit, OnDestroy {
       if (this.bufferQueue.length) {
         /** to avoid bug: is every 'frame loop' idempotent? */
         const insertedMessage = this.bufferQueue.shift();
-        this.renderedQueue.push({
-          id: 0,
-          message: insertedMessage
-        });
+        this.renderedQueue.push(insertedMessage);
         while (this.atBottom && this.renderedQueue.length > this.maxLength) {
           this.renderedQueue.shift();
         }
@@ -70,16 +82,16 @@ export class GammaApp implements AfterViewInit, OnDestroy {
             if (this.bufferQueue.length < 1 && performance.now() - lastItemInserted > ANIMATION_BUFFER_INTERVAL) { // do animation
               // calculate the length to move
               const animationOffset = Math.min(itemsHeight - scrollerHeight, insertedHeight);
-              this.items.nativeElement.setAttribute('style', `transform: translateY(${animationOffset}px)`);
+              this.items.nativeElement.setAttribute('style', `transform: translate3d(0,${animationOffset}px,0)`);
               // now it's safe to do animations
               let acc = 0;
               /** mofify any DOM structure while animation is not expected */
               while (acc < ANIMATION_SMOOTH_INTERVAL) {
                 acc -= (performance.now() - await nextFrame());
                 this.items.nativeElement.setAttribute('style',
-                  `transform: translateY(${easeInOutSine(1 - acc / ANIMATION_SMOOTH_INTERVAL) * animationOffset}px)`);
+                  `transform: translate3d(0,${easeInOutSine(1 - acc / ANIMATION_SMOOTH_INTERVAL) * animationOffset}px,0)`);
               }
-              this.items.nativeElement.setAttribute('style', `transform: translateY(${0}px)`);
+              this.items.nativeElement.setAttribute('style', `transform: translate3d(0,${0}px,0)`);
             }
           }
           lastItemInserted = performance.now();
@@ -91,6 +103,9 @@ export class GammaApp implements AfterViewInit, OnDestroy {
 
   checkTicker(msg: Message) {
     if (msg.type == 'sticker' || msg.type == 'paid' || msg.type == 'member') {
+      if(this.config.current$.value.tickerDisplayThreshold>msg.price){
+        return;
+      }
       const colorInfo = this.config.getColorInfo(msg.price);
       this.tickers.unshift({
         startTime: performance.now(),
@@ -138,39 +153,21 @@ export class GammaApp implements AfterViewInit, OnDestroy {
     }
   }
 
-  constructor(@Optional() @Inject(MESSAGE_PROVIDER) private provider: MessageProvider,
+  constructor(@Optional() @Inject(MESSAGE_PROVIDER) provider: MessageProvider,
     private changeDetector: ChangeDetectorRef,
     private config: GammaConfigService) {
     if (provider) {
       provider.registerOnMessage(m => {
-        this.bufferQueue.push(m);
+        if (m.type == 'fold') {
+
+        } else if (m.type in VALID_TYPE) {
+          this.bufferQueue.push(m as any);
+        }
       });
     }
   }
 
   ngAfterViewInit(): void {
-
-    // config in css
-    if ('obsstudio' in window) {
-      let retryCount = 0;
-      (async () => {
-        // wait 10 frame to fetch
-        while (retryCount < 10) {
-          await nextFrame();
-          const ret = getComputedStyle(this.data.nativeElement, ':after').content;
-          if (ret != 'none') {
-            // TODO: parse 
-            this.provider.configure({});
-            return;
-          }
-          retryCount++;
-        }
-        this.provider.configure({});
-      })();
-    } else {
-      this.provider.configure({});
-    }
-
     this.rendererCoroutine();
     this.tickerCoroutine();
   }
@@ -181,8 +178,7 @@ export class GammaApp implements AfterViewInit, OnDestroy {
 
 type QueuedMessage = {
   id: number,
-  message: Message
-};
+} & Message;
 
 type TickerStatus = {
   startTime: number;
@@ -195,13 +191,3 @@ type TickerStatus = {
     percent: number;
   }
 };
-
-function nextFrame() {
-  return new Promise<number>((res) => {
-    requestAnimationFrame(res);
-  });
-}
-
-function easeInOutSine(x: number): number {
-  return -(Math.cos(Math.PI * x) - 1) / 2;
-}

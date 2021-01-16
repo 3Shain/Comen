@@ -7,9 +7,9 @@ import { TickerPaidStickerItemRenderer } from './ticker-paid-sticker/ticker-paid
 import { MembershipItemRenderer } from './membership-item/membership-item';
 import { PaidStickerRenderer } from './paid-sticker/paid-sticker';
 import { NzPipesModule } from 'ng-zorro-antd/pipes';
-import { GammaConfigService } from './gamma-config.service';
 import { TickerSponsorItemRenderer } from './ticker-sponsor-item/ticker-sponsor-item';
 import { TickerPaidMessageItemRenderer } from './ticker-paid-item/ticker-paid-item';
+import { ReactiveComponentModule } from '@ngrx/component';
 
 @NgModule({
     declarations: [GammaApp,
@@ -17,9 +17,10 @@ import { TickerPaidMessageItemRenderer } from './ticker-paid-item/ticker-paid-it
         TickerSponsorItemRenderer, TickerPaidMessageItemRenderer, TickerPaidStickerItemRenderer],
     imports: [
         CommonModule,
-        NzPipesModule
+        NzPipesModule,
+        ReactiveComponentModule
     ],
-    providers: [GammaConfigService],
+    providers: [],
     exports: [GammaApp],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
