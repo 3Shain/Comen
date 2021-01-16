@@ -10,7 +10,6 @@
     "cache-manager": "^3.4.0",
     "cache-manager-fs": "^1.0.8",
     "cache-manager-redis-store": "^2.0.0",
-    "isomorphic-danmaku": "0.0.7",
     "reflect-metadata": "^0.1.13",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0"
