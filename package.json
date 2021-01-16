@@ -46,6 +46,7 @@
     "@nestjs/serve-static": "^2.1.4",
     "@ngrx/component": "^11.0.0-beta.0",
     "@peculiar/webcrypto": "^1.1.4",
+    "base64-js": "^1.5.1",
     "cache-manager": "^3.4.0",
     "cache-manager-fs": "^1.0.8",
     "cache-manager-redis": "^0.6.0",
