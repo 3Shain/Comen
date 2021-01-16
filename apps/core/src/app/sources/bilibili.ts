@@ -4,7 +4,9 @@ import { CommentSource } from './source';
 import { connectBilibiliLiveWs } from 'isomorphic-danmaku';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { switchMap } from 'rxjs/operators';
+import { timeout } from 'rxjs/operators';
+import { LiveStartMessage, LiveStopMessage, SystemMessage } from '../common/message';
+import { abortable } from '../common';
 
 @Injectable()
 export class BilibiliSource implements CommentSource {
@@ -13,33 +15,45 @@ export class BilibiliSource implements CommentSource {
 
     constructor(private http: HttpClient) { }
 
-    connect({ roomId }) {
-        return this.http.get<BilibiliRoominfoResponse>(`/api/bili/getRoomInfo?roomid=${roomId}`).pipe(
-            switchMap((msg) => {
-                return this._connect(msg);
-            }),
-            this._avatarPreloadPipe()
-        );
-    }
-
-    private _connect(resp: BilibiliRoominfoResponse) {
+    connect(config: {
+        roomId: number,
+        silverGoldRatio: number,
+        showGiftAutoDammaku: boolean,
+        disableAvatarPreload: boolean,
+        useJapaneseSC: boolean
+    }) {
         return new Observable((observer) => {
             const abortController = new AbortController();
             (async () => {
-                const errorCounter = 0;
-                if (errorCounter > 3) {
-                    observer.error(new Error('Failed to connect to server.'));
-                    observer.complete();
-                    return;
-                }
+                let errorCount = 0;
                 while (!observer.closed) {
                     try {
+                        const resp = await this.http.get<BilibiliRoominfoResponse>(`/api/bili/getRoomInfo?roomid=${config.roomId}`).pipe(abortable(abortController)).toPromise();
+                        observer.next({
+                            type: 'system',
+                            data:{
+
+                            }
+                        } as SystemMessage);
                         for await (const msg of connectBilibiliLiveWs({
                             roomId: resp.roomInfo.room_id,
-                            abort: abortController
+                            abort: abortController,
+                            token: resp.danmuInfo.token
                         }) as AsyncGenerator<BilibiliMsg, unknown, unknown>) {
                             switch (msg.cmd) {
+                                case '__CONNECTED__':
+                                    observer.next({
+                                        type: 'system',
+                                        data:{
+                                            
+                                        }
+                                    } as SystemMessage);
+                                    errorCount = 0; // reset error counter
+                                    break;
                                 case 'DANMU_MSG':
+                                    if (!config.showGiftAutoDammaku && msg.info[0][9] > 0) {
+                                        break;
+                                    }
                                     observer.next({
                                         type: 'text',
                                         content: msg.info[1],
@@ -52,6 +66,7 @@ export class BilibiliSource implements CommentSource {
                                         usertype: (
                                             (msg.info[7] > 0 ? 0x1 : 0x0) // member
                                             | (msg.info[2][2] == 1 ? 0x2 : 0x0) // moderator
+                                            | (msg.info[2][0] == resp.roomInfo.uid ? 0x04 : 0x0) //owner
                                         ),
                                         platformUserId: msg.info[2][0],
                                         platformUserExtra: {}
@@ -59,6 +74,11 @@ export class BilibiliSource implements CommentSource {
                                     break;
                                 case 'SEND_GIFT':
                                     console.log(msg);
+                                    if (config.silverGoldRatio > 0) {
+                                        // mutate object, not a good practice but ok
+                                        msg.data.coin_type = 'gold';
+                                        msg.data.total_coin *= config.silverGoldRatio;
+                                    }
                                     observer.next({
                                         type: 'sticker',
                                         sticker: resp.giftInfo.list.find(x => x.id == msg.data.giftId).webp,
@@ -85,33 +105,59 @@ export class BilibiliSource implements CommentSource {
                                     } as MemberMessage);
                                     break;
                                 case 'COMBO_SEND':
+                                    console.log(msg);
                                     break;
                                 case 'SUPER_CHAT_MESSAGE_JPN':
                                     observer.next({
                                         type: 'paid',
                                         avatar: msg.data.user_info.face,
                                         username: msg.data.user_info.uname,
-                                        content: msg.data.message,
+                                        content: config.useJapaneseSC ? msg.data.message_jpn : msg.data.message,
                                         itemInfo: `CN¥${msg.data.price}`,
                                         price: msg.data.price,
                                         platformUserId: msg.data.uid,
-                                    } as PaidMessage)
+                                    } as PaidMessage);
+                                    break
+                                case 'LIVE':
+                                    observer.next({
+                                        type: 'livestart'
+                                    } as LiveStartMessage);
+                                    break;
+                                case 'PREPARING':
+                                    observer.next({
+                                        type: 'livestop'
+                                    } as LiveStopMessage)
                                     break;
                             }
                         }
+                        break; // peacefully terminated
                     } catch (e) {
-                        throw e;
+                        if (e == 'ABORTED') {
+                            break; // peacefully terminated
+                        }
+                        //error occured! try to reconnect!
+                        observer.next({
+                            type: 'system',
+                            data:{
+                                
+                            }
+                        } as SystemMessage);
+                        errorCount++;
+
                     }
                 }
             })();
             return () => {
                 abortController.abort();
             };
-        }).pipe() as Observable<Message>;
+        }).pipe(this._avatarPreloadPipe(Boolean(config.disableAvatarPreload))) as Observable<Message>;
     }
 
-    private _avatarPreloadPipe(): OperatorFunction<Message, Message> {
+    private _avatarPreloadPipe(disabled: boolean): OperatorFunction<Message, Message> {
         return (upstream) => {
+            if (disabled) {
+                return upstream;
+            }
             return new Observable((obs) => {
                 return upstream.subscribe({
                     next: (x) => {
@@ -119,7 +165,7 @@ export class BilibiliSource implements CommentSource {
                             || x.type == 'member') {
                             this.http.get<{
                                 url: string
-                            }>(`/api/bili/getAvatar?uid=${x.platformUserId}`).subscribe((ret) => {
+                            }>(`/api/bili/getAvatar?uid=${x.platformUserId}`).pipe(timeout(10 * 1000)).subscribe((ret) => {
                                 x.avatar = ret.url;
                                 obs.next(x);
                             });
@@ -235,11 +281,16 @@ type BilibiliMsg = {
 } | {
     cmd: 'PREPARING';
     roomid: number;
+} | {
+    cmd: 'LIVE';
+} | {
+    cmd: '__CONNECTED__'
 }
 
 type BilibiliRoominfoResponse = {
     roomInfo: {
         room_id: number;
+        uid: number;
     },
     danmuInfo: {
         token: string;

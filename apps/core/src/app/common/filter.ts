@@ -1,42 +1,42 @@
 import { Observable, OperatorFunction } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { Message, TextMessage } from '@comen/gamma';
+import { ComenMessage } from './message';
 
-export function commentFilter(options: {
-    blacklist?: number[],
+export function commentFilter(config: {
+    userBlacklist?: number[],
     wordBlacklist?: string[],
-    bilibili?: {
-        showSilverGift?: boolean
-    }
-}): OperatorFunction<Message, Message> {
+    minGiftValue: number
+}): OperatorFunction<ComenMessage, ComenMessage> {
     return (upstream) => upstream.pipe(filter(comment => {
         if (comment.type == 'text' || comment.type == 'paid') {
-            if (options.blacklist) {
-                if (options.blacklist.indexOf(comment.platformUserId) != -1) {
+            if (config.userBlacklist) {
+                if (config.userBlacklist.indexOf(comment.platformUserId) != -1) {
                     return false;
                 }
             }
-            if (options.wordBlacklist) {
-                if (options.wordBlacklist.some(s => {
+            if (config.wordBlacklist) {
+                if (config.wordBlacklist.some(s => {
                     return comment.content.indexOf(s) != -1;
                 })) {
                     return false;
                 }
             }
         }
-        if (comment.type == 'sticker') {
-            if (comment.price <= 0 && !(options?.bilibili?.showSilverGift)) {
-                return false;
-            }
+        if('price' in comment&&comment.price<config.minGiftValue){
+            return false;
         }
         return true;
     }));
 }
 
-export function smoother(options: {
-
-}): OperatorFunction<Message, Message> {
+export function smoother(config: {
+    disableSmoother: boolean,
+}): OperatorFunction<ComenMessage, ComenMessage> {
     return (upstream) => {
+        if (config.disableSmoother) {
+            return upstream;
+        }
         return new Observable(observer => {
             const messageBuffer = [] as TextMessage[];
             (async () => {
@@ -64,10 +64,14 @@ export function smoother(options: {
     }
 }
 
-export function folder(options: {
-    searchRange: number
-}): OperatorFunction<Message, Message> {
+export function folder(config: {
+    groupSimilar: boolean,
+    groupSimilarWindow: number
+}): OperatorFunction<ComenMessage, ComenMessage> {
     return (upstream) => {
+        if(!config.groupSimilar){
+            return upstream;
+        }
         return new Observable(observer => {
             return upstream.subscribe(comment => {
                 if (comment.type === 'text') {

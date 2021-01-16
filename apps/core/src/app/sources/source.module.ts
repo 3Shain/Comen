@@ -17,6 +17,4 @@ import { SOURCE_PROVIDER } from './source';
         }
     ]
 })
-export class ComenCoreModule {
-
-}
+export class ComenSourceModule { }

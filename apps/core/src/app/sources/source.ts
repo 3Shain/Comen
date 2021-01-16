@@ -1,10 +1,10 @@
 import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Message } from '@comen/gamma';
+import { ComenMessage } from '../common/message';
 
 export interface CommentSource {
     readonly type: string;
-    connect(options: unknown): Observable<Message>;
+    connect(options: unknown): Observable<ComenMessage>;
 }
 
 export const SOURCE_PROVIDER = new InjectionToken<CommentSource[]>('comment sources');
