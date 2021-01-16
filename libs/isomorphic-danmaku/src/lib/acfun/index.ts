@@ -29,10 +29,13 @@ export async function* connectAcfunLiveWs(options: {
         ws.send(await client.heartbeatRequest());
         ws.send(await client.keepAliveRequest());
     }, interval.toInt());
+    yield {
+        type: '__CONNECTED__' // library defined message
+    };
     while (true) {
         try {
-            for await(const msg of client.parse(await ws.receive())){
-                try{
+            for await (const msg of client.parse(await ws.receive())) {
+                try {
                     yield msg;
                 } catch {
                     // userland error

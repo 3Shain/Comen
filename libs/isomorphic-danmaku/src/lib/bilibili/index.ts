@@ -4,9 +4,9 @@ import { AsyncWebSocket } from "../ws";
 export async function* connectBilibiliLiveWs(options: {
     roomId: number | string;
     token?: string;
-    abort?: AbortController; // TODO: allow abort
+    abort?: AbortController;
     host?: string;
-}): AsyncGenerator<unknown, number, unknown> {
+}): AsyncGenerator<unknown, void, unknown> {
     const ws = new AsyncWebSocket();
     await ws.connect(options.host ?? 'wss://broadcastlv.chat.bilibili.com/sub');
     ws.send(packageObject(7, {
@@ -21,30 +21,35 @@ export async function* connectBilibiliLiveWs(options: {
     const heartbeat = setInterval(() => {
         ws.send(packageHeartbeat());
     }, 30 * 1000);
-    options.abort && (options.abort.signal.onabort = () => {
+    options.abort && (options.abort.signal.addEventListener("abort", () => {
         ws.close();
-    });
+    }, { once: true }));
+    yield {
+        cmd: '__CONNECTED__' // library defined message
+    };
     while (true) {
         try {
             const dataArray = decodeData(await ws.receive());
             for (const data of dataArray) {
                 try {
                     yield data;
-                } catch (e) {
-                    // userland error
+                } catch (userlandError) {
+                    // userland error.
+                    console.error(`[isomorphic-danmaku] Userland error occurred: ${userlandError}`)
                 }
             }
         }
-        catch (e) {
-            if (e == 'CLOSED') { // TODO: natural terminate? abortController?
-                return 0;
+        catch (networkOrDecoderPanic) {
+            if (networkOrDecoderPanic == 'CLOSED') {
+                break;
             }
-            //decoder error OR terminated
-            break;
+            ws.close(); // 关闭操作是幂等的
+            clearInterval(heartbeat);
+            throw networkOrDecoderPanic;
         }
     }
     clearInterval(heartbeat);
-    return -1;
+    return;
 }
 
 

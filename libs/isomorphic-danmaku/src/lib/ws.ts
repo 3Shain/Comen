@@ -1,5 +1,8 @@
 import * as WebSocket from 'isomorphic-ws'
 
+/**
+ * Not very performative but ok async websocket
+ */
 export class AsyncWebSocket {
 
     private ws: WebSocket;
@@ -31,17 +34,26 @@ export class AsyncWebSocket {
     }
 
     send(src: ArrayBuffer | ArrayBufferView) {
+        if (!this.ws) {
+            throw new Error('not connected');
+        }
         this.ws.send(src);
     }
 
     private resolveCursor: [(res: ArrayBuffer) => void, (rej: unknown) => void] | null;
 
     receive(): Promise<ArrayBuffer> {
-        if (this.ws.readyState != this.ws.OPEN) {
+        if (this.ws.readyState == this.ws.CLOSED) {
+            throw 'CLOSED';
+        }
+        else if (this.ws.readyState != this.ws.OPEN) {
             throw 'NOT_OPEN';
         }
         if (this.bufferQueue.length > 0) {
             return Promise.resolve(this.bufferQueue.shift());
+        }
+        else if (this.resolveCursor != null) {
+            throw 'OPERATION NOT EXPECTED BECAUSE THERE IS ALREADY ANOTHER RECEIVER';
         }
         const toBeResole = new Promise<ArrayBuffer>((res, rej) => {
             this.resolveCursor = [res, rej];
