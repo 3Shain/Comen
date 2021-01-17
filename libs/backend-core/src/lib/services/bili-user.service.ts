@@ -14,81 +14,89 @@ export class BilibiliUserService {
     fetchQueue: Set<number> = new Set()
     currentFetchJob: NodeJS.Timeout = null;
 
+    interfaceUnlock: number = 0;
+
     // NB: current design is not for horizontal scale! SINGLE INSTANCE ONLY!
     async fetchUserInfo(uid: number): Promise<CachedBilibiliUserInfo> {
         // determine fetch now or insert into batch
-        if (Date.now() - this.lastFetch < MINIMUM_FETCH_INTERVAL) {
-            this.fetchQueue.add(uid);
-            if (this.currentFetchJob == null) {
-                this.currentFetchJob = setTimeout(async () => {
-                    // this is a different context that fetchQueue is mutated.
-                    const ids = [...this.fetchQueue].splice(0, 15); // maximum size?
+        while (true) {
+            if (Date.now() - this.lastFetch < MINIMUM_FETCH_INTERVAL || this.interfaceUnlock > Date.now()) {
+                this.fetchQueue.add(uid);
+                if (this.currentFetchJob == null) {
+                    this.currentFetchJob = setTimeout(async () => {
+                        // this is a different context that fetchQueue is mutated.
+                        const ids = [...this.fetchQueue].splice(0, 20); // maximum size?
 
-                    this.lastFetch = Date.now();
-                    const ret = (await got.get<{
-                        data: {
-                            [key: string]: {
-                                info: {
-                                    uid: number,
-                                    uname: string,
-                                    face: string
+                        this.lastFetch = Date.now();
+                        const ret = (await got.get<{
+                            data: {
+                                [key: string]: {
+                                    info: {
+                                        uid: number,
+                                        uname: string,
+                                        face: string
+                                    }
                                 }
                             }
+                        }>(`https://api.live.bilibili.com/user/v3/User/getMultiple?${ids.map(x => `uids[]=${x}`).join('&')
+                            }&attributes[]=info`, {
+                            headers: {
+                                'User-Agent': ""
+                            },
+                            responseType: 'json'
+                        })).body;
+                        for (const uid in ret.data) {
+                            const user = ret.data[uid];
+                            const obj: CachedBilibiliUserInfo = {
+                                uid: user.info.uid,
+                                face: user.info.face,
+                                name: user.info.uname,
+                                refresh_time: Date.now() + REFRESH_TIME,
+                            }
+                            this.fetchQueue.delete(obj.uid);
+                            await this.cache.set(`BILI_USERINFO_${uid}`, obj, {
+                                ttl: CACHE_TIME / 1000
+                            });
                         }
-                    }>(`https://api.live.bilibili.com/user/v3/User/getMultiple?${ids.map(x => `uids[]=${x}`).join('&')
-                        }&attributes[]=info`, {
+
+                        this.currentFetchJob = null;
+                    }, this.lastFetch + MINIMUM_FETCH_INTERVAL - Date.now());
+                }
+                const obj: CachedBilibiliUserInfo = {
+                    uid: uid,
+                    temp: true,
+                    face: "http://static.hdslb.com/images/member/noface.gif", // normal avatar
+                }
+                return obj;
+            } else {
+                this.lastFetch = Date.now();
+                try {
+                    const ret = (await got.get<{
+                        data: {
+                            name: string;
+                            face: string;
+                        }
+                    }>(`https://api.bilibili.com/x/space/acc/info?mid=${uid}`, {
                         headers: {
-                            'User-Agent': ""
+                            // 'User-Agent': ""
                         },
                         responseType: 'json'
                     })).body;
-                    for (const uid in ret.data) {
-                        const user = ret.data[uid];
-                        const obj: CachedBilibiliUserInfo = {
-                            uid: user.info.uid,
-                            face: user.info.face,
-                            name: user.info.uname,
-                            refresh_time: Date.now() + REFRESH_TIME,
-                        }
-                        this.fetchQueue.delete(obj.uid);
-                        await this.cache.set(`BILI_USERINFO_${uid}`, obj, {
-                            ttl: CACHE_TIME / 1000
-                        });
-                    }
 
-                    this.currentFetchJob = null;
-                }, this.lastFetch + MINIMUM_FETCH_INTERVAL - Date.now());
-            }
-            const obj: CachedBilibiliUserInfo = {
-                uid: uid,
-                temp: true,
-                face: "http://static.hdslb.com/images/member/noface.gif", // normal avatar
-            }
-            return obj;
-        } else {
-            this.lastFetch = Date.now();
-            const ret = (await got.get<{
-                data: {
-                    name: string;
-                    face: string;
+                    const obj: CachedBilibiliUserInfo = {
+                        uid: uid,
+                        face: ret.data.face,
+                        name: ret.data.name,
+                        refresh_time: Date.now() + REFRESH_TIME,
+                    };
+                    await this.cache.set(`BILI_USERINFO_${uid}`, obj, {
+                        ttl: CACHE_TIME / 1000
+                    });
+                    return obj;
+                } catch (e) {
+                    this.interfaceUnlock = Date.now() + 10*60*1000; // 10 min
                 }
-            }>(`https://api.bilibili.com/x/space/acc/info?mid=${uid}`, {
-                headers: {
-                    // 'User-Agent': ""
-                },
-                responseType: 'json'
-            })).body;
-
-            const obj: CachedBilibiliUserInfo = {
-                uid: uid,
-                face: ret.data.face,
-                name: ret.data.name,
-                refresh_time: Date.now() + REFRESH_TIME,
-            };
-            await this.cache.set(`BILI_USERINFO_${uid}`, obj, {
-                ttl: CACHE_TIME / 1000
-            });
-            return obj;
+            }
         }
     }
 
