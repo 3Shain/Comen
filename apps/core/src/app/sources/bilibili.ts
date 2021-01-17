@@ -198,6 +198,10 @@ export class BilibiliSource implements CommentSource {
                                 }
                                 x.avatar = ret.url;
                                 obs.next(x);
+                            },()=>{
+                                // failed to load
+                                x.avatar = 'http://static.hdslb.com/images/member/noface.gif';
+                                obs.next(x);
                             });
                         } else {
                             obs.next(x);
