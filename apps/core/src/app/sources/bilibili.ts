@@ -138,7 +138,7 @@ export class BilibiliSource implements CommentSource {
                                     } as PaidMessage);
                                     break
                                 case 'LIVE':
-                                    if(Date.now()-this.__lastLIVECMD<1000){
+                                    if(Date.now()-this.__lastLIVECMD<5000){
                                         break; // weired behavior
                                     }
                                     this.__lastLIVECMD = Date.now();
@@ -147,7 +147,7 @@ export class BilibiliSource implements CommentSource {
                                     } as LiveStartMessage);
                                     break;
                                 case 'PREPARING':
-                                    if(Date.now()-this.__lastPREPCMD<1000){
+                                    if(Date.now()-this.__lastPREPCMD<5000){
                                         break; // weired behavior
                                     }
                                     this.__lastPREPCMD = Date.now();
