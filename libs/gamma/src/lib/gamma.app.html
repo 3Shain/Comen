@@ -1,5 +1,5 @@
-<div id="contents" class="style-scope yt-live-chat-app">
-    <yt-live-chat-renderer class="style-scope yt-live-chat-app" has-ticker="" style="--scrollbar-width:15px;">
+<div *ngrxLet="config.current$ as cc" id="contents" class="style-scope yt-live-chat-app">
+    <yt-live-chat-renderer class="style-scope yt-live-chat-app" has-ticker="" [attr.hide-timestamps]="cc.hideTimestamp?'':null" style="--scrollbar-width:15px;">
         <iron-pages id="content-pages" class="style-scope yt-live-chat-renderer">
             <div id="chat-messages" class="style-scope yt-live-chat-renderer iron-selected">
                 <div id="contents" class="style-scope yt-live-chat-renderer">

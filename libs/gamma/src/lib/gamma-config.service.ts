@@ -1,16 +1,18 @@
 import { Inject, Injectable, Optional } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ColorInfo, CYAN, MAGNET, ORANGE, RED, YELLOW, YELLOW_GREEN } from './consts';
+import { BLUE, ColorInfo, CYAN, MAGNET, ORANGE, RED, YELLOW, YELLOW_GREEN } from './consts';
 import { MessageProvider, MESSAGE_PROVIDER } from './message-provider';
 
 export interface GammaConfiguration {
     hideTimestamp: boolean;
     tickerDisplayThreshold: number;
+    disableSmoother: boolean;
 }
 
 export const DEFAULT_GAMMA_CONFIGURATION:GammaConfiguration = {
     hideTimestamp: false,
-    tickerDisplayThreshold: 50
+    tickerDisplayThreshold: 50,
+    disableSmoother: false
 }
 
 @Injectable()
@@ -33,7 +35,7 @@ export class GammaConfigService {
     }
 
     getColorInfo(value: number) {
-        let lastColorInfo:ColorInfo = CYAN;
+        let lastColorInfo:ColorInfo = BLUE;
         for(const info of this.colorInfoList){
             if(value>=info.price_limit){
                 lastColorInfo = info;

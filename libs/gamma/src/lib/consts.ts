@@ -32,6 +32,18 @@ export type ColorInfo = {
     price_limit: number;
 }
 
+export const BLUE: ColorInfo = {
+    primary: 'rgba(30,136,229,1)',
+    secondary: 'rgba(21,101,192,1)',
+    header: 'rgba(255,255,255,1)',
+    authorName: 'rgba(255,255,255,0.7)',
+    timestamp: 'rgba(255,255,255,0.5)',
+    message: 'rgba(255,255,255,1)',
+    sticker_size: 40,
+    ticker_timeout: 0,
+    price_limit: 0
+}
+
 export const CYAN: ColorInfo = {
     primary: 'rgba(0,229,255,1)',
     secondary: 'rgba(0,184,212,1)',

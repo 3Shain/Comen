@@ -25,7 +25,7 @@ const VALID_TYPE = {
   styleUrls: ['./gamma.app.css'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers:[
+  providers: [
     GammaConfigService
   ]
 })
@@ -56,6 +56,10 @@ export class GammaApp implements AfterViewInit, OnDestroy {
     let lastItemInserted = 0;
     while (!this._destroyed) {
       if (this.bufferQueue.length) {
+        while (this.bufferQueue.length > 1) {
+          // no too much :)
+          this.renderedQueue.push(this.bufferQueue.shift());
+        }
         /** to avoid bug: is every 'frame loop' idempotent? */
         const insertedMessage = this.bufferQueue.shift();
         this.renderedQueue.push(insertedMessage);
@@ -79,7 +83,8 @@ export class GammaApp implements AfterViewInit, OnDestroy {
           //start animation step? or jump over?
           if (scrollerHeight < itemsHeight) {
             this.scroller.nativeElement.scrollTop = (itemsHeight - scrollerHeight); //write
-            if (this.bufferQueue.length < 1 && performance.now() - lastItemInserted > ANIMATION_BUFFER_INTERVAL) { // do animation
+            if (performance.now() - lastItemInserted > ANIMATION_BUFFER_INTERVAL
+              && !this.config.current$.value.disableSmoother) { // do animation
               // calculate the length to move
               const animationOffset = Math.min(itemsHeight - scrollerHeight, insertedHeight);
               this.items.nativeElement.setAttribute('style', `transform: translate3d(0,${animationOffset}px,0)`);
@@ -103,7 +108,7 @@ export class GammaApp implements AfterViewInit, OnDestroy {
 
   checkTicker(msg: Message) {
     if (msg.type == 'sticker' || msg.type == 'paid' || msg.type == 'member') {
-      if(this.config.current$.value.tickerDisplayThreshold>msg.price){
+      if (this.config.current$.value.tickerDisplayThreshold > msg.price) {
         return;
       }
       const colorInfo = this.config.getColorInfo(msg.price);
@@ -155,9 +160,12 @@ export class GammaApp implements AfterViewInit, OnDestroy {
 
   constructor(@Optional() @Inject(MESSAGE_PROVIDER) provider: MessageProvider,
     private changeDetector: ChangeDetectorRef,
-    private config: GammaConfigService) {
+    public config: GammaConfigService) {
     if (provider) {
       provider.registerOnMessage(m => {
+        if (document.visibilityState == 'hidden') {
+          return;
+        }
         if (m.type == 'fold') {
 
         } else if (m.type in VALID_TYPE) {

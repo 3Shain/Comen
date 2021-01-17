@@ -5,7 +5,7 @@
     </yt-img-shadow>
     <div id="content" class="style-scope yt-live-chat-text-message-renderer">
         <span id="timestamp" class="style-scope yt-live-chat-text-message-renderer">
-            <ng-container *ngIf="(!cc.hideTimestamp)">{{date | date:'hh:mm a'}}</ng-container>
+            {{date | date:'hh:mm a'}}
         </span>
         <yt-live-chat-author-chip class="style-scope yt-live-chat-text-message-renderer">
             <!-- 让人心肺停止的逻辑运算 -->

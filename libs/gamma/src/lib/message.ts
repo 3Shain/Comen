@@ -15,6 +15,7 @@ type TextMessage = {
     badges: BadgeInfo[];
     usertype: number; // 0 normal 1 member 2 mod 3 both (bit)
     platformUserId: number;
+    platformUserLevel: number;
     platformUserExtra: unknown;
 }
 
