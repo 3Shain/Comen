@@ -1,0 +1,1411 @@
+
+<!-- saved from url=(0028)https://chatv2.septapus.com/ -->
+<html>
+
+<head>
+  <meta name="description" content="YouTubeLive/BilibiliLive + OBS 自定义直播时显示评论/弹幕内容样式的 Chat v2.0 Style Generator 中文版。" />
+  <meta name="keywords" content="YouTube, Live, CSS, 透過, 弹幕, 弹幕姬, bilibili, Comment, Danmaku, Chat v2.0 Style Generator, OBS">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Chat v2.0 Style Generator 中文版</title>
+  <style>
+    body {
+      font-family: 'Arial', sans;
+    }
+
+    section {
+      display: table;
+    }
+
+    section>div {
+      display: table-row;
+    }
+
+    section>div>* {
+      display: table-cell;
+    }
+
+    textarea {
+      width: 100%;
+      height: 25%;
+    }
+
+    #split {
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -ms-flex-direction: row;
+      -webkit-flex-direction: row;
+      flex-direction: row;
+    }
+
+    #inputs,
+    #example {
+      width: 50%;
+    }
+
+    #example {
+      position: fixed;
+      right: 8px;
+    }
+
+    #example-container {
+      background-color: #444;
+      background-image:
+        -moz-linear-gradient(45deg, #333 25%, transparent 25%),
+        -moz-linear-gradient(-45deg, #333 25%, transparent 25%),
+        -moz-linear-gradient(45deg, transparent 75%, #333 75%),
+        -moz-linear-gradient(-45deg, transparent 75%, #333 75%);
+      background-image:
+        -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, #333), color-stop(.25, transparent)),
+        -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, #333), color-stop(.25, transparent)),
+        -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, #333)),
+        -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, #333));
+
+      -moz-background-size: 32px 32px;
+      background-size: 32px 32px;
+      -webkit-background-size: 32px 32px;
+
+      background-position: 0 0, 16px 0, 16px -16px, 0px 16px;
+
+      padding: 25px;
+    }
+
+    yt-live-chat-renderer {
+      display: block;
+      outline: 1px #999 dashed;
+    }
+
+    yt-live-chat-text-message-renderer {
+      position: relative;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -ms-flex-direction: row;
+      -webkit-flex-direction: row;
+      flex-direction: row;
+      -ms-flex-align: start;
+      -webkit-align-items: flex-start;
+      align-items: flex-start;
+      padding: 4px 24px;
+    }
+
+    yt-live-chat-text-message-renderer #content {
+      -ms-align-self: center;
+      -webkit-align-self: center;
+      align-self: center;
+      overflow: hidden;
+    }
+
+    yt-live-chat-text-message-renderer #timestamp {
+      display: none;
+      margin-right: 8px;
+    }
+
+    yt-live-chat-text-message-renderer #author-name {
+      margin-right: 8px;
+      font-weight: 500;
+    }
+
+    yt-live-chat-text-message-renderer #author-photo {
+      display: inline-block;
+      background-color: red;
+      -ms-flex: none;
+      -webkit-flex: none;
+      flex: none;
+    }
+
+    yt-live-chat-text-message-renderer #author-badges {
+      vertical-align: text-bottom;
+      display: -ms-inline-flexbox;
+      display: -webkit-inline-flex;
+      display: inline-flex;
+    }
+
+    yt-live-chat-text-message-renderer #message {
+      color: #fff;
+      font-size: 12px;
+      line-height: 16px;
+      word-wrap: break-word;
+    }
+
+    yt-live-chat-author-badge-renderer {
+      display: block;
+      width: 16px;
+      height: 16px;
+      background-color: currentColor;
+      margin-right: 4px;
+      border-radius: 16px;
+    }
+
+    yt-live-chat-legacy-paid-message-renderer {
+      position: relative;
+      overflow: hidden;
+      margin: 8px 24px;
+      padding: 8px 16px;
+      background-color: #0f9d58;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 14px;
+      min-height: 40px;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -ms-flex-direction: row;
+      -webkit-flex-direction: row;
+      flex-direction: row;
+      -ms-flex-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+    }
+
+    yt-live-chat-legacy-paid-message-renderer #author-photo {
+      background-color: red;
+      margin-right: 16px;
+      overflow: hidden;
+      -ms-flex: none;
+      -webkit-flex: none;
+      flex: none;
+      -ms-align-self: flex-start;
+      -webkit-align-self: flex-start;
+      align-self: flex-start;
+    }
+
+    yt-live-chat-legacy-paid-message-renderer #content {
+      -ms-flex: 1 1 0.000000001px;
+      -webkit-flex: 1;
+      flex: 1;
+      -webkit-flex-basis: 0.000000001px;
+      flex-basis: 0.000000001px;
+    }
+
+    yt-live-chat-legacy-paid-message-renderer #event-text {
+      font-weight: 500;
+    }
+
+    yt-live-chat-legacy-paid-message-renderer #detail-text {
+      word-wrap: break-word;
+    }
+
+    yt-live-chat-paid-message-renderer {
+      position: relative;
+      border-radius: 4px;
+      margin: 8px 24px;
+      font-size: 15px;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -ms-flex-direction: column;
+      -webkit-flex-direction: column;
+      flex-direction: column;
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+    }
+
+    yt-live-chat-paid-message-renderer #header {
+      position: relative;
+      font-weight: 500;
+      padding: 8px 16px;
+      min-height: 20px;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -ms-flex-direction: row;
+      -webkit-flex-direction: row;
+      flex-direction: row;
+      -ms-flex-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    yt-live-chat-paid-message-renderer #header-content {
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -ms-flex-direction: column;
+      -webkit-flex-direction: column;
+      flex-direction: column;
+      -ms-flex-pack: justify;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      -ms-flex: 1 1 0.000000001px;
+      -webkit-flex: 1;
+      flex: 1;
+      -webkit-flex-basis: 0.000000001px;
+      flex-basis: 0.000000001px;
+    }
+
+    yt-live-chat-paid-message-renderer #author-photo {
+      background-color: red;
+      -ms-flex: none;
+      -webkit-flex: none;
+      flex: none;
+    }
+
+    yt-live-chat-paid-message-renderer #author-name {
+      font-size: 14px;
+    }
+
+    yt-live-chat-paid-message-renderer #content {
+      padding: 4px 16px 8px 16px;
+      word-wrap: break-word;
+      word-break: break-word;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+
+    yt-live-chat-ticker-paid-message-item-renderer {
+      display: inline-block;
+      height: 24px;
+      border-radius: 200px;
+      padding: 4px;
+    }
+
+    yt-live-chat-ticker-paid-message-item-renderer #content {
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -ms-flex-direction: row;
+      -webkit-flex-direction: row;
+      flex-direction: row;
+      -ms-flex-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+      margin-right: 4px;
+    }
+
+    yt-live-chat-ticker-paid-message-item-renderer #fake-avatar {
+      display: inline-block;
+      background-color: red;
+      width: 24px;
+      height: 24px;
+      margin-right: 4px;
+      border-radius: 24px;
+
+    }
+
+    body {
+      overflow: auto !important;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Chat v2.0 Style Generator 中文版</h2>
+  <div id="split">
+    <div id="inputs">
+        自定义直播时显示评论/弹幕内容样式的 Chat v2.0 Style Generator 中文版<br>
+      <a href="https://chatv2.septapus.com/" target="_blank">原项目地址</a>,由@3Shain提供中文翻译版本<br>
+      可以作用于<a href="https://bilichat.3shain.com">Bilichat</a>上,也可作用于Youtube原生评论栏上
+      <h4>名词解释</h4>
+      Youtube中的Onwer=>即房主<br>
+      Moderator=>管理员,即房管,有权限进行禁言等操作,ID后会有小扳手<br>
+      Sponser=>赞助者/会员,在Bilibili中等于舰长/提督/总督
+
+      <h3>字体:</h3>
+      <section>
+        <div>
+          <label for="show-outlines">字体轮廓: </label><input type="checkbox" id="show-outlines" checked="">
+        </div>
+        <div>
+          <label for="outline-size">轮廓大小: </label><input type="number" id="outline-size" value="2">
+        </div>
+        <div>
+          <label for="outline-color">轮廓颜色: </label><input type="color" id="outline-color" value="#000000">
+        </div>
+      </section>
+
+      <h3>头像:</h3>
+      <section>
+        <div>
+          <label for="show-avatars">显示头像: </label><input type="checkbox" id="show-avatars" checked="">
+        </div>
+        <div>
+          <label for="avatar-size">头像大小: </label><input type="number" id="avatar-size" value="24">
+        </div>
+      </section>
+
+      <h3>用户名:</h3>
+      <section>
+        <div>
+          <label for="author-font-family">字体: </label><select id="author-font-family" data-default="Changa One">
+
+          </select>
+        </div>
+        <div>
+          <label for="author-font-size">字体大小: </label><input type="number" id="author-font-size" value="20">
+        </div>
+        <div>
+          <label for="author-line-height">行高度 (默认 0): </label><input type="number"
+            id="author-line-height" value="0">
+        </div>
+        <div>
+          <label for="author-color">前景色: </label><input type="color" id="author-color" value="#cccccc">
+        </div>
+        <div>
+          <label for="author-owner-color">房主前景色: </label><input type="color" id="author-owner-color"
+            value="#ffd600">
+        </div>
+        <div>
+          <label for="author-moderator-color">管理员前景色: </label><input type="color" id="author-moderator-color"
+            value="#5e84f1">
+        </div>
+        <div>
+          <label for="author-member-color">赞助者前景色: </label><input type="color" id="author-member-color"
+            value="#0f9d58">
+        </div>
+        <div>
+          <label for="show-badges">显示徽章: </label><input type="checkbox" id="show-badges">
+        </div>
+        <div>
+          <label for="show-colon">在名称后面显示冒号: </label><input type="checkbox" id="show-colon" checked="">
+        </div>
+      </section>
+
+      <h3>弹幕(评论):</h3>
+      <section>
+        <div>
+          <label for="message-font-family">字体: </label><select id="message-font-family" data-default="Imprima">
+            
+          </select>
+        </div>
+        <div>
+          <label for="message-font-size">字体大小: </label><input type="number" id="message-font-size" value="18">
+        </div>
+        <div>
+          <label for="message-line-height">行高度 (默认 0): </label><input type="number"
+            id="message-line-height" value="0">
+        </div>
+        <div>
+          <label for="author-membermessage-color">颜色: </label><input type="color" id="message-color" value="#ffffff">
+        </div>
+        <div>
+          <label for="message-newline">显示在新的一行: </label><input type="checkbox" id="message-newline">
+        </div>
+      </section>
+
+      <h3>时间:</h3>
+      <section>
+        <div>
+          <label for="show-timestamps">显示时间: </label><input type="checkbox" id="show-timestamps">
+        </div>
+        <div>
+          <label for="timestamp-font-family">字体: </label><select id="timestamp-font-family" data-default="Imprima">
+            
+          </select>
+        </div>
+        <div>
+          <label for="timestamp-font-size">字体大小: </label><input type="number" id="timestamp-font-size" value="16">
+        </div>
+        <div>
+          <label for="timestamp-line-height">行高度 (默认 0): </label><input type="number"
+            id="timestamp-line-height" value="0">
+        </div>
+        <div>
+          <label for="timestamp-color">前景色: </label><input type="color" id="timestamp-color" value="#999999">
+        </div>
+      </section>
+
+      <h3>背景:</h3>
+      <section>
+        <div>
+          <label for="background-color">背景色: </label><input type="color" id="background-color"
+            value="#000000"><input type="range" id="background-opacity" min="0" max="1" value="0" step="0.01">
+        </div>
+        <div>
+          <label for="background-color-bars">用颜色条代替: </label><input type="checkbox"
+            id="background-color-bars">
+        </div>
+        <div>
+          <label for="background-color">普通消息: </label><input type="color"
+            id="message-background-color" value="#cccccc"><input type="range" id="message-background-opacity" min="0"
+            max="1" value="0" step="0.01">
+        </div>
+        <div>
+          <label for="background-color">房主消息: </label><input type="color"
+            id="owner-message-background-color" value="#ffd600"><input type="range"
+            id="owner-message-background-opacity" min="0" max="1" value="0" step="0.01">
+        </div>
+        <div>
+          <label for="background-color">管理员消息: </label><input type="color"
+            id="moderator-message-background-color" value="#5e84f1"><input type="range"
+            id="moderator-message-background-opacity" min="0" max="1" value="0" step="0.01">
+        </div>
+        <div>
+          <label for="background-color">赞助者消息: </label><input type="color"
+            id="member-message-background-color" value="#0f9d58"><input type="range"
+            id="member-message-background-opacity" min="0" max="1" value="0" step="0.01">
+        </div>
+      </section>
+
+      <h3>SuperChat/赞助:(部分效果在Bilichat不可用)</h3>
+      <section>
+        <div>
+          <label for="fan-funding-first-line-font-family">第一行字体: </label><select
+            id="fan-funding-first-line-font-family" data-default="Changa One">
+            
+          </select>
+        </div>
+        <div>
+          <label for="fan-funding-first-line-font-size">第一行字体大小: </label><input type="number"
+            id="fan-funding-first-line-font-size" value="20">
+        </div>
+        <div>
+          <label for="fan-funding-first-line-line-height">第一行高度 (0 for default): </label><input
+            type="number" id="fan-funding-first-line-line-height" value="0">
+        </div>
+        <div>
+          <label for="fan-funding-first-line-color">第一行前景色: </label><input type="color"
+            id="fan-funding-first-line-color" value="#ffffff">
+        </div>
+        <div>
+          <label for="fan-funding-second-line-font-family">第二行字体: </label><select
+            id="fan-funding-second-line-font-family" data-default="Imprima">
+           
+          </select>
+        </div>
+        <div>
+          <label for="fan-funding-second-line-font-size">第二行字体大小: </label><input type="number"
+            id="fan-funding-second-line-font-size" value="18">
+        </div>
+        <div>
+          <label for="fan-funding-second-line-line-height">第二行高度 (0 for default): </label><input
+            type="number" id="fan-funding-second-line-line-height" value="0">
+        </div>
+        <div>
+          <label for="fan-funding-second-line-color">第二行前景色: </label><input type="color"
+            id="fan-funding-second-line-color" value="#ffffff">
+        </div>
+
+        <div>
+          <label for="super-chat-content-line-font-family">SuperChat内容字体: </label><select
+            id="super-chat-content-font-family" data-default="Imprima">
+            
+          </select>
+        </div>
+        <div>
+          <label for="super-chat-content-line-font-size">SuperChat内容字体大小: </label><input type="number"
+            id="super-chat-content-font-size" value="18">
+        </div>
+        <div>
+          <label for="super-chat-content-line-line-height">SuperChat内容行高度 (0 for default): </label><input
+            type="number" id="super-chat-content-line-height" value="0">
+        </div>
+        <div>
+          <label for="super-chat-content-color">SuperChat内容前景色: </label><input type="color"
+            id="super-chat-content-color" value="#ffffff">
+        </div>
+        <div>
+          <label for="show-fan-funding-background">显示背景: </label><input type="checkbox"
+            id="show-fan-funding-background" checked="">
+        </div>
+        <div>
+          <label for="show-ticker">显示SuperChat贴纸.</label><input type="checkbox" id="show-ticker">
+        </div>
+        <div>
+          <label for="show-everything">显示除SuperChat贴纸以外的所有内容</label><input type="checkbox"
+            id="show-everything" checked="">
+        </div>
+      </section>
+      <h3>动画:</h3>
+      <section>
+        <div>
+          <label for="animation-in">进入动画: </label><input type="checkbox" id="animation-in">
+        </div>
+        <div>
+          <label for="animation-in-time">淡入时间 (毫秒): </label><input type="number" id="animation-in-time"
+            value="200">
+        </div>
+        <div>
+          <label for="animation-out">移出动画 (移除以前的消息): </label><input type="checkbox"
+            id="animation-out">
+        </div>
+        <div>
+          <label for="animation-wait-time">等待时间 (秒): </label><input type="number" id="animation-wait-time"
+            value="30">
+        </div>
+        <div>
+          <label for="animation-out-time">淡出时间 (毫秒): </label><input type="number"
+            id="animation-out-time" value="200">
+        </div>
+        <div>
+          <label for="animation-slide">滑动: </label><input type="checkbox" id="animation-slide">
+        </div>
+        <div>
+          <label for="animation-reverse">反向滑动: </label><input type="checkbox" id="animation-reverse">
+        </div>
+        <button id="animation-trigger">播放动画</button>
+      </section>
+    </div>
+    <div id="example">
+      <h3>预览:</h3>
+      <div id="example-container">
+        <div id="fakebody">
+          <yt-live-chat-renderer>
+            <yt-live-chat-ticker-renderer>
+              <yt-live-chat-ticker-paid-message-item-renderer style="background-color: rgba(0,184,212,1);">
+                <div id="content">
+                  <span id="fake-avatar"></span>
+                  <span>$5.00</span>
+                </div>
+              </yt-live-chat-ticker-paid-message-item-renderer>
+              <yt-live-chat-ticker-paid-message-item-renderer style="background-color: rgba(208,0,0,1);">
+                <div id="content">
+                  <span id="fake-avatar"></span>
+                  <span>$500.00</span>
+                </div>
+              </yt-live-chat-ticker-paid-message-item-renderer>
+            </yt-live-chat-ticker-renderer>
+            <yt-live-chat-item-list-renderer>
+              <yt-live-chat-text-message-renderer author-type="owner">
+                <div id="author-photo"></div>
+                <div id="content">
+                  <span id="timestamp">12:00</span><span id="author-badges">
+                    <yt-live-chat-author-badge-renderer type="owner"></yt-live-chat-author-badge-renderer>
+                  </span><span id="author-name" type="owner">3Shain</span><span id="message">这是房主的信息</span>
+                </div>
+              </yt-live-chat-text-message-renderer>
+              <yt-live-chat-text-message-renderer author-type="moderator">
+                <div id="author-photo"></div>
+                <div id="content">
+                  <span id="timestamp">12:00</span><span id="author-badges">
+                    <yt-live-chat-author-badge-renderer type="moderator"></yt-live-chat-author-badge-renderer>
+                  </span><span id="author-name" type="moderator">9Shain</span><span id="message">这是管理员的信息</span>
+                </div>
+              </yt-live-chat-text-message-renderer>
+              <yt-live-chat-text-message-renderer author-type="member">
+                <div id="author-photo"></div>
+                <div id="content">
+                  <span id="timestamp">12:00</span><span id="author-badges">
+                    <yt-live-chat-author-badge-renderer type="member"></yt-live-chat-author-badge-renderer>
+                  </span><span id="author-name" type="member">Munra1to</span><span id="message" type="member">这是会员的信息</span>
+                </div>
+              </yt-live-chat-text-message-renderer>
+              <yt-live-chat-text-message-renderer>
+                <div id="author-photo"></div>
+                <div id="content">
+                  <span id="timestamp">12:00</span><span id="author-name">DD</span><span id="message">这是一般路过的信息</span>
+                </div>
+              </yt-live-chat-text-message-renderer>
+              <yt-live-chat-legacy-paid-message-renderer>
+                <div id="author-photo"></div>
+                <div id="content">
+                  <div id="event-text">新的舰长/提督/总督!</div>
+                  <div id="detail-text">欢迎 <span class="mention">xxxxxx</span> 上舰!</div>
+                </div>
+              </yt-live-chat-legacy-paid-message-renderer>
+              <yt-live-chat-text-message-renderer>
+                <div id="author-photo"></div>
+                <div id="content">
+                  <span id="timestamp">12:00</span><span id="author-name">用户名</span><span id="message">春眠不觉晓，处处闻啼鸟。夜来风雨声，
+                    花落知多少。
+                  </span>
+                </div>
+              </yt-live-chat-text-message-renderer>
+              <!--yt-live-chat-legacy-paid-message-renderer>
+                <div id="author-photo"></div>
+                <div id="content">
+                  <div id="event-text">$10.00 from _milktea!</div>
+                  <div id="detail-text">quis nostrud exercitation ullamco laboris</div>
+                </div>
+              </yt-live-chat-legacy-paid-message-renderer-->
+              <yt-live-chat-paid-message-renderer>
+                <div id="header" style="background-color: rgba(208,0,0,1);">
+                  <div id="author-photo"></div>
+                  <div id="header-content">
+                    <div id="author-name">绊爱厨</div>
+                    <div id="purchase-amount">赠送 小电视 × 2</div>
+                  </div>
+                </div>
+                <div id="content" style="background-color: rgba(230,33,23,1);">
+                  <div id="message" dir="auto">但实际上下面这段文字并不会在Bilibili中被显示出来</div>
+                </div>
+              </yt-live-chat-paid-message-renderer>
+              <yt-live-chat-paid-message-renderer>
+                <div id="header" style="background-color: rgba(0,184,212,1);">
+                  <div id="author-photo"></div>
+                  <div id="header-content">
+                    <div id="author-name">xxxxxx</div>
+                    <div id="purchase-amount">赠送 DD × 1</div>
+                  </div>
+                </div>
+                <div id="content" style="background-color: rgba(0,229,255,1);">
+                  <div id="message" dir="auto">但实际上下面这段文字并不会在Bilibili中被显示出来+1</div>
+                </div>
+              </yt-live-chat-paid-message-renderer>
+            </yt-live-chat-item-list-renderer>
+          </yt-live-chat-renderer>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>CSS:(Ctrl+A全选 Ctrl+C复制)</h3>
+  <textarea id="output"></textarea>
+  <style id="example-styles">
+    @import url("https://fonts.lug.ustc.edu.cn/css?family=Changa One");
+    @import url("https://fonts.lug.ustc.edu.cn/css?family=Imprima");
+
+    /* Background colors*/
+    body {
+      overflow: hidden;
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    /* Transparent background. */
+    yt-live-chat-renderer {
+      background-color: transparent !important;
+    }
+
+    yt-live-chat-text-message-renderer,
+    yt-live-chat-text-message-renderer[is-highlighted] {
+      background-color: transparent !important;
+    }
+
+    yt-live-chat-text-message-renderer[author-type="owner"],
+    yt-live-chat-text-message-renderer[author-type="owner"][is-highlighted] {
+      background-color: transparent !important;
+    }
+
+    yt-live-chat-text-message-renderer[author-type="moderator"],
+    yt-live-chat-text-message-renderer[author-type="moderator"][is-highlighted] {
+      background-color: transparent !important;
+    }
+
+    yt-live-chat-text-message-renderer[author-type="member"],
+    yt-live-chat-text-message-renderer[author-type="member"][is-highlighted] {
+      background-color: transparent !important;
+    }
+
+
+    yt-live-chat-author-chip #author-name {
+      background-color: transparent !important;
+    }
+
+    /* Outlines */
+    yt-live-chat-renderer * {
+      text-shadow: -2px -2px #000000, -2px -1px #000000, -2px 0px #000000, -2px 1px #000000, -2px 2px #000000, -1px -2px #000000, -1px -1px #000000, -1px 0px #000000, -1px 1px #000000, -1px 2px #000000, 0px -2px #000000, 0px -1px #000000, 0px 0px #000000, 0px 1px #000000, 0px 2px #000000, 1px -2px #000000, 1px -1px #000000, 1px 0px #000000, 1px 1px #000000, 1px 2px #000000, 2px -2px #000000, 2px -1px #000000, 2px 0px #000000, 2px 1px #000000, 2px 2px #000000;
+      font-family: "Imprima";
+      font-size: 18px !important;
+      line-height: 18px !important;
+    }
+
+    yt-live-chat-text-message-renderer #content,
+    yt-live-chat-legacy-paid-message-renderer #content {
+      overflow: initial;
+       !important
+    }
+
+    /* Hide scrollbar. */
+    yt-live-chat-item-list-renderer #items {
+      overflow: hidden !important;
+    }
+
+    yt-live-chat-item-list-renderer #item-scroller {
+      overflow: hidden !important;
+    }
+
+    /* Hide header and input. */
+    yt-live-chat-header-renderer,
+    yt-live-chat-message-input-renderer {
+      display: none !important;
+    }
+
+    /* Reduce side padding. */
+    yt-live-chat-text-message-renderer,
+    yt-live-chat-legacy-paid-message-renderer {
+      padding-left: 4px !important;
+      padding-right: 4px !important;
+    }
+
+    yt-live-chat-paid-message-renderer #header {
+      padding-left: 4px !important;
+      padding-right: 4px !important;
+    }
+
+    /* Avatars. */
+    yt-live-chat-text-message-renderer #author-photo,
+    yt-live-chat-paid-message-renderer #author-photo,
+    yt-live-chat-legacy-paid-message-renderer #author-photo {
+
+      width: 24px !important;
+      height: 24px !important;
+      border-radius: 24px !important;
+      margin-right: 6px !important;
+    }
+
+    /* Hide badges. */
+    yt-live-chat-text-message-renderer #author-badges {
+      display: none !important;
+      vertical-align: text-top !important;
+    }
+
+    /* Timestamps. */
+    yt-live-chat-text-message-renderer #timestamp {
+
+      color: #999999 !important;
+      font-family: "Imprima";
+      font-size: 16px !important;
+      line-height: 16px !important;
+    }
+
+    /* Badges. */
+    yt-live-chat-text-message-renderer #author-name[type="owner"],
+    yt-live-chat-text-message-renderer yt-live-chat-author-badge-renderer[type="owner"] {
+      color: #ffd600 !important;
+    }
+
+    yt-live-chat-text-message-renderer #author-name[type="moderator"],
+    yt-live-chat-text-message-renderer yt-live-chat-author-badge-renderer[type="moderator"] {
+      color: #5e84f1 !important;
+    }
+
+    yt-live-chat-text-message-renderer #author-name[type="member"],
+    yt-live-chat-text-message-renderer yt-live-chat-author-badge-renderer[type="member"] {
+      color: #0f9d58 !important;
+    }
+
+    /* Channel names. */
+    yt-live-chat-text-message-renderer #author-name {
+      color: #cccccc !important;
+      font-family: "Changa One";
+      font-size: 20px !important;
+      line-height: 20px !important;
+    }
+
+    yt-live-chat-text-message-renderer #author-name::after {
+      content: ":";
+      margin-left: 2px;
+    }
+
+    /* Messages. */
+    yt-live-chat-text-message-renderer #message,
+    yt-live-chat-text-message-renderer #message * {
+      color: #ffffff !important;
+      font-family: "Imprima";
+      font-size: 18px !important;
+      line-height: 18px !important;
+    }
+
+
+    /* SuperChat/Fan Funding Messages. */
+    yt-live-chat-paid-message-renderer #author-name,
+    yt-live-chat-paid-message-renderer #author-name *,
+    yt-live-chat-legacy-paid-message-renderer #event-text,
+    yt-live-chat-legacy-paid-message-renderer #event-text * {
+      color: #ffffff !important;
+      font-family: "Changa One";
+      font-size: 20px !important;
+      line-height: 20px !important;
+    }
+
+    yt-live-chat-paid-message-renderer #purchase-amount,
+    yt-live-chat-paid-message-renderer #purchase-amount *,
+    yt-live-chat-legacy-paid-message-renderer #detail-text,
+    yt-live-chat-legacy-paid-message-renderer #detail-text * {
+      color: #ffffff !important;
+      font-family: "Imprima";
+      font-size: 18px !important;
+      line-height: 18px !important;
+    }
+
+    yt-live-chat-paid-message-renderer #content,
+    yt-live-chat-paid-message-renderer #content * {
+      color: #ffffff !important;
+      font-family: "Imprima";
+      font-size: 18px !important;
+      line-height: 18px !important;
+    }
+
+    yt-live-chat-paid-message-renderer {
+      margin: 4px 0 !important;
+    }
+
+    yt-live-chat-legacy-paid-message-renderer {
+      background-color: #0f9d58 !important;
+      margin: 4px 0 !important;
+    }
+
+    yt-live-chat-text-message-renderer a,
+    yt-live-chat-legacy-paid-message-renderer a {
+      text-decoration: none !important;
+    }
+
+    yt-live-chat-text-message-renderer[is-deleted],
+    yt-live-chat-legacy-paid-message-renderer[is-deleted] {
+      display: none !important;
+    }
+
+    yt-live-chat-ticker-renderer {
+      background-color: transparent !important;
+      box-shadow: none !important;
+    }
+
+    yt-live-chat-ticker-renderer {
+      display: none !important;
+    }
+
+
+    yt-live-chat-ticker-paid-message-item-renderer,
+    yt-live-chat-ticker-paid-message-item-renderer *,
+    yt-live-chat-ticker-sponsor-item-renderer,
+    yt-live-chat-ticker-sponsor-item-renderer * {
+      color: #ffffff !important;
+      font-family: "Imprima";
+    }
+
+    yt-live-chat-mode-change-message-renderer,
+    yt-live-chat-viewer-engagement-message-renderer,
+    yt-live-chat-restricted-participation-renderer {
+      display: none !important;
+    }
+
+    #fakebody {
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    yt-live-chat-text-message-renderer,
+    yt-live-chat-legacy-paid-message-renderer,
+    yt-live-chat-paid-message-renderer {
+      animation: none !important;
+    }
+  </style>
+  <style>
+    body {
+      background-color: white !important;
+    }
+  </style>
+  <script>
+    var fonts = [
+      "Changa One",
+      "Imprima",
+      "Noto Sans SC"
+    ];
+    var template = [
+      '{{imports}}',
+      '',
+      '/* Background colors*/',
+      'body {',
+      '  overflow: hidden;',
+      '  {{background-color}}',
+      '}',
+      '/* Transparent background. */',
+      'yt-live-chat-renderer {',
+      '  background-color: transparent !important;',
+      '}',
+      '{{message-background-color}}',
+      '{{owner-message-background-color}}',
+      '{{moderator-message-background-color}}',
+      '{{member-message-background-color}}',
+      '',
+      'yt-live-chat-author-chip #author-name {',
+      '  background-color: transparent !important;',
+      '}',
+      '/* Outlines */',
+      'yt-live-chat-renderer * {',
+      '  {{show-outlines}}',
+      '  font-family: "{{message-font-family}}";',
+      '  font-size: {{message-font-size}}px !important;',
+      '  line-height: {{message-line-height}}px !important;',
+      '}',
+      '',
+      'yt-live-chat-text-message-renderer #content,',
+      'yt-live-chat-legacy-paid-message-renderer #content {',
+      '  overflow: initial; !important',
+      '}',
+      '',
+      '/* Hide scrollbar. */',
+      'yt-live-chat-item-list-renderer #items{',
+      '  overflow: hidden !important;',
+      '}',
+      '',
+      'yt-live-chat-item-list-renderer #item-scroller{',
+      '  overflow: hidden !important;',
+      '}',
+      '',
+      '/* Hide header and input. */',
+      'yt-live-chat-header-renderer,',
+      'yt-live-chat-message-input-renderer {',
+      '  display: none !important;',
+      '}',
+      '',
+      '/* Reduce side padding. */',
+      'yt-live-chat-text-message-renderer,',
+      'yt-live-chat-legacy-paid-message-renderer {',
+      '  {{padding}}',
+      '}',
+      '',
+      'yt-live-chat-paid-message-renderer #header {',
+      '  {{padding}}',
+      '}',
+      '',
+      '/* Avatars. */',
+      'yt-live-chat-text-message-renderer #author-photo,',
+      'yt-live-chat-paid-message-renderer #author-photo,',
+      'yt-live-chat-legacy-paid-message-renderer #author-photo {',
+      '  {{show-avatars}}',
+      '  width: {{avatar-size}}px !important;',
+      '  height: {{avatar-size}}px !important;',
+      '  border-radius: {{avatar-size}}px !important;',
+      '  margin-right: {{avatar-margin-right}}px !important;',
+      '}',
+      '',
+      '/* Hide badges. */',
+      'yt-live-chat-text-message-renderer #author-badges {',
+      '  {{show-badges}}',
+      '  vertical-align: text-top !important;',
+      '}',
+      '',
+      '/* Timestamps. */',
+      'yt-live-chat-text-message-renderer #timestamp {',
+      '  {{show-timestamps}}',
+      '  color: {{timestamp-color}} !important;',
+      '  font-family: "{{timestamp-font-family}}";',
+      '  font-size: {{timestamp-font-size}}px !important;',
+      '  line-height: {{timestamp-line-height}}px !important;',
+      '}',
+      '',
+      '/* Badges. */',
+      'yt-live-chat-text-message-renderer #author-name[type="owner"],',
+      'yt-live-chat-text-message-renderer yt-live-chat-author-badge-renderer[type="owner"] {',
+      '  color: {{author-owner-color}} !important;',
+      '}',
+      '',
+      'yt-live-chat-text-message-renderer #author-name[type="moderator"],',
+      'yt-live-chat-text-message-renderer yt-live-chat-author-badge-renderer[type="moderator"] {',
+      '  color: {{author-moderator-color}} !important;',
+      '}',
+      '',
+      'yt-live-chat-text-message-renderer #author-name[type="member"],',
+      'yt-live-chat-text-message-renderer yt-live-chat-author-badge-renderer[type="member"] {',
+      '  color: {{author-member-color}} !important;',
+      '}',
+      '',
+      '/* Channel names. */',
+      'yt-live-chat-text-message-renderer #author-name {',
+      '  color: {{author-color}} !important;',
+      '  font-family: "{{author-font-family}}";',
+      '  font-size: {{author-font-size}}px !important;',
+      '  line-height: {{author-line-height}}px !important;',
+      '}',
+      '{{show-colon}}',
+      '',
+      '/* Messages. */',
+      'yt-live-chat-text-message-renderer #message,',
+      'yt-live-chat-text-message-renderer #message * {',
+      '  color: {{message-color}} !important;',
+      '  font-family: "{{message-font-family}}";',
+      '  font-size: {{message-font-size}}px !important;',
+      '  line-height: {{message-line-height}}px !important;',
+      '}',
+      '{{message-newline}}',
+      '',
+      '/* SuperChat/Fan Funding Messages. */',
+      'yt-live-chat-paid-message-renderer #author-name,',
+      'yt-live-chat-paid-message-renderer #author-name *,',
+      'yt-live-chat-legacy-paid-message-renderer #event-text,',
+      'yt-live-chat-legacy-paid-message-renderer #event-text * {',
+      '  color: {{fan-funding-first-line-color}} !important;',
+      '  font-family: "{{fan-funding-first-line-font-family}}";',
+      '  font-size: {{fan-funding-first-line-font-size}}px !important;',
+      '  line-height: {{fan-funding-first-line-line-height}}px !important;',
+      '}',
+      '',
+      'yt-live-chat-paid-message-renderer #purchase-amount,',
+      'yt-live-chat-paid-message-renderer #purchase-amount *,',
+      'yt-live-chat-legacy-paid-message-renderer #detail-text,',
+      'yt-live-chat-legacy-paid-message-renderer #detail-text * {',
+      '  color: {{fan-funding-second-line-color}} !important;',
+      '  font-family: "{{fan-funding-second-line-font-family}}";',
+      '  font-size: {{fan-funding-second-line-font-size}}px !important;',
+      '  line-height: {{fan-funding-second-line-line-height}}px !important;',
+      '}',
+      '',
+      'yt-live-chat-paid-message-renderer #content,',
+      'yt-live-chat-paid-message-renderer #content * {',
+      '  color: {{super-chat-content-color}} !important;',
+      '  font-family: "{{super-chat-content-font-family}}";',
+      '  font-size: {{super-chat-content-font-size}}px !important;',
+      '  line-height: {{super-chat-content-line-height}}px !important;',
+      '}',
+      '',
+      'yt-live-chat-paid-message-renderer {',
+      '  margin: 4px 0 !important;',
+      '}',
+      '',
+      'yt-live-chat-legacy-paid-message-renderer {',
+      '  {{show-fan-funding-background}}',
+      '}',
+      '',
+      'yt-live-chat-text-message-renderer a,',
+      'yt-live-chat-legacy-paid-message-renderer a {',
+      '  text-decoration: none !important;',
+      '}',
+      '',
+      'yt-live-chat-text-message-renderer[is-deleted],',
+      'yt-live-chat-legacy-paid-message-renderer[is-deleted] {',
+      '  display: none !important;',
+      '}',
+      '',
+      'yt-live-chat-ticker-renderer {',
+      '  background-color: transparent !important;',
+      '  box-shadow: none !important;',
+      '}',
+      '{{ticker}}',
+      '',
+      'yt-live-chat-ticker-paid-message-item-renderer,',
+      'yt-live-chat-ticker-paid-message-item-renderer *,',
+      'yt-live-chat-ticker-sponsor-item-renderer,',
+      'yt-live-chat-ticker-sponsor-item-renderer * {',
+      '  color: {{fan-funding-second-line-color}} !important;',
+      '  font-family: "{{fan-funding-second-line-font-family}}";',
+      '}',
+      '',
+      'yt-live-chat-mode-change-message-renderer, ',
+      'yt-live-chat-viewer-engagement-message-renderer, ',
+      'yt-live-chat-restricted-participation-renderer {',
+      '  display: none !important;',
+      '}',
+      '',
+      '{{animations}}'
+    ].join('\n');
+    var mustacheRegex = /{{(.*?)}}/g;
+    var getValue = function (id) {
+      var input = document.querySelector('#' + id);
+      if (input) {
+        return input.value
+      }
+      return id;
+    }
+    var isChecked = function (id) {
+      return document.querySelector('#' + id).checked;
+    }
+    var textShadow = function (x, y, color) {
+      return x + 'px ' + y + 'px ' + getValue('outline-color');
+    };
+    var callbacks = {
+      'imports': function () {
+        var map = {};
+        var arr = [];
+        ['author-font-family', 'fan-funding-first-line-font-family', 'fan-funding-second-line-font-family', 'message-font-family', 'timestamp-font-family', 'super-chat-content-font-family'].forEach(function (id) {
+          var font = getValue(id);
+          if (!map[font]) {
+            map[font] = true;
+            arr.push('@import url("https://fonts.lug.ustc.edu.cn/css?family=' + font + '");');
+          }
+        });
+        return arr.join('\n')
+      },
+      'show-outlines': function (id) {
+        if (isChecked(id)) {
+          var size = getValue('outline-size');
+          if (size == 0) {
+            return '';
+          }
+          var color = getValue('outline-color');
+          shadow = [];
+          for (var x = -size; x <= size; x += Math.ceil(size / 4)) {
+            for (var y = -size; y <= size; y += Math.ceil(size / 4)) {
+              shadow.push(textShadow(x, y, color))
+            }
+          }
+          return 'text-shadow: ' + shadow.join(',') + ';';
+        }
+        return '';
+      },
+      'outline-size': function () {
+        return isChecked('show-outlines') ? getValue('outline-size') : 0;
+      },
+      'show-avatars': function (id) {
+        if (!isChecked(id)) {
+          return 'display: none !important;'
+        }
+        return '';
+      },
+      'avatar-margin-right': function () {
+        return getValue('avatar-size') / 4;
+      },
+      'show-timestamps': function (id) {
+        if (isChecked(id)) {
+          return 'display: inline !important;'
+        }
+        return '';
+      },
+      'show-badges': function (id) {
+        if (!isChecked(id)) {
+          return 'display: none !important;';
+        }
+        return '';
+      },
+      'show-colon': function (id) {
+        if (isChecked(id)) {
+          return [
+            '',
+            'yt-live-chat-text-message-renderer #author-name::after {',
+            '  content: ":";',
+            '  margin-left: ' + getValue('outline-size') + 'px;',
+            '}',
+          ].join('\n');
+        }
+        return '';
+      },
+      'message-newline': function (id) {
+        if (isChecked(id)) {
+          return [
+            '',
+            'yt-live-chat-text-message-renderer #message {',
+            '  display: block !important;',
+            '}',
+          ].join('\n');
+        }
+        return '';
+      },
+      'show-fan-funding-background': function (id) {
+        if (isChecked(id)) {
+          return [
+            'background-color: ' + getValue('author-member-color') + ' !important;',
+            '  margin: 4px 0 !important;',
+          ].join('\n');
+        } else {
+          return [
+            'background-color: transparent !important;',
+            '  box-shadow: none !important;',
+            '  margin: 0 !important;',
+          ].join('\n');
+        }
+      },
+      'author-line-height': function () {
+        return Number(getValue('author-line-height')) || getValue('author-font-size');
+      },
+      'message-line-height': function () {
+        return Number(getValue('message-line-height')) || getValue('message-font-size');
+      },
+      'timestamp-line-height': function () {
+        return Number(getValue('timestamp-line-height')) || getValue('timestamp-font-size');
+      },
+      'fan-funding-first-line-line-height': function () {
+        return Number(getValue('fan-funding-first-line-line-height')) || getValue('fan-funding-first-line-font-size');
+      },
+      'fan-funding-second-line-line-height': function () {
+        return Number(getValue('fan-funding-second-line-line-height')) || getValue('fan-funding-second-line-font-size');
+      },
+      'super-chat-content-line-height': function () {
+        return Number(getValue('super-chat-content-line-height')) || getValue('super-chat-content-font-size');
+      },
+      'background-color': function () {
+        return 'background-color: ' + getColorWithAlpha(getValue('background-color'), getValue('background-opacity')) + ';';
+      },
+      'message-background-color': function () {
+        return getMessageColor();
+      },
+      'owner-message-background-color': function () {
+        return getMessageColor('owner');
+      },
+      'moderator-message-background-color': function () {
+        return getMessageColor('moderator');
+      },
+      'member-message-background-color': function () {
+        return getMessageColor('member');
+      },
+      'padding': function () {
+        if (isChecked('background-color-bars')) {
+          return '  padding-left: 20px !important;\n  padding-right: 4px !important;';
+        } else {
+          return '  padding-left: 4px !important;\n  padding-right: 4px !important;';
+        }
+      },
+      'ticker': function () {
+        var ret = ''
+        if (!isChecked('show-ticker')) {
+          ret += [
+            'yt-live-chat-ticker-renderer {',
+            '  display: none !important;',
+            '}',
+            '',
+          ].join('\n');
+        }
+        if (!isChecked('show-everything')) {
+          ret += [
+            'yt-live-chat-item-list-renderer {',
+            '  display: none !important;',
+            '}',
+            '',
+          ].join('\n');
+        }
+        return ret;
+      },
+      'animations': function () {
+        var ain = isChecked('animation-in');
+        var aout = isChecked('animation-out');
+        if (!ain && !aout) {
+          return '';
+        }
+
+        var inTime = Number(getValue('animation-in-time'))
+        var waitTime = Number(getValue('animation-wait-time')) * 1000
+        var outTime = Number(getValue('animation-out-time'))
+
+        var time = 0;
+        if (ain) {
+          time += inTime;
+        }
+
+        if (aout) {
+          time += waitTime;
+          time += outTime;
+        }
+
+        var keyframes = [];
+        var runningTime = 0;
+
+        if (ain) {
+          keyframes.push('0% { ' + inStyle() + ' }')
+          runningTime += inTime;
+          keyframes.push(((runningTime / time) * 100) + '% { opacity: 1; transform: none;}')
+        }
+
+        if (aout) {
+          runningTime += waitTime;
+          keyframes.push(((runningTime / time) * 100) + '% { opacity: 1; transform: none;}')
+          runningTime += outTime;
+          keyframes.push(((runningTime / time) * 100) + '% { ' + outStyle() + ' }')
+        }
+
+        return [
+          '@keyframes anim {',
+          keyframes.join('\n'),
+          '}',
+          '',
+          'yt-live-chat-text-message-renderer,',
+          'yt-live-chat-paid-message-renderer,',
+          'yt-live-chat-legacy-paid-message-renderer {',
+          '  animation: anim ' + time + 'ms;',
+          '  animation-fill-mode: both;',
+          '}',
+          ''
+        ].join('\n');
+      },
+    }
+    var slide = function (scalar) {
+      return (isChecked('animation-reverse') ? -16 : 16) * scalar;
+    }
+    var inStyle = function () {
+      var style = 'opacity: 0;';
+      if (isChecked('animation-slide')) {
+        style += ' transform: translateX(' + slide(-1) + 'px);'
+      }
+      return style;
+    }
+    var outStyle = function () {
+      var style = 'opacity: 0;';
+      if (isChecked('animation-slide')) {
+        style += ' transform: translateX(' + slide(1) + 'px);'
+      }
+      return style;
+    }
+    var getColorWithAlpha = function (color, opacity) {
+      var c = color.substring(1)
+      return 'rgba(' + parseInt(c.substring(0, 2), 16) + ',' + parseInt(c.substring(2, 4), 16) + ',' + parseInt(c.substring(4, 6), 16) + ',' + opacity + ')'
+    }
+    var getMessageColor = function (type) {
+      var typeSelector = '';
+      var prefix = '';
+      if (type) {
+        typeSelector = '[author-type="' + type + '"]';
+        prefix = type + '-';
+      }
+
+      var p = [];
+
+      var opacity = getValue(prefix + 'message-background-opacity');
+      if (opacity != 0) {
+        var color = getColorWithAlpha(getValue(prefix + 'message-background-color'), opacity);
+
+        if (isChecked('background-color-bars')) {
+          p = [
+            'yt-live-chat-text-message-renderer' + typeSelector + '::after {',
+            '  border: 2px solid ' + color + ';',
+            '  content: "";',
+            '  position: absolute;',
+            '  display: block;',
+            '  left: 8px;',
+            '  top: 4px;',
+            '  bottom: 4px;',
+            '  width: 1px;',
+            '  box-sizing: border-box;',
+            '  border-radius: 2px;',
+            '}',
+            ''
+          ];
+        } else {
+          p = [
+            'yt-live-chat-text-message-renderer' + typeSelector + ',',
+            'yt-live-chat-text-message-renderer' + typeSelector + '[is-highlighted] {',
+            '  background-color: ' + color + ' !important;',
+            '}',
+            ''
+          ];
+        }
+      } else {
+        p = ['yt-live-chat-text-message-renderer' + typeSelector + ',',
+        'yt-live-chat-text-message-renderer' + typeSelector + '[is-highlighted] {',
+          '  background-color: transparent !important;',
+          '}',
+          ''
+        ];
+      }
+      return p.join('\n');
+    }
+    var update = function (event) {
+      var style = template.replace(mustacheRegex, function (match) {
+        var id = match.substring(2, match.length - 2);
+        if (callbacks[id]) {
+          return callbacks[id](id);
+        }
+        return getValue(id);
+      });
+      document.querySelector('#output').value = style;
+      var exampleStyle = style + '#fakebody {' + callbacks['background-color']() + '}';
+
+      if (event && event.target.id.indexOf('animation') != -1) {
+        var style = '';
+        if (isChecked('animation-in')) {
+          style = inStyle();
+        }
+        document.querySelector('#example-styles').innerHTML = exampleStyle + 'yt-live-chat-text-message-renderer, yt-live-chat-legacy-paid-message-renderer, yt-live-chat-paid-message-renderer { animation: none !important; ' + style + '}';
+        window.setTimeout(function () {
+          document.querySelector('#example-styles').innerHTML = exampleStyle + 'yt-live-chat-text-message-renderer, yt-live-chat-legacy-paid-message-renderer, yt-live-chat-paid-message-renderer { animation-delay: 200ms; }';
+        }, 1);
+      } else {
+        document.querySelector('#example-styles').innerHTML = exampleStyle + 'yt-live-chat-text-message-renderer, yt-live-chat-legacy-paid-message-renderer, yt-live-chat-paid-message-renderer { animation: none !important; }';
+      }
+    }
+    var inputs = document.querySelectorAll('input');
+    inputs.forEach(function (input) {
+      input.addEventListener('change', update);
+      input.addEventListener('input', update);
+    });
+    var selects = document.querySelectorAll('select');
+    selects.forEach(function (select) {
+      fonts.forEach(function (font) {
+        var option = document.createElement('option');
+        if (font == select.dataset.default) {
+          option.selected = true;
+        }
+        option.textContent = font;
+        select.appendChild(option);
+      });
+      select.addEventListener('change', update);
+    });
+    document.querySelector('#animation-trigger').addEventListener('click', update);
+    update();
+  </script>
+
+
+
+
+
+</body>
+
+</html>

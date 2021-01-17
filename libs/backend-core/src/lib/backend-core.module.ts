@@ -31,7 +31,11 @@ function configure() {
     process.env.DISABLE_FRONTEND ?
       undefined : ServeStaticModule.forRoot({
         rootPath: join(process.cwd(), 'dist/apps/core')
-      })
+      }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'dist/apps/core/assets/css4obs'),
+      serveRoot: '/css4obs'
+    })
   ].filter(Boolean);
 }
 
