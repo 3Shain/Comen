@@ -15314,8 +15314,8 @@ yt-live-chat-app {
     display: block;
     width: 100vw;
     height: 100vh;
-    min-width: 298px;
-    min-height: 360px;
+    /* min-width: 298px; */
+    /* min-height: 360px; */
     --yt-report-form-modal-renderer-min-width: 0;
     display: var(--layout-vertical_-_display, block);
     -ms-flex-direction: var(--layout-vertical_-_-ms-flex-direction);
