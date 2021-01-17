@@ -90,17 +90,12 @@ export interface ComenConfiguration {
     roomId?: string;
 
     /**
-     * Filters (very basic)
-     */
-
-    /**
      * 
      */
     userBlacklist: number[],
     wordBlacklist: string[],
     minGiftValue: number,
     levelFilter: number, //? what level?
-    hideAvatar: boolean;
     /**
      * bits (7h -> 0l): 0 0 0 0 <member> <paid message> <sticker> <message>
      */
@@ -121,15 +116,10 @@ export interface ComenConfiguration {
 
     maxDanmakuNumber: number;
 
-    // TODO: color configrations
-    // TODO: badges configrations
-    // TODO: image assets configrations
-
     /**
      * Bilibili
      * 
      */
-
     silverGoldRatio: number,
     showGiftAutoDammaku: boolean,
     disableAvatarPreload: boolean,
@@ -147,7 +137,6 @@ export const DEFAULT_CONFIG: ComenConfiguration = {
     wordBlacklist: [],
     levelFilter: 0,
     minGiftValue: 5,
-    hideAvatar: false,
     typeFilterControlBit: 0,
 
     groupSimilar: false,

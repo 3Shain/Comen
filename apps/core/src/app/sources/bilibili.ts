@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { timeout } from 'rxjs/operators';
 import { LiveStartMessage, LiveStopMessage, SystemMessage } from '../common/message';
 import { abortable } from '../common';
+import { waitTimeout } from '../utils';
 
 @Injectable()
 export class BilibiliSource implements CommentSource {
@@ -25,14 +26,21 @@ export class BilibiliSource implements CommentSource {
         return new Observable((observer) => {
             const abortController = new AbortController();
             (async () => {
+                await waitTimeout(0);
                 let errorCount = 0;
                 while (!observer.closed) {
                     try {
+                        observer.next({
+                            type: 'system',
+                            data: {
+                                status: "FETCHING"
+                            }
+                        } as SystemMessage);
                         const resp = await this.http.get<BilibiliRoominfoResponse>(`/api/bili/getRoomInfo?roomid=${config.roomId}`).pipe(abortable(abortController)).toPromise();
                         observer.next({
                             type: 'system',
-                            data:{
-
+                            data: {
+                                status: "CONNECTING"
                             }
                         } as SystemMessage);
                         for await (const msg of connectBilibiliLiveWs({
@@ -40,37 +48,40 @@ export class BilibiliSource implements CommentSource {
                             abort: abortController,
                             token: resp.danmuInfo.token
                         }) as AsyncGenerator<BilibiliMsg, unknown, unknown>) {
+                            if (msg.cmd == "DANMU_MSG" || msg.cmd.startsWith("DANMU_MSG")) {
+                                assumeType<{ cmd: 'DANMU_MSG'; info: any[]; }>(msg);
+                                if (!config.showGiftAutoDammaku && msg.info[0][9] > 0) {
+                                    break;
+                                }
+                                observer.next({
+                                    type: 'text',
+                                    content: msg.info[1],
+                                    avatar: '',
+                                    badges: [
+                                        ...[guardType[msg.info[7]]
+                                        ].filter(Boolean) // TODO: custom badge
+                                    ],
+                                    username: msg.info[2][1],
+                                    usertype: (
+                                        (msg.info[7] > 0 ? 0x1 : 0x0) // member
+                                        | (msg.info[2][2] == 1 ? 0x2 : 0x0) // moderator
+                                        | (msg.info[2][0] == resp.roomInfo.uid ? 0x04 : 0x0) //owner
+                                    ),
+                                    platformUserId: msg.info[2][0],
+                                    platformUserExtra: {},
+                                    platformUserLevel: msg.info[4][0]
+                                } as TextMessage);
+                                continue;
+                            }
                             switch (msg.cmd) {
                                 case '__CONNECTED__':
                                     observer.next({
                                         type: 'system',
-                                        data:{
-                                            
+                                        data: {
+                                            status: "CONNECTED"
                                         }
                                     } as SystemMessage);
                                     errorCount = 0; // reset error counter
-                                    break;
-                                case 'DANMU_MSG':
-                                    if (!config.showGiftAutoDammaku && msg.info[0][9] > 0) {
-                                        break;
-                                    }
-                                    observer.next({
-                                        type: 'text',
-                                        content: msg.info[1],
-                                        avatar: '',
-                                        badges: [
-                                            ...[guardType[msg.info[7]]
-                                            ].filter(Boolean) // TODO: custom badge
-                                        ],
-                                        username: msg.info[2][1],
-                                        usertype: (
-                                            (msg.info[7] > 0 ? 0x1 : 0x0) // member
-                                            | (msg.info[2][2] == 1 ? 0x2 : 0x0) // moderator
-                                            | (msg.info[2][0] == resp.roomInfo.uid ? 0x04 : 0x0) //owner
-                                        ),
-                                        platformUserId: msg.info[2][0],
-                                        platformUserExtra: {}
-                                    } as TextMessage);
                                     break;
                                 case 'SEND_GIFT':
                                     console.log(msg);
@@ -138,12 +149,12 @@ export class BilibiliSource implements CommentSource {
                         //error occured! try to reconnect!
                         observer.next({
                             type: 'system',
-                            data:{
-                                
+                            data: {
+                                status:"ERROR"
                             }
                         } as SystemMessage);
+                        await waitTimeout(5*1000);
                         errorCount++;
-
                     }
                 }
             })();
@@ -166,6 +177,9 @@ export class BilibiliSource implements CommentSource {
                             this.http.get<{
                                 url: string
                             }>(`/api/bili/getAvatar?uid=${x.platformUserId}`).pipe(timeout(10 * 1000)).subscribe((ret) => {
+                                if (ret.url !== 'http://static.hdslb.com/images/member/noface.gif') {
+                                    ret.url = ret.url + '@48w_48h'
+                                }
                                 x.avatar = ret.url;
                                 obs.next(x);
                             });
@@ -312,4 +326,8 @@ type BilibiliRoominfoResponse = {
             webp: string;
         }[]
     }
+}
+
+function assumeType<T>(x: unknown): asserts x is T {
+    return; // ¯\_(ツ)_/¯
 }

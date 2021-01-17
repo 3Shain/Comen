@@ -8,6 +8,13 @@ import { CommentSource, SOURCE_PROVIDER } from '../../sources';
 import { commentFilter, folder, smoother, ComenMessage } from '../../common';
 import { ComenConfiguration, CSSINJECT_CONFIG_TOKEN, mergeQueryParameters, parseConfiguration, DEFAULT_CONFIG } from '../../config';
 
+const BILICHAT_SYSTEM_MESSAGE = {
+    'FETCHING':'正在获取直播间信息...',
+    'CONNECTING':'正在连接到直播间...',
+    'CONNECTED':'成功连接到直播间!',
+    'ERROR':'检测到服务器断开,尝试重连中...'
+}
+
 @Component({
     selector: 'comen-comment',
     template: `<yt-live-chat-app></yt-live-chat-app>`,
@@ -64,21 +71,22 @@ export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
             switchMap((configuration) => {
                 // TODO: safe check : does plaform exist
                 return this.sources.find(x => x.type == (configuration.platform ?? 'bilibili')).connect(configuration).pipe(
+                    filter(() => document.visibilityState == 'visible'), // this is important! because some filter depend on requestAnimationFrame will cause some weired behavior
                     commentFilter(configuration),
                     smoother(configuration),
                     folder(configuration),
                     filter((msg) => {
-                        if ('bilichat' in configuration){
-                            if(msg.type == 'system') {
+                        if ('bilichat' in configuration) {
+                            if (msg.type == 'system') {
                                 console.log(msg);
                                 this.showMessage({
                                     type: 'text',
-                                    content: 'System',
+                                    content: BILICHAT_SYSTEM_MESSAGE[msg.data.status],
                                     avatar: '/assets/bilichat_icon.png',
                                     usertype: 0b10,
                                     username: 'BILICHAT'
                                 } as TextMessage);
-                            } else if(msg.type == 'sticker') {
+                            } else if (msg.type == 'sticker') {
                                 // bilichat has no sticker type, downgrade to mock paid message
                                 this.showMessage({
                                     type: 'paid',

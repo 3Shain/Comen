@@ -1,29 +1,44 @@
 import { Observable, OperatorFunction } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { Message, TextMessage } from '@comen/gamma';
+import { TextMessage } from '@comen/gamma';
 import { ComenMessage } from './message';
 
 export function commentFilter(config: {
-    userBlacklist?: number[],
-    wordBlacklist?: string[],
-    minGiftValue: number
+    userBlacklist: number[],
+    wordBlacklist: string[],
+    minGiftValue: number,
+    levelFilter: number,
+    typeFilterControlBit: number
 }): OperatorFunction<ComenMessage, ComenMessage> {
     return (upstream) => upstream.pipe(filter(comment => {
-        if (comment.type == 'text' || comment.type == 'paid') {
-            if (config.userBlacklist) {
-                if (config.userBlacklist.indexOf(comment.platformUserId) != -1) {
-                    return false;
-                }
-            }
-            if (config.wordBlacklist) {
-                if (config.wordBlacklist.some(s => {
-                    return comment.content.indexOf(s) != -1;
-                })) {
-                    return false;
-                }
+        if ('platformUserId' in comment) {
+            if (config.userBlacklist.indexOf(comment.platformUserId) != -1) {
+                return false;
             }
         }
-        if('price' in comment&&comment.price<config.minGiftValue){
+        if ('content' in comment) {
+            if (config.wordBlacklist.some(s => {
+                return comment.content.indexOf(s) != -1;
+            })) {
+                return false;
+            }
+        }
+        if (config.levelFilter>0&&'platformUserLevel' in comment&&comment.platformUserLevel<config.levelFilter) {
+            return false;
+        }
+        if ('price' in comment && comment.price < config.minGiftValue) {
+            return false;
+        }
+        if (comment.type == 'text' && config.typeFilterControlBit & 0b1) {
+            return false;
+        }
+        if (comment.type == 'sticker' && config.typeFilterControlBit & 0b10) {
+            return false;
+        }
+        if (comment.type == 'paid' && config.typeFilterControlBit & 0b100) {
+            return false;
+        }
+        if (comment.type == 'member' && config.typeFilterControlBit & 0b1000) {
             return false;
         }
         return true;
@@ -69,7 +84,7 @@ export function folder(config: {
     groupSimilarWindow: number
 }): OperatorFunction<ComenMessage, ComenMessage> {
     return (upstream) => {
-        if(!config.groupSimilar){
+        if (!config.groupSimilar) {
             return upstream;
         }
         return new Observable(observer => {
