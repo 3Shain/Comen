@@ -1,18 +1,19 @@
 import { AfterViewInit, Component, Inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, Subject } from 'rxjs';
+import { combineLatest, config, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { GammaConfiguration, Message, MessageProvider, MESSAGE_PROVIDER, TextMessage } from '@comen/gamma';
 import { waitUntilVisible } from '../../utils/visibility';
 import { CommentSource, SOURCE_PROVIDER } from '../../sources';
 import { commentFilter, folder, smoother, ComenMessage } from '../../common';
 import { ComenConfiguration, CSSINJECT_CONFIG_TOKEN, mergeQueryParameters, parseConfiguration, DEFAULT_CONFIG } from '../../config';
+import { AnalyticsService } from '../../common/analytics.service';
 
 const BILICHAT_SYSTEM_MESSAGE = {
-    'FETCHING':'正在获取直播间信息...',
-    'CONNECTING':'正在连接到直播间...',
-    'CONNECTED':'成功连接到直播间!',
-    'ERROR':'检测到服务器断开,尝试重连中...'
+    'FETCHING': '正在获取直播间信息...',
+    'CONNECTING': '正在连接到直播间...',
+    'CONNECTED': '成功连接到直播间!',
+    'ERROR': '检测到服务器断开,尝试重连中...'
 }
 
 @Component({
@@ -46,7 +47,8 @@ export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
     constructor(
         private activatedRoute: ActivatedRoute,
         @Inject(SOURCE_PROVIDER) private sources: CommentSource[],
-        @Inject(CSSINJECT_CONFIG_TOKEN) private config$: Subject<string>
+        @Inject(CSSINJECT_CONFIG_TOKEN) private config$: Subject<string>,
+        private analytic: AnalyticsService
     ) { }
 
     ngAfterViewInit() {
@@ -57,6 +59,10 @@ export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
                     parseConfiguration<ComenConfiguration>(data, DEFAULT_CONFIG))
             }),
             tap((config) => {
+                if (config.disableAnalytics) {
+                    this.analytic.disabled = true;
+                    this.analytic.on = false;
+                }
                 this.configureGamma(config as any);
                 if ('bilichat' in config) {
                     setTimeout(() => {
@@ -65,20 +71,21 @@ export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
                             type: 'blank'
                         });
                     }, 0);
+                    this.analytic.event("Comen Compat", { roomid: config.roomId, platform: config.platform });
+                } else {
+                    this.analytic.event("Comen Usage", { roomid: config.roomId, platform: config.platform });
                 }
-                console.log(config);
             }),
-            switchMap((configuration) => {
+            switchMap((config) => {
                 // TODO: safe check : does plaform exist
-                return this.sources.find(x => x.type == (configuration.platform ?? 'bilibili')).connect(configuration).pipe(
+                return this.sources.find(x => x.type == (config.platform ?? 'bilibili')).connect(config).pipe(
                     filter(() => document.visibilityState == 'visible'), // this is important! because some filter depend on requestAnimationFrame will cause some weired behavior
-                    commentFilter(configuration),
-                    smoother(configuration),
-                    folder(configuration),
+                    commentFilter(config),
+                    smoother(config),
+                    folder(config),
                     filter((msg) => {
-                        if ('bilichat' in configuration) {
+                        if ('bilichat' in config) {
                             if (msg.type == 'system') {
-                                console.log(msg);
                                 this.showMessage({
                                     type: 'text',
                                     content: BILICHAT_SYSTEM_MESSAGE[msg.data.status],
@@ -101,11 +108,17 @@ export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
                             }
                         }
                         return true;
+                    }),
+                    tap((msg) => {
+                        if (msg.type == 'livestart') {
+                            this.analytic.event("Comen Live Start", { roomid: config.roomId, platform: config.platform });
+                        } else if (msg.type == 'livestop') {
+                            this.analytic.event("Comen Live Stop", { roomid: config.roomId, platform: config.platform });
+                        } else {
+                            this.showMessage(msg);
+                        }
                     })
                 )
-            }),
-            tap((msg) => {
-                this.showMessage(msg);
             }),
             takeUntil(this.destroy$)
         ).subscribe();

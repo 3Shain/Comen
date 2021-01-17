@@ -89,6 +89,10 @@ export interface ComenConfiguration {
     platform?: string;
     roomId?: string;
 
+    bilichat?: unknown;
+
+    disableAnalytics: boolean,
+
     /**
      * 
      */
@@ -132,6 +136,7 @@ export interface ComenConfiguration {
 
 export const DEFAULT_CONFIG: ComenConfiguration = {
 
+    disableAnalytics: false,
 
     userBlacklist: [],
     wordBlacklist: [],

@@ -12,7 +12,7 @@ export async function* connectAcfunLiveWs(options: {
     abort?: AbortController; // TODO: allow abort
 }): AsyncGenerator<unknown, number, unknown> {
     const ws = new AsyncWebSocket();
-    console.log(options);
+    // console.log(options);
     const client = new StatefulAcfunClient(options.userId, options.acSecurity, options.tickets, options.enterRoomAttach,
         options.serviceToken, options.liveId, ws);
     await client.init();

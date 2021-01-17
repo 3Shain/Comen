@@ -14,6 +14,9 @@ export class BilibiliSource implements CommentSource {
 
     readonly type = 'bilibili';
 
+    private __lastLIVECMD = 0;
+    private __lastPREPCMD = 0;
+
     constructor(private http: HttpClient) { }
 
     connect(config: {
@@ -82,9 +85,14 @@ export class BilibiliSource implements CommentSource {
                                         }
                                     } as SystemMessage);
                                     errorCount = 0; // reset error counter
+                                    if (resp.roomInfo.live_status == 1) { // TODO:
+                                        observer.next({
+                                            type: 'livestart'
+                                        } as LiveStartMessage);
+                                    }
                                     break;
                                 case 'SEND_GIFT':
-                                    console.log(msg);
+                                    // console.log(msg);
                                     if (config.silverGoldRatio > 0) {
                                         // mutate object, not a good practice but ok
                                         msg.data.coin_type = 'gold';
@@ -103,7 +111,7 @@ export class BilibiliSource implements CommentSource {
                                     } as StickerMessage);
                                     break;
                                 case 'GUARD_BUY':
-                                    console.log(msg);
+                                    // console.log(msg);
                                     observer.next({
                                         type: 'member',
                                         avatar: '',
@@ -116,7 +124,7 @@ export class BilibiliSource implements CommentSource {
                                     } as MemberMessage);
                                     break;
                                 case 'COMBO_SEND':
-                                    console.log(msg);
+                                    // console.log(msg);
                                     break;
                                 case 'SUPER_CHAT_MESSAGE_JPN':
                                     observer.next({
@@ -130,11 +138,19 @@ export class BilibiliSource implements CommentSource {
                                     } as PaidMessage);
                                     break
                                 case 'LIVE':
+                                    if(Date.now()-this.__lastLIVECMD<1000){
+                                        break; // weired behavior
+                                    }
+                                    this.__lastLIVECMD = Date.now();
                                     observer.next({
                                         type: 'livestart'
                                     } as LiveStartMessage);
                                     break;
                                 case 'PREPARING':
+                                    if(Date.now()-this.__lastPREPCMD<1000){
+                                        break; // weired behavior
+                                    }
+                                    this.__lastPREPCMD = Date.now();
                                     observer.next({
                                         type: 'livestop'
                                     } as LiveStopMessage)
@@ -150,10 +166,10 @@ export class BilibiliSource implements CommentSource {
                         observer.next({
                             type: 'system',
                             data: {
-                                status:"ERROR"
+                                status: "ERROR"
                             }
                         } as SystemMessage);
-                        await waitTimeout(5*1000);
+                        await waitTimeout(5 * 1000);
                         errorCount++;
                     }
                 }
@@ -304,7 +320,20 @@ type BilibiliMsg = {
 type BilibiliRoominfoResponse = {
     roomInfo: {
         room_id: number;
+        short_id: number;
         uid: number;
+        need_p2p: number;
+        is_hidden: boolean;
+        is_locked: boolean;
+        is_portrait: boolean;
+        live_status: number;
+        hidden_till: number;
+        lock_till: number;
+        encrypted: boolean;
+        pwd_verified: boolean;
+        live_time: number;
+        room_shield: number;
+        special_type: number;
     },
     danmuInfo: {
         token: string;

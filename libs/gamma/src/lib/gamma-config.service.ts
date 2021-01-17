@@ -31,7 +31,6 @@ export class GammaConfigService {
                 ...config,
             });
         });
-        console.log((provider as any).configureGamma);
     }
 
     getColorInfo(value: number) {

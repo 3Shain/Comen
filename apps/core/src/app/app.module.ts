@@ -4,10 +4,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterModule, UrlTree } from '@angular/router';
 import { ComenSourceModule } from './sources/source.module';
+import { AnalyticsService } from './common/analytics.service';
 
 // eslint-disable-next-line
-function APPINITIAL() {
-
+function APPINITIAL(ana: AnalyticsService) {
+  return () => { return ana.init() };
 }
 
 @Injectable()
@@ -69,27 +70,29 @@ class CompatibleRoutes implements CanActivate {
       {
         path: 'gkd/:id',
         canActivate: [CompatibleRoutes],
-        children:[]
+        children: []
       }, {
         path: 'alpha/:id',
         canActivate: [CompatibleRoutes],
-        children:[]
+        children: []
       }, {
         path: 'bilibili/:id',
         canActivate: [CompatibleRoutes],
-        children:[]
+        children: []
       }, {
         path: 'acfun/:id',
         canActivate: [CompatibleRoutes],
-        children:[]
+        children: []
       }
     ])
   ],
-  providers: [{
-    provide: APP_INITIALIZER,
-    useValue: APPINITIAL,
-    multi: true
-  }, CompatibleRoutes],
+  providers: [AnalyticsService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: APPINITIAL,
+      multi: true,
+      deps: [AnalyticsService]
+    }, CompatibleRoutes],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

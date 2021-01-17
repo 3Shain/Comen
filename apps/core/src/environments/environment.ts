@@ -4,6 +4,8 @@
 
 export const environment = {
   production: false,
+  analytics_host: null,
+  analytics_token: null
 };
 
 /*

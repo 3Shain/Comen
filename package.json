@@ -58,6 +58,7 @@
     "ng-zorro-antd": "^11.0.0",
     "pako": "^2.0.2",
     "pg": "^8.5.1",
+    "posthog-js": "^1.8.3",
     "protobufjs": "^6.10.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "~6.5.5",

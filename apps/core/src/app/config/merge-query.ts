@@ -48,11 +48,11 @@ export function mergeQueryParameters(query:any,config:ComenConfiguration){
         if(query.silverGoldRatio!=undefined){
             config.silverGoldRatio = parseInt(query.silverGoldRatio);
         }
-        if(query.disableAnalytics=='true'){
-            // TODO: analytics
-        }
     } else {
 
+    }
+    if(query.disableAnalytics == 'true'){
+        config.disableAnalytics = true;
     }
     config.platform = query.p;
     config.roomId = query.id;

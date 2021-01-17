@@ -53,7 +53,6 @@ export class AppComponent {
       }
       this.config$.next(null);
     } else {
-      console.log('nothing');
       await nextFrame();
       await nextFrame();
       this.config$.next(null);
