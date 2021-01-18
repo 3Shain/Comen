@@ -9,7 +9,7 @@ import { TextMessage } from '../message';
   // eslint-disable-next-line
   host: {
     class: 'style-scope yt-live-chat-item-list-renderer',
-    'author-type': 'member' // todo: type!
+    '[attr.author-type]': 'userType'
   }
 })
 // eslint-disable-next-line
@@ -20,6 +20,20 @@ export class TextMessageRenderer {
   readonly date = new Date();
 
   constructor(public config:GammaConfigService) {}
+
+  get userType(){
+    if(this.isOwner){
+      return "owner";
+    }
+    else if(this.isModerator){
+      return "moderator";
+    }
+    else if(this.isMember){
+      return "member";
+    } else{
+      return "";
+    }
+  }
 
   get isMember() {
     return (this.message.usertype & 1) === 1;
