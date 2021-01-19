@@ -176,7 +176,12 @@
                   "replace": "apps/node-backend/src/environments/environment.ts",
                   "with": "apps/node-backend/src/environments/environment.prod.ts"
                 }
-              ]
+              ],
+              "assets":[{
+                "glob":"**/*",
+                "input":"dist/apps/core",
+                "output":"/frontend/"
+              }]
             }
           }
         },
