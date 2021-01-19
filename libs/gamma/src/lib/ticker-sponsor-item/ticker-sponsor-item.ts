@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { SLIDEDOWN } from '../animations';
 import { MemberMessage } from '../message';
 
 @Component({
@@ -8,8 +9,12 @@ import { MemberMessage } from '../message';
   // eslint-disable-next-line
   host: {
     class: 'style-scope yt-live-chat-ticker-renderer',
-    role: 'button'
-  }
+    role: 'button',
+    '[@slideDown]':''
+  },
+  animations:[
+    SLIDEDOWN
+  ]
 })
 // eslint-disable-next-line
 export class TickerSponsorItemRenderer {
