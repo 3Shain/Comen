@@ -33,20 +33,34 @@ Comen是一个主要用于在网络直播中向观众展示当前直播间实时
     - isomprphic-danmaku-server     --- 同构弹幕，服务端only部分
 ```
 
+**调试运行**
+拉取仓库后，首先安装项目依赖
+```sh
+npm install
+```
+
+然后分别打开前端与后端的dev-server
+```
+nx serve core
+nx serve node-backend
+```
+
+现在可以对代码进行更改了。任何有关代码更改都会触发自动刷新。
+
 **我想贡献一些新功能/我想修复一些问题**
 
 本项目的主要目标是将一类实时/非实时评论流在任何兼容html5的平台上渲染出来。在抽象设计上，本项目可分成三大部分：评论源(source),过滤器(filter)和渲染器(renderer)
 
 * 我想添加一个新的平台实现
 
-        参考 apps/core/src/app/sources 下的文件。你需要实现CommentSource接口，其中connect方法就是返回一个生产Message的可观察对象。
+参考 apps/core/src/app/sources 下的文件。你需要实现CommentSource接口，其中connect方法就是返回一个生产Message的可观察对象。
 
 * 我想修改过滤相关的代码
     
-        参考 apps/core/src/app/common/filter.ts 。过滤器是通过rxjs的pipe实现的，强烈建议熟练掌握rxjs，或仅在现有的代码上修改。原理上有点类似于后端的middleware，但rxjs的可观察对象概念要复杂一些，涉及到错误处理，subscription和complete的处理。
+参考 apps/core/src/app/common/filter.ts 。过滤器是通过rxjs的pipe实现的，强烈建议熟练掌握rxjs，或仅在现有的代码上修改。原理上有点类似于后端的middleware，但rxjs的可观察对象概念要复杂一些，涉及到错误处理，subscription和complete的处理。
         另外你还可能需要参考各类Message对象的定义。他们只是单纯的数据对象，不涉及到类也没有成员函数。这些类型定义可能并不稳定。Message由source生成，经过filter后最终流向renderer。但并不是所有类型(以type字段区分的类型)都会被renderer处理。filter也有可能在中间对类型对象数据进行转换/变更。
 
 
 * 我想修改渲染相关的代码
 
-        所有渲染相关代码都在libs/gamma包内。注意本项目zone.js是关闭的(并极其不提倡使用)，所以如果想要实现动态内容渲染，需要手动处理变化检测！
+所有渲染相关代码都在libs/gamma包内。注意本项目zone.js是关闭的(并极其不提倡使用)，所以如果想要实现动态内容渲染，需要手动处理变化检测！
