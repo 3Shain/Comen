@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import * as Long from 'long';
+import { waitTimeout } from '../utils';
 
 @Injectable()
 export class AcfunSource implements CommentSource {
@@ -87,7 +88,7 @@ export class AcfunSource implements CommentSource {
                         }
                     }
                     catch (e) {
-                        throw e;
+                        await waitTimeout(5000);
                     }
                     errorCounter++;
                 }

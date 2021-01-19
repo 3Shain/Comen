@@ -1,7 +1,8 @@
-import { Message } from "@comen/gamma"
+import { Message } from '@comen/gamma'
 
 export type SystemMessage = {
     type: 'system';
+    // eslint-disable-next-line
     data: any;
 }
 

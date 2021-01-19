@@ -23,15 +23,15 @@ export class TextMessageRenderer {
 
   get userType(){
     if(this.isOwner){
-      return "owner";
+      return 'owner';
     }
     else if(this.isModerator){
-      return "moderator";
+      return 'moderator';
     }
     else if(this.isMember){
-      return "member";
+      return 'member';
     } else{
-      return "";
+      return '';
     }
   }
 

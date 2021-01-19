@@ -1,4 +1,4 @@
-import { ComenConfiguration } from "./config";
+import { ComenConfiguration } from './config';
 
 export function mergeQueryParameters(query:any,config:ComenConfiguration){
     if(query.bilichat!=undefined){

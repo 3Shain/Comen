@@ -14,11 +14,12 @@ export class BilibiliUserService {
     fetchQueue: Set<number> = new Set()
     currentFetchJob: NodeJS.Timeout = null;
 
-    interfaceUnlock: number = 0;
+    interfaceUnlock = 0;
 
     // NB: current design is not for horizontal scale! SINGLE INSTANCE ONLY!
     async fetchUserInfo(uid: number): Promise<CachedBilibiliUserInfo> {
         // determine fetch now or insert into batch
+        // eslint-disable-next-line
         while (true) {
             if (Date.now() - this.lastFetch < MINIMUM_FETCH_INTERVAL || this.interfaceUnlock > Date.now()) {
                 this.fetchQueue.add(uid);

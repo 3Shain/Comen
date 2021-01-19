@@ -1,12 +1,12 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import posthog from 'posthog-js';
-import { environment } from "../../environments/environment";
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AnalyticsService {
 
-    on: boolean = false;
-    disabled: boolean = false;
+    on = false;
+    disabled = false;
 
     init() {
         if (!environment.production) {
@@ -25,7 +25,7 @@ export class AnalyticsService {
                 disable_cookie: true,
                 autocapture: false,
                 disable_session_recording: false
-            } as any);
+            } as unknown);
             setTimeout(res,1000); // in case analytic server is down
         });
     }

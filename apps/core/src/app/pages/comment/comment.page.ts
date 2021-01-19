@@ -10,10 +10,10 @@ import { ComenConfiguration, CSSINJECT_CONFIG_TOKEN, mergeQueryParameters, parse
 import { AnalyticsService } from '../../common/analytics.service';
 
 const BILICHAT_SYSTEM_MESSAGE = {
-    'FETCHING': '正在获取直播间信息...',
-    'CONNECTING': '正在连接到直播间...',
-    'CONNECTED': '成功连接到直播间!',
-    'ERROR': '检测到服务器断开,尝试重连中...'
+    FETCHING: '正在获取直播间信息...',
+    CONNECTING: '正在连接到直播间...',
+    CONNECTED: '成功连接到直播间!',
+    ERROR: '检测到服务器断开,尝试重连中...'
 }
 
 @Component({
@@ -71,15 +71,16 @@ export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
                             type: 'blank'
                         });
                     }, 0);
-                    this.analytic.event("Comen Compat", { roomid: config.roomId, platform: config.platform });
+                    this.analytic.event('Comen Compat', { roomid: config.roomId, platform: config.platform });
                 } else {
-                    this.analytic.event("Comen Usage", { roomid: config.roomId, platform: config.platform });
+                    this.analytic.event('Comen Usage', { roomid: config.roomId, platform: config.platform });
                 }
             }),
             switchMap((config) => {
                 // TODO: safe check : does plaform exist
                 return this.sources.find(x => x.type == (config.platform ?? 'bilibili')).connect(config).pipe(
-                    filter(() => document.visibilityState == 'visible'), // this is important! because some filter depend on requestAnimationFrame will cause some weired behavior
+                    filter(() => document.visibilityState == 'visible'), 
+                    // this is important! because some filter depend on requestAnimationFrame will cause some weired behavior
                     commentFilter(config),
                     smoother(config),
                     folder(config),
@@ -111,9 +112,9 @@ export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
                     }),
                     tap((msg) => {
                         if (msg.type == 'livestart') {
-                            this.analytic.event("Comen Live Start", { roomid: config.roomId, platform: config.platform });
+                            this.analytic.event('Comen Live Start', { roomid: config.roomId, platform: config.platform });
                         } else if (msg.type == 'livestop') {
-                            this.analytic.event("Comen Live Stop", { roomid: config.roomId, platform: config.platform });
+                            this.analytic.event('Comen Live Stop', { roomid: config.roomId, platform: config.platform });
                         } else {
                             this.showMessage(msg);
                         }

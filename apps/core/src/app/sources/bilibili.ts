@@ -36,14 +36,15 @@ export class BilibiliSource implements CommentSource {
                         observer.next({
                             type: 'system',
                             data: {
-                                status: "FETCHING"
+                                status: 'FETCHING'
                             }
                         } as SystemMessage);
-                        const resp = await this.http.get<BilibiliRoominfoResponse>(`/api/bili/getRoomInfo?roomid=${config.roomId}`).pipe(abortable(abortController)).toPromise();
+                        const resp = await this.http.get<BilibiliRoominfoResponse>(`/api/bili/getRoomInfo?roomid=${config.roomId}`)
+                        .pipe(abortable(abortController)).toPromise();
                         observer.next({
                             type: 'system',
                             data: {
-                                status: "CONNECTING"
+                                status: 'CONNECTING'
                             }
                         } as SystemMessage);
                         for await (const msg of connectBilibiliLiveWs({
@@ -51,7 +52,7 @@ export class BilibiliSource implements CommentSource {
                             abort: abortController,
                             token: resp.danmuInfo.token
                         }) as AsyncGenerator<BilibiliMsg, unknown, unknown>) {
-                            if (msg.cmd == "DANMU_MSG" || msg.cmd.startsWith("DANMU_MSG")) {
+                            if (msg.cmd == 'DANMU_MSG' || msg.cmd.startsWith('DANMU_MSG')) {
                                 assumeType<{ cmd: 'DANMU_MSG'; info: any[]; }>(msg);
                                 if (!config.showGiftAutoDammaku && msg.info[0][9] > 0) {
                                     break;
@@ -81,7 +82,7 @@ export class BilibiliSource implements CommentSource {
                                     observer.next({
                                         type: 'system',
                                         data: {
-                                            status: "CONNECTED"
+                                            status: 'CONNECTED'
                                         }
                                     } as SystemMessage);
                                     errorCount = 0; // reset error counter
@@ -138,7 +139,7 @@ export class BilibiliSource implements CommentSource {
                                     } as PaidMessage);
                                     break
                                 case 'LIVE':
-                                    if(Date.now()-this.__lastLIVECMD<5000){
+                                    if (Date.now() - this.__lastLIVECMD < 30000) {
                                         break; // weired behavior
                                     }
                                     this.__lastLIVECMD = Date.now();
@@ -147,7 +148,7 @@ export class BilibiliSource implements CommentSource {
                                     } as LiveStartMessage);
                                     break;
                                 case 'PREPARING':
-                                    if(Date.now()-this.__lastPREPCMD<5000){
+                                    if (Date.now() - this.__lastPREPCMD < 30000) {
                                         break; // weired behavior
                                     }
                                     this.__lastPREPCMD = Date.now();
@@ -166,7 +167,7 @@ export class BilibiliSource implements CommentSource {
                         observer.next({
                             type: 'system',
                             data: {
-                                status: "ERROR"
+                                status: 'ERROR'
                             }
                         } as SystemMessage);
                         await waitTimeout(5 * 1000);
@@ -198,7 +199,7 @@ export class BilibiliSource implements CommentSource {
                                 }
                                 x.avatar = ret.url;
                                 obs.next(x);
-                            },()=>{
+                            }, () => {
                                 // failed to load
                                 x.avatar = 'http://static.hdslb.com/images/member/noface.gif';
                                 obs.next(x);

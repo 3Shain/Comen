@@ -11,11 +11,11 @@ import { nextFrame, easeInOutSine } from './utils';
 const ANIMATION_SMOOTH_INTERVAL = 100;
 const ANIMATION_BUFFER_INTERVAL = 500;
 const VALID_TYPE = {
-  'text': true,
-  'sticker': true,
-  'paid': true,
-  'member': true,
-  'blank': true
+  text: true,
+  sticker: true,
+  paid: true,
+  member: true,
+  blank: true
 };
 
 @Component({

@@ -1,6 +1,6 @@
 import { serializeConfiguration, parseConfiguration } from './config';
 
-describe("configuration", () => {
+describe('configuration', () => {
 
     beforeAll(() => {
         // 测试体验极差🤮
@@ -10,16 +10,16 @@ describe("configuration", () => {
         }
     })
 
-    it("should be serialized and deserialized correctly", () => {
+    it('should be serialized and deserialized correctly', () => {
         const conf = {
             var1: 0,
-            var2: "test",
+            var2: 'test',
             var3: false,
             var4: {
                 var5: 1,
                 var6: {
-                    var7: "test2",
-                    "!!!": "???"
+                    var7: 'test2',
+                    '!!!': '???'
                 }
             }
         };
@@ -30,7 +30,7 @@ describe("configuration", () => {
         expect(ret).toEqual(conf);
     });
 
-    it("should work with blob attachments",()=>{
+    it('should work with blob attachments',()=>{
         const conf = {
             blob: new Uint8Array(16).fill(0x99),
             nested: {

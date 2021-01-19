@@ -1,4 +1,4 @@
-import { Observable, OperatorFunction } from "rxjs";
+import { Observable, OperatorFunction } from 'rxjs';
 
 /**
  * For one trial observable
@@ -10,7 +10,7 @@ export function abortable<T>(abort:AbortController):OperatorFunction<T,T> {
             const handler = ()=>{
                 unsub.unsubscribe();
                 observer.error('ABORTED');
-                abort.signal.removeEventListener("abort",handler);
+                abort.signal.removeEventListener('abort',handler);
             }
             const unsub = upstream.subscribe({
                 next:(v)=>{
@@ -21,10 +21,10 @@ export function abortable<T>(abort:AbortController):OperatorFunction<T,T> {
                 },
                 complete: ()=>{
                     observer.complete();
-                    abort.signal.removeEventListener("abort",handler);
+                    abort.signal.removeEventListener('abort',handler);
                 }
             });
-            abort.signal.addEventListener("abort",handler);
+            abort.signal.addEventListener('abort',handler);
         });
     }
 }

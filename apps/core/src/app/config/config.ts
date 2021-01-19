@@ -24,7 +24,7 @@ export function parseConfiguration<T = any>(
         buffer.slice(jsonOffset, dataView.getUint8(jsonOffset))));
 
     function travelObject(obj: any) {
-        for (let props in obj) {
+        for (const props in obj) {
             if (typeof obj[props] == 'string') {
                 if ((obj[props] as string).startsWith('@@raw:')) {
                     const segs = (obj[props] as string).split(':');
@@ -56,7 +56,7 @@ export function serializeConfiguration<T>(
     // TODO: iterate attachments
     function travelObject(obj: any) {
         const cloned = {};
-        for (let props in obj) {
+        for (const props in obj) {
             if (obj[props] instanceof Uint8Array) {
                 const ziped = deflate(obj[props] as Uint8Array);
                 const uLen = ziped.byteLength;
