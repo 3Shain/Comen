@@ -177,11 +177,13 @@
                   "with": "apps/node-backend/src/environments/environment.prod.ts"
                 }
               ],
-              "assets":[{
-                "glob":"**/*",
-                "input":"dist/apps/core",
-                "output":"/frontend/"
-              }]
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "dist/apps/core",
+                  "output": "/frontend/"
+                }
+              ]
             }
           }
         },
@@ -320,6 +322,38 @@
             "packageJson": "libs/isomorphic-danmaku-server/package.json",
             "main": "libs/isomorphic-danmaku-server/src/index.ts",
             "assets": ["libs/isomorphic-danmaku-server/*.md"]
+          }
+        }
+      }
+    },
+    "common": {
+      "root": "libs/common",
+      "sourceRoot": "libs/common/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/common/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/common"],
+          "options": {
+            "jestConfig": "libs/common/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/common",
+            "tsConfig": "libs/common/tsconfig.lib.json",
+            "packageJson": "libs/common/package.json",
+            "main": "libs/common/src/index.ts",
+            "assets": ["libs/common/*.md"]
           }
         }
       }

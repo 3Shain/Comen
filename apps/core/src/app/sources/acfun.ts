@@ -1,15 +1,17 @@
 import { Observable } from 'rxjs';
-import { Message, StickerMessage, TextMessage } from '@comen/gamma';
-import { CommentSource } from './source';
+import {
+    Message, StickerMessage, TextMessage
+    , waitTimeout
+} from '@comen/common';
+import { MessageSource } from './source';
 import { connectAcfunLiveWs } from 'isomorphic-danmaku';
 import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import * as Long from 'long';
-import { waitTimeout } from '../utils';
 
 @Injectable()
-export class AcfunSource implements CommentSource {
+export class AcfunSource implements MessageSource {
 
     // avatar address cache?
     readonly type = 'acfun';

@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import { GammaConfiguration } from './gamma-config.service';
-import { Message } from './message';
+import { Message } from '@comen/common';
 
 export interface MessageProvider {
     registerOnMessage(callback:(message:Message)=>unknown):void;

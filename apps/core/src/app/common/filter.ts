@@ -1,7 +1,6 @@
 import { Observable, OperatorFunction } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { TextMessage } from '@comen/gamma';
-import { ComenMessage } from './message';
+import { TextMessage, Message } from '@comen/common';
 
 export function commentFilter(config: {
     userBlacklist: number[],
@@ -9,7 +8,7 @@ export function commentFilter(config: {
     minGiftValue: number,
     levelFilter: number,
     typeFilterControlBit: number
-}): OperatorFunction<ComenMessage, ComenMessage> {
+}): OperatorFunction<Message, Message> {
     return (upstream) => upstream.pipe(filter(comment => {
         if ('platformUserId' in comment) {
             if (config.userBlacklist.indexOf(comment.platformUserId) != -1) {
@@ -23,7 +22,7 @@ export function commentFilter(config: {
                 return false;
             }
         }
-        if (config.levelFilter>0&&'platformUserLevel' in comment&&comment.platformUserLevel<config.levelFilter) {
+        if (config.levelFilter > 0 && 'platformUserLevel' in comment && comment.platformUserLevel < config.levelFilter) {
             return false;
         }
         if ('price' in comment && comment.price < config.minGiftValue) {
@@ -47,7 +46,7 @@ export function commentFilter(config: {
 
 export function smoother(config: {
     disableSmoother: boolean,
-}): OperatorFunction<ComenMessage, ComenMessage> {
+}): OperatorFunction<Message, Message> {
     return (upstream) => {
         if (config.disableSmoother) {
             return upstream;
@@ -82,7 +81,7 @@ export function smoother(config: {
 export function folder(config: {
     groupSimilar: boolean,
     groupSimilarWindow: number
-}): OperatorFunction<ComenMessage, ComenMessage> {
+}): OperatorFunction<Message, Message> {
     return (upstream) => {
         if (!config.groupSimilar) {
             return upstream;

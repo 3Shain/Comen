@@ -8,5 +8,6 @@ module.exports = {
     '<rootDir>/libs/knexy',
     '<rootDir>/libs/isomorphic-danmaku',
     '<rootDir>/libs/isomorphic-danmaku-server',
+    '<rootDir>/libs/common',
   ],
 };

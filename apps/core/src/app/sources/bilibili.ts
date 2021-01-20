@@ -1,16 +1,17 @@
 import { Observable, OperatorFunction } from 'rxjs';
-import { Message, TextMessage, StickerMessage, PaidMessage, MemberMessage } from '@comen/gamma';
-import { CommentSource } from './source';
+import {
+    Message, TextMessage, StickerMessage, PaidMessage, MemberMessage,
+    LiveStartMessage, LiveStopMessage, SystemMessage,
+    abortable, waitTimeout
+} from '@comen/common';
+import { MessageSource } from './source';
 import { connectBilibiliLiveWs } from 'isomorphic-danmaku';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { timeout } from 'rxjs/operators';
-import { LiveStartMessage, LiveStopMessage, SystemMessage } from '../common/message';
-import { abortable } from '../common';
-import { waitTimeout } from '../utils';
 
 @Injectable()
-export class BilibiliSource implements CommentSource {
+export class BilibiliSource implements MessageSource {
 
     readonly type = 'bilibili';
 
@@ -40,7 +41,7 @@ export class BilibiliSource implements CommentSource {
                             }
                         } as SystemMessage);
                         const resp = await this.http.get<BilibiliRoominfoResponse>(`/api/bili/getRoomInfo?roomid=${config.roomId}`)
-                        .pipe(abortable(abortController)).toPromise();
+                            .pipe(abortable(abortController)).toPromise();
                         observer.next({
                             type: 'system',
                             data: {
@@ -52,6 +53,7 @@ export class BilibiliSource implements CommentSource {
                             abort: abortController,
                             token: resp.danmuInfo.token
                         }) as AsyncGenerator<BilibiliMsg, unknown, unknown>) {
+                            console.log(msg);
                             if (msg.cmd == 'DANMU_MSG' || msg.cmd.startsWith('DANMU_MSG')) {
                                 assumeType<{ cmd: 'DANMU_MSG'; info: any[]; }>(msg);
                                 if (!config.showGiftAutoDammaku && msg.info[0][9] > 0) {

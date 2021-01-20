@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { SLIDEDOWN } from '../animations';
-import { StickerMessage } from '../message';
+import { StickerMessage } from '@comen/common';
 
 @Component({
   // eslint-disable-next-line

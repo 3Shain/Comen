@@ -2,12 +2,13 @@ import { AfterViewInit, Component, Inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, config, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { GammaConfiguration, Message, MessageProvider, MESSAGE_PROVIDER, TextMessage } from '@comen/gamma';
-import { waitUntilVisible } from '../../utils/visibility';
-import { CommentSource, SOURCE_PROVIDER } from '../../sources';
-import { commentFilter, folder, smoother, ComenMessage } from '../../common';
+import { GammaConfiguration, MessageProvider, MESSAGE_PROVIDER } from '@comen/gamma';
+import { waitUntilVisible, TextMessage, Message } from '@comen/common';
+import { MessageSource, SOURCE_PROVIDER } from '../../sources';
+import { commentFilter, folder, smoother } from '../../common';
 import { ComenConfiguration, CSSINJECT_CONFIG_TOKEN, mergeQueryParameters, parseConfiguration, DEFAULT_CONFIG } from '../../config';
 import { AnalyticsService } from '../../common/analytics.service';
+import { emojiFilter } from '../../common/emoji';
 
 const BILICHAT_SYSTEM_MESSAGE = {
     FETCHING: '正在获取直播间信息...',
@@ -27,7 +28,7 @@ const BILICHAT_SYSTEM_MESSAGE = {
 // eslint-disable-next-line
 export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
 
-    private showMessage?: (msg: ComenMessage) => unknown;
+    private showMessage?: (msg: Message) => unknown;
     private configureGamma?: (config: GammaConfiguration) => unknown;
     private destroy$: Subject<void> = new Subject();
 
@@ -46,7 +47,7 @@ export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
 
     constructor(
         private activatedRoute: ActivatedRoute,
-        @Inject(SOURCE_PROVIDER) private sources: CommentSource[],
+        @Inject(SOURCE_PROVIDER) private sources: MessageSource[],
         @Inject(CSSINJECT_CONFIG_TOKEN) private config$: Subject<string>,
         private analytic: AnalyticsService
     ) { }
@@ -79,7 +80,7 @@ export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
             switchMap((config) => {
                 // TODO: safe check : does plaform exist
                 return this.sources.find(x => x.type == (config.platform ?? 'bilibili')).connect(config).pipe(
-                    filter(() => document.visibilityState == 'visible'), 
+                    filter(() => document.visibilityState == 'visible'),
                     // this is important! because some filter depend on requestAnimationFrame will cause some weired behavior
                     commentFilter(config),
                     smoother(config),
@@ -110,7 +111,9 @@ export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
                         }
                         return true;
                     }),
+                    emojiFilter(config),
                     tap((msg) => {
+                        console.log(msg);
                         if (msg.type == 'livestart') {
                             this.analytic.event('Comen Live Start', { roomid: config.roomId, platform: config.platform });
                         } else if (msg.type == 'livestop') {

@@ -4,9 +4,8 @@ import {
   Inject, Input, OnDestroy, Optional, ViewChild, ViewEncapsulation
 } from '@angular/core';
 import { GammaConfigService } from './gamma-config.service';
-import { Message } from './message';
+import { Message,nextFrame, easeInOutSine } from '@comen/common';
 import { MessageProvider, MESSAGE_PROVIDER } from './message-provider';
-import { nextFrame, easeInOutSine } from './utils';
 
 const ANIMATION_SMOOTH_INTERVAL = 100;
 const ANIMATION_BUFFER_INTERVAL = 500;
@@ -15,7 +14,8 @@ const VALID_TYPE = {
   sticker: true,
   paid: true,
   member: true,
-  blank: true
+  blank: true,
+  richtext: true
 };
 
 @Component({

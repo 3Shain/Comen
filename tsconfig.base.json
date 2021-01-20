@@ -22,7 +22,8 @@
       "isomorphic-danmaku": ["libs/isomorphic-danmaku/src"],
       "isomorphic-danmaku-server": [
         "libs/isomorphic-danmaku-server/src/index.ts"
-      ]
+      ],
+      "@comen/common": ["libs/common/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

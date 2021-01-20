@@ -1,5 +1,11 @@
 import { Observable, OperatorFunction } from 'rxjs';
 
+export function waitTimeout(time:number){
+    return new Promise((res)=>{
+        setTimeout(res,time);
+    })
+}
+
 export function waitUntilVisible<T>(): OperatorFunction<T, T> {
     return (upstream) => {
         return new Observable(observer => {
@@ -39,4 +45,14 @@ export function registerVisibilityChange(cb: (visible: boolean) => unknown) {
             document.removeEventListener('visibilitychange', handler);
         }
     }
+}
+
+export function nextFrame() {
+    return new Promise<number>((res) => {
+        requestAnimationFrame(res);
+    });
+}
+
+export function easeInOutSine(x: number): number {
+    return -(Math.cos(Math.PI * x) - 1) / 2;
 }

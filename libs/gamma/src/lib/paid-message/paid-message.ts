@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { GammaConfigService } from '../gamma-config.service';
-import { PaidMessage } from '../message';
+import { PaidMessage } from '@comen/common';
 
 @Component({
   // eslint-disable-next-line

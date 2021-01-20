@@ -1,6 +1,6 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { GammaConfigService } from '../gamma-config.service';
-import { StickerMessage } from '../message';
+import { StickerMessage } from '@comen/common';
 
 @Component({
   // eslint-disable-next-line

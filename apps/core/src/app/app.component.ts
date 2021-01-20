@@ -1,6 +1,6 @@
 import { ApplicationRef, Component, ElementRef, Inject, ViewChild, ɵdetectChanges } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { nextFrame } from '@comen/gamma'; // TODO: move to utils
+import { nextFrame } from '@comen/common';
 import { ReplaySubject, Subject } from 'rxjs';
 import { CSSINJECT_CONFIG_TOKEN } from './config';
 

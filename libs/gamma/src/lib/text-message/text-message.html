@@ -46,14 +46,18 @@
                 </ng-container>
             </span>
         </yt-live-chat-author-chip>&#8203;
-        <span id="message" dir="auto" class="style-scope yt-live-chat-text-message-renderer">{{message.content}}
-            <!-- emoji extension -->
-            <!-- <img
-            class="emoji yt-formatted-string style-scope yt-live-chat-text-message-renderer"
-            src="https://yt3.ggpht.com/TnPlJLiCqNWvUYFLZ_BqFJS0zHdzIBdZK1oy4PTBBs0iO_O3KO3_TloLQ3vsNgQu7FLdboegfw=w48-h48-c-k-nd"
-            alt=":_きゅん:" data-emoji-id="UCl_gCybOJRIgOXw6Qb4qJzQ/zwBGX4iOC42y-wPK36fADg" shared-tooltip-text=":_きゅん:"
-            id="emoji-0"> -->
-
+        <span id="message" dir="auto" class="style-scope yt-live-chat-text-message-renderer">
+            <ng-container *ngIf="isRichtext;else elseTpl">
+                <ng-container *ngFor="let node of richtext.nodes" [ngSwitch]="node.type">
+                    <img *ngSwitchCase="'emoji'"
+                        class="emoji yt-formatted-string style-scope yt-live-chat-text-message-renderer"
+                        [src]="node.url" id="emoji-0">
+                    <ng-container *ngSwitchCase="'text'">{{node.content}}</ng-container>
+                </ng-container>
+            </ng-container>
+            <ng-template #elseTpl>
+                {{message.content}}
+            </ng-template>
         </span>
     </div>
 </ng-container>

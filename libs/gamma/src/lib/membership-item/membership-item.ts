@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { MemberMessage } from '../message';
+import { MemberMessage } from '@comen/common';
 
 @Component({
   // eslint-disable-next-line

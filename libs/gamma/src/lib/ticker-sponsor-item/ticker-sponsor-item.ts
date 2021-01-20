@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { SLIDEDOWN } from '../animations';
-import { MemberMessage } from '../message';
+import { MemberMessage } from '@comen/common';
 
 @Component({
   // eslint-disable-next-line

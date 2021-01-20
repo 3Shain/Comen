@@ -42,6 +42,9 @@
                                                     <yt-live-chat-text-message-renderer [message]="queuedMsg"
                                                         *ngSwitchCase="'text'">
                                                     </yt-live-chat-text-message-renderer>
+                                                    <yt-live-chat-text-message-renderer [message]="queuedMsg"
+                                                        *ngSwitchCase="'richtext'">
+                                                    </yt-live-chat-text-message-renderer>
                                                     <yt-live-chat-paid-message-renderer [message]="queuedMsg"
                                                         *ngSwitchCase="'paid'">
                                                     </yt-live-chat-paid-message-renderer>

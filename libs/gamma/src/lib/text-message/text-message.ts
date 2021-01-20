@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { GammaConfigService } from '../gamma-config.service';
-import { TextMessage } from '../message';
+import { TextMessage, RichTextMessage } from '@comen/common';
 
 @Component({
   // eslint-disable-next-line
@@ -15,7 +15,9 @@ import { TextMessage } from '../message';
 // eslint-disable-next-line
 export class TextMessageRenderer {
 
-  @Input() message: TextMessage;
+  // to disable angular template type check : type inference is not intelligent enough
+  // eslint-disable-next-line
+  @Input() message: TextMessage | RichTextMessage | any;
 
   readonly date = new Date();
 
@@ -45,5 +47,15 @@ export class TextMessageRenderer {
 
   get isOwner() {
     return (this.message.usertype & 4) === 4;
+  }
+
+  get isRichtext(){
+    return this.message.type == 'richtext';
+  }
+
+  get richtext(){
+    // to disable angular template type check : type inference is not intelligent enough
+    // eslint-disable-next-line
+    return (this.message as RichTextMessage).richtext as any;
   }
 }
