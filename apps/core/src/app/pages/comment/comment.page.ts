@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, config, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, filter, map, retry, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { GammaConfiguration, MessageProvider, MESSAGE_PROVIDER } from '@comen/gamma';
 import { waitUntilVisible, TextMessage, Message } from '@comen/common';
 import { MessageSource, SOURCE_PROVIDER } from '../../sources';
@@ -124,6 +124,11 @@ export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
                     })
                 )
             }),
+            catchError(e=>{
+                this.analytic.event('Comen Panic',e);
+                throw e;
+            }),
+            retry(),
             takeUntil(this.destroy$)
         ).subscribe();
     }
