@@ -11,7 +11,9 @@ export async function getBilibiliRoomInfo(roomId: number, options?: {
         responseType: 'json'
     })).body as BilibiliRoomInitResponse;
 
-    const danmuInfo = (await got.get(`https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=${roomId}&type=0`,
+    const realRoomId = roomInfo.data.room_id;
+
+    const danmuInfo = (await got.get(`https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=${realRoomId}&type=0`,
         {
             responseType: 'json'
         })).body as BilibiliGetDanmuInfoResponse;
@@ -32,7 +34,7 @@ export async function getBilibiliRoomInfo(roomId: number, options?: {
     };
 
     if (options?.fetchGift) {
-        const giftInfo = (await got.get(`https://api.live.bilibili.com/xlive/web-room/v1/giftPanel/giftConfig?platform=pc&room_id=${roomId}`, {
+        const giftInfo = (await got.get(`https://api.live.bilibili.com/xlive/web-room/v1/giftPanel/giftConfig?platform=pc&room_id=${realRoomId}`, {
             responseType: 'json'
         })).body as BilibiliGiftConfigResponse;
         ret = {
@@ -41,7 +43,7 @@ export async function getBilibiliRoomInfo(roomId: number, options?: {
         }
     }
     if (options?.fetchHistoryDanmaku) {
-        const history = (await got.get(`https://api.live.bilibili.com/xlive/web-room/v1/dM/gethistory?roomid=${roomId}`, {
+        const history = (await got.get(`https://api.live.bilibili.com/xlive/web-room/v1/dM/gethistory?roomid=${realRoomId}`, {
             responseType: 'json'
         })).body as BilibiliGetHistoryResponse;
         ret = {
