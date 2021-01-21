@@ -9,6 +9,7 @@ import { connectBilibiliLiveWs } from 'isomorphic-danmaku';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { timeout } from 'rxjs/operators';
+import { AnalyticsService } from '../common/analytics.service';
 
 @Injectable()
 export class BilibiliSource implements MessageSource {
@@ -18,7 +19,8 @@ export class BilibiliSource implements MessageSource {
     private __lastLIVECMD = 0;
     private __lastPREPCMD = 0;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient,
+        private analytics:AnalyticsService) { }
 
     connect(config: {
         roomId: number,
@@ -92,6 +94,9 @@ export class BilibiliSource implements MessageSource {
                                             type: 'livestart'
                                         } as LiveStartMessage);
                                     }
+                                    break;
+                                case '__ERROR__':
+                                    this.analytics.event("Comen Panic (Bilibili)",msg.error);
                                     break;
                                 case 'SEND_GIFT':
                                     // console.log(msg);
@@ -321,6 +326,10 @@ type BilibiliMsg = {
     cmd: 'LIVE';
 } | {
     cmd: '__CONNECTED__'
+} | {
+    cmd: '__ERROR__';
+    //eslint-disable-next-line
+    error: any;
 }
 
 type BilibiliRoominfoResponse = {

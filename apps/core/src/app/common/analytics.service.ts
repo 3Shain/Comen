@@ -22,9 +22,9 @@ export class AnalyticsService {
                 },
                 api_host: 'https://analytics.3shain.com',
                 capture_pageview: false,
-                disable_cookie: true,
+                disable_cookie: false, // it's meaningless
                 autocapture: false,
-                disable_session_recording: false
+                disable_session_recording: true
             } as unknown);
             setTimeout(res,1000); // in case analytic server is down
         });

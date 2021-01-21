@@ -35,7 +35,11 @@ export async function* connectBilibiliLiveWs(options: {
                     yield data;
                 } catch (userlandError) {
                     // userland error.
-                    console.error(`[isomorphic-danmaku] Userland error occurred: ${userlandError}`)
+                    console.error(`[isomorphic-danmaku] Userland error occurred: ${userlandError}`);
+                    yield {
+                        cmd: '__ERROR__',
+                        error: userlandError
+                    }
                 }
             }
         }
