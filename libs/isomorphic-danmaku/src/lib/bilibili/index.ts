@@ -14,8 +14,8 @@ export async function* connectBilibiliLiveWs(options: {
         roomid: Number(options.roomId),
         protover: 2,
         platform: 'web',
-        clientver: '2.4.16',
-        ...(options.token ? { key: options.token } : {})
+        clientver: '1.5.15',
+        // ...(options.token ? { key: options.token } : {})
     }));
     ws.send(packageHeartbeat());
     const heartbeat = setInterval(() => {
