@@ -53,7 +53,6 @@ export class BilibiliSource implements MessageSource {
                             abort: abortController,
                             token: resp.danmuInfo.token
                         }) as AsyncGenerator<BilibiliMsg, unknown, unknown>) {
-                            console.log(msg);
                             if (msg.cmd == 'DANMU_MSG' || msg.cmd.startsWith('DANMU_MSG')) {
                                 assumeType<{ cmd: 'DANMU_MSG'; info: any[]; }>(msg);
                                 if (!config.showGiftAutoDammaku && msg.info[0][9] > 0) {

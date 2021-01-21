@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, Inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, config, Subject } from 'rxjs';
+import { combineLatest, Subject } from 'rxjs';
 import { catchError, filter, map, retry, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { GammaConfiguration, MessageProvider, MESSAGE_PROVIDER } from '@comen/gamma';
-import { waitUntilVisible, TextMessage, Message } from '@comen/common';
+import { waitUntilVisible, TextMessage, Message, RxZone } from '@comen/common';
 import { MessageSource, SOURCE_PROVIDER } from '../../sources';
 import { commentFilter, folder, smoother } from '../../common';
 import { ComenConfiguration, CSSINJECT_CONFIG_TOKEN, mergeQueryParameters, parseConfiguration, DEFAULT_CONFIG } from '../../config';
@@ -23,7 +23,7 @@ const BILICHAT_SYSTEM_MESSAGE = {
     viewProviders: [{
         provide: MESSAGE_PROVIDER,
         useExisting: CommentPage
-    }]
+    },RxZone]
 })
 // eslint-disable-next-line
 export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
@@ -49,7 +49,8 @@ export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
         private activatedRoute: ActivatedRoute,
         @Inject(SOURCE_PROVIDER) private sources: MessageSource[],
         @Inject(CSSINJECT_CONFIG_TOKEN) private config$: Subject<string>,
-        private analytic: AnalyticsService
+        private analytic: AnalyticsService,
+        private rxzone: RxZone
     ) { }
 
     ngAfterViewInit() {
@@ -129,6 +130,7 @@ export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
                 throw e;
             }),
             retry(),
+            this.rxzone.subscribeOutsideAngular(),
             takeUntil(this.destroy$)
         ).subscribe();
     }

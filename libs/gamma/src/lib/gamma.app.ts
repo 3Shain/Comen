@@ -1,7 +1,7 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef,
-  Inject, Input, OnDestroy, Optional, ViewChild, ViewEncapsulation
+  Inject, Input, NgZone, OnDestroy, Optional, ViewChild, ViewEncapsulation
 } from '@angular/core';
 import { GammaConfigService } from './gamma-config.service';
 import { Message,nextFrame, easeInOutSine } from '@comen/common';
@@ -160,7 +160,8 @@ export class GammaApp implements AfterViewInit, OnDestroy {
 
   constructor(@Optional() @Inject(MESSAGE_PROVIDER) provider: MessageProvider,
     private changeDetector: ChangeDetectorRef,
-    public config: GammaConfigService) {
+    public config: GammaConfigService,
+    public ngzone:NgZone) {
     if (provider) {
       provider.registerOnMessage(m => {
         if (document.visibilityState == 'hidden') {
@@ -176,8 +177,11 @@ export class GammaApp implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.rendererCoroutine();
-    this.tickerCoroutine();
+    this.ngzone.runOutsideAngular(()=>{
+      // for high performance!
+      this.rendererCoroutine();
+      this.tickerCoroutine();
+    });
   }
   ngOnDestroy() {
     this._destroyed = true;
