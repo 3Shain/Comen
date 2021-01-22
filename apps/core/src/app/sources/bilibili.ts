@@ -58,7 +58,7 @@ export class BilibiliSource implements MessageSource {
                             if (msg.cmd == 'DANMU_MSG' || msg.cmd.startsWith('DANMU_MSG')) {
                                 assumeType<{ cmd: 'DANMU_MSG'; info: any[]; }>(msg);
                                 if (!config.showGiftAutoDammaku && msg.info[0][9] > 0) {
-                                    break;
+                                    continue;
                                 }
                                 observer.next({
                                     type: 'text',
