@@ -164,7 +164,7 @@ export class BilibiliSource implements MessageSource {
                                     break;
                             }
                         }
-                        break; // peacefully terminated
+                        // break; // peacefully terminated
                     } catch (e) {
                         if (e == 'ABORTED') {
                             break; // peacefully terminated
