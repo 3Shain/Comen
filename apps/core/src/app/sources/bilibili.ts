@@ -96,7 +96,7 @@ export class BilibiliSource implements MessageSource {
                                     }
                                     break;
                                 case '__ERROR__':
-                                    this.analytics.event("Comen Panic (Bilibili)",msg.error);
+                                    this.analytics.event('Comen Panic (Bilibili)',msg.error);
                                     break;
                                 case 'SEND_GIFT':
                                     // console.log(msg);
