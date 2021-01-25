@@ -21,8 +21,12 @@
             "polyfills": "apps/core/src/polyfills.ts",
             "tsConfig": "apps/core/tsconfig.app.json",
             "aot": true,
-            "assets": ["apps/core/src/favicon.ico", "apps/core/src/assets"],
-            "styles": ["apps/core/src/styles.scss"],
+            "assets": ["apps/core/src/favicon.ico", "apps/core/src/assets",{
+              "glob": "**/*",
+              "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+              "output": "/assets/"
+            }],
+            "styles": ["apps/core/src/styles.scss", "apps/core/src/styles.less"],
             "scripts": [],
             "allowedCommonJsDependencies": ["protobufjs"]
           },
