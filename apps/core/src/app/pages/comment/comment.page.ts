@@ -23,7 +23,7 @@ const BILICHAT_SYSTEM_MESSAGE = {
     viewProviders: [{
         provide: MESSAGE_PROVIDER,
         useExisting: CommentPage
-    },RxZone]
+    }, RxZone]
 })
 // eslint-disable-next-line
 export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
@@ -125,8 +125,8 @@ export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
                     })
                 )
             }),
-            catchError(e=>{
-                this.analytic.event('Comen Panic',e);
+            catchError(e => {
+                this.analytic.event('Comen Panic', e);
                 throw e;
             }),
             retry(),
