@@ -26,7 +26,7 @@ export class BilibiliUserService {
                 if (this.currentFetchJob == null) {
                     this.currentFetchJob = setTimeout(async () => {
                         // this is a different context that fetchQueue is mutated.
-                        const ids = [...this.fetchQueue].splice(0, 20); // maximum size?
+                        const ids = [...this.fetchQueue].slice(0, this.fetchQueue.size > 20 ? 20 : this.fetchQueue.size); // maximum size?
 
                         this.lastFetch = Date.now();
                         const ret = (await got.get<{
@@ -95,7 +95,7 @@ export class BilibiliUserService {
                     });
                     return obj;
                 } catch (e) {
-                    this.interfaceUnlock = Date.now() + 10*60*1000; // 10 min
+                    this.interfaceUnlock = Date.now() + 10 * 60 * 1000; // 10 min
                 }
             }
         }
