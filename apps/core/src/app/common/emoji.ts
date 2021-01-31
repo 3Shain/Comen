@@ -12,7 +12,7 @@ function emojiExpressionToken(charArr: string[]): [string, string] {
     //eslint-disable-next-line
     while (true) {
         if (charArr.length == 0) {
-            return [constructed, null];
+            return [constructed, ''];
         }
         const next = charArr.shift();
         if (EMOJI_START_TOKEN.includes(next)) {

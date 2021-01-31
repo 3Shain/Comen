@@ -81,14 +81,14 @@ describe('emoji', () => {
                 content: ' 233'
             }]
         ],
-        ['（狗头（(（= =）', [
+        ['（狗头)（(（= =）（（（（（', [
             {
                 type: 'emoji',
                 url: 'goutou'
             },
             {
                 type: 'text',
-                content: '（(（= =）'
+                content: '（(（= =）（（（（（'
             }
         ]]
     ])('should parse %s', (a, b) => {
