@@ -28,39 +28,46 @@ export class BilibiliUserService {
                         // this is a different context that fetchQueue is mutated.
                         const ids = [...this.fetchQueue].slice(0, this.fetchQueue.size > 20 ? 20 : this.fetchQueue.size); // maximum size?
 
-                        this.lastFetch = Date.now();
-                        const ret = (await got.get<{
-                            data: {
-                                [key: string]: {
-                                    info: {
-                                        uid: number,
-                                        uname: string,
-                                        face: string
+                        try {
+                            this.lastFetch = Date.now();
+                            const ret = (await got.get<{
+                                data: {
+                                    [key: string]: {
+                                        info: {
+                                            uid: number,
+                                            uname: string,
+                                            face: string
+                                        }
                                     }
                                 }
+                            }>(`https://api.live.bilibili.com/user/v3/User/getMultiple?${ids.map(x => `uids[]=${x}`).join('&')
+                                }&attributes[]=info`, {
+                                headers: {
+                                    'User-Agent': ""
+                                },
+                                responseType: 'json'
+                            })).body;
+                            for (const uid in ret.data) {
+                                const user = ret.data[uid];
+                                const obj: CachedBilibiliUserInfo = {
+                                    uid: user.info.uid,
+                                    face: user.info.face,
+                                    name: user.info.uname,
+                                    refresh_time: Date.now() + REFRESH_TIME,
+                                }
+                                this.fetchQueue.delete(obj.uid);
+                                await this.cache.set(`BILI_USERINFO_${uid}`, obj, {
+                                    ttl: CACHE_TIME / 1000
+                                });
                             }
-                        }>(`https://api.live.bilibili.com/user/v3/User/getMultiple?${ids.map(x => `uids[]=${x}`).join('&')
-                            }&attributes[]=info`, {
-                            headers: {
-                                'User-Agent': ""
-                            },
-                            responseType: 'json'
-                        })).body;
-                        for (const uid in ret.data) {
-                            const user = ret.data[uid];
-                            const obj: CachedBilibiliUserInfo = {
-                                uid: user.info.uid,
-                                face: user.info.face,
-                                name: user.info.uname,
-                                refresh_time: Date.now() + REFRESH_TIME,
-                            }
-                            this.fetchQueue.delete(obj.uid);
-                            await this.cache.set(`BILI_USERINFO_${uid}`, obj, {
-                                ttl: CACHE_TIME / 1000
-                            });
+                        }
+                        catch (e) {
+                            console.error(e);
+                        }
+                        finally {
+                            this.currentFetchJob = null;
                         }
 
-                        this.currentFetchJob = null;
                     }, this.lastFetch + MINIMUM_FETCH_INTERVAL - Date.now());
                 }
                 const obj: CachedBilibiliUserInfo = {
