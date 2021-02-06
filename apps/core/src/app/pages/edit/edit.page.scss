@@ -1,0 +1,26 @@
+:host {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+
+    & > header {
+        // background: #333333;
+        height: 64px;
+        box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
+        padding: 16px;
+
+        & > #logo {
+            height: 32px;
+            color: #a16ba1;
+        }
+
+        [nz-button]{
+            margin-left: 8px;
+        }
+    }
+
+    & > comen-editor {
+        flex: 1;
+    }
+}

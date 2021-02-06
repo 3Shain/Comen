@@ -5,16 +5,31 @@ import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterModule, UrlTree } from '@angular/router';
 import { ComenSourceModule } from './sources/source.module';
 import { AnalyticsService } from './common/analytics.service';
+import { environment } from '../environments/environment';
+import { AddonMoudle } from './addon/addon.module';
 
 // eslint-disable-next-line
 function APPINITIAL(ana: AnalyticsService) {
   return () => { return ana.init() };
 }
 
+function loadScript(url: string) {
+  return new Promise(function (resolve, reject) {
+    const head = document.getElementsByTagName('head')[0]
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.addEventListener('load', function () {
+      resolve(script)
+    }, { once: true });
+    script.src = url
+    head.appendChild(script)
+  })
+}
+
 @Injectable()
 class CompatibleRoutes implements CanActivate {
   constructor(private router: Router) { }
-  canActivate(route: ActivatedRouteSnapshot): UrlTree {
+  async canActivate(route: ActivatedRouteSnapshot): Promise<UrlTree> {
     switch (route.url[0].path) {
       case 'gkd':
       case 'alpha':
@@ -48,6 +63,16 @@ class CompatibleRoutes implements CanActivate {
 
 }
 
+@Injectable()
+class DebugGuard implements CanActivate {
+  async canActivate(route: ActivatedRouteSnapshot) {
+    if (route.queryParamMap.has('load') && !environment.production) {
+      await loadScript(route.queryParamMap.get('load'));
+    }
+    return true;
+  }
+}
+
 @NgModule({
   declarations: [
     AppComponent
@@ -56,6 +81,7 @@ class CompatibleRoutes implements CanActivate {
     BrowserAnimationsModule,
     ComenSourceModule,
     HttpClientModule,
+    AddonMoudle.forRoot(),
     RouterModule.forRoot([
       {
         path: '',
@@ -64,7 +90,13 @@ class CompatibleRoutes implements CanActivate {
       },
       {
         path: 'comment',
+        canActivate: [DebugGuard],
         loadChildren: () => import('./pages/comment/comment.module').then(m => m.CommentModule)
+      },
+      {
+        path: 'edit',
+        canActivate: [DebugGuard],
+        loadChildren: () => import('./pages/edit/edit.module').then(m => m.EditModule)
       },
       /** (bilichat) compatible routes  */
       {
@@ -92,7 +124,8 @@ class CompatibleRoutes implements CanActivate {
       useFactory: APPINITIAL,
       multi: true,
       deps: [AnalyticsService]
-    }, CompatibleRoutes],
+    }, CompatibleRoutes, DebugGuard],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

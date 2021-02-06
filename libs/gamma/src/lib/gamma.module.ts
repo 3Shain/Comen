@@ -10,11 +10,13 @@ import { NzPipesModule } from 'ng-zorro-antd/pipes';
 import { TickerSponsorItemRenderer } from './ticker-sponsor-item/ticker-sponsor-item';
 import { TickerPaidMessageItemRenderer } from './ticker-paid-item/ticker-paid-item';
 import { ReactiveComponentModule } from '@ngrx/component';
+import { StyleDriverDirective } from './style-driver.directive';
 
 @NgModule({
     declarations: [GammaApp,
         TextMessageRenderer, PaidMessageRenderer, MembershipItemRenderer, PaidStickerRenderer,
-        TickerSponsorItemRenderer, TickerPaidMessageItemRenderer, TickerPaidStickerItemRenderer],
+        TickerSponsorItemRenderer, TickerPaidMessageItemRenderer, TickerPaidStickerItemRenderer,
+        StyleDriverDirective],
     imports: [
         CommonModule,
         NzPipesModule,

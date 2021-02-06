@@ -1,14 +1,13 @@
-import { AfterViewInit, Component, Inject, OnDestroy } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, Subject } from 'rxjs';
-import { catchError, filter, map, retry, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { GammaConfiguration, MessageProvider, MESSAGE_PROVIDER } from '@comen/gamma';
-import { waitUntilVisible, TextMessage, Message, RxZone } from '@comen/common';
-import { MessageSource, SOURCE_PROVIDER } from '../../sources';
+import { ComenEnvironmentHost, deserializeBase64, Message, nextFrame, RxZone, SafeAny, TextMessage, waitUntilPageVisible } from '@comen/common';
+import { of, Subject } from 'rxjs';
+import { catchError, filter, retry, takeUntil, tap } from 'rxjs/operators';
+import { OverlayContainerDirective } from '../../addon/overlay-container.directive';
 import { commentFilter, folder, smoother } from '../../common';
-import { ComenConfiguration, CSSINJECT_CONFIG_TOKEN, mergeQueryParameters, parseConfiguration, DEFAULT_CONFIG } from '../../config';
-import { AnalyticsService } from '../../common/analytics.service';
 import { emojiFilter } from '../../common/emoji';
+import { ComenConfiguration, DEFAULT_CONFIG, mergeQueryParameters } from '../../config';
+import { MessageSource, SOURCE_PROVIDER } from '../../sources';
 
 const BILICHAT_SYSTEM_MESSAGE = {
     FETCHING: '正在获取直播间信息...',
@@ -19,119 +18,149 @@ const BILICHAT_SYSTEM_MESSAGE = {
 
 @Component({
     selector: 'comen-comment',
-    template: `<yt-live-chat-app></yt-live-chat-app>`,
-    viewProviders: [{
-        provide: MESSAGE_PROVIDER,
+    template: `<ng-container overlay-container #container="overlayContainer"></ng-container>
+    <div id="comen-configuration-data" #data></div>`,
+    styles: [
+        `#comen-configuration-data {
+            display: none;
+        }`
+    ],
+    viewProviders: [RxZone, {
+        provide: ComenEnvironmentHost,
         useExisting: CommentPage
-    }, RxZone]
+    }]
 })
 // eslint-disable-next-line
-export class CommentPage implements MessageProvider, OnDestroy, AfterViewInit {
+export class CommentPage extends ComenEnvironmentHost implements OnInit, OnDestroy {
 
-    private showMessage?: (msg: Message) => unknown;
-    private configureGamma?: (config: GammaConfiguration) => unknown;
-    private destroy$: Subject<void> = new Subject();
+    @ViewChild('data', { static: true }) data: ElementRef<HTMLDivElement>;
+    @ViewChild('container', { static: true }) container: OverlayContainerDirective;
+
+    private destroy$ = new Subject<void>();
+
+    constructor(private activatedRoute: ActivatedRoute,
+        @Inject(SOURCE_PROVIDER) private sources: MessageSource[],
+        private rxzone: RxZone) {
+        super();
+    }
+
+    get addonTarget() {
+        return this.activatedRoute.snapshot.params.addon ?? 'gamma';
+    }
+
+    message$: Subject<Message> = new Subject();
+    legacyConfig$: Subject<ComenConfiguration> = new Subject();
+
+    async ngOnInit() {
+        await waitUntilPageVisible();
+        this.container.bootstrap(this.addonTarget);
+        // init element?
+        const queryParams = this.activatedRoute.snapshot.queryParams;
+        // Query parameters are not expected to change. Any change is not responsed 
+        // unless component is fully reconstructed.
+        const injectedConfiguration = await this.initConfig();
+        const globalConfig = mergeQueryParameters(queryParams, {
+            ...DEFAULT_CONFIG,
+            ...injectedConfiguration?.['@@general']
+        });
+
+        this.legacyConfig$.next(globalConfig);
+        if ('bilichat' in globalConfig) {
+            setTimeout(() => {
+                // here showMessage is expected not undefined!
+                this.message$.next({
+                    type: 'blank'
+                });
+            }, 0);
+        }
+        this.sources.find(x => x.type == (globalConfig.platform ?? 'bilibili')).connect(globalConfig).pipe(
+            filter(() => document.visibilityState == 'visible'),
+            // this is important! because some filter depend on requestAnimationFrame will cause some weired behavior
+            commentFilter(globalConfig),
+            smoother(globalConfig),
+            folder(globalConfig),
+            filter((msg) => {
+                if ('bilichat' in globalConfig) {
+                    if (msg.type == 'system') {
+                        this.message$.next({
+                            type: 'text',
+                            content: BILICHAT_SYSTEM_MESSAGE[msg.data.status],
+                            avatar: '/assets/bilichat_icon.png',
+                            usertype: 0b10,
+                            username: 'BILICHAT'
+                        } as TextMessage);
+                    } else if (msg.type == 'sticker') {
+                        // bilichat has no sticker type, downgrade to mock paid message
+                        this.message$.next({
+                            type: 'paid',
+                            itemInfo: msg.itemInfo,
+                            price: msg.price,
+                            content: null,
+                            avatar: msg.avatar,
+                            username: msg.username,
+                            platformUserId: msg.platformUserId
+                        });
+                        return false;
+                    }
+                }
+                return true;
+            }),
+            emojiFilter(globalConfig),
+            tap((msg) => {
+                this.message$.next(msg);
+            }),
+            catchError(e => {
+                if (e == 'NOT_FOUND') {
+                    console.error('ADDON NOT FOUND');// TODO: Error UI
+                    return of();
+                }
+                console.error(e);
+                throw e;
+            }),
+            retry(), //TODO: endless retry will cause stackoverflow
+            this.rxzone.subscribeOutsideAngular(),
+            takeUntil(this.destroy$)
+        ).subscribe();
+    }
 
     ngOnDestroy() {
         this.destroy$.next();
         this.destroy$.complete();
     }
 
-    registerOnMessage(fnMsg: (msg: Message) => unknown) {
-        this.showMessage = fnMsg;
+    message() {
+        return this.message$;
     }
 
-    registerOnConfiguration(fn: any) {
-        this.configureGamma = fn;
+    config(section: string) {
+        if (section == '__legacy__') {
+            return this.legacyConfig$;
+        }
+        return of({}); //temp workaround
     }
 
-    constructor(
-        private activatedRoute: ActivatedRoute,
-        @Inject(SOURCE_PROVIDER) private sources: MessageSource[],
-        @Inject(CSSINJECT_CONFIG_TOKEN) private config$: Subject<string>,
-        private analytic: AnalyticsService,
-        private rxzone: RxZone
-    ) { }
+    variantPipe(section: string) {
+        return of(null); //temp workaround
+    }
 
-    ngAfterViewInit() {
-        combineLatest([this.activatedRoute.queryParams, this.config$]).pipe(
-            waitUntilVisible(), // actully not expect to be executed twice!
-            map(([query, data]) => {
-                return mergeQueryParameters(query,
-                    parseConfiguration<ComenConfiguration>(data, DEFAULT_CONFIG))
-            }),
-            tap((config) => {
-                if (config.disableAnalytics) {
-                    this.analytic.disabled = true;
-                    this.analytic.on = false;
+    assetUrl(id: string) {
+        return '';
+    }
+
+    async initConfig() {
+        // config in css
+        if ('obsstudio' in window) {
+            let retryCount = 0;
+            while (retryCount < 60) {
+                await nextFrame();
+                const ret = getComputedStyle(this.data.nativeElement, ':after').content;
+                if (ret != 'none') {
+                    return deserializeBase64(ret.substring(1, ret.length - 1));
                 }
-                this.configureGamma(config as any);
-                if ('bilichat' in config) {
-                    setTimeout(() => {
-                        // here showMessage is expected not undefined!
-                        this.showMessage({
-                            type: 'blank'
-                        });
-                    }, 0);
-                    this.analytic.event('Comen Compat', { roomid: config.roomId, platform: config.platform });
-                } else {
-                    this.analytic.event('Comen Usage', { roomid: config.roomId, platform: config.platform });
-                }
-            }),
-            switchMap((config) => {
-                // TODO: safe check : does plaform exist
-                return this.sources.find(x => x.type == (config.platform ?? 'bilibili')).connect(config).pipe(
-                    filter(() => document.visibilityState == 'visible'),
-                    // this is important! because some filter depend on requestAnimationFrame will cause some weired behavior
-                    commentFilter(config),
-                    smoother(config),
-                    folder(config),
-                    filter((msg) => {
-                        if ('bilichat' in config) {
-                            if (msg.type == 'system') {
-                                this.showMessage({
-                                    type: 'text',
-                                    content: BILICHAT_SYSTEM_MESSAGE[msg.data.status],
-                                    avatar: '/assets/bilichat_icon.png',
-                                    usertype: 0b10,
-                                    username: 'BILICHAT'
-                                } as TextMessage);
-                            } else if (msg.type == 'sticker') {
-                                // bilichat has no sticker type, downgrade to mock paid message
-                                this.showMessage({
-                                    type: 'paid',
-                                    itemInfo: msg.itemInfo,
-                                    price: msg.price,
-                                    content: null,
-                                    avatar: msg.avatar,
-                                    username: msg.username,
-                                    platformUserId: msg.platformUserId
-                                });
-                                return false;
-                            }
-                        }
-                        return true;
-                    }),
-                    emojiFilter(config),
-                    tap((msg) => {
-                        console.log(msg);
-                        if (msg.type == 'livestart') {
-                            this.analytic.event('Comen Live Start', { roomid: config.roomId, platform: config.platform });
-                        } else if (msg.type == 'livestop') {
-                            this.analytic.event('Comen Live Stop', { roomid: config.roomId, platform: config.platform });
-                        } else {
-                            this.showMessage(msg);
-                        }
-                    })
-                )
-            }),
-            catchError(e => {
-                this.analytic.event('Comen Panic', e);
-                throw e;
-            }),
-            retry(),
-            this.rxzone.subscribeOutsideAngular(),
-            takeUntil(this.destroy$)
-        ).subscribe();
+                retryCount++;
+            }
+            return {};
+        }
+        return {};
     }
 }

@@ -1,0 +1,32 @@
+.indent {
+    width: 24px;
+    display: inline-block;
+}
+
+:host {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+    box-shadow: -6px 0 16px -8px rgba(0,0,0,.15);
+    // border-right: solid 1px #7f7f7f;
+}
+
+.node {
+    &:hover {
+        background-color: #eee;
+    }
+    &>i[nz-icon]{
+        margin-right: 8px;
+    }
+    margin-bottom: 4px;
+    padding: 4px 16px;
+    cursor: pointer;
+    color: #333333;
+    transition: background-color 0.2s ease;
+
+    &.active {
+        background-color: #a16ba1;
+        color: #ffffff;
+    }
+}

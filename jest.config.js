@@ -9,5 +9,6 @@ module.exports = {
     '<rootDir>/libs/isomorphic-danmaku',
     '<rootDir>/libs/isomorphic-danmaku-server',
     '<rootDir>/libs/common',
-  ],
+    '<rootDir>/libs/editor'
+  ]
 };

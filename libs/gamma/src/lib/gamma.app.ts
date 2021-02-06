@@ -1,11 +1,12 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef,
-  Inject, Input, NgZone, OnDestroy, Optional, ViewChild, ViewEncapsulation
+  Input, NgZone, OnDestroy, Optional, ViewChild, ViewEncapsulation
 } from '@angular/core';
 import { GammaConfigService } from './gamma-config.service';
-import { Message,nextFrame, easeInOutSine } from '@comen/common';
-import { MessageProvider, MESSAGE_PROVIDER } from './message-provider';
+import { Message, nextFrame, easeInOutSine, ComenEnvironmentHost } from '@comen/common';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 const ANIMATION_SMOOTH_INTERVAL = 100;
 const ANIMATION_BUFFER_INTERVAL = 500;
@@ -33,6 +34,8 @@ const VALID_TYPE = {
 export class GammaApp implements AfterViewInit, OnDestroy {
 
   private _destroyed = false;
+
+  private _destroyed$ = new Subject<void>();
 
   @ViewChild('offset') offset: ElementRef<HTMLDivElement>;
   @ViewChild('items') items: ElementRef<HTMLDivElement>;
@@ -101,6 +104,10 @@ export class GammaApp implements AfterViewInit, OnDestroy {
           }
           lastItemInserted = performance.now();
         }
+      } else {
+        // these code matters while edit mode!
+        const itemsHeight = this.items.nativeElement.offsetHeight; //read
+        this.offset.nativeElement.setAttribute('style', `height: ${itemsHeight}px`); //write
       }
       await nextFrame();
     }
@@ -158,12 +165,12 @@ export class GammaApp implements AfterViewInit, OnDestroy {
     }
   }
 
-  constructor(@Optional() @Inject(MESSAGE_PROVIDER) provider: MessageProvider,
+  constructor(@Optional() host: ComenEnvironmentHost,
     private changeDetector: ChangeDetectorRef,
     public config: GammaConfigService,
-    public ngzone:NgZone) {
-    if (provider) {
-      provider.registerOnMessage(m => {
+    public ngzone: NgZone) {
+    if (host) {
+      host.message().pipe(takeUntil(this._destroyed$)).subscribe(m => {
         if (document.visibilityState == 'hidden') {
           return;
         }
@@ -177,14 +184,17 @@ export class GammaApp implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.ngzone.runOutsideAngular(()=>{
+    this.ngzone.runOutsideAngular(() => {
       // for high performance!
       this.rendererCoroutine();
       this.tickerCoroutine();
     });
   }
+
   ngOnDestroy() {
     this._destroyed = true;
+    this._destroyed$.next();
+    this._destroyed$.complete();
   }
 }
 

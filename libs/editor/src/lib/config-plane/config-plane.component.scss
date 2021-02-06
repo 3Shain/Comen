@@ -1,0 +1,18 @@
+
+:host {
+    position: absolute;    
+    width: 100%;
+    height: 100%;
+    padding: 16px;    
+    box-shadow: -6px 0 16px -8px rgba(0,0,0,.15);
+}
+
+.variant {
+    margin: 32px 0;
+    padding-top: 16px;
+    border-top: #ddd 1px dashed;
+
+    &>comen-config-condition {
+        margin-bottom: 16px;
+    }
+}

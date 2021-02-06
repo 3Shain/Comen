@@ -8,7 +8,7 @@
 Comen是一个主要用于在网络直播中向观众展示当前直播间实时评论流的工具。
 
 ### 主要特性
-* 多平台支持：默认提供了Acfun，Bilibili的接入实现。合理的抽象低耦合设计使得新平台的接入也很容易。
+* 多平台支持：默认提供了Acfun与Bilibili的接入实现。合理的抽象低耦合设计使得新平台的接入也很容易。
 * 高可靠性：不只是一个爱好项目。原项目已运行两年的时间，积累了各种对用户体验和异常处理的优化。
 * 兼容Youtube评论栏样式，只需修改URL就能迁移。
 * <span style="color:#7f7f7f">高度自定义 (计划中,TBD)</span>
@@ -28,8 +28,9 @@ Comen是一个主要用于在网络直播中向观众展示当前直播间实时
     - node-backend    --- 后端的node(cli)包装
 - libs
     - backend-core    --- 后端的可嵌入式实现
-    - common          --- 常用与扩展代码
-    - gamma           --- 兼容Youtube的评论栏渲染器(Angular组件库)
+    - common          --- 公共代码库
+    - editor          --- 样式编辑器(Angular)
+    - gamma           --- 兼容Youtube样式表的评论栏渲染器(Angular)
     - isomorphic-danmaku            --- 同构弹幕，实现了acfun、bilibili的ws连接
     - isomprphic-danmaku-server     --- 同构弹幕，服务端only部分
 ```

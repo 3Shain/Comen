@@ -1,5 +1,8 @@
 import { Observable, OperatorFunction } from 'rxjs';
 
+// eslint-disable-next-line
+export type SafeAny = any;
+
 export function waitTimeout(time:number){
     return new Promise((res)=>{
         setTimeout(res,time);
@@ -24,6 +27,21 @@ export function waitUntilVisible<T>(): OperatorFunction<T, T> {
             })
         })
     }
+}
+
+export function waitUntilPageVisible(): Promise<void> {
+    return new Promise((res)=>{
+        if(document.visibilityState=='visible'){
+            res();
+        } else {
+            const teardown = registerVisibilityChange(v=>{
+                if(v){
+                    res();
+                    teardown();
+                }
+            })
+        }
+    });
 }
 
 export function registerVisibilityChange(cb: (visible: boolean) => unknown) {

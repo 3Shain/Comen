@@ -1,7 +1,8 @@
-import { Inject, Injectable, Optional } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { ComenEnvironmentHost } from '@comen/common';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { BLUE, ColorInfo, CYAN, MAGNET, ORANGE, RED, YELLOW, YELLOW_GREEN } from './consts';
-import { MessageProvider, MESSAGE_PROVIDER } from './message-provider';
 
 export interface GammaConfiguration {
     hideTimestamp: boolean;
@@ -9,22 +10,28 @@ export interface GammaConfiguration {
     disableSmoother: boolean;
 }
 
-export const DEFAULT_GAMMA_CONFIGURATION:GammaConfiguration = {
+export const DEFAULT_GAMMA_CONFIGURATION: GammaConfiguration = {
     hideTimestamp: false,
     tickerDisplayThreshold: 50,
     disableSmoother: false
 }
 
+/**
+ * Legacy configuration
+ */
 @Injectable()
 export class GammaConfigService {
 
+
+    destroy$ = new Subject<void>();
     //mutable :ascending order
     private colorInfoList = [CYAN, YELLOW_GREEN, YELLOW, ORANGE, MAGNET, RED].sort((a, b) => a.price_limit - b.price_limit);
 
+    // TODO: remove
     current$: BehaviorSubject<GammaConfiguration> = new BehaviorSubject(DEFAULT_GAMMA_CONFIGURATION);
 
-    constructor(@Optional() @Inject(MESSAGE_PROVIDER) provider: MessageProvider){
-        provider?.registerOnConfiguration((config)=>{
+    constructor(host: ComenEnvironmentHost) {
+        host.config("__legacy__").pipe(takeUntil(this.destroy$)).subscribe(config => {
             // TODO: validate
             this.current$.next({
                 ...DEFAULT_GAMMA_CONFIGURATION,
@@ -33,10 +40,15 @@ export class GammaConfigService {
         });
     }
 
+    ngOnDestroy() {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
     getColorInfo(value: number) {
-        let lastColorInfo:ColorInfo = BLUE;
-        for(const info of this.colorInfoList){
-            if(value>=info.price_limit){
+        let lastColorInfo: ColorInfo = BLUE;
+        for (const info of this.colorInfoList) {
+            if (value >= info.price_limit) {
                 lastColorInfo = info;
             } else {
                 break;
@@ -45,7 +57,7 @@ export class GammaConfigService {
         return lastColorInfo;
     }
 
-    setColorInfos(colorInfos: ColorInfo[]){
+    setColorInfos(colorInfos: ColorInfo[]) {
         this.colorInfoList = colorInfos.sort((a, b) => a.price_limit - b.price_limit);
     }
 }

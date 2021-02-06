@@ -1,4 +1,4 @@
-import { serializeConfiguration, parseConfiguration } from './config';
+import { serializeObject, deserializeBase64 } from './base64';
 
 describe('configuration', () => {
 
@@ -24,13 +24,13 @@ describe('configuration', () => {
             }
         };
 
-        const serialized = serializeConfiguration(conf);
-        const ret = parseConfiguration<typeof conf>(serialized, null);
+        const serialized = serializeObject(conf);
+        const ret = deserializeBase64<typeof conf>(serialized);
 
         expect(ret).toEqual(conf);
     });
 
-    it('should work with blob attachments',()=>{
+    it('should work with blob attachments', () => {
         const conf = {
             blob: new Uint8Array(16).fill(0x99),
             nested: {
@@ -38,10 +38,9 @@ describe('configuration', () => {
             }
         };
 
-        const serialized = serializeConfiguration(conf);
-        console.log(serialized);
-        const ret = parseConfiguration<any>(serialized,{});
-        
+        const serialized = serializeObject(conf);
+        const ret = deserializeBase64<any>(serialized);
+
         expect(ret).toEqual(conf);
     })
 })

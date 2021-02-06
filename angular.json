@@ -21,14 +21,18 @@
             "polyfills": "apps/core/src/polyfills.ts",
             "tsConfig": "apps/core/tsconfig.app.json",
             "aot": true,
-            "assets": ["apps/core/src/favicon.ico", "apps/core/src/assets",{
-              "glob": "**/*",
-              "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
-              "output": "/assets/"
-            }],
-            "styles": ["apps/core/src/styles.scss", "apps/core/src/styles.less"],
+            "assets": [
+              "apps/core/src/favicon.ico",
+              "apps/core/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              }
+            ],
+            "styles": ["apps/core/src/styles.less"],
             "scripts": [],
-            "allowedCommonJsDependencies": ["protobufjs"]
+            "allowedCommonJsDependencies": ["protobufjs", "escodegen"]
           },
           "configurations": {
             "production": {
@@ -361,6 +365,31 @@
           }
         }
       }
+    },
+    "editor": {
+      "projectType": "library",
+      "root": "libs/editor",
+      "sourceRoot": "libs/editor/src",
+      "prefix": "comen",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/editor/src/**/*.ts",
+              "libs/editor/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/editor"],
+          "options": {
+            "jestConfig": "libs/editor/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {
@@ -384,6 +413,9 @@
     },
     "@nrwl/angular:library": {
       "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
     }
   },
   "defaultProject": "core"

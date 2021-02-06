@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { GammaModule } from '@comen/gamma';
+import { COMMENT_CONFIGURATION, GammaModule, GammaApp } from '@comen/gamma';
+import { AddonService } from '../../addon/addon.service';
+import { AddonMoudle } from '../../addon/addon.module';
 import { CommentPage } from './comment.page';
 
 
@@ -10,6 +12,7 @@ import { CommentPage } from './comment.page';
     imports: [
         CommonModule,
         GammaModule,
+        AddonMoudle,
         RouterModule.forChild([{
             path: '', //compatiability
             component: CommentPage
@@ -17,4 +20,11 @@ import { CommentPage } from './comment.page';
     ]
 })
 export class CommentModule {
+    constructor(addon: AddonService) {
+        addon.registerBuiltinOverlay({
+            name: 'gamma',
+            displayName: 'Gamma',
+            configuration: COMMENT_CONFIGURATION
+        }, GammaApp);
+    }
 }
