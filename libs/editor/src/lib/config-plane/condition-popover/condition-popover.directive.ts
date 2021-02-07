@@ -1,14 +1,14 @@
-import { Overlay } from "@angular/cdk/overlay";
-import { ComponentPortal } from "@angular/cdk/portal";
+import { Overlay } from '@angular/cdk/overlay';
+import { ComponentPortal } from '@angular/cdk/portal';
 import {
     Directive, ElementRef, EventEmitter, HostListener,
     Injector, Input, Output, ViewContainerRef
-} from "@angular/core";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
-import { formatConditionString, VariantCondition, VariantProperty } from "@comen/common";
-import { merge } from "rxjs";
-import { map } from "rxjs/operators";
-import { ConditionPopoverComponent, VARIANT_CURRENT_VALUE, VARIANT_PROPERTIES } from "./condition-popover.component";
+} from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { formatConditionString, SafeAny, VariantCondition, VariantProperty } from '@comen/common';
+import { merge } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ConditionPopoverComponent, VARIANT_CURRENT_VALUE, VARIANT_PROPERTIES } from './condition-popover.component';
 
 @Directive({
     selector: '*[conditionPopover]',
@@ -25,15 +25,15 @@ export class ConditionPopoverDirective implements ControlValueAccessor {
         private inj: Injector) { }
 
     @Input() variantProperties: VariantProperty[] = [{
-        type: "text",
-        displayName: "测试属性1",
-        "x-icon": "user",
-        name: "test1"
+        type: 'text',
+        displayName: '测试属性1',
+        'x-icon': 'user',
+        name: 'test1'
     }, {
-        type: "number",
-        displayName: "测试属性2",
-        "x-icon": "user",
-        name: "test2"
+        type: 'number',
+        displayName: '测试属性2',
+        'x-icon': 'user',
+        name: 'test2'
     }];
 
     @Output() input = new EventEmitter<VariantCondition>();
@@ -48,10 +48,10 @@ export class ConditionPopoverDirective implements ControlValueAccessor {
                 [{
                     offsetX: -10,
                     offsetY: 6,
-                    originX: "center",
-                    originY: "bottom",
+                    originX: 'center',
+                    originY: 'bottom',
                     overlayX: 'start',
-                    overlayY: "top"
+                    overlayY: 'top'
                 }]
             ),
         });
@@ -91,8 +91,8 @@ export class ConditionPopoverDirective implements ControlValueAccessor {
         this.element.nativeElement.textContent = formatConditionString(value, this.variantProperties)
     }
 
-    changeCallback?: Function;
-    registerOnChange(change: Function) {
+    changeCallback?: SafeAny;
+    registerOnChange(change: SafeAny) {
         this.changeCallback = change;
     }
 

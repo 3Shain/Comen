@@ -14,16 +14,24 @@ import { ConfigurationSection, PropertySchema, SafeAny } from '@comen/common';
 })
 export class ConfigBlockComponent implements OnInit, ControlValueAccessor {
 
-  constructor(
-    private fb: FormBuilder,
-    private changeDetector: ChangeDetectorRef) { }
-
+  allVisiable = false;
+  _visibleProps: {
+    [key: string]: PropertySchema
+  } = {};
+  _invisibleProps: {
+    [key: string]: PropertySchema
+  } = {};
 
   @Input() sectionSetting: ConfigurationSection;
 
   propertiesFormGroup: FormGroup;
 
   addFromControl = this.fb.control(null);
+
+  constructor(
+    private fb: FormBuilder,
+    private changeDetector: ChangeDetectorRef) { }
+
 
   ngOnInit(): void {
     this.propertiesFormGroup = this.fb.group(
@@ -50,14 +58,6 @@ export class ConfigBlockComponent implements OnInit, ControlValueAccessor {
       this.allVisiable = true;
     }
   }
-
-  allVisiable: boolean = false;
-  _visibleProps: {
-    [key: string]: PropertySchema
-  } = {};
-  _invisibleProps: {
-    [key: string]: PropertySchema
-  } = {};
 
   trackFn<K, V>(node: KeyValue<K, V>) {
     return node.key;
@@ -90,7 +90,7 @@ export class ConfigBlockComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  registerOnChange(callback: Function) {
+  registerOnChange(callback: (v:SafeAny) => void) {
     this.propertiesFormGroup.valueChanges.subscribe(props => {
       callback(Object.fromEntries(Object.entries(props).filter(([prop]) => {
         return this._visibleProps[prop] != undefined;

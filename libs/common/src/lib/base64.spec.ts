@@ -1,12 +1,13 @@
 import { serializeObject, deserializeBase64 } from './base64';
+import { TextDecoder, TextEncoder } from 'util';
 
 describe('configuration', () => {
 
     beforeAll(() => {
         // 测试体验极差🤮
         if (typeof TextEncoder === 'undefined') {
-            (global as any).TextEncoder = require('util').TextEncoder;
-            (global as any).TextDecoder = require('util').TextDecoder;
+            (global as any).TextEncoder = TextEncoder;
+            (global as any).TextDecoder = TextDecoder;
         }
     })
 

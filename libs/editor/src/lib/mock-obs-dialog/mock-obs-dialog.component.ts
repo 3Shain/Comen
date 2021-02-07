@@ -5,7 +5,7 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
   templateUrl: './mock-obs-dialog.component.html',
   styleUrls: ['./mock-obs-dialog.component.scss']
 })
-export class MockObsDialogComponent {
+export class MockObsDialogComponent implements OnInit {
 
   @Input() cssInfo: string;
 
@@ -13,17 +13,15 @@ export class MockObsDialogComponent {
 
   @Input() size: [number, number] = [800, 600];
 
-  @ViewChild('view') view: ElementRef<HTMLDivElement>;
-  @ViewChild('container') container: ElementRef<HTMLDivElement>;
-
-  constructor() { }
+  @ViewChild('view', { static: true }) view: ElementRef<HTMLDivElement>;
+  @ViewChild('container', { static: true }) container: ElementRef<HTMLDivElement>;
 
   clickCss(event: Event) {
     (event.target as HTMLTextAreaElement).select();
     document.execCommand('copy');
   }
 
-  ngAfterViewInit() {
+  ngOnInit() {
     const rect = this.view.nativeElement.getBoundingClientRect();
     const ratio = rect.width / this.size[0];
     const ratio2 = rect.height / this.size[1];

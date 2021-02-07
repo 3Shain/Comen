@@ -4,7 +4,7 @@ import {
   Input, NgZone, OnDestroy, Optional, ViewChild, ViewEncapsulation
 } from '@angular/core';
 import { GammaConfigService } from './gamma-config.service';
-import { Message, nextFrame, easeInOutSine, ComenEnvironmentHost } from '@comen/common';
+import { Message, nextFrame, easeInOutSine, ComenEnvironmentHost, SafeAny } from '@comen/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -177,7 +177,7 @@ export class GammaApp implements AfterViewInit, OnDestroy {
         if (m.type == 'fold') {
 
         } else if (m.type in VALID_TYPE) {
-          this.bufferQueue.push(m as any);
+          this.bufferQueue.push(m as SafeAny);
         }
       });
     }

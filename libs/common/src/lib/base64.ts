@@ -23,7 +23,7 @@ export function deserializeBase64<T = SafeAny>(
     const json = JSON.parse(new TextDecoder().decode(
         buffer.slice(jsonOffset, dataView.getUint32(jsonOffset))));
 
-    function travelObject(obj: any) {
+    function travelObject(obj: SafeAny) {
         for (const props in obj) {
             if (typeof obj[props] == 'string') {
                 if ((obj[props] as string).startsWith('@@raw:')) {
@@ -51,7 +51,7 @@ export function serializeObject<T>(
     let rawLen = 0;
 
     // TODO: iterate attachments
-    function travelObject(obj: any) {
+    function travelObject(obj: SafeAny) {
         const cloned = {};
         for (const props in obj) {
             if (obj[props] instanceof Uint8Array) {

@@ -2,7 +2,7 @@ import { Observable, OperatorFunction } from 'rxjs';
 import {
     Message, TextMessage, StickerMessage, PaidMessage, MemberMessage,
     LiveStartMessage, LiveStopMessage, SystemMessage,
-    abortable, waitTimeout
+    abortable, waitTimeout, SafeAny
 } from '@comen/common';
 import { MessageSource } from './source';
 import { connectBilibiliLiveWs } from 'isomorphic-danmaku';
@@ -20,7 +20,7 @@ export class BilibiliSource implements MessageSource {
     private __lastPREPCMD = 0;
 
     constructor(private http: HttpClient,
-        private analytics:AnalyticsService) { }
+        private analytics: AnalyticsService) { }
 
     connect(config: {
         roomId: number,
@@ -33,7 +33,6 @@ export class BilibiliSource implements MessageSource {
             const abortController = new AbortController();
             (async () => {
                 await waitTimeout(0);
-                let errorCount = 0;
                 while (!observer.closed) {
                     try {
                         observer.next({
@@ -56,7 +55,7 @@ export class BilibiliSource implements MessageSource {
                             token: resp.danmuInfo.token
                         }) as AsyncGenerator<BilibiliMsg, unknown, unknown>) {
                             if (msg.cmd == 'DANMU_MSG' || msg.cmd.startsWith('DANMU_MSG')) {
-                                assumeType<{ cmd: 'DANMU_MSG'; info: any[]; }>(msg);
+                                assumeType<{ cmd: 'DANMU_MSG'; info: SafeAny[]; }>(msg);
                                 if (!config.showGiftAutoDammaku && msg.info[0][9] > 0) {
                                     continue;
                                 }
@@ -88,7 +87,6 @@ export class BilibiliSource implements MessageSource {
                                             status: 'CONNECTED'
                                         }
                                     } as SystemMessage);
-                                    errorCount = 0; // reset error counter
                                     if (resp.roomInfo.live_status == 1) { // TODO:
                                         observer.next({
                                             type: 'livestart'
@@ -96,7 +94,7 @@ export class BilibiliSource implements MessageSource {
                                     }
                                     break;
                                 case '__ERROR__':
-                                    this.analytics.event('Comen Panic (Bilibili)',msg.error);
+                                    // TODO: report
                                     break;
                                 case 'SEND_GIFT':
                                     // console.log(msg);
@@ -177,7 +175,6 @@ export class BilibiliSource implements MessageSource {
                             }
                         } as SystemMessage);
                         await waitTimeout(5 * 1000);
-                        errorCount++;
                     }
                 }
             })();
@@ -239,7 +236,7 @@ const guardType = {
 
 type BilibiliMsg = {
     cmd: 'DANMU_MSG';
-    info: any[];
+    info: SafeAny[];
 } | {
     cmd: 'SEND_GIFT';
     data: {

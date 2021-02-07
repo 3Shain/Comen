@@ -3,6 +3,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { Component, ElementRef, HostListener, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { SafeAny } from '@comen/common';
 import { ColorEvent } from 'ngx-color';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -77,7 +78,7 @@ import { take } from 'rxjs/operators';
 })
 export class ColorControlComponent implements ControlValueAccessor {
 
-  @ViewChild('temp') temp: TemplateRef<any>;
+  @ViewChild('temp') temp: TemplateRef<SafeAny>;
 
   currentColor: BehaviorSubject<string> = new BehaviorSubject('#cccccc');
 
@@ -126,18 +127,18 @@ export class ColorControlComponent implements ControlValueAccessor {
   }
 
 
-  writeValue(obj: any): void {
+  writeValue(obj: SafeAny): void {
     this.currentColor.next(obj);
   }
 
-  changeFn: any;
+  changeFn: SafeAny;
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: SafeAny): void {
     this.changeFn = fn;
   }
 
-  touchFn: any;
-  registerOnTouched(fn: any): void {
+  touchFn: SafeAny;
+  registerOnTouched(fn: SafeAny): void {
     this.touchFn = fn;
   }
 

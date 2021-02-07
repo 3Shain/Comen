@@ -1,7 +1,7 @@
-import { Directive, ElementRef, Input, OnDestroy, OnInit } from "@angular/core";
-import { ComenEnvironmentHost, SafeAny } from "@comen/common";
-import { Subject } from "rxjs";
-import { map, takeUntil } from "rxjs/operators";
+import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { ComenEnvironmentHost, SafeAny } from '@comen/common';
+import { Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 
 @Directive({
     selector: '*[gmStyleDriver]'
@@ -47,8 +47,8 @@ export class StyleDriverDirective implements OnInit, OnDestroy {
                 }
                 if (config.outline&&config.outline.width>0) {
                     const shadow = [], size = config.outline.width, color = config.outline.color;
-                    for (var x = -size; x <= size; x += Math.ceil(size / 4)) {
-                        for (var y = -size; y <= size; y += Math.ceil(size / 4)) {
+                    for (let x = -size; x <= size; x += Math.ceil(size / 4)) {
+                        for (let y = -size; y <= size; y += Math.ceil(size / 4)) {
                             shadow.push(textShadow(x, y, color))
                         }
                     }

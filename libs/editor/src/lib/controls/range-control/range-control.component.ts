@@ -16,9 +16,9 @@ import { tap } from 'rxjs/operators';
 })
 export class RangeControlComponent implements ControlValueAccessor {
 
-  @Input() max: number = 1;
-  @Input() min: number = 0;
-  @Input() step: number = 0.01;
+  @Input() max = 1;
+  @Input() min = 0;
+  @Input() step = 0.01;
 
   constructor(private fb: FormBuilder) {
     this.sliderControl.valueChanges.pipe(tap(x => {

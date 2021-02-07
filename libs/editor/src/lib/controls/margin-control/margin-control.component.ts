@@ -1,5 +1,5 @@
-import { Component } from "@angular/core";
-import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { Component } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 
 @Component({
@@ -11,46 +11,51 @@ import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from "@angular/f
                 <label nz-radio-button nzValue="seperate">上/右/下/左</label>
             </nz-radio-group>
         </div>
-            <div nz-col nzSpan=6><nz-input-number formControlName="top" nzSize="small" [nzFormatter]="formatterPx"></nz-input-number></div>
-            <div nz-col nzSpan=6><nz-input-number formControlName="right" nzSize="small" [nzFormatter]="formatterPx"></nz-input-number></div>
-            <div nz-col nzSpan=6><nz-input-number formControlName="bottom" nzSize="small" [nzFormatter]="formatterPx"></nz-input-number></div>
-            <div nz-col nzSpan=6><nz-input-number formControlName="left" nzSize="small" [nzFormatter]="formatterPx"></nz-input-number></div>
+            <div nz-col nzSpan=6>
+                <nz-input-number formControlName="top" nzSize="small" [nzFormatter]="formatterPx"></nz-input-number>
+            </div>
+            <div nz-col nzSpan=6>
+                <nz-input-number formControlName="right" nzSize="small" [nzFormatter]="formatterPx"></nz-input-number>
+            </div>
+            <div nz-col nzSpan=6>
+                <nz-input-number formControlName="bottom" nzSize="small" [nzFormatter]="formatterPx"></nz-input-number>
+            </div>
+            <div nz-col nzSpan=6>
+                <nz-input-number formControlName="left" nzSize="small" [nzFormatter]="formatterPx"></nz-input-number>
+            </div>
 </div>`,
     styleUrls: [
-        "./margin-control.style.scss"
+        './margin-control.style.scss'
     ],
-    providers:[
+    providers: [
         {
             provide: NG_VALUE_ACCESSOR,
             useExisting: MarginControlComponent,
-            multi:true
+            multi: true
         }
     ]
 })
-export class MarginControlComponent implements ControlValueAccessor{
+export class MarginControlComponent implements ControlValueAccessor {
 
     formatterPx = (value: number) => `${value}px`;
-
-    constructor(private fb: FormBuilder) {}
-
-    mode = this.fb.control("common");
-
+    mode = this.fb.control('common');
     formGroup = this.fb.group({
-        "top": [0],
-        "right": [0],
-        "bottom": [0],
-        "left": [0]
+        top: [0],
+        right: [0],
+        bottom: [0],
+        left: [0]
     })
 
-    writeValue(){
+    constructor(private fb: FormBuilder) { }
+    writeValue() {
 
     }
 
-    registerOnChange(){
+    registerOnChange() {
 
     }
 
-    registerOnTouched(){
+    registerOnTouched() {
 
     }
 }

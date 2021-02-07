@@ -1,6 +1,9 @@
 import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ComenEnvironmentHost, deserializeBase64, Message, nextFrame, RxZone, SafeAny, TextMessage, waitUntilPageVisible } from '@comen/common';
+import {
+    ComenEnvironmentHost, deserializeBase64, Message,
+    nextFrame, RxZone, SafeAny, TextMessage, waitUntilPageVisible
+} from '@comen/common';
 import { of, Subject } from 'rxjs';
 import { catchError, filter, retry, takeUntil, tap } from 'rxjs/operators';
 import { OverlayContainerDirective } from '../../addon/overlay-container.directive';
@@ -17,7 +20,7 @@ const BILICHAT_SYSTEM_MESSAGE = {
 }
 
 @Component({
-    selector: 'comen-comment',
+    selector: 'comen-overlay',
     template: `<ng-container overlay-container #container="overlayContainer"></ng-container>
     <div id="comen-configuration-data" #data></div>`,
     styles: [
@@ -27,11 +30,11 @@ const BILICHAT_SYSTEM_MESSAGE = {
     ],
     viewProviders: [RxZone, {
         provide: ComenEnvironmentHost,
-        useExisting: CommentPage
+        useExisting: OverlayPage
     }]
 })
 // eslint-disable-next-line
-export class CommentPage extends ComenEnvironmentHost implements OnInit, OnDestroy {
+export class OverlayPage extends ComenEnvironmentHost implements OnInit, OnDestroy {
 
     @ViewChild('data', { static: true }) data: ElementRef<HTMLDivElement>;
     @ViewChild('container', { static: true }) container: OverlayContainerDirective;

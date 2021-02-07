@@ -17,9 +17,11 @@
     <div style="float:right">
         <button nz-button nzType="default" nzSize="large"><i nz-icon nzType="import"></i>导入</button>
         <button nz-button nzType="default" nzSize="large"><i nz-icon nzType="export"></i>导出</button>
-        <button nz-button nzType="primary" nzSize="large"><i nz-icon nzType="format-painter"></i>生成</button>
+        <button nz-button nzType="primary" nzSize="large" (click)="generate()">
+            <i nz-icon nzType="format-painter"></i>生成
+        </button>
     </div>
 </header>
-<comen-editor [configuration]="configuration" [elementView]="view">
+<comen-editor [configuration]="configuration" [elementView]="view" #editor="editor">
     <ng-container overlay-container #container="overlayContainer"></ng-container>
 </comen-editor>

@@ -1,15 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'comen-border-control',
   templateUrl: './border-control.component.html',
-  styleUrls: ['./border-control.component.scss']
+  styleUrls: ['./border-control.component.scss'],
+  providers:[{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting:BorderControlComponent,
+    multi: true
+  }]
 })
-export class BorderControlComponent implements OnInit {
+export class BorderControlComponent implements ControlValueAccessor {
 
-  constructor() { }
+  constructor(private fb:FormBuilder) { }
 
-  ngOnInit(): void {
+  writeValue(){
+
+  }
+
+  registerOnChange(){
+
+  }
+
+  registerOnTouched(){
+
   }
 
 }

@@ -1,7 +1,7 @@
 import { generateCode } from './compiler';
 
-describe("Compiler", () => {
-    it("should works", () => {
+describe('Compiler', () => {
+    it('should works', () => {
         const testdata = {
             default: {
                 a: 1,
@@ -11,8 +11,8 @@ describe("Compiler", () => {
             variants: [
                 {
                     condition: [{
-                        property: "test",
-                        method: "gte",
+                        property: 'test',
+                        method: 'gte',
                         target: 100
                     }],
                     property: {
@@ -22,9 +22,9 @@ describe("Compiler", () => {
                 },
                 {
                     condition: [{
-                        property: "test2",
-                        method: "tct",
-                        target: "work"
+                        property: 'test2',
+                        method: 'tct',
+                        target: 'work'
                     }],
                     property: {
                         a: 7
@@ -42,7 +42,7 @@ describe("Compiler", () => {
         });
         expect(ret2.a).toBe(3);
         const ret3 = fn({
-            test2: "it works!"
+            test2: 'it works!'
         });
         expect(ret3.a).toBe(7);
     });

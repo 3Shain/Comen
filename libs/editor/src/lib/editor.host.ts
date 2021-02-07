@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { ComenEnvironmentHost, Message, SafeAny } from "@comen/common";
-import { BehaviorSubject, Subject } from "rxjs";
+import { Injectable } from '@angular/core';
+import { ComenEnvironmentHost, Message, SafeAny } from '@comen/common';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable()
 export class EditorEnvironmentHost extends ComenEnvironmentHost {
@@ -57,6 +57,6 @@ export class EditorEnvironmentHost extends ComenEnvironmentHost {
     }
 
     assetUrl(id: string) {
-        return "";
+        return '';
     }
 }

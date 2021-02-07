@@ -17,7 +17,8 @@ import { zoomBigMotion } from 'ng-zorro-antd/core/animation'
     provide: ComenEnvironmentHost,
     useClass: EditorEnvironmentHost
   }],
-  animations: [zoomBigMotion]
+  animations: [zoomBigMotion],
+  exportAs: 'editor'
 })
 export class EditorComponent implements OnInit, AfterViewInit {
 
@@ -120,11 +121,11 @@ export class EditorComponent implements OnInit, AfterViewInit {
     });
     const tplPortal = new TemplatePortal(this.dialogTpl, this.vcr, {
       css: this.generateCss(this.formGroup.value),
-      url: "",
+      url: '',
       size: [this.adjustments.value.width, this.adjustments.value.height]
     });
     overlay.attach(tplPortal);
-    const sib = document.createElement("div");
+    const sib = document.createElement('div');
     this.elementView.getRootNode().appendChild(sib);
     setTimeout(() => {
       // console.log(this.mark.nativeElement.parentNode);

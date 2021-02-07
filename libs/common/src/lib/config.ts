@@ -9,10 +9,10 @@ export interface PropertySchema {
     displayName: string;
     "x-icon"?: string;
     defaultVisible?: boolean;
-    defaultValue: any;
+    defaultValue: SafeAny;
     dependsOn?: string[];
     exclusive?: string[];
-    validation?: any;
+    validation?: SafeAny;
     extra?: SafeAny;
 }
 

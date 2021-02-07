@@ -11,57 +11,57 @@ const COMMENT_CONFIGURATION: ComenAddonConfiguration = {
             level: 0,
             previewSelector: 'yt-live-chat-renderer',
             properties: {
-                "margin": {
-                    displayName: "外边距",
-                    "x-icon":"border",
+                margin: {
+                    displayName: '外边距',
+                    'x-icon':'border',
                     defaultVisible: true,
                     defaultValue: null,
-                    type: "margin"
+                    type: 'margin'
                 },
-                "opacity": {
+                opacity: {
                     defaultValue: 1,
                     defaultVisible: true,
-                    displayName: "透明度",
-                    "x-icon":"bulb",
-                    type: "range",
+                    displayName: '透明度',
+                    'x-icon':'bulb',
+                    type: 'range',
                     extra: {
                         min: 0,
                         max: 1
                     }
                 },
-                "font": {
+                font: {
                     defaultValue: null,
                     defaultVisible: true,
-                    displayName: "字体",
-                    "x-icon":"font-size",
-                    type: "font",
+                    displayName: '字体',
+                    'x-icon':'font-size',
+                    type: 'font',
                     extra: {
 
                     }
                 },
 
-                "color": {
+                color: {
                     defaultValue: null,
                     defaultVisible: true,
-                    displayName: "字体颜色",
-                    "x-icon":"font-colors",
-                    type: "color"
+                    displayName: '字体颜色',
+                    'x-icon':'font-colors',
+                    type: 'color'
                 },
-                "outline": {
+                outline: {
                     defaultValue: null,
                     defaultVisible: true,
-                    "x-icon":"border",
-                    displayName: "字体描边",
-                    type: "outline",
+                    'x-icon':'border',
+                    displayName: '字体描边',
+                    type: 'outline',
                     extra: {
 
                     }
                 },
-                "shadow":{
+                shadow:{
                     defaultValue: null,
                     defaultVisible: true,
-                    displayName: "阴影",
-                    type: "shadow"
+                    displayName: '阴影',
+                    type: 'shadow'
                 }
             }
         },
@@ -72,11 +72,11 @@ const COMMENT_CONFIGURATION: ComenAddonConfiguration = {
             variantProperties: [],
             previewSelector: 'yt-live-chat-text-message-renderer',
             properties: {
-                "font": {
+                font: {
                     defaultValue: null,
                     defaultVisible: true,
-                    displayName: "字体",
-                    type: "font",
+                    displayName: '字体',
+                    type: 'font',
                     extra: {
 
                     }
@@ -134,25 +134,25 @@ const COMMENT_CONFIGURATION: ComenAddonConfiguration = {
             }
         },
         /* sc message */
-        'paidMessage': {
-            "displayName": "付费消息",
-            "level": 0,
+        paidMessage: {
+            displayName: '付费消息',
+            level: 0,
             previewSelector: 'yt-live-chat-paid-message-renderer',
-            "properties": {
+            properties: {
 
             }
         },
         'paidMessage.card': {
-            "displayName": "卡片",
-            "level": 1,
+            displayName: '卡片',
+            level: 1,
             previewSelector: 'yt-live-chat-paid-message-renderer > #card',
-            "properties": {
-                "radius": {
+            properties: {
+                radius: {
                     defaultValue: null,
                     defaultVisible: true,
-                    displayName: "圆角",
-                    "x-icon":"radius-setting",
-                    type: "radius",
+                    displayName: '圆角',
+                    'x-icon':'radius-setting',
+                    type: 'radius',
                     extra: {
 
                     }
@@ -160,94 +160,94 @@ const COMMENT_CONFIGURATION: ComenAddonConfiguration = {
             }
         },
         'paidMessage.top': {
-            "displayName": "用户信息",
-            "level": 1,
+            displayName: '用户信息',
+            level: 1,
             previewSelector: 'yt-live-chat-paid-message-renderer > #card > #header',
-            "properties": {
+            properties: {
 
             }
         },
         'paidMessage.top.avatar': {
-            "displayName": "头像",
-            "x-icon": "smile",
+            displayName: '头像',
+            'x-icon': 'smile',
             previewSelector: 'yt-live-chat-paid-message-renderer > #card > #header > #author-photo',
-            "level": 2,
-            "properties": {
+            level: 2,
+            properties: {
 
             }
         },
         'paidMessage.top.username': {
-            "displayName": "用户名",
-            "level": 2,
-            "properties": {
+            displayName: '用户名',
+            level: 2,
+            properties: {
 
             }
         },
         'paidMessage.top.amount': {
-            "displayName": "价值信息",
-            "level": 2,
-            "properties": {
+            displayName: '价值信息',
+            level: 2,
+            properties: {
 
             }
         },
         'paidMessage.bottom': {
-            "displayName": "消息",
-            "level": 1,
+            displayName: '消息',
+            level: 1,
             previewSelector: 'yt-live-chat-paid-message-renderer > #card > #content',
-            "properties": {
+            properties: {
 
             }
         }, 'paidMessage.bottom.content': {
-            "displayName": "消息内容",
-            "level": 2,
-            "properties": {
+            displayName: '消息内容',
+            level: 2,
+            properties: {
 
             }
         }
         /* member message */
         ,
-        'memberMessage': {
-            "displayName": "新会员加入消息",
-            "level": 0,
-            "properties": {
+        memberMessage: {
+            displayName: '新会员加入消息',
+            level: 0,
+            properties: {
 
             }
         }
         /* sticker message */
         ,
-        'stickerMessage': {
-            "displayName": "礼物消息",
-            "level": 0,
-            "properties": {
+        stickerMessage: {
+            displayName: '礼物消息',
+            level: 0,
+            properties: {
 
             }
         },
         'stickerMessage.avatar': {
-            "displayName": "头像",
-            "x-icon": "smile",
-            "level": 1,
-            "properties": {
+            displayName: '头像',
+            'x-icon': 'smile',
+            level: 1,
+            properties: {
 
             }
         },
         'stickerMessage.username': {
-            "displayName": "用户名",
-            "level": 1,
-            "properties": {
+            displayName: '用户名',
+            level: 1,
+            properties: {
 
             }
         },
         'stickerMessage.amount': {
-            "displayName": "礼物信息",
-            "level": 1,
-            "properties": {
+            displayName: '礼物信息',
+            level: 1,
+            properties: {
 
             }
         },
         'stickerMessage.sticker': {
-            "displayName": "礼物贴纸",
-            "level": 1,
-            "properties": {
+            displayName: '礼物贴纸',
+            level: 1,
+            properties: {
 
             }
         }

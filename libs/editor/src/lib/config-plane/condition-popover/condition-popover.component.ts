@@ -5,8 +5,8 @@ import { zoomBigMotion } from 'ng-zorro-antd/core/animation';
 import { defer, merge, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-export const VARIANT_PROPERTIES = new InjectionToken<VariantProperty[]>("variant properties");
-export const VARIANT_CURRENT_VALUE = new InjectionToken<any>("variant current value");
+export const VARIANT_PROPERTIES = new InjectionToken<VariantProperty[]>('variant properties');
+export const VARIANT_CURRENT_VALUE = new InjectionToken<any>('variant current value');
 
 @Component({
   selector: 'comen-condition-popover',
@@ -33,9 +33,9 @@ export class ConditionPopoverComponent {
   }
 
   formGroup = this.fb.group({
-    'property': [],
-    'method': [],
-    'target': []
+    property: [],
+    method: [],
+    target: []
   });
 
   compareOptions$ = merge(

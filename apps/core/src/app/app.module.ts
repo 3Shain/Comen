@@ -14,7 +14,7 @@ function APPINITIAL(ana: AnalyticsService) {
 }
 
 function loadScript(url: string) {
-  return new Promise(function (resolve, reject) {
+  return new Promise(function (resolve) {
     const head = document.getElementsByTagName('head')[0]
     const script = document.createElement('script')
     script.type = 'text/javascript'
@@ -33,7 +33,7 @@ class CompatibleRoutes implements CanActivate {
     switch (route.url[0].path) {
       case 'gkd':
       case 'alpha':
-        return this.router.createUrlTree(['/', 'comment'], {
+        return this.router.createUrlTree(['/', 'overlay'], {
           queryParams: {
             ...route.queryParams,
             p: 'bilibili',
@@ -42,7 +42,7 @@ class CompatibleRoutes implements CanActivate {
           }
         });
       case 'bilibili':
-        return this.router.createUrlTree(['/', 'comment'], {
+        return this.router.createUrlTree(['/', 'overlay'], {
           queryParams: {
             ...route.queryParams,
             p: 'bilibili',
@@ -50,7 +50,7 @@ class CompatibleRoutes implements CanActivate {
           }
         });
       case 'acfun':
-        return this.router.createUrlTree(['/', 'comment'], {
+        return this.router.createUrlTree(['/', 'overlay'], {
           queryParams: {
             ...route.queryParams,
             p: 'acfun',
@@ -89,9 +89,9 @@ class DebugGuard implements CanActivate {
         loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
       },
       {
-        path: 'comment',
+        path: 'overlay',
         canActivate: [DebugGuard],
-        loadChildren: () => import('./pages/comment/comment.module').then(m => m.CommentModule)
+        loadChildren: () => import('./pages/overlay/overlay.module').then(m => m.OverlayModule)
       },
       {
         path: 'edit',

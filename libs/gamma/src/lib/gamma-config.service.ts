@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { ComenEnvironmentHost } from '@comen/common';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -20,7 +20,7 @@ export const DEFAULT_GAMMA_CONFIGURATION: GammaConfiguration = {
  * Legacy configuration
  */
 @Injectable()
-export class GammaConfigService {
+export class GammaConfigService implements OnDestroy {
 
 
     destroy$ = new Subject<void>();
@@ -31,7 +31,7 @@ export class GammaConfigService {
     current$: BehaviorSubject<GammaConfiguration> = new BehaviorSubject(DEFAULT_GAMMA_CONFIGURATION);
 
     constructor(host: ComenEnvironmentHost) {
-        host.config("__legacy__").pipe(takeUntil(this.destroy$)).subscribe(config => {
+        host.config('__legacy__').pipe(takeUntil(this.destroy$)).subscribe(config => {
             // TODO: validate
             this.current$.next({
                 ...DEFAULT_GAMMA_CONFIGURATION,

@@ -51,17 +51,13 @@
 #dialog {
     background-color: white;
     display: flex;
-    border-radius: 16px;
+    border-radius: 4px;
     padding: 16px;
 
     &>#mock{
         width: 550px;
         height: 850px;
         margin-right: 16px;
-        // clip-path: circle(50.0% at 50% 50%)
-        &>*{
-            border-radius: 8px;
-        }
     }
 
     &>#info {

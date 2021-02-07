@@ -4,22 +4,22 @@ import { RouterModule } from '@angular/router';
 import { COMMENT_CONFIGURATION, GammaModule, GammaApp } from '@comen/gamma';
 import { AddonService } from '../../addon/addon.service';
 import { AddonMoudle } from '../../addon/addon.module';
-import { CommentPage } from './comment.page';
+import { OverlayPage } from './overlay.page';
 
 
 @NgModule({
-    declarations: [CommentPage],
+    declarations: [OverlayPage],
     imports: [
         CommonModule,
         GammaModule,
         AddonMoudle,
         RouterModule.forChild([{
-            path: '', //compatiability
-            component: CommentPage
+            path: '',
+            component: OverlayPage
         }])
     ]
 })
-export class CommentModule {
+export class OverlayModule {
     constructor(addon: AddonService) {
         addon.registerBuiltinOverlay({
             name: 'gamma',

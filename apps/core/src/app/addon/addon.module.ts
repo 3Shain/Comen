@@ -1,6 +1,6 @@
-import { ModuleWithProviders, NgModule } from "@angular/core";
-import { OverlayContainerDirective } from "./overlay-container.directive";
-import { AddonService } from "./addon.service";
+import { ModuleWithProviders, NgModule } from '@angular/core';
+import { OverlayContainerDirective } from './overlay-container.directive';
+import { AddonService } from './addon.service';
 
 @NgModule({
     declarations: [OverlayContainerDirective],
