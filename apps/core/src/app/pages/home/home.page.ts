@@ -26,6 +26,9 @@ export class HomePage {
 
     constructor(private title: Title) {
         title.setTitle('主页');
+        if (window.location.host == 'bilichat.3shain.com') {
+            window.location.href = 'https://github.com/3Shain/Comen/tree/bilichat';
+        }
     }
 
     setPlatform(platform: string) {
