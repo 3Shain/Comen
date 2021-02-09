@@ -390,6 +390,75 @@
           }
         }
       }
+    },
+    "electron-app": {
+      "root": "apps/electron-app",
+      "sourceRoot": "apps/electron-app/src",
+      "projectType": "application",
+      "prefix": "electron-app",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "nx-electron:build",
+          "options": {
+            "outputPath": "dist/apps/electron-app",
+            "webpackConfig": "apps/electron-app/webpack.config.js",
+            "main": "apps/electron-app/src/main.ts",
+            "tsConfig": "apps/electron-app/tsconfig.app.json",
+            "assets": ["apps/electron-app/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/electron-app/src/environments/environment.ts",
+                  "with": "apps/electron-app/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "nx-electron:execute",
+          "options": {
+            "buildTarget": "electron-app:build"
+          }
+        },
+        "package": {
+          "builder": "nx-electron:package",
+          "options": {
+            "name": "electron-app",
+            "frontendProject": "core",
+            "outputPath": "dist/packages",
+            "prepackageOnly": true
+          }
+        },
+        "make": {
+          "builder": "nx-electron:make",
+          "options": {
+            "name": "electron-app",
+            "frontendProject": "core",
+            "outputPath": "dist/executables"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/electron-app/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/electron-app"],
+          "options": {
+            "jestConfig": "apps/electron-app/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

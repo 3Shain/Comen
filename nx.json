@@ -53,6 +53,9 @@
     },
     "editor": {
       "tags": []
+    },
+    "electron-app": {
+      "tags": []
     }
   }
 }
