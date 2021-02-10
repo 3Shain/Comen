@@ -24,3 +24,21 @@
         flex: 1;
     }
 }
+
+
+#dialog {
+    background-color: white;
+    display: flex;
+    border-radius: 4px;
+    padding: 16px;
+
+    &>#mock{
+        width: 550px;
+        height: 850px;
+        margin-right: 16px;
+    }
+
+    &>#info {
+        width: 450px;
+    }
+}

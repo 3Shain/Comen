@@ -3,7 +3,7 @@
     width: 100%;
     height: 100%;
     min-width: 1260px;
-    min-height: 300px;
+    min-height: 780px;
     overflow: hidden;
 }
 
@@ -48,19 +48,12 @@
     }
 }
 
-#dialog {
-    background-color: white;
+.middle { 
+    box-shadow: -6px 0 16px -8px rgba(0,0,0,.15);
     display: flex;
-    border-radius: 4px;
-    padding: 16px;
-
-    &>#mock{
-        width: 550px;
-        height: 850px;
-        margin-right: 16px;
-    }
-
-    &>#info {
-        width: 450px;
+    flex-direction: column;
+    &>div{
+        // width: 100%;
+        flex: 1;
     }
 }

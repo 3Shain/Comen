@@ -11,6 +11,7 @@ import { TickerSponsorItemRenderer } from './ticker-sponsor-item/ticker-sponsor-
 import { TickerPaidMessageItemRenderer } from './ticker-paid-item/ticker-paid-item';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { StyleDriverDirective } from './style-driver.directive';
+import { COMMENT_CONFIGURATION } from './metadata';
 
 @NgModule({
     declarations: [GammaApp,
@@ -27,5 +28,10 @@ import { StyleDriverDirective } from './style-driver.directive';
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class GammaModule {
-
+    entry = GammaApp;
+    metadata = {
+        name: "gamma",
+        displayName: "GAMMA",
+        configuration: COMMENT_CONFIGURATION
+    }
 }

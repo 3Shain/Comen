@@ -14,7 +14,7 @@ import { PLANE_SLIDE } from './animations';
   }],
   animations: [PLANE_SLIDE],
   host: {
-    '[@slide]': ''
+    // '[@slide]': ''
   },
 })
 export class ConfigPlaneComponent implements ControlValueAccessor {

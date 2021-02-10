@@ -3,15 +3,14 @@ import {
     Message, StickerMessage, TextMessage
     , waitTimeout
 } from '@comen/common';
-import { MessageSource } from './source';
-import { connectAcfunLiveWs } from 'isomorphic-danmaku';
+import { connectAcfunLiveWs } from 'isomorphic-danmaku/acfun';
 import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import * as Long from 'long';
 
 @Injectable()
-export class AcfunSource implements MessageSource {
+export class AcfunSource {
 
     // avatar address cache?
     readonly type = 'acfun';

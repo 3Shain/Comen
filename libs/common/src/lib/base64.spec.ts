@@ -1,13 +1,14 @@
-import { serializeObject, deserializeBase64 } from './base64';
+import { serializeObjectToBase64, deserializeBase64 } from './base64';
 import { TextDecoder, TextEncoder } from 'util';
+import { SafeAny } from './utils';
 
 describe('configuration', () => {
 
     beforeAll(() => {
         // 测试体验极差🤮
-        if (typeof TextEncoder === 'undefined') {
-            (global as any).TextEncoder = TextEncoder;
-            (global as any).TextDecoder = TextDecoder;
+        if (typeof (global as SafeAny).TextEncoder === 'undefined') {
+            (global as SafeAny).TextEncoder = TextEncoder;
+            (global as SafeAny).TextDecoder = TextDecoder;
         }
     })
 
@@ -25,7 +26,7 @@ describe('configuration', () => {
             }
         };
 
-        const serialized = serializeObject(conf);
+        const serialized = serializeObjectToBase64(conf);
         const ret = deserializeBase64<typeof conf>(serialized);
 
         expect(ret).toEqual(conf);
@@ -39,8 +40,8 @@ describe('configuration', () => {
             }
         };
 
-        const serialized = serializeObject(conf);
-        const ret = deserializeBase64<any>(serialized);
+        const serialized = serializeObjectToBase64(conf);
+        const ret = deserializeBase64<SafeAny>(serialized);
 
         expect(ret).toEqual(conf);
     })

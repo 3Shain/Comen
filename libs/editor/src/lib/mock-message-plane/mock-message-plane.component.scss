@@ -1,0 +1,18 @@
+
+:host {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+
+    &>.list {
+        flex:1 ;
+    }
+
+    &>.actions {
+        &>button {
+            margin-right: 4px;
+        }
+    }
+}

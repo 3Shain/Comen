@@ -13,9 +13,7 @@ import { HomePage } from './home.page';
             path: '',
             pathMatch: 'full',
             component: HomePage
-        }]),
-        ReactiveFormsModule,
-        ReactiveComponentModule
+        }])
     ]
 })
 export class HomeModule {

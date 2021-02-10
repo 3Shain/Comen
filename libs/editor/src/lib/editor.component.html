@@ -3,26 +3,44 @@
         <div class="toolbar" [formGroup]="adjustments" nz-row nzJustify="center">
             <label nz-col nzSpan=1>尺寸</label>
             <div nz-col nzSpan=8>
-                <nz-input-number nzSize="small" formControlName="width"></nz-input-number><i nz-icon nzType="close" style="margin:0 4px;"></i>
+                <nz-input-number nzSize="small" formControlName="width"></nz-input-number><i nz-icon nzType="close"
+                    style="margin:0 4px;"></i>
                 <nz-input-number nzSize="small" formControlName="height"></nz-input-number>
             </div>
             <label nz-col nzSpan=1>背景</label>
 
             <div nz-col nzSpan=4>
-                <comen-color-control style="margin-top:2px;margin-right: 8px;" formControlName="background"></comen-color-control>
-                <nz-switch nzSize="small" nzCheckedChildren="纯色" nzUnCheckedChildren="网格" style="vertical-align: top;" formControlName="grid"></nz-switch>
+                <comen-color-control style="margin-top:2px;margin-right: 8px;" formControlName="background">
+                </comen-color-control>
+                <nz-switch nzSize="small" nzCheckedChildren="纯色" nzUnCheckedChildren="网格" style="vertical-align: top;"
+                    formControlName="grid"></nz-switch>
             </div>
         </div>
-        <div class="background" [ngStyle]="{'background-color':adjustments.value.background}" [ngClass]="{'transparent':!adjustments.value.grid}">
-            <comen-shadow-host
-                [ngStyle]="{'width':adjustments.value.width+'px','height':adjustments.value.height+'px'}">
+        <div class="background" [ngStyle]="{'background-color':adjustments.value.background}"
+            [ngClass]="{'transparent':!adjustments.value.grid}">
+            <div [style.width.px]="adjustments.value.width" [style.height.px]="adjustments.value.height">
                 <ng-content></ng-content>
-            </comen-shadow-host>
+            </div>
+            <div>
+
+            </div>
         </div>
     </div>
-    <comen-element-tree nz-col nzFlex='240px' [config]="configuration" (sectionHover)="onTreeHover($event)"
-        (sectionClick)="onSectionClick($event)" (leave)="onTreeLeave()" [selected]="currentConfigSection">
-    </comen-element-tree>
+    <div class="middle" nz-col nzFlex='240px'>
+        <div style="position: relative;flex:none;" [style.height.px]="sHeight" nz-resizable
+            (nzResize)="onResize($event)">
+            <comen-element-tree [config]="configuration" (sectionHover)="onTreeHover($event)"
+                (sectionClick)="onSectionClick($event)" (leave)="onTreeLeave()" [selected]="currentConfigSection">
+
+            </comen-element-tree>
+            <nz-resize-handle nzDirection="bottom">
+            </nz-resize-handle>
+        </div>
+        <div style="position: relative;border-top:solid 1px #ddd">
+            <comen-mock-message-plane></comen-mock-message-plane>
+        </div>
+    </div>
+
     <div style="position: relative;width: 100%;height: 100%;overflow-x:unset;" nz-col nzFlex='300px'
         [formGroup]="formGroup">
 
@@ -31,18 +49,3 @@
         </comen-config-plane>
     </div>
 </div>
-
-<ng-template #dialogTpl let-css="css" let-url="url" let-size="size">
-    <div id="dialog" [@zoomBigMotion]="'active'">
-        <div id="mock">
-            <comen-mock-obs-dialog [cssInfo]="css" [url]="url" [size]="size">
-                <comen-shadow-host>
-                    <ng-container #mark></ng-container>
-                </comen-shadow-host>
-            </comen-mock-obs-dialog>
-        </div>
-        <div id="info">
-            <h1>一切已就绪！</h1>
-        </div>
-    </div>
-</ng-template>

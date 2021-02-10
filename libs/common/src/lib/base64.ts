@@ -11,10 +11,15 @@ export function deserializeBase64<T = SafeAny>(
 
     const buffer = toByteArray(dataString);
     // resolve buffer
+    return deserializeBuffer(buffer);
+}
+
+export function deserializeBuffer(buffer: Uint8Array) {
     /**
      * 2 bytes | 2 bytes | 4 bytes    | vary             | 4 bytes     |  vary
      * magic 3S| reserved| raw length | raw datas (blobs)| json length |  json body 
      */
+
     const dataView = new DataView(buffer.buffer);
     dataView.getInt16(0); // assert ascii 3S
     dataView.getUint16(2); // reserved
@@ -40,8 +45,14 @@ export function deserializeBase64<T = SafeAny>(
     return travelObject(json);
 }
 
-export function serializeObject<T>(
+export function serializeObjectToBase64<T = SafeAny>(
     config: T
+) {
+    return fromByteArray(serializeObjectToBuffer(config));
+}
+
+export function serializeObjectToBuffer<T = SafeAny>(
+    object: T
 ) {
     const buffer = new Uint8Array(16 * 1024 * 1024); // 16MiB
     let length = 4;
@@ -68,7 +79,7 @@ export function serializeObject<T>(
         }
         return cloned;
     }
-    const iterated = travelObject(config);
+    const iterated = travelObject(object);
     dataView.setUint32(4, rawLen);
     const jsonStr = JSON.stringify(iterated);
     const jsonBuffer = (new TextEncoder().encode(jsonStr));
@@ -77,6 +88,5 @@ export function serializeObject<T>(
     dataView.setUint32(rawLen + 8, jsonBuffer.byteLength);
     buffer.set(jsonBuffer, rawLen + 12);
     length += jsonBuffer.byteLength + 4;
-
-    return fromByteArray(buffer.slice(0, length));
+    return buffer.slice(0, length);
 }

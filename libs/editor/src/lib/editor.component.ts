@@ -1,13 +1,11 @@
-import { Overlay } from '@angular/cdk/overlay';
-import { TemplatePortal } from '@angular/cdk/portal';
-import { AfterViewInit, Component, ComponentFactoryResolver, ElementRef, Inject, Injector, Input, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, Inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ComenAddonConfiguration, ComenEnvironmentHost, SafeAny, serializeObject } from '@comen/common';
-import { merge, Subject } from 'rxjs';
-import { debounceTime, startWith, take } from 'rxjs/operators';
+import { ComenAddonConfiguration, ComenEnvironmentHost, SafeAny } from '@comen/common';
+import { NzResizeEvent } from 'ng-zorro-antd/resizable';
+import { debounceTime } from 'rxjs/operators';
 import { EditorEnvironmentHost } from './editor.host';
 import { generateCode } from './variant/compiler';
-import { zoomBigMotion } from 'ng-zorro-antd/core/animation'
+
 
 @Component({
   selector: 'comen-editor',
@@ -17,7 +15,6 @@ import { zoomBigMotion } from 'ng-zorro-antd/core/animation'
     provide: ComenEnvironmentHost,
     useClass: EditorEnvironmentHost
   }],
-  animations: [zoomBigMotion],
   exportAs: 'editor'
 })
 export class EditorComponent implements OnInit, AfterViewInit {
@@ -30,10 +27,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     background: ['#444'],
     grid: [false]
   });
-  closeDialog$ = new Subject<void>();
 
-  @ViewChild('dialogTpl') dialogTpl: TemplateRef<SafeAny>;
-  @ViewChild('mark', { static: false }) mark: ElementRef<Node>;
   @Input() configuration: ComenAddonConfiguration;
   @Input() elementView: HTMLElement = undefined;
 
@@ -41,12 +35,19 @@ export class EditorComponent implements OnInit, AfterViewInit {
     return this.configuration.sections[this.currentConfigSection];
   }
 
-  constructor(private injector: Injector,
-    private fb: FormBuilder,
-    @Inject(ComenEnvironmentHost) private host: EditorEnvironmentHost,
-    private overlay: Overlay,
-    private vcr: ViewContainerRef) {
+  sHeight = 700;
+  sEvent = -1;
 
+  constructor(private fb: FormBuilder,
+    @Inject(ComenEnvironmentHost) private host: EditorEnvironmentHost) {
+
+  }
+
+  onResize({ height }: NzResizeEvent) {
+    cancelAnimationFrame(this.sEvent);
+    this.sEvent = requestAnimationFrame(() => {
+      this.sHeight = height;
+    });
   }
 
   ngOnInit() {
@@ -109,41 +110,12 @@ export class EditorComponent implements OnInit, AfterViewInit {
     })
   }
 
-  ngOnDestroy() {
-    this.closeDialog$.complete();
-  }
-
-  generate() {
-    const overlay = this.overlay.create({
-      backdropClass: 'cdk-overlay-dark-backdrop',
-      hasBackdrop: true,
-      positionStrategy: this.overlay.position().global().centerHorizontally().centerVertically()
-    });
-    const tplPortal = new TemplatePortal(this.dialogTpl, this.vcr, {
-      css: this.generateCss(this.formGroup.value),
-      url: '',
-      size: [this.adjustments.value.width, this.adjustments.value.height]
-    });
-    overlay.attach(tplPortal);
-    const sib = document.createElement('div');
-    this.elementView.getRootNode().appendChild(sib);
-    setTimeout(() => {
-      // console.log(this.mark.nativeElement.parentNode);
-      this.mark.nativeElement.parentNode.appendChild(this.elementView);
-    }, 0);
-    merge(overlay.backdropClick(), this.closeDialog$).pipe(take(1)).subscribe(() => {
-      sib.getRootNode().appendChild(this.elementView);
-      sib.remove();
-      overlay.detach();
-      overlay.dispose();
-    });
-  }
-
   onTreeHover(selector: string) {
     clearMasks();
     if (selector != null && this.elementView) {
+      const viewport = this.elementView.getBoundingClientRect();
       this.elementView.querySelectorAll(selector).forEach(_ => {
-        createMask(_);
+        createMask(_,viewport);
       });
     }
   }
@@ -158,16 +130,31 @@ export class EditorComponent implements OnInit, AfterViewInit {
     }
   }
 
-  generateCss(object) {
-    return `#comen-configuration-data:after {
-      content: "${serializeObject(object)}";
-    }`;
+  importWorkspace(workspace: EditorWorkspace) {
+
   }
 
+  exportWorkspace() {
+
+  }
 }
 
-function createMask(target: Element) {
+export interface EditorWorkspace {
+  adjustments: {
+    width: string;
+    height: string;
+  };
+  mocks: {
+
+  };
+  values: SafeAny;
+}
+
+function createMask(target: Element,viewport:DOMRect) {
   const rect = target.getBoundingClientRect();
+  if(rect.top<viewport.top||rect.bottom>viewport.bottom){
+    return;
+  }
   const hObj = document.createElement('div');
   hObj.className = 'highlight-wrap';
   hObj.style.position = 'absolute';

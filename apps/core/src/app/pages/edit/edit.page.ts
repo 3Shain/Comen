@@ -1,9 +1,16 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { Overlay } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ComenAddonConfiguration, SafeAny } from '@comen/common';
-import { EditorComponent } from '@comen/editor';
+import { ComenAddonConfiguration, Message, SafeAny, serializeObjectToBase64, serializeObjectToBuffer } from '@comen/common';
+import { EditorComponent, EditorRealtimeMessageProvider, EDITOR_ASSET_STORAGE, EDITOR_REALTIME_MESSAGE_PROVIDER } from '@comen/editor';
+import { zoomBigMotion } from 'ng-zorro-antd/core/animation';
+import { defer, merge, of, Subject } from 'rxjs';
+import { switchMap, take } from 'rxjs/operators';
 import { AddonService } from '../../addon/addon.service';
+import { LookupService } from '../../addon/lookup.service';
 import { OverlayContainerDirective } from '../../addon/overlay-container.directive';
+import { InMemoryStorage } from './in-memory.storage';
 
 @Component({
     selector: 'comen-edit',
@@ -11,24 +18,49 @@ import { OverlayContainerDirective } from '../../addon/overlay-container.directi
     styleUrls: [
         './edit.page.scss'
     ],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    animations: [zoomBigMotion],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: EDITOR_REALTIME_MESSAGE_PROVIDER,
+            useExisting: EditPage
+        },
+        InMemoryStorage,
+        {
+            provide: EDITOR_ASSET_STORAGE,
+            useExisting: InMemoryStorage
+        }
+    ]
 })
 // eslint-disable-next-line
-export class EditPage implements OnInit {
+export class EditPage implements OnInit, OnDestroy, EditorRealtimeMessageProvider {
 
     configuration: ComenAddonConfiguration;
-    view: SafeAny = undefined;
+    view: Node = undefined;
 
     @ViewChild('container', { static: true }) container: OverlayContainerDirective;
-    @ViewChild('editor',{static:true}) editor: EditorComponent;
+    @ViewChild('editor', { static: true }) editor: EditorComponent;
+
+    /* generate dialog props */
+
+    @ViewChild('dialogTpl', { static: true }) dialogTpl: TemplateRef<SafeAny>;
+    @ViewChild('mark', { static: false }) mark: ElementRef<Node>;
+    closeDialog$ = new Subject<void>();
+
+    /* connect dialog props */
+    @ViewChild('connectDialogTpl', { static: true }) connectDialogTpl: TemplateRef<SafeAny>;
+    confirmDialog$ = new Subject<SafeAny>();
 
     get addonTarget() {
-        return this.activatedRoute.snapshot.queryParams.addon ?? 'gamma';
+        return this.activatedRoute.snapshot.queryParams.o ?? 'null';
     }
 
     constructor(private activatedRoute: ActivatedRoute,
-        private cdr: ChangeDetectorRef,
-        addon: AddonService) {
+        private overlay: Overlay,
+        private vcr: ViewContainerRef,
+        private addon: AddonService,
+        private lookup: LookupService,
+        private storage: InMemoryStorage) {
         const inject = addon.getOverlayAddonMetadata(this.addonTarget).configuration; // TODO: reasonable default selection
         this.configuration = {
             displayName: inject.displayName,
@@ -75,7 +107,100 @@ export class EditPage implements OnInit {
         this.view = this.container.bootstrap(this.addonTarget);
     }
 
-    generate(){
-        this.editor.generate();
+    ngOnDestroy() {
+        this.closeDialog$.complete();
+    }
+
+    /* generate dialog methods */
+    generate() {
+        const overlay = this.overlay.create({
+            backdropClass: 'cdk-overlay-dark-backdrop',
+            hasBackdrop: true,
+            positionStrategy: this.overlay.position().global().centerHorizontally().centerVertically()
+        });
+        const tplPortal = new TemplatePortal(this.dialogTpl, this.vcr, {
+            css: this.generateCss(this.editor.formGroup.value), // TODO: not very neat
+            url: '',
+            size: [this.editor.adjustments.value.width, this.editor.adjustments.value.height]
+        });
+        overlay.attach(tplPortal);
+        const sib = document.createElement('div');
+        this.view.getRootNode().appendChild(sib);
+        setTimeout(() => {
+            // console.log(this.mark.nativeElement.parentNode);
+            this.mark.nativeElement.parentNode.appendChild(this.view);
+        }, 0);
+        merge(overlay.backdropClick(), this.closeDialog$).pipe(take(1)).subscribe(() => {
+            sib.getRootNode().appendChild(this.view);
+            sib.remove();
+            overlay.detach();
+            overlay.dispose();
+        });
+    }
+
+    generateCss(object) {
+        return `#comen-configuration-data:after {
+      content: "${serializeObjectToBase64(object)}";
+    }`;
+    }
+
+    /* connect dialog methods */
+
+    connect(options: {
+        target: Element
+    }): any {
+        const overlay = this.overlay.create({
+            backdropClass: 'cdk-overlay-transparent-backdrop',
+            hasBackdrop: true,
+            positionStrategy: this.overlay.position().flexibleConnectedTo(options.target).withPositions([{
+                originX: 'center',
+                originY: 'top',
+                overlayX: 'center',
+                overlayY: 'bottom',
+                offsetY: 0
+            }])
+        });
+        const tplPortal = new TemplatePortal(this.connectDialogTpl, this.vcr, {});
+        const ref = overlay.attach(tplPortal);
+        return this.confirmDialog$.pipe(
+            take(1),
+            switchMap(s => {
+                ref.detach();
+                ref.destroy();
+                overlay.detach();
+                overlay.dispose();
+                if (s == null) {
+                    return of();
+                }
+                console.log(s);
+                return defer(() => this.lookup.ensureSourceLoaded(s.source)).pipe(
+                    switchMap(() => {
+                        return this.addon.connectSource(s.source, {
+                            roomId: s.channel
+                        });
+                    })
+                )
+            })
+        );
+    }
+
+    /* some */
+    async export() {
+        const exportObject = {
+            workspace: this.editor.exportWorkspace(),
+            assets: Object.fromEntries(await Promise.all(Object.entries(this.storage.storage).map(async ([key, value]) => {
+                return [key, {
+                    data: await value.blob?.arrayBuffer(),
+                    type: value.blob?.type,
+                    url: value.url
+                }]
+            })))
+        }
+        const file =  new Blob([serializeObjectToBuffer(exportObject)]);
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(file);
+        a.download = 'export.cmproj';
+        a.click();
+        URL.revokeObjectURL(a.href);
     }
 }

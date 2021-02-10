@@ -1,0 +1,25 @@
+<h3 style="margin-bottom: 16px;">
+    测试
+</h3>
+<div class="list">
+
+</div>
+<div class="actions">
+    <button nz-button nzSize="small" nzType="default" (click)="addMock()">
+        <i nz-icon nzType="plus"> </i>
+    </button>
+    <button nz-button nzSize="small" nzType="text" (click)="deleteMock()">
+        <i nz-icon nzType="minus"> </i>
+    </button>
+    <button nz-button nzSize="small" nzType="text" (click)="editMock()">
+        <i nz-icon nzType="edit"> </i>
+    </button>
+    <button *ngIf="realtimeMessageProvider!=null" nz-button nzSize="small" [nzType]="realtimeConnecting?'primary':'text'" (click)="connectRealtimeSource($event)">
+        <ng-container *ngIf="realtimeConnecting;else elseTpl">
+            <i nz-icon nzType="api" style="margin-right: 4px;"> </i>断开连接
+        </ng-container>
+        <ng-template #elseTpl>
+            <i nz-icon nzType="api" style="margin-right: 4px;"> </i>连接实时评论流
+        </ng-template>
+    </button>
+</div>

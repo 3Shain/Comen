@@ -1,30 +1,12 @@
-import { APP_INITIALIZER, Injectable, NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterModule, UrlTree } from '@angular/router';
-import { ComenSourceModule } from './sources/source.module';
-import { AnalyticsService } from './common/analytics.service';
-import { environment } from '../environments/environment';
 import { AddonMoudle } from './addon/addon.module';
+import { DebugGuard } from './addon/debug.guard';
+import { AddonLazyloadGuard } from './addon/addon-lazyload.guard';
 
-// eslint-disable-next-line
-function APPINITIAL(ana: AnalyticsService) {
-  return () => { return ana.init() };
-}
-
-function loadScript(url: string) {
-  return new Promise(function (resolve) {
-    const head = document.getElementsByTagName('head')[0]
-    const script = document.createElement('script')
-    script.type = 'text/javascript'
-    script.addEventListener('load', function () {
-      resolve(script)
-    }, { once: true });
-    script.src = url
-    head.appendChild(script)
-  })
-}
 
 @Injectable()
 class CompatibleRoutes implements CanActivate {
@@ -38,7 +20,8 @@ class CompatibleRoutes implements CanActivate {
             ...route.queryParams,
             p: 'bilibili',
             bilichat: '',
-            id: +route.params.id
+            id: +route.params.id,
+            o: 'gamma'
           }
         });
       case 'bilibili':
@@ -46,7 +29,8 @@ class CompatibleRoutes implements CanActivate {
           queryParams: {
             ...route.queryParams,
             p: 'bilibili',
-            id: +route.params.id
+            id: +route.params.id,
+            o: 'gamma'
           }
         });
       case 'acfun':
@@ -54,7 +38,8 @@ class CompatibleRoutes implements CanActivate {
           queryParams: {
             ...route.queryParams,
             p: 'acfun',
-            id: +route.params.id
+            id: +route.params.id,
+            o: 'gamma'
           }
         });
     }
@@ -63,15 +48,6 @@ class CompatibleRoutes implements CanActivate {
 
 }
 
-@Injectable()
-class DebugGuard implements CanActivate {
-  async canActivate(route: ActivatedRouteSnapshot) {
-    if (route.queryParamMap.has('load') && !environment.production) {
-      await loadScript(route.queryParamMap.get('load'));
-    }
-    return true;
-  }
-}
 
 @NgModule({
   declarations: [
@@ -79,7 +55,6 @@ class DebugGuard implements CanActivate {
   ],
   imports: [
     BrowserAnimationsModule,
-    ComenSourceModule,
     HttpClientModule,
     AddonMoudle.forRoot(),
     RouterModule.forRoot([
@@ -89,14 +64,18 @@ class DebugGuard implements CanActivate {
         loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
       },
       {
-        path: 'overlay',
-        canActivate: [DebugGuard],
-        loadChildren: () => import('./pages/overlay/overlay.module').then(m => m.OverlayModule)
-      },
-      {
-        path: 'edit',
-        canActivate: [DebugGuard],
-        loadChildren: () => import('./pages/edit/edit.module').then(m => m.EditModule)
+        path: '',
+        canActivate: [DebugGuard, AddonLazyloadGuard],
+        children: [
+          {
+            path: 'overlay',
+            loadChildren: () => import('./pages/overlay/overlay.module').then(m => m.OverlayModule)
+          },
+          {
+            path: 'edit',
+            loadChildren: () => import('./pages/edit/edit.module').then(m => m.EditModule)
+          }
+        ]
       },
       /** (bilichat) compatible routes  */
       {
@@ -118,13 +97,7 @@ class DebugGuard implements CanActivate {
       }
     ])
   ],
-  providers: [AnalyticsService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: APPINITIAL,
-      multi: true,
-      deps: [AnalyticsService]
-    }, CompatibleRoutes, DebugGuard],
+  providers: [CompatibleRoutes],
   bootstrap: [AppComponent]
 })
 export class AppModule {

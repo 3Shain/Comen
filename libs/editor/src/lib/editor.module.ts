@@ -2,7 +2,6 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { GammaModule } from '@comen/gamma';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
@@ -11,6 +10,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSliderModule } from 'ng-zorro-antd/slider';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
@@ -21,22 +21,21 @@ import { ConfigConditionComponent } from './config-plane/config-condition/config
 import { ConfigPlaneComponent } from './config-plane/config-plane.component';
 import { ControlsModule } from './controls/controls.module';
 import { EditorComponent } from './editor.component';
-import { ElementTreeNodeDirective } from './element-tree/element-tree-node.directive';
-import { ElementTreeComponent } from './element-tree/element-tree.component';
-import { MockObsDialogModule } from './mock-obs-dialog/mock-obs-dialog.module';
-import { ShadowHostComponent } from './shadow-host.component';
+import { ElementTreeNodeDirective } from './element-tree-plane/element-tree-node.directive';
+import { ElementTreePlaneComponent } from './element-tree-plane/element-tree-plane.component';
+import { MockMessagePlaneComponent } from './mock-message-plane/mock-message-plane.component';
 
 
 @NgModule({
-  declarations: [EditorComponent, ShadowHostComponent,
-    ElementTreeComponent, ElementTreeNodeDirective,
+  declarations: [EditorComponent,
+    ElementTreePlaneComponent, ElementTreeNodeDirective,
     ConfigBlockComponent, ConfigConditionComponent, ConfigPlaneComponent, ConditionPopoverComponent,
-    ConditionPopoverDirective],
+    ConditionPopoverDirective,
+    MockMessagePlaneComponent],
   imports: [
     CommonModule,
     NzGridModule,
     NzIconModule,
-    GammaModule,
     NzSelectModule,
     NzGridModule,
     NzInputModule,
@@ -46,11 +45,11 @@ import { ShadowHostComponent } from './shadow-host.component';
     NzSwitchModule,
     NzDropDownModule,
     NzPopconfirmModule,
+    NzResizableModule,
     ControlsModule,
     OverlayModule,
     ReactiveFormsModule,
-    ReactiveComponentModule,
-    MockObsDialogModule
+    ReactiveComponentModule
   ],
   exports: [EditorComponent]
 })

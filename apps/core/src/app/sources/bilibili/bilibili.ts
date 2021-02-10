@@ -4,23 +4,20 @@ import {
     LiveStartMessage, LiveStopMessage, SystemMessage,
     abortable, waitTimeout, SafeAny
 } from '@comen/common';
-import { MessageSource } from './source';
-import { connectBilibiliLiveWs } from 'isomorphic-danmaku';
+import { connectBilibiliLiveWs } from 'isomorphic-danmaku/bilibili';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { timeout } from 'rxjs/operators';
-import { AnalyticsService } from '../common/analytics.service';
 
 @Injectable()
-export class BilibiliSource implements MessageSource {
+export class BilibiliSource {
 
     readonly type = 'bilibili';
 
     private __lastLIVECMD = 0;
     private __lastPREPCMD = 0;
 
-    constructor(private http: HttpClient,
-        private analytics: AnalyticsService) { }
+    constructor(private http: HttpClient) { }
 
     connect(config: {
         roomId: number,

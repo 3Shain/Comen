@@ -3,10 +3,10 @@ import { ComenAddonConfiguration, ConfigurationSection } from '@comen/common';
 
 @Component({
   selector: 'comen-element-tree',
-  templateUrl: './element-tree.component.html',
-  styleUrls: ['./element-tree.component.scss']
+  templateUrl: './element-tree-plane.component.html',
+  styleUrls: ['./element-tree-plane.component.scss']
 })
-export class ElementTreeComponent {
+export class ElementTreePlaneComponent {
 
   @Input() config: ComenAddonConfiguration;
 
@@ -26,7 +26,7 @@ export class ElementTreeComponent {
     this.lastHover = '';
   }
 
-  onNodeHover(node: ConfigurationSection) {
+  onNodeHover(key: string, node: ConfigurationSection) {
     if (node.previewSelector != this.lastHover) {
       this.sectionHover.emit(node.previewSelector);
       this.lastHover = node.previewSelector;

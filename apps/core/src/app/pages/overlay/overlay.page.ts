@@ -5,12 +5,12 @@ import {
     nextFrame, RxZone, SafeAny, TextMessage, waitUntilPageVisible
 } from '@comen/common';
 import { of, Subject } from 'rxjs';
-import { catchError, filter, retry, takeUntil, tap } from 'rxjs/operators';
+import { catchError, filter, retry, take, takeUntil, tap } from 'rxjs/operators';
+import { AddonService } from '../../addon/addon.service';
 import { OverlayContainerDirective } from '../../addon/overlay-container.directive';
 import { commentFilter, folder, smoother } from '../../common';
 import { emojiFilter } from '../../common/emoji';
 import { ComenConfiguration, DEFAULT_CONFIG, mergeQueryParameters } from '../../config';
-import { MessageSource, SOURCE_PROVIDER } from '../../sources';
 
 const BILICHAT_SYSTEM_MESSAGE = {
     FETCHING: '正在获取直播间信息...',
@@ -42,13 +42,13 @@ export class OverlayPage extends ComenEnvironmentHost implements OnInit, OnDestr
     private destroy$ = new Subject<void>();
 
     constructor(private activatedRoute: ActivatedRoute,
-        @Inject(SOURCE_PROVIDER) private sources: MessageSource[],
-        private rxzone: RxZone) {
+        private rxzone: RxZone,
+        private addon: AddonService) {
         super();
     }
 
     get addonTarget() {
-        return this.activatedRoute.snapshot.params.addon ?? 'gamma';
+        return this.activatedRoute.snapshot.queryParams.o ?? 'null';
     }
 
     message$: Subject<Message> = new Subject();
@@ -76,7 +76,7 @@ export class OverlayPage extends ComenEnvironmentHost implements OnInit, OnDestr
                 });
             }, 0);
         }
-        this.sources.find(x => x.type == (globalConfig.platform ?? 'bilibili')).connect(globalConfig).pipe(
+        this.addon.connectSource(globalConfig.platform, globalConfig).pipe(
             filter(() => document.visibilityState == 'visible'),
             // this is important! because some filter depend on requestAnimationFrame will cause some weired behavior
             commentFilter(globalConfig),
