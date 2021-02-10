@@ -13,9 +13,12 @@
       "prefix": "comen",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "outputPath": "dist/apps/core",
+            "customWebpackConfig":{
+              "path":"apps/core/webpack.config.ts"
+            },
             "index": "apps/core/src/index.html",
             "main": "apps/core/src/main.ts",
             "polyfills": "apps/core/src/polyfills.ts",
@@ -66,7 +69,7 @@
           "outputs": ["{options.outputPath}"]
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
             "browserTarget": "core:build",
             "proxyConfig": "apps/core/proxy.conf.json"
