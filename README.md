@@ -1,19 +1,9 @@
 # Comen
 
-[![MIT License](https://img.shields.io/npm/l/isomorphic-danmaku.svg)](https://github.com/3Shain/isomorphic-danmaku/LICENSE)
+[![AGPL License](https://img.shields.io/badge/AGPL-Licensed-blue)](https://github.com/3Shain/Comen/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
 **当前仍在活跃开发中，代码结构可能尚未稳定，并行开发请注意代码的破坏更新** , 原项目【bilichat】请查看[bilichat](https://github.com/3Shain/Comen/tree/bilichat)分支
-
-Comen是一个主要用于在网络直播中向观众展示当前直播间实时评论流的工具。
-
-### 主要特性
-* 多平台支持：默认提供了Acfun与Bilibili的接入实现。合理的抽象低耦合设计使得新平台的接入也很容易。
-* 高可靠性：不只是一个爱好项目。原项目已运行两年的时间，积累了各种对用户体验和异常处理的优化。
-* 兼容Youtube评论栏样式，只需修改URL就能迁移。
-* <span style="color:#7f7f7f">高度自定义 (计划中,TBD)</span>
-* <span style="color:#006c91">作为原项目的延续，提供用户几乎无感知的兼容。</span>
-
 
 ### 贡献代码
 
@@ -48,3 +38,23 @@ nx serve node-backend
 ```
 
 现在可以对代码进行更改了。任何有关代码更改都会触发自动刷新。
+
+### License
+
+```
+Copyright (c) 2021 3Shain.
+All rights reserved.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+```
