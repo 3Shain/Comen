@@ -1,0 +1,79 @@
+:host {
+    display: block;
+    padding-top: 5vh;
+    min-width: 1024px;
+    user-select: none;
+    &>main {
+        width: 960px;
+        margin: 0 auto;
+        h1 {
+            color: inherit;
+            margin: 0;
+            font-family: 'Baloo Chettan 2', cursive;
+            font-weight: 500;
+            font-size: 40px;
+        }
+    
+        h2 {
+            font-weight: 300;
+        }
+    
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+    
+        #right {
+            &>div{
+                margin-bottom: 32px;
+            }
+            .overlay-button {
+                text-align: left;
+                & > div {
+                    &:hover {
+                        background-color: #eee;
+                        cursor: pointer;
+                    }
+                    display: flex;
+                    padding: 16px;
+                    & > img {
+                        --size: 36px !important;
+                        width: var(--size) !important;
+                        height: var(--size) !important;
+                    }
+                    & > div {
+                        margin-left: 16px;
+                        flex: 1;
+                        & > h3 {
+                            font-size: 14px;
+                            line-height: 16px;
+                            font-weight: 400;
+                            margin-bottom: 4px;
+                        }
+                        & > p {
+                            font-weight: 300;
+                            color: #555;
+                            margin: 0;
+                        }
+                    }
+                }
+            }
+            .file-button {
+                &:hover {
+                    background-color: #eee;
+                    cursor: pointer;
+                }
+                padding: 12px;
+                display: flex;
+                line-height: 24px;
+    
+                & > div > img {
+                    --size: 24px !important;
+                    width: var(--size) !important;
+                    height: var(--size) !important;
+                }
+            }
+        }
+    }
+}
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Chettan+2:wght@500&display=swap');

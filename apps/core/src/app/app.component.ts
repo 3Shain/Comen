@@ -23,7 +23,6 @@ export class AppComponent {
     }),
     debounceTime(0),
     publishBehavior('ready'),
-    refCount(),
-    tap(console.log)
+    refCount()
   );
 }

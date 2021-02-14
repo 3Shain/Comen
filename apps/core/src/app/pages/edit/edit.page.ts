@@ -1,15 +1,17 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ComenAddonConfiguration, Message, SafeAny, serializeObjectToBase64, serializeObjectToBuffer } from '@comen/common';
 import { EditorComponent, EditorRealtimeMessageProvider, EDITOR_ASSET_STORAGE, EDITOR_REALTIME_MESSAGE_PROVIDER } from '@comen/editor';
 import { zoomBigMotion } from 'ng-zorro-antd/core/animation';
-import { defer, merge, of, Subject } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import { defer, merge, Observable, of, Subject } from 'rxjs';
+import { publish, refCount, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
 import { AddonService } from '../../addon/addon.service';
+import { OverlayInfo, SourceInfo } from '../../addon/definations';
 import { LookupService } from '../../addon/lookup.service';
 import { OverlayContainerDirective } from '../../addon/overlay-container.directive';
+import { ComenFile } from '../../file';
 import { InMemoryStorage } from './in-memory.storage';
 
 @Component({
@@ -41,6 +43,8 @@ export class EditPage implements OnInit, OnDestroy, EditorRealtimeMessageProvide
     @ViewChild('container', { static: true }) container: OverlayContainerDirective;
     @ViewChild('editor', { static: true }) editor: EditorComponent;
 
+    destroy$ = new Subject<void>();
+
     /* generate dialog props */
 
     @ViewChild('dialogTpl', { static: true }) dialogTpl: TemplateRef<SafeAny>;
@@ -50,9 +54,12 @@ export class EditPage implements OnInit, OnDestroy, EditorRealtimeMessageProvide
     /* connect dialog props */
     @ViewChild('connectDialogTpl', { static: true }) connectDialogTpl: TemplateRef<SafeAny>;
     confirmDialog$ = new Subject<SafeAny>();
+    source$ = defer(() => this.lookup.getSources()).pipe(
+        shareReplay(1)
+    ) as Observable<SourceInfo[]>;
 
     get addonTarget() {
-        return this.activatedRoute.snapshot.queryParams.o ?? 'null';
+        return this.addon.getOverlayAddonMetadata(this.activatedRoute.snapshot.queryParams.o ?? "null");
     }
 
     constructor(private activatedRoute: ActivatedRoute,
@@ -60,8 +67,9 @@ export class EditPage implements OnInit, OnDestroy, EditorRealtimeMessageProvide
         private vcr: ViewContainerRef,
         private addon: AddonService,
         private lookup: LookupService,
-        private storage: InMemoryStorage) {
-        const inject = addon.getOverlayAddonMetadata(this.addonTarget).configuration; // TODO: reasonable default selection
+        private storage: InMemoryStorage,
+        private router: Router,) {
+        const inject = this.addonTarget.configuration; // TODO: reasonable default selection
         this.configuration = {
             displayName: inject.displayName,
             preset: inject.preset,
@@ -103,12 +111,43 @@ export class EditPage implements OnInit, OnDestroy, EditorRealtimeMessageProvide
         }
     }
 
+    session: {
+        file: ComenFile,
+        data: SafeAny
+    } = this.activatedRoute.snapshot.data.session;
+    overlayInfo: OverlayInfo = this.activatedRoute.snapshot.data.addonInfo.overlay!;
+
     ngOnInit() {
-        this.view = this.container.bootstrap(this.addonTarget);
+        if (this.session) {
+            // load the file!
+        } else {
+            window.location.pathname = '/'; // TODO this may cause panic?
+        }
+        this.view = this.container.bootstrap(this.addonTarget.name);
+    }
+
+    ngAfterViewInit() {
+        return this.editor.workspaceChange(10 * 1000).pipe(
+            takeUntil(this.destroy$)
+        ).subscribe(workspaceData => {
+            this.session.file.storeData(workspaceData, {
+                name: this.overlayInfo.name,
+                version: this.overlayInfo.version
+            });
+            sessionStorage.setItem("modifying", this.session.file.id)
+        });
     }
 
     ngOnDestroy() {
         this.closeDialog$.complete();
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    async returnDashboard() {
+        // save all shit
+        sessionStorage.removeItem("modifying");
+        this.router.navigate(['/']);
     }
 
     /* generate dialog methods */
@@ -196,7 +235,7 @@ export class EditPage implements OnInit, OnDestroy, EditorRealtimeMessageProvide
                 }]
             })))
         }
-        const file =  new Blob([serializeObjectToBuffer(exportObject)]);
+        const file = new Blob([serializeObjectToBuffer(exportObject)]);
         const a = document.createElement('a');
         a.href = URL.createObjectURL(file);
         a.download = 'export.cmproj';

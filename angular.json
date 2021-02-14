@@ -35,7 +35,7 @@
             ],
             "styles": ["apps/core/src/styles.less"],
             "scripts": [],
-            "allowedCommonJsDependencies": ["protobufjs", "escodegen"]
+            "allowedCommonJsDependencies": ["protobufjs", "escodegen", "date-fns"]
           },
           "configurations": {
             "production": {

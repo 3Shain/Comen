@@ -6,7 +6,7 @@ import { SafeAny } from "./utils";
 export type ComenAddonMetadata = {
     name: string;
     displayName: string;
-    configuration: ComenAddonConfiguration
+    configuration: ComenAddonConfiguration;
 };
 
 export interface ComenAddonInstance {

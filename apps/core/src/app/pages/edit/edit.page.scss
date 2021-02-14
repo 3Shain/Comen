@@ -5,17 +5,20 @@
     flex-direction: column;
 
     & > header {
-        // background: #333333;
-        height: 64px;
-        box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
-        padding: 16px;
+        height: 50px;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+            0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        padding: 12px 16px;
 
         & > #logo {
-            height: 32px;
+            height: 26px;
             color: #a16ba1;
+            &:hover {
+                cursor: pointer;
+            }
         }
 
-        [nz-button]{
+        [nz-button] {
             margin-left: 8px;
         }
     }
@@ -25,20 +28,19 @@
     }
 }
 
-
 #dialog {
     background-color: white;
     display: flex;
     border-radius: 4px;
     padding: 16px;
 
-    &>#mock{
+    & > #mock {
         width: 550px;
         height: 850px;
         margin-right: 16px;
     }
 
-    &>#info {
+    & > #info {
         width: 450px;
     }
 }

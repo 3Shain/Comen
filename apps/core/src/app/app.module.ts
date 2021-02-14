@@ -1,53 +1,13 @@
-import { Injectable, NgModule } from '@angular/core';
-import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterModule, UrlTree } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule } from '@angular/router';
+import { AddonLazyloadResolver } from './addon/addon-lazyload.resolve';
 import { AddonMoudle } from './addon/addon.module';
 import { DebugGuard } from './addon/debug.guard';
-import { AddonLazyloadGuard } from './addon/addon-lazyload.guard';
-
-
-@Injectable()
-class CompatibleRoutes implements CanActivate {
-  constructor(private router: Router) { }
-  async canActivate(route: ActivatedRouteSnapshot): Promise<UrlTree> {
-    switch (route.url[0].path) {
-      case 'gkd':
-      case 'alpha':
-        return this.router.createUrlTree(['/', 'overlay'], {
-          queryParams: {
-            ...route.queryParams,
-            p: 'bilibili',
-            bilichat: '',
-            id: +route.params.id,
-            o: 'gamma'
-          }
-        });
-      case 'bilibili':
-        return this.router.createUrlTree(['/', 'overlay'], {
-          queryParams: {
-            ...route.queryParams,
-            p: 'bilibili',
-            id: +route.params.id,
-            o: 'gamma'
-          }
-        });
-      case 'acfun':
-        return this.router.createUrlTree(['/', 'overlay'], {
-          queryParams: {
-            ...route.queryParams,
-            p: 'acfun',
-            id: +route.params.id,
-            o: 'gamma'
-          }
-        });
-    }
-    throw new Error('NOT EXPECTED ROUTE');
-  }
-
-}
-
+import { AppComponent } from './app.component';
+import { CompatibleRoutes } from './compatible.guard';
+import { FileModule } from './file';
 
 @NgModule({
   declarations: [
@@ -57,6 +17,7 @@ class CompatibleRoutes implements CanActivate {
     BrowserAnimationsModule,
     HttpClientModule,
     AddonMoudle.forRoot(),
+    FileModule.forRoot(),
     RouterModule.forRoot([
       {
         path: '',
@@ -65,7 +26,10 @@ class CompatibleRoutes implements CanActivate {
       },
       {
         path: '',
-        canActivate: [DebugGuard, AddonLazyloadGuard],
+        canActivate: [DebugGuard],
+        resolve: {
+          addonInfo: AddonLazyloadResolver
+        },
         children: [
           {
             path: 'overlay',

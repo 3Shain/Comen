@@ -47,7 +47,7 @@ export class AddonService {
             resolver: resolver
         };
     }
-    
+
     registerBuiltinSource(name: string, service: SafeAny) {
         if (this.registeredSource[name]) {
             throw 'REGISTERED';

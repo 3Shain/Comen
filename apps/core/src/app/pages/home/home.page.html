@@ -1,5 +1,105 @@
-<!-- Comen Logo -->
+<main class="container">
+    <div nz-row [nzGutter]="[8,8]">
+        <div nz-col nzSpan=8>
+            <div>
+                <img src="/assets/logo_solid.png" width="40%">
+                <h1 style="color:#865686;">comen<span style="font-size:24px;margin-left: 12px;">by 3Shain</span></h1>
 
-<!-- Get Start -->
+                <div>
+                    <div>
+                        <h2>帮助</h2>
+                        <ul>
+                            <li>
+                                <a>入门视频</a>
+                            </li>
+                            <li>
+                                <a>产品文档</a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/3Shain/Comen" target="_blank">Github</a>
+                            </li>
+                            <li>
+                                <a [nz-tooltip] [nzTooltipTitle]="12456789">用户交流群</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
 
-<!--  -->
+                        <div>
+                            <ul>
+                                <li>
+                                    <a>关于</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="right" nz-col nzSpan=16>
+
+            <div>
+                <h2>欢迎使用</h2>
+                <div>
+
+                </div>
+            </div>
+            <div>
+
+                <h2>创建新的组件</h2>
+                <div nz-row [nzGutter]="[8,8]">
+                    <div class="overlay-button" nz-col nzSpan=12 *ngFor="let x of overlays$|ngrxPush">
+                        <div (click)="create(x)">
+                            <img [src]="x.icon">
+                            <div>
+                                <h3>{{x.displayName}}</h3>
+                                <p>没有描述</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngrxLet="files$;let files">
+                <h2>已创建</h2>
+                <div *ngIf="files.length==0;else elseTpl">
+                    你还没有创建过任何组件。
+                </div>
+                <ng-template #elseTpl>
+                    <div class="file-button" nz-row>
+                        <div nz-col nzSpan=2>
+                        </div>
+                        <div nz-col nzSpan=8>
+                            名称
+                        </div>
+                        <div nz-col nzSpan=4>
+                            类型
+                        </div>
+                        <div nz-col nzSpan=6>
+                            最近编辑
+                        </div>
+                        <div nz-col nzSpan=4>
+                        </div>
+                    </div>
+                    <div class="file-button" *ngFor="let x of files" nz-row (click)="open(x)">
+                        <div nz-col nzSpan=2>
+                            <img [src]="x.icon" />
+                        </div>
+                        <div nz-col nzSpan=8>
+                            {{x.name}}
+                        </div>
+                        <div nz-col nzSpan=4>
+                            {{x.displayName}}
+                        </div>
+                        <div nz-col nzSpan=6>
+                            {{x.lastModified | timeAgo}}
+                        </div>
+                        <div nz-col nzSpan=4>
+                            <i nz-icon nzType="delete"></i>
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</main>

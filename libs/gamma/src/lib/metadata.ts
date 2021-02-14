@@ -135,7 +135,7 @@ const COMMENT_CONFIGURATION: ComenAddonConfiguration = {
         },
         /* sc message */
         paidMessage: {
-            displayName: '付费消息',
+            displayName: '醒目留言',
             level: 0,
             previewSelector: 'yt-live-chat-paid-message-renderer',
             properties: {
