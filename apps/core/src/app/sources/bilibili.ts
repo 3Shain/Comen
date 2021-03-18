@@ -123,7 +123,7 @@ export class BilibiliSource implements MessageSource {
                                     }
                                     observer.next({
                                         type: 'sticker',
-                                        sticker: resp.giftInfo.list.find(x => x.id == msg.data.giftId).webp,
+                                        sticker: resp.giftInfo.list.find(x => x.id == msg.data.giftId)?.webp,
                                         avatar: '',
                                         username: msg.data.uname,
                                         amount: msg.data.num,
