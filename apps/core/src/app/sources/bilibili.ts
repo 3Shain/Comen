@@ -1,4 +1,4 @@
-import { Observable, OperatorFunction } from 'rxjs';
+import { Observable, of, OperatorFunction } from 'rxjs';
 import {
     Message, TextMessage, StickerMessage, PaidMessage, MemberMessage,
     LiveStartMessage, LiveStopMessage, SystemMessage,
@@ -8,7 +8,7 @@ import { MessageSource } from './source';
 import { connectBilibiliLiveWs } from 'isomorphic-danmaku';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { timeout } from 'rxjs/operators';
+import { catchError, timeout } from 'rxjs/operators';
 import { AnalyticsService } from '../common/analytics.service';
 
 @Injectable()
@@ -43,7 +43,23 @@ export class BilibiliSource implements MessageSource {
                             }
                         } as SystemMessage);
                         const resp = await this.http.get<BilibiliRoominfoResponse>(`/api/bili/getRoomInfo?roomid=${config.roomId}`)
-                            .pipe(abortable(abortController)).toPromise();
+                            .pipe(abortable(abortController),
+                            catchError(e=>{
+                                return of({
+                                    roomInfo:{
+                                        room_id: config.roomId,
+                                        uid: -1,
+                                        live_status: -1,
+
+                                    },
+                                    danmuInfo: {
+                                        token: ""
+                                    },
+                                    giftInfo:{
+                                        list: []
+                                    }
+                                })
+                            })).toPromise();
                         observer.next({
                             type: 'system',
                             data: {
