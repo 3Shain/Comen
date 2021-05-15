@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, Inject, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ComenAddonConfiguration, ComenEnvironmentHost, SafeAny } from '@comen/common';
 import { NzResizeEvent } from 'ng-zorro-antd/resizable';
-import { debounceTime } from 'rxjs/operators';
+import { combineLatest, merge } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
 import { EditorEnvironmentHost } from './editor.host';
 import { generateCode } from './variant/compiler';
 
@@ -21,10 +22,11 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
   currentConfigSection = '';
   formGroup: FormGroup;
+  mockControl = this.fb.control(null);
   adjustments = this.fb.group({
     width: [600],
     height: [800],
-    background: ['#444'],
+    background: ['#666666'],
     grid: [false]
   });
 
@@ -54,13 +56,9 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.currentConfigSection = Object.keys(this.configuration.sections)[0]; // TODO: make sure length > 0
     this.formGroup = this.fb.group(
       Object.fromEntries(
-        Object.entries(this.configuration.sections).map(([key, sections]) => {
+        Object.entries(this.configuration.sections).map(([key, section]) => {
           return [key, {
-            default: Object.fromEntries(Object.entries(sections.properties).filter(([propkey, property]) => {
-              return property.defaultVisible;
-            }).map(([propkey, property]) => {
-              return [propkey, property.defaultValue]
-            })),
+            default: section.defaultValue,
             variants: []
           }];
         }))
@@ -71,43 +69,13 @@ export class EditorComponent implements OnInit, AfterViewInit {
           debounceTime(0), // NB: avoid repeating singal in one eventloop execution
         ).subscribe((val) => {
           this.host.emitConfig(section, val.default);
-          this.host.emitVariantPipe(section, generateCode(val))
+          this.host.emitVariantPipe(section, new Function('c', generateCode(val)))
         });
       });
   }
 
   ngAfterViewInit() {
-    this.host.emitMessage({
-      type: 'text',
-      content: 'Test',
-      username: 'DEBUG',
-      avatar: '/assets/logo_solid.png',
-      badges: [],
-      usertype: 0,
-      platformUserId: 0,
-      platformUserLevel: 0,
-      platformUserExtra: {}
-    })
-    this.host.emitMessage({
-      type: 'paid',
-      content: 'Test',
-      username: 'DEBUG',
-      avatar: '/assets/logo_solid.png',
-      itemInfo: '$100',
-      price: 100,
-      platformUserId: 0,
-    })
-    this.host.emitMessage({
-      type: 'text',
-      content: 'Test',
-      username: 'DEBUG',
-      avatar: '/assets/logo_solid.png',
-      badges: [],
-      usertype: 0,
-      platformUserId: 0,
-      platformUserLevel: 0,
-      platformUserExtra: {}
-    })
+
   }
 
   onTreeHover(selector: string) {
@@ -115,7 +83,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     if (selector != null && this.elementView) {
       const viewport = this.elementView.getBoundingClientRect();
       this.elementView.querySelectorAll(selector).forEach(_ => {
-        createMask(_,viewport);
+        createMask(_, viewport);
       });
     }
   }
@@ -131,11 +99,51 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
   importWorkspace(workspace: EditorWorkspace) {
-
+    this.adjustments.patchValue(workspace.adjustments, { emitEvent: false });
+    this.formGroup.patchValue(workspace.values, { emitEvent: false });
+    this.mockControl.patchValue(workspace.mocks, { emitEvent: false });
+    Object.entries(
+      this.formGroup.controls).forEach(([section, control]) => {
+        this.host.emitConfig(section, control.value.default);
+        this.host.emitVariantPipe(section, new Function('c', generateCode(control.value)))
+      });
   }
 
   exportWorkspace() {
+    return {
+      values: this.formGroup.value,
+      mocks: this.mockControl.value,
+      adjustments: this.adjustments.value
+    } as EditorWorkspace;
+  }
 
+  generateWorkspace(): SafeAny {
+    return Object.fromEntries(Object.entries(this.formGroup.value).map(([key, value]: [string, SafeAny]) => {
+      if (this.configuration.sections[key].variantProperties) {
+        return [key, {
+          default: value.default,
+          variantsPipe: generateCode(value)
+        }]
+      } else {
+        return [key, {
+          default: value.default
+        }]
+      }
+    }))
+  }
+
+  workspaceChange(_debounceTime: number = 0) {
+    return merge(
+      this.adjustments.valueChanges,
+      this.formGroup.valueChanges,
+      this.mockControl.valueChanges
+    ).pipe(
+      map(() => {
+        console.log('t');
+        return this.exportWorkspace();
+      }),
+      debounceTime(_debounceTime)
+    );
   }
 }
 
@@ -150,9 +158,9 @@ export interface EditorWorkspace {
   values: SafeAny;
 }
 
-function createMask(target: Element,viewport:DOMRect) {
+function createMask(target: Element, viewport: DOMRect) {
   const rect = target.getBoundingClientRect();
-  if(rect.top<viewport.top||rect.bottom>viewport.bottom){
+  if (rect.top < viewport.top || rect.bottom > viewport.bottom) {
     return;
   }
   const hObj = document.createElement('div');

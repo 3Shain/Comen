@@ -12,6 +12,10 @@ export class InMemoryStorage implements EditorAssetStorage {
         }
     } = {};
 
+    // mutable size
+    size$ = 0;
+
+    
     getUrl(id: string) {
         if (id in this.storage) {
             return this.storage[id].url;

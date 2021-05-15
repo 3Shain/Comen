@@ -36,17 +36,17 @@ export class HomePage {
                     ...overlays.find(s => s.name == x.constraint.name),
                     ...x
                 }
-            });
+            }).sort((a, b) => b.lastModified - a.lastModified);
         }),
         publishBehavior([]),
         refCount()
     );
 
     addFile() {
-        // add file plane:
+        // TODO: add file plane:
     }
 
-    async open(file: ComenFile) {
+    async openFile(file: ComenFile) {
         this.router.navigate(['edit'], {
             queryParams: {
                 o: file.constraint.name,
@@ -55,7 +55,7 @@ export class HomePage {
         });
     }
 
-    async create(overlay: OverlayInfo) {
+    async createFile(overlay: OverlayInfo) {
         const file = await this.file.addNewFile(`${overlay.displayName}-${nanoid(8)}`, {
             name: overlay.name,
             version: overlay.version
@@ -66,5 +66,11 @@ export class HomePage {
                 id: file.id
             }
         });
+    }
+
+    async deleteFile(file:ComenFile){
+        // TODO: event handler triggered open
+        await this.file.removeFile(file);
+        // TODO: pop out
     }
 }

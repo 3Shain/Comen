@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ComenEnvironmentHost, Message, SafeAny } from '@comen/common';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 
 @Injectable()
 export class EditorEnvironmentHost extends ComenEnvironmentHost {
@@ -25,7 +25,7 @@ export class EditorEnvironmentHost extends ComenEnvironmentHost {
 
     config(section: string) {
         if (!this.configMap[section]) {
-            this.configMap[section] = new Subject();
+            this.configMap[section] = new ReplaySubject(1);
         }
         return this.configMap[section];
     }
@@ -44,7 +44,7 @@ export class EditorEnvironmentHost extends ComenEnvironmentHost {
 
     variantPipe(section: string) {
         if (!this.variantPipeMap[section]) {
-            this.variantPipeMap[section] = new Subject();
+            this.variantPipeMap[section] = new ReplaySubject(1);
         }
         return this.variantPipeMap[section];
     }

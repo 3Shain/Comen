@@ -85,12 +85,12 @@ export class ConfigBlockComponent implements OnInit, ControlValueAccessor {
         delete this._invisibleProps[key];
       });
       this.checkAllVisible();
-      this.propertiesFormGroup.patchValue(value);
+      this.propertiesFormGroup.patchValue(value, { emitEvent: false });
       this.changeDetector.markForCheck();
     }
   }
 
-  registerOnChange(callback: (v:SafeAny) => void) {
+  registerOnChange(callback: (v: SafeAny) => void) {
     this.propertiesFormGroup.valueChanges.subscribe(props => {
       callback(Object.fromEntries(Object.entries(props).filter(([prop]) => {
         return this._visibleProps[prop] != undefined;

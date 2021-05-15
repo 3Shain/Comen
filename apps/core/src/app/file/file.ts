@@ -15,4 +15,5 @@ export interface ComenFile {
     readonly lastModified: number;
     getData(): Promise<SafeAny>;
     storeData(data: SafeAny, constraint: ComenFileConstraint): Promise<void>;
+    rename(newName: string): Promise<void>;
 }

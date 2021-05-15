@@ -12,5 +12,8 @@
     {
       "path": "./tsconfig.editor.json"
     }
-  ]
+  ],
+  "angularCompilerOptions": {
+      "strictTemplates": true
+  }
 }

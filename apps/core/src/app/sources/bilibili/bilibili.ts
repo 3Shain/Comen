@@ -71,7 +71,9 @@ export class BilibiliSource {
                                         | (msg.info[2][0] == resp.roomInfo.uid ? 0x04 : 0x0) //owner
                                     ),
                                     platformUserId: msg.info[2][0],
-                                    platformUserExtra: {},
+                                    platformUserExtra: {
+                                        guardType: msg.info[7]
+                                    },
                                     platformUserLevel: msg.info[4][0]
                                 } as TextMessage);
                                 continue;

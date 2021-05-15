@@ -13,8 +13,8 @@ async function initService() {
 function ready() {
 
   const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
-  const width = Math.min(1280, workAreaSize.width || 1280);
-  const height = Math.min(720, workAreaSize.height || 720);
+  const width = Math.min(1400, workAreaSize.width || 1400);
+  const height = Math.min(960, workAreaSize.height || 960);
   const mainWindow = new BrowserWindow({
     width: width,
     height: height,

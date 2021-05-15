@@ -39,6 +39,8 @@ nx serve node-backend
 
 现在可以对代码进行更改了。任何有关代码更改都会触发自动刷新。
 
+> Warning: Use npm@>7.0.0
+
 ### License
 
 ```

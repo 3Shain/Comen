@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ControlValueAccessor, FormArray, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ConfigurationSection, SafeAny, VariantCondition } from '@comen/common';
-import { PLANE_SLIDE } from './animations';
 
 @Component({
   selector: 'comen-config-plane',
@@ -11,11 +10,7 @@ import { PLANE_SLIDE } from './animations';
     provide: NG_VALUE_ACCESSOR,
     useExisting: ConfigPlaneComponent,
     multi: true
-  }],
-  animations: [PLANE_SLIDE],
-  host: {
-    // '[@slide]': ''
-  },
+  }]
 })
 export class ConfigPlaneComponent implements ControlValueAccessor {
 
@@ -28,23 +23,41 @@ export class ConfigPlaneComponent implements ControlValueAccessor {
     variants: this.fb.array([])
   });
 
-  get formArray() {
+  get variantsFormArray() {
     return this.formGroup.get('variants') as FormArray;
   }
 
-  get vairantProperties(){
+  get vairantProperties() {
     return this.sectionSetting.variantProperties;
   }
 
   addNewVariant(condition: VariantCondition) {
-    this.formArray.push(this.fb.group({
+    this.variantsFormArray.push(this.fb.group({
       condition: [[condition]],
       properties: [{}]
     }));
   }
 
   removeVariant(index: number) {
-    this.formArray.removeAt(index);
+    this.variantsFormArray.removeAt(index);
+  }
+
+  moveUpVariant(index: number) {
+    if (index <= 0) {
+      return;
+    }
+    const control = this.variantsFormArray.at(index);
+    this.variantsFormArray.setControl(index, this.variantsFormArray.at(index - 1));
+    this.variantsFormArray.setControl(index - 1, control);
+  }
+
+  moveDownVariant(index: number) {
+    if (index >= this.variantsFormArray.length - 1) {
+      return;
+    }
+    const control = this.variantsFormArray.at(index);
+    this.variantsFormArray.setControl(index, this.variantsFormArray.at(index + 1));
+    this.variantsFormArray.setControl(index + 1, control);
   }
 
   writeValue(value: {
@@ -55,12 +68,12 @@ export class ConfigPlaneComponent implements ControlValueAccessor {
     }[]
   }) {
     value.variants?.forEach(val => {
-      this.formArray.push(this.fb.group({
+      this.variantsFormArray.push(this.fb.group({
         condition: this.fb.control(val.condition),
         properties: val.properties
       }));
-    })
-    this.formGroup.get('default').setValue(value.default);
+    });
+    this.formGroup.get('default').setValue(value.default, { emitEvent: false });
   }
 
   registerOnChange(callback: (val: SafeAny) => unknown) {
@@ -68,6 +81,6 @@ export class ConfigPlaneComponent implements ControlValueAccessor {
   }
 
   registerOnTouched() {
-
+    // stub method
   }
 }

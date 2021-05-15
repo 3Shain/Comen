@@ -9,7 +9,6 @@ export class RestoreSessionResovler implements Resolve<SafeAny>{
     constructor(private file: FileStorage) { }
 
     async resolve(snap:ActivatedRouteSnapshot) {
-        console.log('idealing');
         const modifyingSession = sessionStorage.getItem('modifying');
         if (modifyingSession != undefined) {
             const c = await this.file.getFile(modifyingSession);

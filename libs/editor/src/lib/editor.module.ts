@@ -24,6 +24,8 @@ import { EditorComponent } from './editor.component';
 import { ElementTreeNodeDirective } from './element-tree-plane/element-tree-node.directive';
 import { ElementTreePlaneComponent } from './element-tree-plane/element-tree-plane.component';
 import { MockMessagePlaneComponent } from './mock-message-plane/mock-message-plane.component';
+import { MockMessageEditDialogComponent } from './mock-message-plane/mock-message-edit-dialog/mock-message-edit-dialog.component';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 
 @NgModule({
@@ -31,7 +33,8 @@ import { MockMessagePlaneComponent } from './mock-message-plane/mock-message-pla
     ElementTreePlaneComponent, ElementTreeNodeDirective,
     ConfigBlockComponent, ConfigConditionComponent, ConfigPlaneComponent, ConditionPopoverComponent,
     ConditionPopoverDirective,
-    MockMessagePlaneComponent],
+    MockMessagePlaneComponent,
+    MockMessageEditDialogComponent],
   imports: [
     CommonModule,
     NzGridModule,
@@ -46,6 +49,7 @@ import { MockMessagePlaneComponent } from './mock-message-plane/mock-message-pla
     NzDropDownModule,
     NzPopconfirmModule,
     NzResizableModule,
+    NzCheckboxModule,
     ControlsModule,
     OverlayModule,
     ReactiveFormsModule,

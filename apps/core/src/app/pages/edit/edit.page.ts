@@ -6,7 +6,7 @@ import { ComenAddonConfiguration, Message, SafeAny, serializeObjectToBase64, ser
 import { EditorComponent, EditorRealtimeMessageProvider, EDITOR_ASSET_STORAGE, EDITOR_REALTIME_MESSAGE_PROVIDER } from '@comen/editor';
 import { zoomBigMotion } from 'ng-zorro-antd/core/animation';
 import { defer, merge, Observable, of, Subject } from 'rxjs';
-import { publish, refCount, shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
+import { shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
 import { AddonService } from '../../addon/addon.service';
 import { OverlayInfo, SourceInfo } from '../../addon/definations';
 import { LookupService } from '../../addon/lookup.service';
@@ -38,7 +38,7 @@ import { InMemoryStorage } from './in-memory.storage';
 export class EditPage implements OnInit, OnDestroy, EditorRealtimeMessageProvider {
 
     configuration: ComenAddonConfiguration;
-    view: Node = undefined;
+    view: HTMLElement = undefined;
 
     @ViewChild('container', { static: true }) container: OverlayContainerDirective;
     @ViewChild('editor', { static: true }) editor: EditorComponent;
@@ -80,30 +80,57 @@ export class EditPage implements OnInit, OnDestroy, EditorRealtimeMessageProvide
                     'x-icon': 'setting',
                     properties: {
                         disableSmoother: {
-                            displayName: '关闭消息平滑',
+                            displayName: '消息平滑',
                             type: 'switch',
-                            defaultValue: false
+                            defaultValue: false,
+                            extra:{
+                                description: '关闭消息平滑'
+                            }
                         },
                         disableAvatarPreload: {
-                            displayName: '关闭头像预加载',
+                            displayName: '头像加载',
                             type: 'switch',
-                            defaultValue: false
+                            defaultValue: false,
+                            extra: {
+                                description: '关闭头像预加载'
+                            }
                         },
                         showGiftAutoDanmaku: {
                             displayName: '显示礼物自动触发弹幕',
                             type: 'switch',
-                            defaultValue: false
+                            defaultValue: false,
+                            extra: {
+                                description: ''
+                            }
                         },
                         maxDanmakuNumber: {
-                            displayName: '最大弹幕同时渲染数量',
+                            displayName: '最大渲染数量',
                             type: 'number',
                             defaultValue: 50
                         },
-                        // "groupSimilar": {
-                        //     displayName: "合并相似弹幕",
-                        //     type: "switch",
-                        //     defaultValue: true
-                        // }
+                        levelFilter: {
+                            displayName: '用户等级过滤',
+                            type: 'number',
+                            defaultValue: 0
+                        },
+                        minGiftValue: {
+                            displayName: '付费消息',
+                            type: 'number',
+                            defaultValue: 5
+                        },
+                        wordBlacklist: {
+                            displayName: '屏蔽词',
+                            type: 'list',
+                            defaultValue: []
+                        },
+                        userBlacklist: {
+                            displayName: '屏蔽用户',
+                            type: 'list',
+                            defaultValue: []
+                        }
+                    },
+                    defaultValue: {
+
                     }
                 },
                 ...inject.sections
@@ -124,13 +151,21 @@ export class EditPage implements OnInit, OnDestroy, EditorRealtimeMessageProvide
             window.location.pathname = '/'; // TODO this may cause panic?
         }
         this.view = this.container.bootstrap(this.addonTarget.name);
+        setTimeout(() => {
+            if (this.session.data != null) {
+                this.editor.importWorkspace(this.session.data.workspace);
+            }
+        }, 0);
     }
 
     ngAfterViewInit() {
-        return this.editor.workspaceChange(10 * 1000).pipe(
+        return this.editor.workspaceChange(1 * 1000).pipe(
             takeUntil(this.destroy$)
         ).subscribe(workspaceData => {
-            this.session.file.storeData(workspaceData, {
+            console.log(workspaceData);
+            this.session.file.storeData({
+                workspace: workspaceData
+            }, {
                 name: this.overlayInfo.name,
                 version: this.overlayInfo.version
             });
@@ -139,6 +174,7 @@ export class EditPage implements OnInit, OnDestroy, EditorRealtimeMessageProvide
     }
 
     ngOnDestroy() {
+        sessionStorage.removeItem("modifying");
         this.closeDialog$.complete();
         this.destroy$.next();
         this.destroy$.complete();
@@ -146,8 +182,11 @@ export class EditPage implements OnInit, OnDestroy, EditorRealtimeMessageProvide
 
     async returnDashboard() {
         // save all shit
-        sessionStorage.removeItem("modifying");
         this.router.navigate(['/']);
+    }
+
+    returnSession(){
+        
     }
 
     /* generate dialog methods */
@@ -158,7 +197,10 @@ export class EditPage implements OnInit, OnDestroy, EditorRealtimeMessageProvide
             positionStrategy: this.overlay.position().global().centerHorizontally().centerVertically()
         });
         const tplPortal = new TemplatePortal(this.dialogTpl, this.vcr, {
-            css: this.generateCss(this.editor.formGroup.value), // TODO: not very neat
+            css: this.generateCss({
+                config: this.editor.generateWorkspace(),
+                data: {}
+            }),
             url: '',
             size: [this.editor.adjustments.value.width, this.editor.adjustments.value.height]
         });

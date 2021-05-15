@@ -17,7 +17,7 @@ export class LookupService {
             icon: "/assets/icon_gamma.png",
             version: "1.0.0",
             _factory: async () => {
-                const module = await this.layloadNgModule<BuiltinOverlayModule>(() => import('@comen/gamma').then(m => m.GammaModule));
+                const module = await this.lazyloadNgModule<BuiltinOverlayModule>(() => import('@comen/gamma').then(m => m.GammaModule));
                 this.addon.registerBuiltinOverlay(module.instance.metadata, module.instance.entry, module.componentFactoryResolver);
             }
         }
@@ -29,7 +29,7 @@ export class LookupService {
             version: "1.0.0",
             displayName: "哔哩哔哩",
             _factory: async () => {
-                const module = await this.layloadNgModule<BuiltinSourceModule>(() => import('../sources/bilibili/bilibili.module').then(m => m.BilibiliSourceModule));
+                const module = await this.lazyloadNgModule<BuiltinSourceModule>(() => import('../sources/bilibili/bilibili.module').then(m => m.BilibiliSourceModule));
                 this.addon.registerBuiltinSource('bilibili', module.injector.get(module.instance.source));
             }
         },
@@ -38,7 +38,7 @@ export class LookupService {
             version: "1.0.0",
             displayName: "AcFun",
             _factory: async () => {
-                const module = await this.layloadNgModule<BuiltinSourceModule>(() => import('../sources/acfun/acfun.module').then(m => m.AcfunSourceModule));
+                const module = await this.lazyloadNgModule<BuiltinSourceModule>(() => import('../sources/acfun/acfun.module').then(m => m.AcfunSourceModule));
                 this.addon.registerBuiltinSource('bilibili', module.injector.get(module.instance.source));
             }
         }
@@ -65,7 +65,7 @@ export class LookupService {
 
     async ensureSourceLoaded(name: string) {
         if (this.addon.isSourceExist(name)) {
-            return;
+            return (await this.getSources()).find(x => x.name == name);
         }
         const target = (await this.getSources()).find(x => x.name == name);
         if (target) {
@@ -77,7 +77,7 @@ export class LookupService {
 
     async ensureOverlayLoaded(name: string) {
         if (this.addon.isOverylayExist(name)) {
-            return;
+            return (await this.getOverlays()).find(x => x.name == name);
         }
         const target = (await this.getOverlays()).find(x => x.name == name);
         if (target) {
@@ -87,7 +87,7 @@ export class LookupService {
         throw 'NO SUCH SOURCE';
     }
 
-    private async layloadNgModule<T = SafeAny>(load: LazyLoadStaticCallback) {
+    private async lazyloadNgModule<T = SafeAny>(load: LazyLoadStaticCallback) {
         let ngf = await load();
         if (!(ngf instanceof NgModuleFactory)) {
             ngf = await this.compiler.compileModuleAsync(ngf);

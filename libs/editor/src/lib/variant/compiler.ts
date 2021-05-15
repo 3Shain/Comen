@@ -250,7 +250,7 @@ function generateVariantConditions(conditions: VariantCondition[]): estree.Expre
 
 function generateVariantStatements(variants: {
     condition: VariantCondition[],
-    property: SafeAny
+    properties: SafeAny
 }[]) {
     return variants.map(variant => {
         return {
@@ -276,7 +276,7 @@ function generateVariantStatements(variants: {
                             type: 'Identifier',
                             name: 'r'
                         },
-                        generateObjectExpression(variant.property)
+                        generateObjectExpression(variant.properties)
                     ]
                 }
             }
@@ -288,7 +288,7 @@ export function generateCode(encode: {
     default: SafeAny,
     variants: {
         condition: VariantCondition[],
-        property: SafeAny
+        properties: SafeAny
     }[]
 }) {
     const statement = [
@@ -313,5 +313,5 @@ export function generateCode(encode: {
             }
         }
     ].map(s => esgen.generate(s, { format: { compact: true } })).join('');
-    return new Function('c', statement);
+    return statement;
 }

@@ -14,7 +14,7 @@ export const EDITOR_REALTIME_MESSAGE_PROVIDER = new InjectionToken<EditorRealtim
 
 export interface EditorAssetStorage {
     getUrl(id: string): string;
-    store(blob: Blob | ArrayBuffer): string;
+    store(blob: Blob): string;
     remove(id: string): void;
 }
 

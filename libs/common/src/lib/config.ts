@@ -1,14 +1,9 @@
-/**
- * 写个蛇皮anyscript
- */
-
 import { SafeAny } from "./utils";
 
 export interface PropertySchema {
-    type: "number" | "text" | "color" | "background" | "margin" | "border" | "range" | "switch" | "font" | "outline" | "radius" | "shadow";
+    type: "number" | "text" | "color" | "background" | "margin" | "border" | "range" | "switch" | "font" | "outline" | "radius" | "shadow" | "list";
     displayName: string;
     "x-icon"?: string;
-    defaultVisible?: boolean;
     defaultValue: SafeAny;
     dependsOn?: string[];
     exclusive?: string[];
@@ -24,6 +19,7 @@ export interface ConfigurationSection {
     properties: {
         [key: string]: PropertySchema
     };
+    defaultValue: SafeAny;
     variantProperties?: SafeAny[];
 }
 
@@ -40,14 +36,46 @@ export interface ComenAddonConfiguration {
     };
 }
 
-export namespace Configs {
-    interface Font {
-
+export namespace ComenControlTypes {
+    export interface Font {
+        font: string;
         size: number;
         weight: string;
-        letterSpacing: number;
-        lineHeight: number;
+        space: number | null;
+        lineHeight: number | null;
+        textAlign: 'left' | 'center' | 'right';
         italic: boolean;
         underline: boolean;
+        strikeThrough: boolean;
+    }
+
+    export const DEFAULT_FONT:Font = {
+        font: '',
+        size: 14,
+        weight: 'normal',
+        space: null,
+        lineHeight: null,
+        textAlign: 'left',
+        italic: false,
+        underline: false,
+        strikeThrough: false
+    }
+
+    export interface Outline {
+        width: number;
+        color: string;
+    }
+
+    export interface BoxShadow {
+        x: number;
+        y: number;
+
+    }
+
+    export type Margin = [number, number, number, number];
+    export type Padding = [number, number, number, number];
+
+    export interface Radius {
+
     }
 }

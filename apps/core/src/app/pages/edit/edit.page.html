@@ -1,8 +1,20 @@
 <header>
-    <svg id="logo" viewBox="0 0 1627.88 1000.29" style="fill: currentColor;" (click)="returnDashboard()">
-        <use xlink:href="assets/logo.svg#图层_2"></use>
-    </svg>
-    <div style="float:right">
+    <div id="logo" (click)="returnDashboard()">
+        <svg viewBox="0 0 1627.88 1000.29">
+            <use xlink:href="assets/logo.svg#图层_2"></use>
+        </svg>
+    </div>
+    <div class="workspace">
+        <input nz-input nzBorderless />
+    </div>
+    <div class="fill">
+
+    </div>
+    <div class="assets-info">
+        <div id="assets-indicator"></div>
+        <span>可用空间: 30%</span>
+    </div>
+    <div class="action-group">
         <button nz-button nzType="default" nzSize="large"><i nz-icon nzType="import"></i>导入</button>
         <button nz-button nzType="default" nzSize="large" (click)="export()">
             <i nz-icon nzType="export"></i>导出

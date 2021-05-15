@@ -18,7 +18,7 @@ import { SafeAny, VariantCondition } from '@comen/common';
 export class ConfigConditionComponent implements ControlValueAccessor {
 
   constructor(private fb: FormBuilder,
-    private cdr:ChangeDetectorRef) { }
+    private cdr: ChangeDetectorRef) { }
 
   formArray = this.fb.array([]);
 
@@ -26,34 +26,33 @@ export class ConfigConditionComponent implements ControlValueAccessor {
 
   @Output() removeVariant = new EventEmitter();
 
-  writeValue(conditions:VariantCondition[]) {
-    conditions?.forEach(x=>{
+  writeValue(conditions: VariantCondition[]) {
+    conditions?.forEach(x => {
       this.formArray.push(this.fb.control(x));
     });
     this.cdr.detectChanges();
   }
 
-  changeCallback: Function;
-  registerOnChange(callback:SafeAny) {
-    this.changeCallback = callback;
+  registerOnChange(callback: SafeAny) {
+    this.formArray.valueChanges.subscribe(val => {
+      callback(val);
+    })
   }
 
   registerOnTouched() {
 
   }
 
-  addNewCondition(newCondition:VariantCondition){
+  addNewCondition(newCondition: VariantCondition) {
     this.formArray.push(this.fb.control(newCondition));
-    this.changeCallback(this.formArray.value);
     this.cdr.detectChanges();
   }
 
-  deleteCondition(index:number){
-    if(this.formArray.length==1){
+  deleteCondition(index: number) {
+    if (this.formArray.length == 1) {
       //popover
     } else {
       this.formArray.removeAt(index);
-      this.changeCallback(this.formArray.value);
       this.cdr.detectChanges();
     }
   }

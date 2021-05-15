@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ComenControlTypes } from '@comen/common';
 
 @Component({
     selector: 'comen-font-control',
@@ -28,16 +29,14 @@ export class FontControlComponent implements ControlValueAccessor {
         textAlign: ['left'],
         italic: [false],
         underline: [false],
-        strike: [false]
+        strikeThrough: [false]
     });
 
-    writeValue(value: any) {
-        if(value){
-            this.formGroup.setValue(value);
-        }
+    writeValue(value: ComenControlTypes.Font) {
+        this.formGroup.setValue(value);
     }
 
-    registerOnChange(callback:(v)=>void) {
+    registerOnChange(callback: (v) => void) {
         this.formGroup.valueChanges.subscribe(callback);
     }
 

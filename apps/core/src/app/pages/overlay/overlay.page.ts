@@ -4,7 +4,7 @@ import {
     ComenEnvironmentHost, deserializeBase64, Message,
     nextFrame, RxZone, SafeAny, TextMessage, waitUntilPageVisible
 } from '@comen/common';
-import { of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { catchError, filter, retry, take, takeUntil, tap } from 'rxjs/operators';
 import { AddonService } from '../../addon/addon.service';
 import { OverlayContainerDirective } from '../../addon/overlay-container.directive';
@@ -54,9 +54,16 @@ export class OverlayPage extends ComenEnvironmentHost implements OnInit, OnDestr
     message$: Subject<Message> = new Subject();
     legacyConfig$: Subject<ComenConfiguration> = new Subject();
 
+    private _configs: {
+        [key: string]: Observable<SafeAny>;
+    } = {};
+
+    private _variantPipes: {
+        [key: string]: Observable<SafeAny>;
+    } = {};
+
     async ngOnInit() {
         await waitUntilPageVisible();
-        this.container.bootstrap(this.addonTarget);
         // init element?
         const queryParams = this.activatedRoute.snapshot.queryParams;
         // Query parameters are not expected to change. Any change is not responsed 
@@ -64,9 +71,20 @@ export class OverlayPage extends ComenEnvironmentHost implements OnInit, OnDestr
         const injectedConfiguration = await this.initConfig();
         const globalConfig = mergeQueryParameters(queryParams, {
             ...DEFAULT_CONFIG,
-            ...injectedConfiguration?.['@@general']
+            ...injectedConfiguration?.config?.['@@global']?.default ?? {}
         });
 
+        if (injectedConfiguration.config) {
+            Object.entries(injectedConfiguration.config).forEach(([key, value]: [string, SafeAny]) => {
+                this._configs[key] = new BehaviorSubject(value.default);
+                if (value.variantsPipe) {
+                    this._variantPipes[key] = new BehaviorSubject(new Function('c', value.variantsPipe));
+                }
+            })
+        }
+        //init data
+
+        this.container.bootstrap(this.addonTarget);
         this.legacyConfig$.next(globalConfig);
         if ('bilichat' in globalConfig) {
             setTimeout(() => {
@@ -139,11 +157,11 @@ export class OverlayPage extends ComenEnvironmentHost implements OnInit, OnDestr
         if (section == '__legacy__') {
             return this.legacyConfig$;
         }
-        return of({}); //temp workaround
+        return this._configs[section] ?? of({});
     }
 
     variantPipe(section: string) {
-        return of(null); //temp workaround
+        return this._variantPipes[section] ?? of((x: unknown) => x);
     }
 
     assetUrl(id: string) {

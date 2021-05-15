@@ -127,7 +127,10 @@ export class ColorControlComponent implements ControlValueAccessor {
   }
 
 
-  writeValue(obj: SafeAny): void {
+  writeValue(obj: string): void {
+    if (obj == null) {
+      throw 'NOT EXPECTED VALUE';
+    }
     this.currentColor.next(obj);
   }
 

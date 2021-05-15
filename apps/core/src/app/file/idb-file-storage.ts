@@ -50,6 +50,20 @@ class IdbComenFile implements ComenFile {
             constraint: constraint,
             lastModified: this.lastModified
         }, this.id);
+        db.close();
+    }
+
+    async rename(newname: string) {
+        const db = await _openDb();
+        this.lastModified = Date.now();
+        this.name = newname;
+        await db.put('comen_files', {
+            id: this.id,
+            name: this.name,
+            constraint: this.constraint,
+            lastModified: this.lastModified
+        }, this.id);
+        db.close();
     }
 }
 
