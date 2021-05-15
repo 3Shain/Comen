@@ -37,12 +37,8 @@ describe('emoji', () => {
             {
                 type: 'emoji',
                 url: 'goutou'
-            },
-            {
-                type: 'text',
-                content: ')'
             }
-        ]], 
+        ]],
         ['总之测试一下（狗头)233', [
             {
                 type: 'text',
@@ -54,9 +50,9 @@ describe('emoji', () => {
             },
             {
                 type: 'text',
-                content: ')233'
+                content: '233'
             }
-        ]], 
+        ]],
         ['总之测试一下（狗头 233', [
             {
                 type: 'text',
@@ -70,7 +66,7 @@ describe('emoji', () => {
                 type: 'text',
                 content: ' 233'
             }
-        ]], 
+        ]],
         ['总之测试一下（狗头 233', [
             {
                 type: 'text',
@@ -83,6 +79,16 @@ describe('emoji', () => {
             {
                 type: 'text',
                 content: ' 233'
+            }]
+        ],
+        ['（狗头)（(（= =）（（（（（', [
+            {
+                type: 'emoji',
+                url: 'goutou'
+            },
+            {
+                type: 'text',
+                content: '（(（= =）（（（（（'
             }
         ]]
     ])('should parse %s', (a, b) => {

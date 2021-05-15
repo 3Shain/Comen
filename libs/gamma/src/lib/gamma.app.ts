@@ -41,8 +41,6 @@ export class GammaApp implements AfterViewInit, OnDestroy {
   @ViewChild('items') items: ElementRef<HTMLDivElement>;
   @ViewChild('scroller') scroller: ElementRef<HTMLDivElement>;
 
-  @Input() maxLength = 50;
-
   renderedQueue: QueuedMessage[] = [];
   bufferQueue: QueuedMessage[] = [];
 
@@ -66,7 +64,7 @@ export class GammaApp implements AfterViewInit, OnDestroy {
         /** to avoid bug: is every 'frame loop' idempotent? */
         const insertedMessage = this.bufferQueue.shift();
         this.renderedQueue.push(insertedMessage);
-        while (this.atBottom && this.renderedQueue.length > this.maxLength) {
+        while (this.atBottom && this.renderedQueue.length > this.config.current$.value.maxDanmakuNumber) {
           this.renderedQueue.shift();
         }
         /** check ticker */

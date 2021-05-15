@@ -1,4 +1,4 @@
-import { Observable, OperatorFunction } from 'rxjs';
+import { Observable, of, OperatorFunction } from 'rxjs';
 import {
     Message, TextMessage, StickerMessage, PaidMessage, MemberMessage,
     LiveStartMessage, LiveStopMessage, SystemMessage,
@@ -7,7 +7,7 @@ import {
 import { connectBilibiliLiveWs } from 'isomorphic-danmaku/bilibili';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { timeout } from 'rxjs/operators';
+import { timeout, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class BilibiliSource {
@@ -39,7 +39,23 @@ export class BilibiliSource {
                             }
                         } as SystemMessage);
                         const resp = await this.http.get<BilibiliRoominfoResponse>(`/api/bili/getRoomInfo?roomid=${config.roomId}`)
-                            .pipe(abortable(abortController)).toPromise();
+                            .pipe(abortable(abortController),
+                            catchError(e=>{
+                                return of({
+                                    roomInfo:{
+                                        room_id: config.roomId,
+                                        uid: -1,
+                                        live_status: -1,
+
+                                    },
+                                    danmuInfo: {
+                                        token: ""
+                                    },
+                                    giftInfo:{
+                                        list: []
+                                    }
+                                })
+                            })).toPromise();
                         observer.next({
                             type: 'system',
                             data: {
@@ -104,7 +120,7 @@ export class BilibiliSource {
                                     }
                                     observer.next({
                                         type: 'sticker',
-                                        sticker: resp.giftInfo.list.find(x => x.id == msg.data.giftId).webp,
+                                        sticker: resp.giftInfo.list.find(x => x.id == msg.data.giftId)?.webp,
                                         avatar: '',
                                         username: msg.data.uname,
                                         amount: msg.data.num,

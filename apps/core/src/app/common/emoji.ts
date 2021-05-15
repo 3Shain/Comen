@@ -3,21 +3,21 @@ import { identity } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ComenConfiguration } from '../config';
 
-const EMOJI_START_TOEN = ['(', '（'];
-const EMOJI_END_TOKEN = [')', '）', ',', '，', '.', ' ', '。', '/', '\\', 
-'$', '¥', '-', '+', '*', '#', '@', '!', '~', '?', '=', '_', ';', '"', '“', '”', '|']
+const EMOJI_START_TOKEN = ['(', '（'];
+const EMOJI_END_TOKEN = [')', '）', ',', '，', '.', ' ', '。', '/', '\\',
+    '$', '¥', '-', '+', '*', '#', '@', '!', '~', '?', '=', '_', ';', '"', '“', '”', '|']
 
 function emojiExpressionToken(charArr: string[]): [string, string] {
     let constructed = '';
     //eslint-disable-next-line
     while (true) {
         if (charArr.length == 0) {
-            return [constructed, null];
+            return [constructed, ''];
         }
         const next = charArr.shift();
-        if (EMOJI_START_TOEN.includes(next)) {
+        if (EMOJI_START_TOKEN.includes(next)) {
             charArr.unshift(next);
-            return [constructed, null];
+            return [constructed, ''];
         }
         if (EMOJI_END_TOKEN.includes(next)) {
             return [constructed, next];
@@ -44,11 +44,11 @@ export function emojiExpressionLexer(dict: (token: string) => string | null, con
             break;
         }
         const next = charArr.shift();
-        if (EMOJI_START_TOEN.includes(next)) {
+        if (EMOJI_START_TOKEN.includes(next)) {
             const [token, tokenEnd] = emojiExpressionToken(charArr);
             const url = dict(token);
             if (url != null) { //has emoji
-                nodes.push({
+                constructedText && nodes.push({
                     type: 'text',
                     content: constructedText
                 });
@@ -56,7 +56,11 @@ export function emojiExpressionLexer(dict: (token: string) => string | null, con
                     type: 'emoji',
                     url: url
                 });
-                constructedText = tokenEnd;
+                if (tokenEnd == ')' || tokenEnd == '）') {
+                    constructedText = '';
+                } else {
+                    constructedText = tokenEnd;
+                }
             } else {
                 constructedText += (next + token + tokenEnd);
             }

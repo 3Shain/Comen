@@ -43,8 +43,8 @@ export function mergeQueryParameters(query: SafeAny, config: ComenConfiguration)
             config.disableAvatarPreload = true;
             // No other effect
         }
-        if (query.minGiftValue != undefined) {
-            config.minGiftValue = parseInt(query.minGiftValue);
+        if(query.minGiftValue!=undefined){
+            config.minGiftValue = parseFloat(query.minGiftValue);
         }
         if (query.silverGoldRatio != undefined) {
             config.silverGoldRatio = parseInt(query.silverGoldRatio);
