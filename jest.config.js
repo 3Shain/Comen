@@ -10,6 +10,7 @@ module.exports = {
     '<rootDir>/libs/isomorphic-danmaku-server',
     '<rootDir>/libs/common',
     '<rootDir>/libs/editor',
-    '<rootDir>/apps/electron-app'
+    '<rootDir>/apps/electron-app',
+    '<rootDir>/libs/dogfood',
   ],
 };

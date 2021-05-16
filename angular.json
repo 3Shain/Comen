@@ -16,8 +16,8 @@
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "outputPath": "dist/apps/core",
-            "customWebpackConfig":{
-              "path":"apps/core/webpack.config.ts"
+            "customWebpackConfig": {
+              "path": "apps/core/webpack.config.ts"
             },
             "index": "apps/core/src/index.html",
             "main": "apps/core/src/main.ts",
@@ -35,7 +35,11 @@
             ],
             "styles": ["apps/core/src/styles.less"],
             "scripts": [],
-            "allowedCommonJsDependencies": ["protobufjs", "escodegen", "date-fns"]
+            "allowedCommonJsDependencies": [
+              "protobufjs",
+              "escodegen",
+              "date-fns"
+            ]
           },
           "configurations": {
             "production": {
@@ -458,6 +462,27 @@
           "outputs": ["coverage/apps/electron-app"],
           "options": {
             "jestConfig": "apps/electron-app/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "dogfood": {
+      "root": "libs/dogfood",
+      "sourceRoot": "libs/dogfood/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/dogfood/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/dogfood"],
+          "options": {
+            "jestConfig": "libs/dogfood/jest.config.js",
             "passWithNoTests": true
           }
         }

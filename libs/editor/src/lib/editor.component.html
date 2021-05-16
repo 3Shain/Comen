@@ -44,7 +44,7 @@
     <div style="position: relative;width: 100%;height: 100%;overflow-x:unset;" nz-col nzFlex='300px'
         [formGroup]="formGroup">
 
-        <comen-config-plane *ngFor="let s of [currentConfigSectionIn];" [sectionSetting]="s"
+        <comen-config-plane *ngFor="let s of [currentConfig];" [sectionSetting]="s"
             [formControlName]="currentConfigSection">
         </comen-config-plane>
     </div>

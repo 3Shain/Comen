@@ -33,5 +33,5 @@ export class ElementTreePlaneComponent {
     }
   }
 
-  sortNull() { }
+  sortNull(a:any,b:any):any { }
 }

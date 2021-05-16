@@ -8,6 +8,7 @@ import { DebugGuard } from './addon/debug.guard';
 import { AppComponent } from './app.component';
 import { CompatibleRoutes } from './compatible.guard';
 import { FileModule } from './file';
+import { KairoModule } from '@comen/dogfood';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,9 @@ import { FileModule } from './file';
   imports: [
     BrowserAnimationsModule,
     HttpClientModule,
+    KairoModule.forRoot(function(){
+      // kairo setup
+    }),
     AddonMoudle.forRoot(),
     FileModule.forRoot(),
     RouterModule.forRoot([
