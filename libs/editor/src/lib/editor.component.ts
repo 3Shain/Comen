@@ -41,7 +41,7 @@ export class EditorComponent {
     @Input() elementView: HTMLElement = undefined;
 
     readonly formGroup: FormGroup;
-    readonly currentConfigSection = '';
+    readonly currentConfigSection: string;
     readonly currentConfig: ConfigurationSection;
     readonly sHeight = 700;
     readonly onResize: Action<NzResizeEvent>;
@@ -191,7 +191,6 @@ export class EditorComponent {
             this.mockControl.valueChanges
         ).pipe(
             map(() => {
-                console.log('t');
                 return this.exportWorkspace();
             }),
             debounceTime(_debounceTime)

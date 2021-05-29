@@ -45,6 +45,8 @@ export function WithKairo(obj?: {
                 InjectFlags.Self
             );
             origin['__zone__'] = ɵɵdirectiveInject(NgZone);
+            origin['__init__'] = false;
+            origin['__changesHook__'] = [];
             return origin;
         };
         const features = [
@@ -64,9 +66,13 @@ export function WithKairo(obj?: {
             ),
             (def: ComponentDef<unknown>) => {
                 (def.onPush as any) = true;
+
+                const hasInputs = Object.keys(componentDef.inputs).length > 0;
+
                 // ensure these method exist in prototype cuz ivy will store them.
-                const originNgOnChanges = def.type.prototype
-                    .ngOnChanges as Function;
+                const originNgOnChanges = (hasInputs
+                    ? def.type.prototype.ngOnChanges
+                    : def.type.prototype.ngOnInit) as Function;
                 const originNgOnDestroy = def.type.prototype
                     .ngOnDestroy as Function;
                 def.type.prototype.ngOnDestroy = function (this: {
@@ -79,20 +85,19 @@ export function WithKairo(obj?: {
                     originNgOnDestroy?.call(this);
                 };
 
-                let initialized = false;
-                const changesHook: Function[] = [];
-
-                def.type.prototype.ngOnChanges = function (
+                const onChangesOrOnInit = function (
                     this: {
                         __kairo_parent_scope__: KairoScopeRefImpl;
                         __kairo_scope__: KairoScopeRefImpl;
                         __injector__: Injector;
                         __zone__: NgZone;
                         ngSetup: Function;
+                        __init__: boolean;
+                        __changesHook__: Function[];
                     },
                     changes: SimpleChanges
                 ) {
-                    if (!initialized) {
+                    if (!this.__init__) {
                         if (typeof this.ngSetup !== 'function') {
                             console.error(`ngSetup is not declared.`);
                             return;
@@ -107,7 +112,7 @@ export function WithKairo(obj?: {
                                         const [beh, setbeh] = mutable(
                                             thunk(this)
                                         );
-                                        changesHook.push(
+                                        this.__changesHook__.push(
                                             (instance: unknown) => {
                                                 setbeh(thunk(instance));
                                             }
@@ -146,16 +151,20 @@ export function WithKairo(obj?: {
                             this['__kairo_detach__'] = scope.attach();
                         });
                         this.__kairo_scope__.__initialize();
-                        initialized = true;
+                        this.__init__ = true;
                     } else {
                         this.__zone__.runOutsideAngular(() => {
                             transaction(() => {
-                                changesHook.forEach((x) => x(this));
+                                this.__changesHook__.forEach((x) => x(this));
                             });
                         });
                     }
                     originNgOnChanges?.apply(this, changes);
                 };
+
+                if (hasInputs)
+                    def.type.prototype.ngOnChanges = onChangesOrOnInit;
+                else def.type.prototype.ngOnInit = onChangesOrOnInit;
             },
         ];
         features.forEach((x) => x(componentDef));

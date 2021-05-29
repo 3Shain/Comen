@@ -33,7 +33,7 @@
                 "output": "/assets/"
               }
             ],
-            "styles": ["apps/core/src/styles.less"],
+            "styles": ["apps/core/src/styles.less","libs/delta/src/delta-styles.scss"],
             "scripts": [],
             "allowedCommonJsDependencies": [
               "protobufjs",
@@ -483,6 +483,27 @@
           "outputs": ["coverage/libs/dogfood"],
           "options": {
             "jestConfig": "libs/dogfood/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "delta": {
+      "root": "libs/delta",
+      "sourceRoot": "libs/delta/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/delta/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/delta"],
+          "options": {
+            "jestConfig": "libs/delta/jest.config.js",
             "passWithNoTests": true
           }
         }

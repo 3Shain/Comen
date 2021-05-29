@@ -1,0 +1,19 @@
+
+div#delta {
+    background-color: wheat;
+
+    height: 100%;
+    width: 100%;
+
+    &>#scroller {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        &>#offset {
+            
+            &>#items{
+
+            }
+        }
+    }
+}

@@ -12,5 +12,6 @@ module.exports = {
     '<rootDir>/libs/editor',
     '<rootDir>/apps/electron-app',
     '<rootDir>/libs/dogfood',
+    '<rootDir>/libs/delta',
   ],
 };

@@ -27,6 +27,7 @@
     "common": { "tags": [] },
     "editor": { "tags": [] },
     "electron-app": { "tags": [] },
-    "dogfood": { "tags": [] }
+    "dogfood": { "tags": [] },
+    "delta": { "tags": [] }
   }
 }

@@ -16,7 +16,7 @@ export interface OverlayInfo {
     version: string;
     icon?: string;
     description?: string;
-    _factory: () => Promise<void>;
+    _lazyloadRegister: () => Promise<void>;
 }
 
 export interface SourceInfo {
@@ -25,5 +25,5 @@ export interface SourceInfo {
     displayName: string;
     icon?: string;
     description?: string;
-    _factory: () => Promise<void>;
+    _lazyloadRegister: () => Promise<void>;
 }
