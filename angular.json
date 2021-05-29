@@ -33,7 +33,10 @@
                 "output": "/assets/"
               }
             ],
-            "styles": ["apps/core/src/styles.less","libs/delta/src/delta-styles.scss"],
+            "styles": [
+              "apps/core/src/styles.less",
+              "libs/delta/src/delta-styles.scss"
+            ],
             "scripts": [],
             "allowedCommonJsDependencies": [
               "protobufjs",
@@ -511,7 +514,8 @@
     }
   },
   "cli": {
-    "defaultCollection": "@nrwl/angular"
+    "defaultCollection": "@nrwl/angular",
+    "packageManager": "pnpm"
   },
   "schematics": {
     "@nrwl/angular": {

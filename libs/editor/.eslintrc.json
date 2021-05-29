@@ -8,15 +8,21 @@
         "plugin:@nrwl/nx/angular",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
-      "parserOptions": { "project": ["libs/editor/tsconfig.*?.json"] },
+      "parserOptions": {
+        "project": ["libs/editor/tsconfig.*?.json"]
+      },
       "rules": {
         "@angular-eslint/directive-selector": [
           "error",
-          { "type": "attribute" }
+          {
+            "type": "attribute"
+          }
         ],
         "@angular-eslint/component-selector": [
           "error",
-          { "type": "element" }
+          {
+            "type": "element"
+          }
         ]
       }
     },

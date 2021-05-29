@@ -1,5 +1,5 @@
 <main class="container">
-    <div nz-row [nzGutter]="[8,8]">
+    <div nz-row>
         <div nz-col nzSpan=8>
             <div>
                 <img src="/assets/logo_solid.png" width="40%">
@@ -19,7 +19,7 @@
                                 <a href="https://github.com/3Shain/Comen" target="_blank">GitHub</a>
                             </li>
                             <li>
-                                <a [nz-tooltip] [nzTooltipTitle]="906600901">用户交流群</a>
+                                <a>用户交流群</a>
                             </li>
                         </ul>
                     </div>
@@ -48,7 +48,7 @@
             <div>
 
                 <h2>创建新的组件</h2>
-                <div nz-row [nzGutter]="[8,8]">
+                <div nz-row>
                     <div class="overlay-button" nz-col nzSpan=12 *ngFor="let x of overlays$|ngrxPush">
                         <div (click)="createFile(x)">
                             <img [src]="x.icon">

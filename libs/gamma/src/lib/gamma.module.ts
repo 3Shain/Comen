@@ -6,7 +6,6 @@ import { PaidMessageRenderer } from './paid-message/paid-message';
 import { TickerPaidStickerItemRenderer } from './ticker-paid-sticker/ticker-paid-sticker';
 import { MembershipItemRenderer } from './membership-item/membership-item';
 import { PaidStickerRenderer } from './paid-sticker/paid-sticker';
-import { NzPipesModule } from 'ng-zorro-antd/pipes';
 import { TickerSponsorItemRenderer } from './ticker-sponsor-item/ticker-sponsor-item';
 import { TickerPaidMessageItemRenderer } from './ticker-paid-item/ticker-paid-item';
 import { ReactiveComponentModule } from '@ngrx/component';
@@ -20,7 +19,6 @@ import { COMMENT_CONFIGURATION } from './metadata';
         StyleDriverDirective],
     imports: [
         CommonModule,
-        NzPipesModule,
         ReactiveComponentModule
     ],
     providers: [],
