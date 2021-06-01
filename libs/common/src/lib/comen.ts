@@ -6,6 +6,7 @@ import { SafeAny } from "./utils";
 export type ComenAddonMetadata = {
     name: string;
     displayName: string;
+    editable: boolean;
     configuration: ComenAddonConfiguration;
 };
 
@@ -16,7 +17,7 @@ export interface ComenAddonInstance {
     rootElement: SafeAny;
 }
 
-export type ComenInitFunction = (instance: ComenAddonInstance) => unknown | PromiseLike<unknown>;
+export type ComenInitFunction = (instance: ComenAddonInstance) => Function | PromiseLike<Function>;
 
 export declare function registerAddon(metadata: ComenAddonMetadata, init: ComenInitFunction): void;
 

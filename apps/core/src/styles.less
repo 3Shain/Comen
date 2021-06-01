@@ -1,78 +1,73 @@
 @import '~@angular/cdk/overlay-prebuilt.css';
-@import "~ng-zorro-antd/style/entry.less"; /* 引入基本样式 */
-// @import "~ng-zorro-antd/style/compact.less"; /* compact */
 
 @primary-color: #a16ba1;
 
-@line-height-base: 1.66667;
-@mode: compact;
-@font-size-base: 12px;
-@font-size-lg: @font-size-base + 2px;
-
-
-// default paddings
-@default-padding-lg: 24px; // containers
-@default-padding-md: 16px; // small containers and buttons
-@default-padding-sm: 12px; // Form controls and items
-@default-padding-xs: 8px; // small items
-@default-padding-xss: 4px; // more small
-
-// vertical paddings
-@padding-lg: 16px; // containers
-@padding-md: 8px; // small containers and buttons
-@padding-sm: 8px; // Form controls and items
-@padding-xs: 8px; // small items
-@padding-xss: 0px; // more small
-
-// vertical padding for all form controls
-@control-padding-horizontal: @padding-sm;
-@control-padding-horizontal-sm: @default-padding-xs;
-
-// vertical margins
-@margin-lg: 16px; // containers
-@margin-md: 8px; // small containers and buttons
-@margin-sm: 8px; // Form controls and items
-@margin-xs: 4px; // small items
-@margin-xss: 0px; // more small
-
-// height rules
-@height-base: 28px;
-@height-lg: 32px;
-@height-sm: 22px;
-
-// Select
-// ---
-@select-dropdown-height: @height-base;
-@select-single-item-height-lg: 32px;
-@select-multiple-item-height: @input-height-base - max(@input-padding-vertical-base, 4) * 2; // Normal 24px
-@select-multiple-item-height-lg: 24px;
-@select-multiple-item-spacing-half: 3px;
-
-@import '~ng-zorro-antd/slider/style/entry.less';
-
-@slider-margin: 5px 0;
-
-@import '~ng-zorro-antd/select/style/entry.less';
-@import '~ng-zorro-antd/button/style/entry.less';
-@import '~ng-zorro-antd/input/style/entry.less';
-@import '~ng-zorro-antd/grid/style/entry.less';
-@import '~ng-zorro-antd/checkbox/style/entry.less';
-@import '~ng-zorro-antd/input-number/style/entry.less';
-
-.ant-input-number-handler-wrap {
-    width: 13px;
-}
-
-.ant-input-number-handler-up-inner, .ant-input-number-handler-down-inner {
-    right: 0px;
-}
-
-@import '~ng-zorro-antd/popover/style/entry.less';
-@import '~ng-zorro-antd/dropdown/style/entry.less';
-@import '~ng-zorro-antd/radio/style/entry.less';
-@import '~ng-zorro-antd/switch/style/entry.less';
-@import '~ng-zorro-antd/resizable/style/entry.less';
-
 .full-width {
     width: 100%;
+}
+
+body {
+    margin: 0;
+    font-size: 14px;
+}
+
+button.transparent {
+    border: none;
+    background-color: transparent;
+    user-select: none;
+    margin: unset;
+    padding: unset;
+    cursor: pointer;
+    color: #333;
+
+    &[disabled] {
+        color: #999;
+    }
+    &>fa-icon:not(:last-child){
+        margin-right: 4px;
+    }
+}
+
+
+button {
+    &.cm {
+        border-radius: 4px;
+        border: solid 1px #f3f1f3;
+        background-color: white;
+        font-size: 12px;
+        padding: 4px;
+        cursor: pointer;
+
+        &[disabled]{
+            cursor: not-allowed;
+        }
+
+        &.primary {
+            color: white;
+            background-color: #a16ba1;
+        }
+
+        &.secondary {
+
+        }
+
+        &.full-width {
+            display: block;
+            width: 100%;
+        }
+    }
+}
+
+input[type='text'].cm {
+    
+}
+
+input[type='checkbox'].cm {
+
+}
+
+.list {
+    &.cm {
+
+    }
 }

@@ -5,11 +5,13 @@ import { RouterModule } from '@angular/router';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { HomePage } from './home.page';
 import { TimeAgoPipe } from './time-ago.pipe';
-
+import { FlexLayoutModule } from '@angular/flex-layout';
+ 
 @NgModule({
     declarations: [HomePage, TimeAgoPipe],
     imports: [
         CommonModule,
+        FlexLayoutModule,
         ReactiveFormsModule,
         ReactiveComponentModule,
         RouterModule.forChild([{

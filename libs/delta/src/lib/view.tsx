@@ -19,9 +19,9 @@ export default withKairo(() => {
     const fastdom = useFastdom();
 
     const bufferQueue: (Message & { id: number })[] = [];
-
+    const messages = readMessages();
     effect(() =>
-        readMessages().listen((next) => {
+        messages.listen((next) => {
             bufferQueue.push({
                 ...next,
                 id: key++,

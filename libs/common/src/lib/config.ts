@@ -1,9 +1,22 @@
-import { SafeAny } from "./utils";
+import { SafeAny } from './utils';
 
 export interface PropertySchema {
-    type: "number" | "text" | "color" | "background" | "margin" | "border" | "range" | "switch" | "font" | "outline" | "radius" | "shadow" | "list";
+    type:
+        | 'number'
+        | 'text'
+        | 'color'
+        | 'background'
+        | 'margin'
+        | 'border'
+        | 'range'
+        | 'switch'
+        | 'font'
+        | 'outline'
+        | 'radius'
+        | 'shadow'
+        | 'list';
     displayName: string;
-    "x-icon"?: string;
+    'x-icon'?: string | any;
     defaultValue: SafeAny;
     dependsOn?: string[];
     exclusive?: string[];
@@ -15,9 +28,9 @@ export interface ConfigurationSection {
     displayName: string;
     previewSelector?: string;
     level: number; // use flat layout other than object.
-    "x-icon"?: string;
+    'x-icon'?: string | any;
     properties: {
-        [key: string]: PropertySchema
+        [key: string]: PropertySchema;
     };
     defaultValue: SafeAny;
     variantProperties?: SafeAny[];
@@ -29,10 +42,10 @@ export interface ComenAddonConfiguration {
         viewport?: {
             width: number;
             height: number;
-        }
-    },
+        };
+    };
     sections: {
-        [key: string]: ConfigurationSection
+        [key: string]: ConfigurationSection;
     };
 }
 
@@ -49,7 +62,7 @@ export namespace ComenControlTypes {
         strikeThrough: boolean;
     }
 
-    export const DEFAULT_FONT:Font = {
+    export const DEFAULT_FONT: Font = {
         font: '',
         size: 14,
         weight: 'normal',
@@ -58,8 +71,8 @@ export namespace ComenControlTypes {
         textAlign: 'left',
         italic: false,
         underline: false,
-        strikeThrough: false
-    }
+        strikeThrough: false,
+    };
 
     export interface Outline {
         width: number;
@@ -69,13 +82,10 @@ export namespace ComenControlTypes {
     export interface BoxShadow {
         x: number;
         y: number;
-
     }
 
     export type Margin = [number, number, number, number];
     export type Padding = [number, number, number, number];
 
-    export interface Radius {
-
-    }
+    export interface Radius {}
 }

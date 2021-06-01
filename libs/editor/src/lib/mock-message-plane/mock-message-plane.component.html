@@ -1,10 +1,11 @@
-<h3 style="margin-bottom: 16px;">
+<h5 style="margin: 8px 0;">
     测试
-</h3>
+</h5>
 <div class="list">
     <ng-container *ngIf="mockGens.length > 0;else elseTpl">
-        <div class="item" *ngFor="let mock of mockGens" (click)="select(mock.id)" [ngClass]="{'active':currentSelect==mock.id}">
-            <i nz-icon nzType="play-circle" (click)="generateMock(mock,$event)"></i>
+        <div class="item" *ngFor="let mock of mockGens" (click)="select(mock.id)"
+            [ngClass]="{'active':currentSelect==mock.id}">
+            <fa-icon [icon]="faPlay" (click)="generateMock(mock,$event)"></fa-icon>
             {{mock.name}}
         </div>
     </ng-container>
@@ -13,22 +14,22 @@
     </ng-template>
 </div>
 <div class="actions">
-    <button nz-button nzSize="small" nzType="default" (click)="addMock()">
-        <i nz-icon nzType="plus"> </i>
+    <button class="transparent" (click)="addMock()">
+        <fa-icon [icon]="faPlus"></fa-icon>
     </button>
-    <button nz-button nzSize="small" nzType="text" (click)="deleteMock()" [disabled]="currentSelect==null">
-        <i nz-icon nzType="minus"> </i>
+    <button class="transparent" (click)="deleteMock()" [disabled]="currentSelect==null">
+        <fa-icon [icon]="faMinus"></fa-icon>
     </button>
-    <button nz-button nzSize="small" nzType="text" (click)="editMock()" [disabled]="currentSelect==null">
-        <i nz-icon nzType="edit"> </i>
+    <button class="transparent" (click)="editMock()" [disabled]="currentSelect==null">
+        <fa-icon [icon]="faEdit"></fa-icon>
     </button>
-    <button *ngIf="realtimeMessageProvider!=null" nz-button nzSize="small"
-        [nzType]="realtimeConnecting?'primary':'text'" (click)="connectRealtimeSource($event)">
+    <button class="transparent" *ngIf="realtimeMessageProvider!=null" [attr.type]="realtimeConnecting?'primary':'text'"
+        (click)="connectRealtimeSource($event)">
         <ng-container *ngIf="realtimeConnecting;else elseTpl">
-            <i nz-icon nzType="api" style="margin-right: 4px;"> </i>断开连接
+            <fa-icon [icon]="faLink"></fa-icon>断开连接
         </ng-container>
         <ng-template #elseTpl>
-            <i nz-icon nzType="api" style="margin-right: 4px;"> </i>连接实时评论流
+            <fa-icon [icon]="faLink"></fa-icon>连接实时评论流
         </ng-template>
     </button>
 </div>

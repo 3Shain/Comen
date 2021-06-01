@@ -1,19 +1,17 @@
-<div nz-row style="height: 100%;flex-wrap: nowrap;">
-    <div nz-col [nzFlex]="'auto'" id="preview">
-        <div class="toolbar" [formGroup]="adjustments" nz-row nzJustify="center">
-            <label nz-col nzSpan=1>尺寸</label>
-            <div nz-col nzSpan=8>
-                <nz-input-number nzSize="small" formControlName="width"></nz-input-number><i nz-icon nzType="close"
-                    style="margin:0 4px;"></i>
-                <nz-input-number nzSize="small" formControlName="height"></nz-input-number>
+<div fxLayout="row" style="height: 100%;flex-wrap: nowrap;">
+    <div fxFlex="auto" id="preview">
+        <div class="toolbar" fxLayout="row" fxLayoutAlign="center center" [formGroup]="adjustments">
+            <label>尺寸</label>
+            <div>
+                <input type="number" formControlName="width" />
+                <i nz-icon nzType="close" style="margin:0 4px;"></i>
+                <input type="number" formControlName="height" />
             </div>
-            <label nz-col nzSpan=1>背景</label>
-
-            <div nz-col nzSpan=4>
+            <label>背景</label>
+            <div>
                 <comen-color-control style="margin-top:2px;margin-right: 8px;" formControlName="background">
                 </comen-color-control>
-                <nz-switch nzSize="small" nzCheckedChildren="纯色" nzUnCheckedChildren="网格" style="vertical-align: top;"
-                    formControlName="grid"></nz-switch>
+                <input type="checkbox" formControlName="grid" />
             </div>
         </div>
         <div class="background" [ngStyle]="{'background-color':adjustments.value.background}"
@@ -26,23 +24,19 @@
             </div>
         </div>
     </div>
-    <div class="middle" nz-col nzFlex='240px'>
-        <div style="position: relative;flex:none;" [style.height.px]="sHeight" nz-resizable
-            (nzResize)="onResize($event)">
+    <div class="middle" fxFlex="240px" >
+        <div style="position: relative;flex:none;" [style.height.px]="sHeight">
             <comen-element-tree [config]="configuration" (sectionHover)="onTreeHover($event)"
                 (sectionClick)="onSectionClick($event)" (leave)="onTreeLeave()" [selected]="currentConfigSection">
-
             </comen-element-tree>
-            <nz-resize-handle nzDirection="bottom">
-            </nz-resize-handle>
+            <div class="resize-handler" (mousedown)="startDrag($event)"></div>
         </div>
         <div style="position: relative;border-top:solid 1px #ddd;height:0;">
             <comen-mock-message-plane></comen-mock-message-plane>
         </div>
     </div>
 
-    <div style="position: relative;width: 100%;height: 100%;overflow-x:unset;" nz-col nzFlex='300px'
-        [formGroup]="formGroup">
+    <div style="position: relative;width: 100%;height: 100%;overflow-x:unset;" fxFlex="300px" [formGroup]="formGroup">
 
         <comen-config-plane *ngFor="let s of [currentConfig];" [sectionSetting]="s"
             [formControlName]="currentConfigSection">

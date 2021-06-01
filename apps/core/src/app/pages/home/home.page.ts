@@ -25,7 +25,7 @@ export class HomePage {
 
 
     overlays$ = defer(() => this.lookup.getOverlays()).pipe(
-        publishBehavior([]),
+        publishBehavior([] as OverlayInfo[]),
         refCount()
     ) as Observable<OverlayInfo[]>;
 

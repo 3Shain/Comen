@@ -57,3 +57,12 @@
         flex: 1;
     }
 }
+
+.resize-handler {
+    position: absolute;
+    bottom: -10px;
+    height: 20px;
+    width: 100%;
+    z-index: 999;
+    cursor: row-resize;
+}

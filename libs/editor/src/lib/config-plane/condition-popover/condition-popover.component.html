@@ -3,30 +3,29 @@
         <div class="ant-popover-inner">
             <div>
                 <div class="ant-popover-inner-content" [formGroup]="formGroup">
-                    <div class="ant-popover-message" nz-row [nzGutter]="[8, 8]">
-                        <div nz-col [nzSpan]="formGroup.value.property?10:24">
-                            <nz-select class="full-width" formControlName="property" [nzPlaceHolder]="'选择属性'">
+                    <div class="ant-popover-message" fxLayout="row">
+                        <div>
+                            <!-- <nz-select class="full-width" formControlName="property" [nzPlaceHolder]="'选择属性'">
                                 <nz-option *ngFor="let prop of conditionSchema" nzCustomContent [nzLabel]="prop.displayName"
                                     [nzValue]="prop">
                                     <i nz-icon [nzType]="prop['x-icon']"></i>{{prop.displayName}}
                                 </nz-option>
-                            </nz-select>
+                            </nz-select> -->
                         </div>
                         <ng-container *ngIf="formGroup.value.property">
                             <div nz-col nzSpan="6">
-                                <nz-select class="full-width" formControlName="method">
+                                <!-- <nz-select class="full-width" formControlName="method">
                                     <nz-option *ngFor="let method of (compareOptions$|ngrxPush)" [nzLabel]="method.displayName"
                                         [nzValue]="method"></nz-option>
-                                </nz-select>
+                                </nz-select> -->
                             </div>
                             <div nz-col nzSpan="8" [ngSwitch]="formGroup.value.property.type">
-                                <input nz-input *ngSwitchCase="'text'" formControlName="target" placeholder="输入字符串">
-                                <nz-input-number class="full-width" *ngSwitchCase="'number'" formControlName="target"></nz-input-number>
+                                <input *ngSwitchCase="'text'" formControlName="target" placeholder="输入字符串">
                             </div>
                         </ng-container>
                     </div>
                     <div class="ant-popover-buttons" *ngIf="formGroup.value.property">
-                        <button nz-button [nzSize]="'small'" nzType="primary" (click)="clickConfirm()">确认</button>
+                        <button nz-button nzType="primary" (click)="clickConfirm()">确认</button>
                     </div>
                 </div>
             </div>

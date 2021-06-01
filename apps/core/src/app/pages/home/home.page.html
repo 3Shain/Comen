@@ -1,9 +1,13 @@
 <main class="container">
-    <div nz-row>
-        <div nz-col nzSpan=8>
+    <div fxLayout="row">
+        <div fxFlex="33">
             <div>
-                <img src="/assets/logo_solid.png" width="40%">
-                <h1 style="color:#865686;">comen<span style="font-size:24px;margin-left: 12px;">by 3Shain</span></h1>
+                <img src="/assets/logo_solid.png" width="40%" />
+                <h1 style="color: #865686">
+                    comen<span style="font-size: 24px; margin-left: 12px"
+                        >by 3Shain</span
+                    >
+                </h1>
 
                 <div>
                     <div>
@@ -16,7 +20,11 @@
                                 <a>产品文档</a>
                             </li>
                             <li>
-                                <a href="https://github.com/3Shain/Comen" target="_blank">GitHub</a>
+                                <a
+                                    href="https://github.com/3Shain/Comen"
+                                    target="_blank"
+                                    >GitHub</a
+                                >
                             </li>
                             <li>
                                 <a>用户交流群</a>
@@ -24,7 +32,6 @@
                         </ul>
                     </div>
                     <div>
-
                         <div>
                             <ul>
                                 <li>
@@ -32,26 +39,25 @@
                                 </li>
                             </ul>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
-        <div id="right" nz-col nzSpan=16>
-
+        <div id="right" fxFlex="67">
             <div>
                 <h2>欢迎使用</h2>
-                <div>
-
-                </div>
+                <div></div>
             </div>
             <div>
-
                 <h2>创建新的组件</h2>
-                <div nz-row>
-                    <div class="overlay-button" nz-col nzSpan=12 *ngFor="let x of overlays$|ngrxPush">
+                <div fxLayout="row">
+                    <div
+                        class="overlay-button"
+                        fxFlex="50%"
+                        *ngFor="let x of overlays$|ngrxPush"
+                    >
                         <div (click)="createFile(x)">
-                            <img [src]="x.icon">
+                            <img [src]="x.icon" />
                             <div>
                                 <h3>{{x.displayName}}</h3>
                                 <p>没有描述</p>
@@ -66,35 +72,28 @@
                     你还没有创建过任何组件。
                 </div>
                 <ng-template #elseTpl>
-                    <div class="file-button" nz-row>
-                        <div nz-col nzSpan=2>
-                        </div>
-                        <div nz-col nzSpan=8>
-                            名称
-                        </div>
-                        <div nz-col nzSpan=4>
-                            类型
-                        </div>
-                        <div nz-col nzSpan=6>
-                            最近编辑
-                        </div>
-                        <div nz-col nzSpan=4>
-                        </div>
+                    <div class="file-button" fxLayout="row">
+                        <div fxFlex=8></div>
+                        <div fxFlex=32>名称</div>
+                        <div fxFlex=16>类型</div>
+                        <div fxFlex=24>最近编辑</div>
+                        <div fxFlex=16></div>
                     </div>
-                    <div class="file-button" *ngFor="let x of files" nz-row (click)="openFile(x)">
-                        <div nz-col nzSpan=2>
+                    <div
+                        class="file-button"
+                        *ngFor="let x of files"
+                        fxLayout="row"
+                        (click)="openFile(x)"
+                    >
+                        <div fxFlex=8>
                             <img [src]="x.icon" />
                         </div>
-                        <div nz-col nzSpan=8>
-                            {{x.name}}
-                        </div>
-                        <div nz-col nzSpan=4>
-                            {{x.displayName}}
-                        </div>
-                        <div nz-col nzSpan=6>
+                        <div fxFlex=32>{{x.name}}</div>
+                        <div fxFlex=16>{{x.displayName}}</div>
+                        <div fxFlex=24>
                             {{x.lastModified | timeAgo}}
                         </div>
-                        <div nz-col nzSpan=4 (click)="deleteFile(x)">
+                        <div fxFlex=16 (click)="deleteFile(x)">
                             <i nz-icon nzType="delete"></i>
                         </div>
                     </div>

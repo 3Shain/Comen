@@ -26,12 +26,7 @@
             "aot": true,
             "assets": [
               "apps/core/src/favicon.ico",
-              "apps/core/src/assets",
-              {
-                "glob": "**/*",
-                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
-                "output": "/assets/"
-              }
+              "apps/core/src/assets"
             ],
             "styles": [
               "apps/core/src/styles.less",
@@ -71,14 +66,23 @@
                   "maximumError": "10mb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           },
+          "defaultConfiguration": "production",
           "outputs": ["{options.outputPath}"]
         },
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "core:build",
+            "browserTarget": "core:build:development",
             "proxyConfig": "apps/core/proxy.conf.json"
           },
           "configurations": {

@@ -13,6 +13,9 @@ export default (
       
     })
   );
-
+  config.resolve['fallback'] = {
+    "crypto": false
+  };
+  console.log(config);
   return config;
 }

@@ -4,14 +4,14 @@ import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/f
 
 @Component({
     selector: 'comen-margin-control',
-    template: `<div nz-row [formGroup]="formGroup" [nzGutter]="[8,8]">
+    template: `<div fxLayout="row" [formGroup]="formGroup">
         <div nz-col nzSpan=24>
-            <nz-radio-group [formControl]="mode" nzSize="small" nzButtonStyle="solid">
+            <!-- <nz-radio-group [formControl]="mode" nzSize="small" nzButtonStyle="solid">
                 <label nz-radio-button nzValue="common">统一</label>
                 <label nz-radio-button nzValue="seperate">上/右/下/左</label>
-            </nz-radio-group>
+            </nz-radio-group> -->
         </div>
-            <div nz-col nzSpan=6>
+            <!-- <div nz-col nzSpan=6>
                 <nz-input-number formControlName="top" nzSize="small" [nzFormatter]="formatterPx"></nz-input-number>
             </div>
             <div nz-col nzSpan=6>
@@ -22,7 +22,7 @@ import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/f
             </div>
             <div nz-col nzSpan=6>
                 <nz-input-number formControlName="left" nzSize="small" [nzFormatter]="formatterPx"></nz-input-number>
-            </div>
+            </div> -->
 </div>`,
     styleUrls: [
         './margin-control.style.scss'

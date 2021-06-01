@@ -1,50 +1,63 @@
 import { ComponentType } from '@angular/cdk/portal';
 import { ComponentFactoryResolver, Injectable } from '@angular/core';
-import { ComenAddonMetadata, ComenInitFunction, Message, SafeAny } from '@comen/common';
-import { Observable } from 'rxjs';
+import {
+    ComenAddonMetadata,
+    ComenInitFunction,
+    Message,
+    SafeAny,
+} from '@comen/common';
+import { noop, Observable } from 'rxjs';
 
 @Injectable()
 export class AddonService {
-
     private registeredOverlay: {
         [key: string]: {
-            metadata: ComenAddonMetadata,
-            factory?: ComenInitFunction,
-            ngComponent?: ComponentType<SafeAny>,
-            resolver?: ComponentFactoryResolver
-        }
+            metadata: ComenAddonMetadata;
+            factory?: ComenInitFunction;
+            ngComponent?: ComponentType<SafeAny>;
+            resolver?: ComponentFactoryResolver;
+        };
     } = {};
 
     private registeredSource: {
         [key: string]: {
             connect(meta: SafeAny): Observable<Message>;
-        }
+        };
     } = {};
 
     constructor() {
         window['registerOverlay'] = this.registerOverlay.bind(this);
         window['registerSource'] = this.registerSource.bind(this);
 
-        this.registerOverlay({
-            name: "null",
-            displayName: "N/A",
-            configuration: {
-                displayName: "N/A",
-                sections: {}
+        this.registerOverlay(
+            {
+                name: 'null',
+                displayName: 'N/A',
+                editable: false,
+                configuration: {
+                    displayName: 'N/A',
+                    sections: {},
+                },
+            },
+            () => {
+                console.log('empty!');
+                return noop;
             }
-        }, () => {
-            console.log('empty!');
-        });
+        );
     }
 
-    registerBuiltinOverlay(metadata: ComenAddonMetadata, component: ComponentType<SafeAny>, resolver?: ComponentFactoryResolver) {
+    registerBuiltinOverlay(
+        metadata: ComenAddonMetadata,
+        component: ComponentType<SafeAny>,
+        resolver?: ComponentFactoryResolver
+    ) {
         if (this.registeredOverlay[metadata.name]) {
             throw 'REGISTERED';
         }
         this.registeredOverlay[metadata.name] = {
             metadata: metadata,
             ngComponent: component,
-            resolver: resolver
+            resolver: resolver,
         };
     }
 
@@ -61,7 +74,7 @@ export class AddonService {
         }
         this.registeredOverlay[metadata.name] = {
             metadata: metadata,
-            factory: init
+            factory: init,
         };
     }
 

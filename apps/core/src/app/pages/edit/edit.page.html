@@ -57,23 +57,22 @@
                                 源
                             </label>
                             <div>
-                                <nz-select style="width: 100%;" nzSize="small" #source>
-                                    <nz-option [nzValue]='source.name' [nzLabel]="source.displayName"
-                                        *ngFor="let source of source$|async"></nz-option>
-                                </nz-select>
+                                <select style="width: 100%;" #source>
+                                    <option [value]='source.name' [label]="source.displayName"
+                                        *ngFor="let source of source$|async"></option>
+                                </select>
                             </div>
                             <label>
                                 频道号
                             </label>
                             <div>
-                                <input nz-input nzSize="small" #channelId />
+                                <input #channelId />
                             </div>
                         </div>
                         <div class="ant-popover-buttons">
-                            <button nz-button [nzSize]="'small'" nzType="default"
-                                (click)="confirmDialog$.next(null)">取消</button>
-                            <button nz-button [nzSize]="'small'" nzType="primary" (click)="confirmDialog$.next({
-                                'source': source.activatedValue,
+                            <button (click)="confirmDialog$.next(null)">取消</button>
+                            <button (click)="confirmDialog$.next({
+                                'source': source.value,
                                 'channel': channelId.value
                             })">确认</button>
                         </div>

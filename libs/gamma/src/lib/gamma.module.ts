@@ -30,6 +30,7 @@ export class GammaModule {
     metadata = {
         name: "gamma",
         displayName: "GAMMA",
+        editable: false,
         configuration: COMMENT_CONFIGURATION
     }
 }

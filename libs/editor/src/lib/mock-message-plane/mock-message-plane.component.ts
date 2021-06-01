@@ -3,12 +3,13 @@ import { ComponentPortal } from '@angular/cdk/portal';
 import { ChangeDetectorRef, Component, ElementRef, Inject, Injector, Optional, ViewContainerRef } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ComenEnvironmentHost, SafeAny, TextMessage } from '@comen/common';
-import { generate, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { EditorEnvironmentHost } from '../editor.host';
 import { EditorRealtimeMessageProvider, EDITOR_REALTIME_MESSAGE_PROVIDER } from '../providers';
 import { MockMessageEditDialogComponent } from './mock-message-edit-dialog/mock-message-edit-dialog.component';
 import * as mock from 'mockjs';
+import { faLink,faPlus,faMinus,faEdit, faPlay } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'comen-mock-message-plane',
@@ -165,6 +166,12 @@ export class MockMessagePlaneComponent implements ControlValueAccessor {
     this.disconnect$.next();
     this.disconnect$.complete();
   }
+
+  faLink = faLink;
+  faPlus = faPlus;
+  faMinus = faMinus;
+  faEdit = faEdit;
+  faPlay = faPlay
 }
 
 function mockTextMessage(){

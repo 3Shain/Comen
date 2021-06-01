@@ -7,8 +7,16 @@ import {
     SafeAny,
 } from '@comen/common';
 import { WithKairo } from '@comen/dogfood';
-import { Action, effect, mut, nextAnimationFrame, stream, task } from 'kairo';
-import { NzResizeEvent } from 'ng-zorro-antd/resizable';
+import {
+    Action,
+    effect,
+    EventStream,
+    mut,
+    nextAnimationFrame,
+    readEvents,
+    stream,
+    task,
+} from 'kairo';
 import { merge } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { EditorEnvironmentHost } from './editor.host';
@@ -44,8 +52,10 @@ export class EditorComponent {
     readonly currentConfigSection: string;
     readonly currentConfig: ConfigurationSection;
     readonly sHeight = 700;
-    readonly onResize: Action<NzResizeEvent>;
     readonly setCurrentConfigSection: Action<string>;
+    readonly onmouseup: Action<any>;
+    readonly onmousemove: Action<any>;
+    readonly startDrag: Action<any>;
 
     constructor(
         private fb: FormBuilder,
@@ -54,16 +64,16 @@ export class EditorComponent {
 
     ngSetup() {
         /** resizable */
-        const [resize, onResize] = stream<NzResizeEvent>();
-        const [sHeight, setHeight] = mut(700);
-        const keepResizing = task(function* () {
-            while (true) {
-                const payload = yield* resize;
-                yield* nextAnimationFrame();
-                setHeight(payload.height!);
-            }
-        });
-        effect(() => keepResizing());
+
+        const {
+            position: sHeight,
+            listenResizing: startDrag,
+        } = useVerticalDraggable(
+            700,
+            fromEvent(window, 'mouseup'),
+            fromEvent(window, 'mousemove'),
+            200
+        );
 
         /** config */
         const [currentConfigSection, setCurrentConfigSection] = mut(
@@ -105,12 +115,12 @@ export class EditorComponent {
         });
 
         return {
-            onResize,
             sHeight,
             currentConfigSection,
             formGroup,
             currentConfig,
             setCurrentConfigSection,
+            startDrag,
         };
     }
 
@@ -236,4 +246,50 @@ function clearMasks() {
             hwrappers[i].remove();
         }
     }
+}
+
+function useVerticalDraggable(
+    initial: number,
+    mouseup: EventStream<MouseEvent>,
+    mousemove: EventStream<MouseEvent>,
+    minimum: number
+) {
+    const [position, setPosition] = mut(initial);
+
+    const listenResizing = task(function* (e: {
+        clientX: number;
+        clientY: number;
+    }) {
+        let y = position.value;
+        let lastMv = e;
+        // yield* testTask();
+        const channel = readEvents({
+            from: mousemove,
+            until: mouseup,
+        });
+        while (yield* channel.hasNext()) {
+            const mv = yield* channel.next();
+            y += mv.clientY - lastMv.clientY;
+            lastMv = mv;
+            if(y<minimum) break;
+            setPosition(y);
+        }
+        channel.dispose();
+    });
+
+    return {
+        listenResizing,
+        position,
+    };
+}
+
+function fromEvent<T>(obj: GlobalEventHandlers, event: string) {
+    const [e, emit] = stream<T>();
+
+    effect(() => {
+        obj.addEventListener<any>(event, emit);
+        return () => obj.removeEventListener<any>(event, emit);
+    });
+
+    return e;
 }

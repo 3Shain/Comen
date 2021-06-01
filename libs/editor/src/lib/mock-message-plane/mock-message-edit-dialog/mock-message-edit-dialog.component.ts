@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SafeAny } from '@comen/common';
-import { zoomBigMotion } from 'ng-zorro-antd/core/animation';
+import { zoomBigMotion } from '../../animations';
 import { Subject } from 'rxjs';
 
 @Component({

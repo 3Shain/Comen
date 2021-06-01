@@ -1,19 +1,10 @@
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
-import { NzGridModule } from 'ng-zorro-antd/grid';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
-import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
-import { NzResizableModule } from 'ng-zorro-antd/resizable';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzSliderModule } from 'ng-zorro-antd/slider';
-import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ConditionPopoverComponent } from './config-plane/condition-popover/condition-popover.component';
 import { ConditionPopoverDirective } from './config-plane/condition-popover/condition-popover.directive';
 import { ConfigBlockComponent } from './config-plane/config-block/config-block.component';
@@ -25,36 +16,29 @@ import { ElementTreeNodeDirective } from './element-tree-plane/element-tree-node
 import { ElementTreePlaneComponent } from './element-tree-plane/element-tree-plane.component';
 import { MockMessagePlaneComponent } from './mock-message-plane/mock-message-plane.component';
 import { MockMessageEditDialogComponent } from './mock-message-plane/mock-message-edit-dialog/mock-message-edit-dialog.component';
-import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-
 
 @NgModule({
-  declarations: [EditorComponent,
-    ElementTreePlaneComponent, ElementTreeNodeDirective,
-    ConfigBlockComponent, ConfigConditionComponent, ConfigPlaneComponent, ConditionPopoverComponent,
-    ConditionPopoverDirective,
-    MockMessagePlaneComponent,
-    MockMessageEditDialogComponent],
-  imports: [
-    CommonModule,
-    NzGridModule,
-    NzIconModule,
-    NzSelectModule,
-    NzGridModule,
-    NzInputModule,
-    NzInputNumberModule,
-    NzSliderModule,
-    NzButtonModule,
-    NzSwitchModule,
-    NzDropDownModule,
-    NzPopconfirmModule,
-    NzResizableModule,
-    NzCheckboxModule,
-    ControlsModule,
-    OverlayModule,
-    ReactiveFormsModule,
-    ReactiveComponentModule
-  ],
-  exports: [EditorComponent]
+    declarations: [
+        EditorComponent,
+        ElementTreePlaneComponent,
+        ElementTreeNodeDirective,
+        ConfigBlockComponent,
+        ConfigConditionComponent,
+        ConfigPlaneComponent,
+        ConditionPopoverComponent,
+        ConditionPopoverDirective,
+        MockMessagePlaneComponent,
+        MockMessageEditDialogComponent,
+    ],
+    imports: [
+        CommonModule,
+        ControlsModule,
+        OverlayModule,
+        FlexLayoutModule,
+        ReactiveFormsModule,
+        ReactiveComponentModule,
+        FontAwesomeModule
+    ],
+    exports: [EditorComponent],
 })
-export class EditorModule { }
+export class EditorModule {}

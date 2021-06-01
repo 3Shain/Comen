@@ -10,4 +10,6 @@ export function setupDelta(hostElement: HTMLElement, diInit: () => void) {
         </KairoApp>,
         hostElement
     );
+
+    return ()=>ReactDom.unmountComponentAtNode(hostElement);
 }

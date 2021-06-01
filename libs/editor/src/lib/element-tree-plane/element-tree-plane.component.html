@@ -1,6 +1,6 @@
-<h3 style="margin-bottom: 16px;">
+<h5>
     元素
-</h3>
+</h5>
 
 <div class="list">
 
@@ -8,7 +8,7 @@
         (hover)="onNodeHover(node.key,node.value)" [ngClass]="{'active':selected==node['key']}"
         (click)="sectionClick.next(node.key)">
         <span class="indent" *ngFor="let x of [].constructor(node.value.level)"></span>
-        <i nz-icon [nzType]="node.value['x-icon']"></i>
+        <fa-icon [icon]="node.value['x-icon']"></fa-icon>
         <!-- You would see error with angular VE language service, this is a known issue. -->
         <!-- https://github.com/angular/vscode-ng-language-service/issues/946 -->
         <span>{{node.value['displayName']}}</span>

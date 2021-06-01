@@ -1,7 +1,7 @@
 import { Component, Inject, InjectionToken } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { COMPARE_METHOD_DEFAULT_VALUE, COMPARE_METHOD_MAP, VariantCondition, VariantProperty } from '@comen/common';
-import { zoomBigMotion } from 'ng-zorro-antd/core/animation';
+import { zoomBigMotion } from '../../animations';
 import { defer, merge, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 

@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDe
 import { ActivatedRoute, Router } from '@angular/router';
 import { ComenAddonConfiguration, Message, SafeAny, serializeObjectToBase64, serializeObjectToBuffer } from '@comen/common';
 import { EditorComponent, EditorRealtimeMessageProvider, EDITOR_ASSET_STORAGE, EDITOR_REALTIME_MESSAGE_PROVIDER } from '@comen/editor';
-import { zoomBigMotion } from 'ng-zorro-antd/core/animation';
+import { zoomBigMotion } from '@comen/editor';
 import { defer, merge, Observable, of, Subject } from 'rxjs';
 import { shareReplay, switchMap, take, takeUntil } from 'rxjs/operators';
 import { AddonService } from '../../addon/addon.service';
@@ -13,6 +13,7 @@ import { LookupService } from '../../addon/lookup.service';
 import { OverlayContainerDirective } from '../../addon/overlay-container.directive';
 import { ComenFile } from '../../file';
 import { InMemoryStorage } from './in-memory.storage';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'comen-edit',
@@ -77,7 +78,7 @@ export class EditPage implements OnInit, OnDestroy, EditorRealtimeMessageProvide
                 '@@global': {
                     displayName: '基本设置',
                     level: 0,
-                    'x-icon': 'setting',
+                    'x-icon': faCog,
                     properties: {
                         disableSmoother: {
                             displayName: '消息平滑',
