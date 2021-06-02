@@ -2,6 +2,7 @@
 
 [![MIT License](https://img.shields.io/npm/l/isomorphic-danmaku.svg)](https://github.com/3Shain/isomorphic-danmaku/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2F3Shain%2FComen.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2F3Shain%2FComen?ref=badge_shield)
 
 **当前仍在活跃开发中，代码结构可能尚未稳定，并行开发请注意代码的破坏更新** , 原项目【bilichat】请查看[bilichat](https://github.com/3Shain/Comen/tree/bilichat)分支
 
@@ -65,3 +66,6 @@ nx serve node-backend
 * 我想修改渲染相关的代码
 
 所有渲染相关代码都在libs/gamma包内。
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2F3Shain%2FComen.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2F3Shain%2FComen?ref=badge_large)
