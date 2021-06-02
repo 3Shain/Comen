@@ -16,6 +16,17 @@
 
         &.loading {
             opacity: 1;
+            & > #indicator {
+                #cross {
+                    animation: turn 4s ease infinite;
+                    transform-origin: 1129.6px 500px;
+                }
+
+                #circle {
+                    animation: turn2 4s ease infinite;
+                    transform-origin: 501.5px 500px;
+                }
+            }
         }
 
         & > #indicator {
@@ -23,16 +34,6 @@
             display: block;
             width: 64px;
             margin: 0 auto;
-
-            #cross {
-                animation: turn 4s ease infinite;
-                transform-origin: 1129.6px 500px;
-            }
-
-            #circle {
-                animation: turn2 4s ease infinite;
-                transform-origin: 501.5px 500px;
-            }
         }
 
         @keyframes turn2 {

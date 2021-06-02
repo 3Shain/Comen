@@ -6,6 +6,10 @@
     display: none;
 }
 
+body {
+    margin: 0;
+}
+
 html:not(.style-scope) {
     --layout_-_display: flex;
     --layout-inline_-_display: inline-flex;

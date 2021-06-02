@@ -15,7 +15,7 @@ import {
     OverlayInfo,
     SourceInfo,
 } from './definations';
-import { DELTA_METADATA, initDelta } from '@comen/delta';
+import { preloadDelta } from '@comen/delta';
 
 type LazyLoadStaticCallback = () => Promise<NgModuleFactory<any> | Type<any>>;
 
@@ -27,7 +27,7 @@ export class LookupService {
             displayName: '评论栏',
             icon: '/assets/icon_gamma.png',
             version: '1.0.0',
-            _lazyloadRegister: async () => {
+            preload: async () => {
                 const module = await this.lazyloadNgModule<BuiltinOverlayModule>(
                     () => import('@comen/gamma').then((m) => m.GammaModule)
                 );
@@ -43,9 +43,7 @@ export class LookupService {
             displayName: '评论栏 v2',
             icon: '/assets/icon_gamma.png',
             version: '0.0.0',
-            _lazyloadRegister: async () => {
-                this.addon.registerOverlay(DELTA_METADATA, initDelta);
-            },
+            preload: preloadDelta
         },
     ];
 
@@ -54,7 +52,7 @@ export class LookupService {
             name: 'bilibili',
             version: '1.0.0',
             displayName: '哔哩哔哩',
-            _lazyloadRegister: async () => {
+            preload: async () => {
                 const module = await this.lazyloadNgModule<BuiltinSourceModule>(
                     () =>
                         import('../sources/bilibili/bilibili.module').then(
@@ -71,7 +69,7 @@ export class LookupService {
             name: 'acfun',
             version: '1.0.0',
             displayName: 'AcFun',
-            _lazyloadRegister: async () => {
+            preload: async () => {
                 const module = await this.lazyloadNgModule<BuiltinSourceModule>(
                     () =>
                         import('../sources/acfun/acfun.module').then(
@@ -107,7 +105,7 @@ export class LookupService {
         }
         const target = (await this.getSources()).find((x) => x.name == name);
         if (target) {
-            await target._lazyloadRegister();
+            await target.preload();
             return target;
         }
         throw 'NO SUCH SOURCE';
@@ -119,7 +117,7 @@ export class LookupService {
         }
         const target = (await this.getOverlays()).find((x) => x.name == name);
         if (target) {
-            await target._lazyloadRegister();
+            await target.preload();
             return target;
         }
         throw 'NO SUCH SOURCE';

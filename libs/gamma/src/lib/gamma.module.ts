@@ -9,28 +9,30 @@ import { PaidStickerRenderer } from './paid-sticker/paid-sticker';
 import { TickerSponsorItemRenderer } from './ticker-sponsor-item/ticker-sponsor-item';
 import { TickerPaidMessageItemRenderer } from './ticker-paid-item/ticker-paid-item';
 import { ReactiveComponentModule } from '@ngrx/component';
-import { StyleDriverDirective } from './style-driver.directive';
 import { COMMENT_CONFIGURATION } from './metadata';
 
 @NgModule({
-    declarations: [GammaApp,
-        TextMessageRenderer, PaidMessageRenderer, MembershipItemRenderer, PaidStickerRenderer,
-        TickerSponsorItemRenderer, TickerPaidMessageItemRenderer, TickerPaidStickerItemRenderer,
-        StyleDriverDirective],
-    imports: [
-        CommonModule,
-        ReactiveComponentModule
+    declarations: [
+        GammaApp,
+        TextMessageRenderer,
+        PaidMessageRenderer,
+        MembershipItemRenderer,
+        PaidStickerRenderer,
+        TickerSponsorItemRenderer,
+        TickerPaidMessageItemRenderer,
+        TickerPaidStickerItemRenderer,
     ],
+    imports: [CommonModule, ReactiveComponentModule],
     providers: [],
     exports: [GammaApp],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class GammaModule {
     entry = GammaApp;
     metadata = {
-        name: "gamma",
-        displayName: "GAMMA",
+        name: 'gamma',
+        displayName: 'GAMMA',
         editable: false,
-        configuration: COMMENT_CONFIGURATION
-    }
+        configuration: COMMENT_CONFIGURATION,
+    };
 }

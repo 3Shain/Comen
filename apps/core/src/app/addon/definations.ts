@@ -1,5 +1,5 @@
-import { Type } from "@angular/core";
-import { ComenAddonMetadata } from "@comen/common";
+import { Type } from '@angular/core';
+import { ComenAddonMetadata } from '@comen/common';
 
 export interface BuiltinOverlayModule {
     entry: Type<any>;
@@ -16,7 +16,7 @@ export interface OverlayInfo {
     version: string;
     icon?: string;
     description?: string;
-    _lazyloadRegister: () => Promise<void>;
+    preload: () => Promise<void>;
 }
 
 export interface SourceInfo {
@@ -25,5 +25,5 @@ export interface SourceInfo {
     displayName: string;
     icon?: string;
     description?: string;
-    _lazyloadRegister: () => Promise<void>;
+    preload: () => Promise<void>;
 }

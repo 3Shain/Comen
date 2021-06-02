@@ -3,13 +3,16 @@ import ReactDom from 'react-dom';
 import { KairoApp } from '@kairo/react';
 import View from './view';
 
-export function setupDelta(hostElement: HTMLElement, diInit: () => void) {
+export function setupDelta(root: ShadowRoot, diInit: () => void) {
+
+    const container = root.querySelector('body').appendChild(document.createElement('div'));
+
     ReactDom.render(
         <KairoApp globalSetup={diInit}>
             <View />
         </KairoApp>,
-        hostElement
+        container
     );
 
-    return ()=>ReactDom.unmountComponentAtNode(hostElement);
+    return ()=>ReactDom.unmountComponentAtNode(container);
 }

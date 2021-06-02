@@ -132,9 +132,3 @@ export function folder(config: {
         });
     };
 }
-
-function nextFrame() {
-    return new Promise((res) => {
-        requestAnimationFrame(res);
-    });
-}

@@ -6,7 +6,7 @@ import { ReactiveComponentModule } from '@ngrx/component';
 import { HomePage } from './home.page';
 import { TimeAgoPipe } from './time-ago.pipe';
 import { FlexLayoutModule } from '@angular/flex-layout';
- 
+
 @NgModule({
     declarations: [HomePage, TimeAgoPipe],
     imports: [
@@ -14,13 +14,13 @@ import { FlexLayoutModule } from '@angular/flex-layout';
         FlexLayoutModule,
         ReactiveFormsModule,
         ReactiveComponentModule,
-        RouterModule.forChild([{
-            path: '',
-            pathMatch: 'full',
-            component: HomePage
-        }])
-    ]
+        RouterModule.forChild([
+            {
+                path: '',
+                pathMatch: 'full',
+                component: HomePage,
+            },
+        ]),
+    ],
 })
-export class HomeModule {
-
-}
+export class HomeModule {}

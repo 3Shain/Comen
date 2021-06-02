@@ -3,16 +3,14 @@
         width="24" style="background-color: transparent;" loaded="">
         <img id="img" class="style-scope yt-img-shadow" alt="" height="24" width="24" [src]="message.avatar">
     </yt-img-shadow>
-    <div id="content" gmStyleDriver configSection="textMessage.box" [context]="message"
-        class="style-scope yt-live-chat-text-message-renderer" [attr.bili-guard]="platformExtra.guardType">
-        <span id="timestamp" gmStyleDriver configSection="textMessage.box.timestamp" [context]="message"
-            class="style-scope yt-live-chat-text-message-renderer">
+    <div id="content" class="style-scope yt-live-chat-text-message-renderer"
+        [attr.bili-guard]="platformExtra.guardType">
+        <span id="timestamp" class="style-scope yt-live-chat-text-message-renderer">
             {{date | date:'hh:mm a'}}
         </span>
         <yt-live-chat-author-chip class="style-scope yt-live-chat-text-message-renderer">
             <!-- 让人心肺停止的逻辑运算 -->
-            <span id="author-name" gmStyleDriver configSection="textMessage.box.authorName" [context]="message"
-                dir="auto" class="style-scope yt-live-chat-author-chip"
+            <span id="author-name" dir="auto" class="style-scope yt-live-chat-author-chip"
                 [ngClass]="{'member':isMember&&!isModerator&&!isOwner,'moderator':isModerator,'owner':isOwner}"
                 [attr.type]="userType">{{message.username}}
                 <span id="chip-badges" class="style-scope yt-live-chat-author-chip"></span>
@@ -48,8 +46,7 @@
                 </ng-container>
             </span>
         </yt-live-chat-author-chip>&#8203;
-        <span id="message" gmStyleDriver configSection="textMessage.box.message" [context]="message" dir="auto"
-            class="style-scope yt-live-chat-text-message-renderer">
+        <span id="message" dir="auto" class="style-scope yt-live-chat-text-message-renderer">
             <ng-container *ngIf="isRichtext;else elseTpl">
                 <ng-container *ngFor="let node of richtext.nodes" [ngSwitch]="node.type">
                     <img *ngSwitchCase="'emoji'"

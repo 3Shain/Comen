@@ -1,7 +1,7 @@
-import { Observable } from "rxjs";
-import { ComenAddonConfiguration } from "./config";
-import { Message } from "./message";
-import { SafeAny } from "./utils";
+import { Observable } from 'rxjs';
+import { ComenAddonConfiguration } from './config';
+import { Message } from './message';
+import { SafeAny } from './utils';
 
 export type ComenAddonMetadata = {
     name: string;
@@ -17,13 +17,18 @@ export interface ComenAddonInstance {
     rootElement: SafeAny;
 }
 
-export type ComenInitFunction = (instance: ComenAddonInstance) => Function | PromiseLike<Function>;
+export type ComenOverlayEntry = (instance: ComenAddonInstance) => Function;
 
-export declare function registerAddon(metadata: ComenAddonMetadata, init: ComenInitFunction): void;
+declare global {
+    export function registerOverlay(
+        metadata: ComenAddonMetadata,
+        entry: ComenOverlayEntry
+    ): void;
+}
 
 export abstract class ComenEnvironmentHost {
     abstract message(): Observable<Message>;
     abstract config(section: string): Observable<SafeAny>;
     abstract variantPipe(section: string): Observable<SafeAny>;
-    abstract assetUrl(id:string): string;
+    abstract assetUrl(id: string): string;
 }

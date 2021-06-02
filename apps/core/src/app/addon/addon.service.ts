@@ -2,7 +2,7 @@ import { ComponentType } from '@angular/cdk/portal';
 import { ComponentFactoryResolver, Injectable } from '@angular/core';
 import {
     ComenAddonMetadata,
-    ComenInitFunction,
+    ComenOverlayEntry,
     Message,
     SafeAny,
 } from '@comen/common';
@@ -13,9 +13,8 @@ export class AddonService {
     private registeredOverlay: {
         [key: string]: {
             metadata: ComenAddonMetadata;
-            factory?: ComenInitFunction;
+            entry?: ComenOverlayEntry;
             ngComponent?: ComponentType<SafeAny>;
-            resolver?: ComponentFactoryResolver;
         };
     } = {};
 
@@ -57,24 +56,23 @@ export class AddonService {
         this.registeredOverlay[metadata.name] = {
             metadata: metadata,
             ngComponent: component,
-            resolver: resolver,
         };
     }
 
     registerBuiltinSource(name: string, service: SafeAny) {
         if (this.registeredSource[name]) {
-            throw 'REGISTERED';
+            return;
         }
         this.registeredSource[name] = service;
     }
 
-    registerOverlay(metadata: ComenAddonMetadata, init: ComenInitFunction) {
+    registerOverlay(metadata: ComenAddonMetadata, entry: ComenOverlayEntry) {
         if (this.registeredOverlay[metadata.name]) {
-            throw 'REGISTERED';
+            return;
         }
         this.registeredOverlay[metadata.name] = {
-            metadata: metadata,
-            factory: init,
+            metadata,
+            entry,
         };
     }
 
@@ -82,7 +80,7 @@ export class AddonService {
         // stub
     }
 
-    getOverlayAddon(name: string) {
+    getOverlay(name: string) {
         return this.registeredOverlay[name];
     }
 

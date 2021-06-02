@@ -36,7 +36,9 @@
             "allowedCommonJsDependencies": [
               "protobufjs",
               "escodegen",
-              "date-fns"
+              "date-fns",
+              "react",
+              "react-dom"
             ]
           },
           "configurations": {

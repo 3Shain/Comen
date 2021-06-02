@@ -86,7 +86,7 @@ importers:
       isomorphic-ws: ^4.0.1
       jest: 26.2.2
       jest-preset-angular: 8.4.0
-      kairo: ^0.3.0
+      kairo: ^0.3.2
       knex: ^0.21.15
       long: ^4.0.0
       mockjs: ^1.1.0
@@ -106,6 +106,7 @@ importers:
       rxjs: ~6.5.5
       tar: ^6.1.0
       testcontainers: ^6.4.1
+      to-string-loader: ^1.1.6
       tough-cookie: ^4.0.0
       ts-jest: 26.5.5
       ts-node: 9.1.1
@@ -129,7 +130,7 @@ importers:
       '@fortawesome/free-brands-svg-icons': 5.15.3
       '@fortawesome/free-regular-svg-icons': 5.15.3
       '@fortawesome/free-solid-svg-icons': 5.15.3
-      '@kairo/react': 0.3.1_kairo@0.3.1+react@17.0.2
+      '@kairo/react': 0.3.1_kairo@0.3.2+react@17.0.2
       '@nestjs/common': 7.6.17_43ce19f1413a05f04fe91f2fadd3fd19
       '@nestjs/core': 7.6.17_cb177b58ad2b1c90248c06016da2d501
       '@nestjs/platform-express': 7.6.17_6b1007062d3a29d00cb5e4fdd9b5f494
@@ -148,7 +149,7 @@ importers:
       got: 11.8.2
       idb: 6.1.2
       isomorphic-ws: 4.0.1_ws@7.4.6
-      kairo: 0.3.1
+      kairo: 0.3.2
       knex: 0.21.19_pg@8.6.0
       long: 4.0.0
       mockjs: 1.1.0
@@ -164,6 +165,7 @@ importers:
       reflect-metadata: 0.1.13
       rxjs: 6.5.5
       tar: 6.1.0
+      to-string-loader: 1.1.6
       tough-cookie: 4.0.0
       tslib: 2.2.0
       ws: 7.4.6
@@ -2413,13 +2415,13 @@ packages:
       - supports-color
     dev: true
 
-  /@kairo/react/0.3.1_kairo@0.3.1+react@17.0.2:
+  /@kairo/react/0.3.1_kairo@0.3.2+react@17.0.2:
     resolution: {integrity: sha512-udbWFGUqWbzylx1Vx/2dnai9OzWf7xqPKxqyGWy2Y6jcC+nWLDcf6rRbloAhPBBbZ7JpifMhWfiJsraG3SSZ+g==}
     peerDependencies:
       kairo: ^0.3.1
       react: '>=16.8.0'
     dependencies:
-      kairo: 0.3.1
+      kairo: 0.3.2
       react: 17.0.2
     dev: false
 
@@ -4812,7 +4814,6 @@ packages:
 
   /big.js/5.2.2:
     resolution: {integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==}
-    dev: true
 
   /binary-extensions/1.13.1:
     resolution: {integrity: sha512-Un7MIEDdUC5gNpcGDV97op1Ywk748MpHcFTHoYs6qnj1Z3j7I53VG3nwZhKzoBZmbdRNnb6WRdFlwl7tSDuZGw==}
@@ -6992,7 +6993,6 @@ packages:
   /emojis-list/3.0.0:
     resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==}
     engines: {node: '>= 4'}
-    dev: true
 
   /encodeurl/1.0.2:
     resolution: {integrity: sha1-rT/0yG7C0CkyL1oCw6mmBslbP1k=}
@@ -9790,7 +9790,6 @@ packages:
     hasBin: true
     dependencies:
       minimist: 1.2.5
-    dev: true
 
   /json5/2.2.0:
     resolution: {integrity: sha512-f+8cldu7X/y7RAJurMEJmdoKXGB/X550w2Nr3tTbezL6RwEE/iMcm+tZnXeoZtKuOq6ft8+CqzEkrIgx1fPoQA==}
@@ -9832,8 +9831,8 @@ packages:
       verror: 1.10.0
     dev: true
 
-  /kairo/0.3.1:
-    resolution: {integrity: sha512-FZZB0jEIkE+ieAYy+0ptxXBFO1jYhKew7/Gd1qREPzfjLGd2kd323jHU4epiMlx53wURhfJ+89aEWwl1omUREA==}
+  /kairo/0.3.2:
+    resolution: {integrity: sha512-nLjb0w4QaEPXhw294F6TqZ3tiw0gzEHb7ns2JWphs5GLt8O3j3FCF5JZZRyj3e7V7jF+GHOS9ARCj7AkyAs6bA==}
     peerDependencies:
       immer: '>=9.0.0'
     peerDependenciesMeta:
@@ -10125,7 +10124,6 @@ packages:
       big.js: 5.2.2
       emojis-list: 3.0.0
       json5: 1.0.1
-    dev: true
 
   /loader-utils/2.0.0:
     resolution: {integrity: sha512-rP4F0h2RaWSvPEkD7BLDFQnvSf+nK+wr3ESUjNTyAGobqrijmW92zc+SO6d4p4B1wh7+B/Jg1mkQe5NYUEHtHQ==}
@@ -14589,6 +14587,12 @@ packages:
       extend-shallow: 3.0.2
       regex-not: 1.0.2
       safe-regex: 1.1.0
+
+  /to-string-loader/1.1.6:
+    resolution: {integrity: sha512-VNg62//PS1WfNwrK3n7t6wtK5Vdtx/qeYLLEioW46VMlYUwAYT6wnfB+OwS2FMTCalIHu0tk79D3RXX8ttmZTQ==}
+    dependencies:
+      loader-utils: 1.4.0
+    dev: false
 
   /toidentifier/1.0.0:
     resolution: {integrity: sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==}
