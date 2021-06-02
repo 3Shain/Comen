@@ -29,8 +29,7 @@
               "apps/core/src/assets"
             ],
             "styles": [
-              "apps/core/src/styles.less",
-              "libs/delta/src/delta-styles.scss"
+              "apps/core/src/styles.less"
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [

@@ -1,7 +1,7 @@
 {
     "extends": "../../tsconfig.base.json",
     "files": [],
-    "include": [],
+    "include": ["src/shims.d.ts"],
     "references": [
         {
             "path": "./tsconfig.app.json"
