@@ -6,11 +6,10 @@ import { AddonMoudle } from '../../addon/addon.module';
 import { EditPage } from './edit.page';
 import { MockObsDialogModule } from './mock-obs-dialog/mock-obs-dialog.module';
 import { RestoreSessionResovler } from './restore.resolver';
-import { ShadowHostComponent } from './shadow-host.component';
 
 
 @NgModule({
-    declarations: [EditPage, ShadowHostComponent],
+    declarations: [EditPage],
     imports: [
         CommonModule,
         EditorModule,

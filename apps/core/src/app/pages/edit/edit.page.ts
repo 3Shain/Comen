@@ -57,7 +57,7 @@ import { OverlayContainerComponent } from '../../addon/overlay-container.compone
 export class EditPage
     implements OnInit, OnDestroy, EditorRealtimeMessageProvider {
     configuration: ComenAddonConfiguration;
-    view: HTMLElement = undefined;
+    overlayContainerElement: HTMLElement = undefined;
 
     @ViewChild('container', { static: true })
     container: OverlayContainerComponent;
@@ -173,9 +173,10 @@ export class EditPage
             // load the file!
         } else {
             window.location.pathname = '/'; // TODO this may cause panic?
+            return;
         }
         const bootstraped = this.container.bootstrap(this.addonTarget.name);
-        this.view = bootstraped.element;
+        this.overlayContainerElement = bootstraped.element;
         this.destroy$.subscribe(() => bootstraped.destroy());
         setTimeout(() => {
             if (this.session.data != null) {
@@ -240,14 +241,16 @@ export class EditPage
             ],
         });
         overlay.attach(tplPortal);
-        const parent = this.view.parentElement;
+        const parent = this.overlayContainerElement.parentElement;
         setTimeout(() => {
-            this.mark.nativeElement.parentNode.appendChild(this.view);
+            this.mark.nativeElement.parentNode.appendChild(
+                this.overlayContainerElement
+            );
         }, 0);
         merge(overlay.backdropClick(), this.closeDialog$)
             .pipe(take(1))
             .subscribe(() => {
-                parent.appendChild(this.view);
+                parent.appendChild(this.overlayContainerElement);
                 overlay.detach();
                 overlay.dispose();
             });
