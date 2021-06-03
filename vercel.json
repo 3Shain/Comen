@@ -13,6 +13,10 @@
             "use": "@now/static"
         },
         {
+            "src": "/dist/apps/core/assets/css4obs/*",
+            "use": "@now/static"
+        },
+        {
             "src": "/dist/apps/core/*",
             "use": "@now/static"
         }
