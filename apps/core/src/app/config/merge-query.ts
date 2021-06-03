@@ -26,8 +26,8 @@ export function mergeQueryParameters(query: SafeAny, config: ComenConfiguration)
             const words = (query.wordFilter as string).split(',');
             config.wordBlacklist?.push(...words);
         }
-        if (query.giftOnly == 'true') {
-            config.typeFilterControlBit = 0b0110; // is that correct?
+        if(query.giftOnly=='true'){
+            config.typeFilterControlBit = 0b1001; // is that correct?
         }
         if (query.showGift == 'false') {
             config.typeFilterControlBit = config.typeFilterControlBit ^ 0b0010;
