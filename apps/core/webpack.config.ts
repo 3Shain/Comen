@@ -7,7 +7,6 @@ export default (
   options: CustomWebpackBrowserSchema,
   targetOptions: TargetOptions
 )=>{
-
   config.plugins?.push(
     new webpack.DefinePlugin({
       
@@ -16,6 +15,5 @@ export default (
   config.resolve['fallback'] = {
     "crypto": false
   };
-  console.log(config);
   return config;
 }

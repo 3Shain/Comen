@@ -5,7 +5,7 @@
 <div class="list">
 
     <div class="node" *ngFor="let node of (config.sections | keyvalue:sortNull)" comen-element-tree-node
-        (hover)="onNodeHover(node.key,node.value)" [ngClass]="{'active':selected==node['key']}"
+        (hover)="onNodeHover(node.key,node.value)" [ngClass]="{'active':selected===node['key']}"
         (click)="sectionClick.next(node.key)">
         <span class="indent" *ngFor="let x of [].constructor(node.value.level)"></span>
         <fa-icon [icon]="node.value['x-icon']"></fa-icon>

@@ -68,7 +68,7 @@
             </div>
             <div *ngrxLet="files$;let files">
                 <h2>已创建</h2>
-                <div *ngIf="files.length==0;else elseTpl">
+                <div *ngIf="files.length===0;else elseTpl">
                     你还没有创建过任何组件。
                 </div>
                 <ng-template #elseTpl>

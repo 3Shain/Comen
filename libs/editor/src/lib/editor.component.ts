@@ -12,7 +12,6 @@ import {
     effect,
     EventStream,
     mut,
-    nextAnimationFrame,
     readEvents,
     stream,
     task,

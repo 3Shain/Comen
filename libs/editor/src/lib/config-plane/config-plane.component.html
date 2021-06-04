@@ -12,7 +12,7 @@
         </comen-config-block>
     </div>
     <!-- Add Variants -->
-    <div class="variant" *ngIf="sectionSetting.variantProperties!=undefined">
+    <div class="variant" *ngIf="sectionSetting.variantProperties!==undefined">
         <button nz-button nzType="primary" nzShape="round" conditionPopover [variantProperties]="vairantProperties" (input)="addNewVariant($event)"><i nz-icon
                 nzType="plus"></i>添加变化</button>
     </div>

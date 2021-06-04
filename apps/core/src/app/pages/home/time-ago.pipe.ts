@@ -1,4 +1,4 @@
-import { Pipe, ChangeDetectorRef } from '@angular/core';
+import { Pipe, ChangeDetectorRef, PipeTransform } from '@angular/core';
 import { parse, formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import { AsyncPipe } from '@angular/common';
@@ -9,7 +9,7 @@ import { tap, map, distinctUntilChanged, startWith } from 'rxjs/operators';
     name: 'timeAgo',
     pure: false,
 })
-export class TimeAgoPipe extends AsyncPipe {
+export class TimeAgoPipe extends AsyncPipe implements PipeTransform {
 
     private time: Date;
     private formatted$: Observable<string>;
