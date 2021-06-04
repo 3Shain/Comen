@@ -1,8 +1,5 @@
 import { Observable, OperatorFunction } from 'rxjs';
 
-// eslint-disable-next-line
-export type SafeAny = any;
-
 export function waitTimeout(time:number){
     return new Promise((res)=>{
         setTimeout(res,time);
@@ -69,8 +66,4 @@ export function nextFrame() {
     return new Promise<number>((res) => {
         requestAnimationFrame(res);
     });
-}
-
-export function easeInOutSine(x: number): number {
-    return -(Math.cos(Math.PI * x) - 1) / 2;
 }

@@ -16,9 +16,12 @@
 - apps
     - core    --- 前端项目
     - node-backend    --- 后端的node(cli)包装
+    - electron-app    --- electron应用
 - libs
     - backend-core    --- 后端的可嵌入式实现
     - common          --- 公共代码库
+    - delta           --- 高可自定义评论栏渲染器(React)
+    - dogfood         --- [kairo](https://github/3shain/kairo) 内部消化测试
     - editor          --- 样式编辑器(Angular)
     - gamma           --- 兼容Youtube样式表的评论栏渲染器(Angular)
     - isomorphic-danmaku            --- 同构弹幕，实现了acfun、bilibili的ws连接
@@ -38,8 +41,6 @@ nx serve node-backend
 ```
 
 现在可以对代码进行更改了。任何有关代码更改都会触发自动刷新。
-
-> Warning: Use npm@>7.0.0
 
 ### License
 

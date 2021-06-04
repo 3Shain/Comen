@@ -13,7 +13,6 @@ import {
 import { GammaConfigService } from './gamma-config.service';
 import {
     Message,
-    easeInOutSine,
     ComenEnvironmentHost,
     SafeAny,
 } from '@comen/common';
@@ -276,3 +275,7 @@ type TickerStatus = {
         percent: number;
     };
 };
+
+function easeInOutSine(x: number): number {
+    return -(Math.cos(Math.PI * x) - 1) / 2;
+}

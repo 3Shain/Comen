@@ -1,7 +1,9 @@
 import { Observable } from 'rxjs';
 import { ComenAddonConfiguration } from './config';
 import { Message } from './message';
-import { SafeAny } from './utils';
+
+// eslint-disable-next-line
+export type SafeAny = any;
 
 export type ComenAddonMetadata = {
     name: string;

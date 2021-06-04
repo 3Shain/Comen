@@ -1,16 +1,15 @@
 import { serializeObjectToBase64, deserializeBase64 } from './base64';
 import { TextDecoder, TextEncoder } from 'util';
-import { SafeAny } from './utils';
+import { SafeAny } from '@comen/common';
 
 describe('configuration', () => {
-
     beforeAll(() => {
         // 测试体验极差🤮
         if (typeof (global as SafeAny).TextEncoder === 'undefined') {
             (global as SafeAny).TextEncoder = TextEncoder;
             (global as SafeAny).TextDecoder = TextDecoder;
         }
-    })
+    });
 
     it('should be serialized and deserialized correctly', () => {
         const conf = {
@@ -21,9 +20,9 @@ describe('configuration', () => {
                 var5: 1,
                 var6: {
                     var7: 'test2',
-                    '!!!': '???'
-                }
-            }
+                    '!!!': '???',
+                },
+            },
         };
 
         const serialized = serializeObjectToBase64(conf);
@@ -36,13 +35,13 @@ describe('configuration', () => {
         const conf = {
             blob: new Uint8Array(16).fill(0x99),
             nested: {
-                blob2: new Uint8Array(32).fill(0x86)
-            }
+                blob2: new Uint8Array(32).fill(0x86),
+            },
         };
 
         const serialized = serializeObjectToBase64(conf);
         const ret = deserializeBase64<SafeAny>(serialized);
 
         expect(ret).toEqual(conf);
-    })
-})
+    });
+});

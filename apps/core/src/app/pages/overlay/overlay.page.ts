@@ -8,20 +8,19 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import {
     ComenEnvironmentHost,
-    deserializeBase64,
     Message,
-    nextFrame,
-    RxZone,
     SafeAny,
     TextMessage,
-    waitUntilPageVisible,
 } from '@comen/common';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { catchError, filter, retry, takeUntil, tap } from 'rxjs/operators';
 import { AddonService } from '../../addon/addon.service';
 import { OverlayContainerComponent } from '../../addon/overlay-container.component';
 import { commentFilter, folder, smoother } from '../../common';
+import { deserializeBase64 } from '../../common/base64';
 import { emojiFilter } from '../../common/emoji';
+import { RxZone } from '../../common/rx';
+import { nextFrame, waitUntilPageVisible } from '../../common/utils';
 import {
     ComenConfiguration,
     DEFAULT_CONFIG,

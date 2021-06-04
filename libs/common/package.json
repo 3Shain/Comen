@@ -1,12 +1,5 @@
 {
   "name": "@comen/common",
   "version": "0.0.1",
-  "peerDependencies": {
-    "@angular/core": "*"
-  },
-  "peerDependenciesMeta": {
-    "@angular/core": {
-      "optional": true
-    }
-  }
+  "license": "MIT"
 }

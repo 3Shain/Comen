@@ -15,8 +15,6 @@ import {
     ComenAddonConfiguration,
     Message,
     SafeAny,
-    serializeObjectToBase64,
-    serializeObjectToBuffer,
 } from '@comen/common';
 import {
     EditorComponent,
@@ -34,6 +32,7 @@ import { ComenFile } from '../../file';
 import { InMemoryStorage } from './in-memory.storage';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { OverlayContainerComponent } from '../../addon/overlay-container.component';
+import { serializeObjectToBase64, serializeObjectToBuffer } from '../../common/base64';
 
 @Component({
     selector: 'comen-edit',

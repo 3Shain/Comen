@@ -1,4 +1,4 @@
-import { SafeAny } from './utils';
+import { SafeAny } from './comen';
 
 export interface PropertySchema {
     type:

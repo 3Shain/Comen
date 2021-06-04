@@ -1,13 +1,13 @@
 import { Observable } from 'rxjs';
 import {
     Message, StickerMessage, TextMessage
-    , waitTimeout
 } from '@comen/common';
 import { connectAcfunLiveWs } from 'isomorphic-danmaku/acfun';
 import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import * as Long from 'long';
+import { waitTimeout } from '../../common/utils';
 
 @Injectable()
 export class AcfunSource {
