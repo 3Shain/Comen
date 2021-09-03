@@ -12,7 +12,7 @@ import { map, startWith } from 'rxjs/operators';
     ]
 })
 // eslint-disable-next-line
-export class HomePage implements OnDestroy {
+export class HomePage implements OnInit, OnDestroy {
 
     platform$: Subject<string> = new BehaviorSubject(localStorage.getItem('platform') ?? 'bilibili');
 
