@@ -31,7 +31,7 @@ export class HomePage {
         }
 
         let id = localStorage.getItem('roomId');
-        if(id.trim()) {
+        if(id && id.trim()) {
             this.roomId.setValue(id);
         }
         this.roomId.valueChanges.subscribe(x => {
