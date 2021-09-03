@@ -29,6 +29,14 @@ export class HomePage {
         if (window.location.host == 'bilichat.3shain.com') {
             window.location.href = 'https://github.com/3Shain/Comen/tree/bilichat';
         }
+
+        let id = localStorage.getItem('roomId');
+        if(id.trim()) {
+            this.roomId.setValue(id);
+        }
+        this.roomId.valueChanges.subscribe(x => {
+            localStorage.setItem('roomId', x);
+        });
     }
 
     setPlatform(platform: string) {
