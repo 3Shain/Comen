@@ -14,9 +14,9 @@ import { map, startWith } from 'rxjs/operators';
 // eslint-disable-next-line
 export class HomePage {
 
-    platform$: Subject<string> = new BehaviorSubject('bilibili');
+    platform$: Subject<string> = new BehaviorSubject(localStorage.getItem('platform') ?? 'bilibili');
 
-    roomId = new FormControl('123456');
+    roomId = new FormControl(localStorage.getItem('roomId') ?? '123456');
 
     generatedLink = combineLatest([this.platform$, this.roomId.valueChanges.pipe(startWith(this.roomId.value))]).pipe(
         map(([platform, id]) => {
@@ -29,10 +29,15 @@ export class HomePage {
         if (window.location.host == 'bilichat.3shain.com') {
             window.location.href = 'https://github.com/3Shain/Comen/tree/bilichat';
         }
+
+        this.roomId.valueChanges.subscribe(x => {
+            localStorage.setItem('roomId', x);
+        });
     }
 
     setPlatform(platform: string) {
         this.platform$.next(platform);
+        localStorage.setItem('platform', platform);
     }
 
     clickLink(event:Event){
