@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subject, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
@@ -12,11 +12,12 @@ import { map, startWith } from 'rxjs/operators';
     ]
 })
 // eslint-disable-next-line
-export class HomePage {
+export class HomePage implements OnInit, OnDestroy {
 
     platform$: Subject<string> = new BehaviorSubject(localStorage.getItem('platform') ?? 'bilibili');
 
     roomId = new FormControl(localStorage.getItem('roomId') ?? '123456');
+    roomIdSubscription: Subscription;
 
     generatedLink = combineLatest([this.platform$, this.roomId.valueChanges.pipe(startWith(this.roomId.value))]).pipe(
         map(([platform, id]) => {
@@ -29,9 +30,11 @@ export class HomePage {
         if (window.location.host == 'bilichat.3shain.com') {
             window.location.href = 'https://github.com/3Shain/Comen/tree/bilichat';
         }
+    }
 
-        this.roomId.valueChanges.subscribe(x => {
-            localStorage.setItem('roomId', x);
+    ngOnInit() {
+        this.roomIdSubscription = this.roomId.valueChanges.subscribe(id => {
+            localStorage.setItem('roomId', id)
         });
     }
 
@@ -43,5 +46,9 @@ export class HomePage {
     clickLink(event:Event){
         (event.target as HTMLInputElement).select();
         document.execCommand('copy');
+    }
+
+    ngOnDestroy() {
+        this.roomIdSubscription.unsubscribe();
     }
 }
