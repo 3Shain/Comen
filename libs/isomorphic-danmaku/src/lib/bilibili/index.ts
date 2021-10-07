@@ -1,5 +1,6 @@
 import { inflate } from "pako";
 import { AsyncWebSocket } from "../ws";
+import { BrotliDecode } from './brotli';
 
 export async function* connectBilibiliLiveWs(options: {
     roomId: number | string;
@@ -93,6 +94,9 @@ function decodeData(buffer: ArrayBuffer): Array<unknown> {
             }
             if (protocol === 2) {
                 packs.push(...decodeData(inflate(section)));
+            }
+            if (protocol === 3) {
+                packs.push(...decodeData(BrotliDecode(section,undefined)));
             }
         }
         offset += view.getInt32(offset);
