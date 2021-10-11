@@ -52,6 +52,9 @@
                     <img *ngSwitchCase="'emoji'"
                         class="emoji yt-formatted-string style-scope yt-live-chat-text-message-renderer"
                         [src]="node.url" id="emoji-0">
+                    <img *ngSwitchCase="'image'" style="vertical-align: top;"
+                        class="style-scope yt-live-chat-text-message-renderer"
+                        [src]="node.url" [attr.height]="node.height" [attr.width]="node.width">
                     <ng-container *ngSwitchCase="'text'">{{node.content}}</ng-container>
                 </ng-container>
             </ng-container>
