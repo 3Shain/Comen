@@ -65,6 +65,7 @@ importers:
       '@typescript-eslint/eslint-plugin': 4.19.0
       '@typescript-eslint/parser': 4.19.0
       add: ^2.0.6
+      any-observable: ^0.5.1
       base64-js: ^1.5.1
       cache-manager: ^3.4.0
       cache-manager-fs: ^1.0.8
@@ -142,6 +143,7 @@ importers:
       '@ngrx/component': 12.0.0_ed91bfb8ee502ed5e16f1ef3d58f61ac
       '@peculiar/webcrypto': 1.1.7
       add: 2.0.6
+      any-observable: 0.5.1_rxjs@6.5.5
       base64-js: 1.5.1
       cache-manager: 3.4.3
       cache-manager-fs: 1.0.8
@@ -4392,6 +4394,21 @@ packages:
     resolution: {integrity: sha512-/FQM1EDkTsf63Ub2C6O7GuYFDsSXUwsaZDurV0np41ocwq0jthUAYCmhBX9f+KwlaCgIuWyr/4WlUQUBfKfZog==}
     engines: {node: '>=6'}
     dev: true
+
+  /any-observable/0.5.1_rxjs@6.5.5:
+    resolution: {integrity: sha512-8zv01bgDOp9PTmRTNCAHTw64TFP2rvlX4LvtNJLachaXY+AjmIvLT47fABNPCiIe89hKiSCo2n5zmPqI9CElPA==}
+    engines: {node: '>=8'}
+    peerDependencies:
+      rxjs: '*'
+      zen-observable: '*'
+    peerDependenciesMeta:
+      rxjs:
+        optional: true
+      zen-observable:
+        optional: true
+    dependencies:
+      rxjs: 6.5.5
+    dev: false
 
   /any-promise/0.1.0:
     resolution: {integrity: sha1-gwtoCqflbzNFHUsEnzvYBESY7ic=}

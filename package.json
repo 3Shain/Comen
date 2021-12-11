@@ -61,6 +61,7 @@
     "@ngrx/component": "12.0.0",
     "@peculiar/webcrypto": "^1.1.4",
     "add": "^2.0.6",
+    "any-observable": "^0.5.1",
     "base64-js": "^1.5.1",
     "cache-manager": "^3.4.0",
     "cache-manager-fs": "^1.0.8",
