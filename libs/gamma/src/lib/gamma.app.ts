@@ -18,11 +18,12 @@ import {
 } from '@comen/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { WithKairo } from '@comen/dogfood';
 // @ts-ignore
 import css from '!!to-string-loader!css-loader?esModule=false!./gamma.app.css';
-import { effect, nextAnimationFrame, task } from 'kairo';
-
+import { effect } from 'kairo';
+import { nextAnimationFrame, task} from '@kairo/concurrency';
+import {WithKairo} from '@kairo/angular';
+ 
 const ANIMATION_SMOOTH_INTERVAL = 100;
 const ANIMATION_BUFFER_INTERVAL = 500;
 const VALID_TYPE = {
@@ -34,14 +35,13 @@ const VALID_TYPE = {
     richtext: true,
 };
 
+@WithKairo()
 @Component({
     // eslint-disable-next-line
     selector: 'yt-live-chat-app',
     templateUrl: './gamma.app.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-})
-@WithKairo({
     providers: [GammaConfigService],
 })
 // eslint-disable-next-line

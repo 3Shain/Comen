@@ -1,7 +1,7 @@
 import { Observable, OperatorFunction } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { TextMessage, Message } from '@comen/common';
-import { nextAnimationFrame, task } from 'kairo';
+import { nextAnimationFrame, task } from '@kairo/concurrency';
 
 export function commentFilter(config: {
     userBlacklist: number[];
@@ -105,7 +105,7 @@ export function smoother(config: {
                     }
                 })
                 .add(() => {
-                    startedTask.cancel();
+                    startedTask.abort();
                 });
         });
     };

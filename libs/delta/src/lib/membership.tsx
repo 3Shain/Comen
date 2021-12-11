@@ -6,12 +6,8 @@ interface MembershipProps {
     content: string;
     username: string;
     avatar: string;
-    
 }
 
 export default withKairo<MembershipProps>(() => {
-
-    return () => <div>
-
-    </div>;
+    return () => <div></div>;
 });

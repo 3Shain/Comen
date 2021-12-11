@@ -1,5 +1,5 @@
 import { withKairo } from '@kairo/react';
-import { effect, mut, reduced, task } from 'kairo';
+import { effect, mut } from 'kairo';
 import React from 'react';
 import { Message } from '@comen/common';
 import { useFastdom } from '@comen/dogfood';
@@ -8,6 +8,7 @@ import Member from './membership';
 import Sticker from './sticker';
 import Superchat from './superchat';
 import { readMessages } from './tokens';
+import { AbortablePromise, task, TaskSuspended } from '@kairo/concurrency';
 
 export default withKairo(() => {
     let key = 0;
@@ -33,8 +34,8 @@ export default withKairo(() => {
     const [renderList, setRenderlist] = mut<(Message & { id: number })[]>([]);
 
     const startCoroutine = task(function* () {
-        const itemsElement = items.value;
-        const scrollerElement = scroller.value;
+        const itemsElement = items.current;
+        const scrollerElement = scroller.current;
         let lastAnimated = 0;
         while (true) {
             if (bufferQueue.length === 0) {
@@ -43,7 +44,7 @@ export default withKairo(() => {
             }
             yield* fastdom.measure;
             const insertedMessage = bufferQueue.pop();
-            setRenderlist([...renderList.value.slice(-50), insertedMessage]);
+            setRenderlist([...renderList.current.slice(-50), insertedMessage]);
             yield* fastdom.mutate;
             yield* fastdom.measure; //wait next frame
             const inserted = itemsElement.lastElementChild as HTMLElement;
@@ -72,64 +73,66 @@ export default withKairo(() => {
                     }
                 );
                 lastAnimated = performance.now();
-                yield (resolve) => {
+                yield* new AbortablePromise((resolve) => {
                     animation.onfinish = resolve;
-                };
+                });
             }
         }
     });
 
     effect(() => startCoroutine());
 
-    return () => (
-        <div id="scroller" ref={setScroller}>
-            {/* <div id="offset" ref={setOffset}> */}
-            <div id="items" ref={setItems}>
-                {renderList.value.map((message) => {
-                    switch (message.type) {
-                        case 'text':
-                            return (
-                                <Text
-                                    key={message['id']}
-                                    content={message.content}
-                                    username={message.username}
-                                    avatar={message.avatar as string}
-                                />
-                            );
-                        case 'member':
-                            return (
-                                <Member
-                                    key={message['id']}
-                                    content={'welcome to '}
-                                    username={message.username}
-                                    avatar={message.avatar as string}
-                                />
-                            );
-                        case 'paid':
-                            return (
-                                <Superchat
-                                    key={message['id']}
-                                    content={message.content}
-                                    username={message.username}
-                                    avatar={message.avatar as string}
-                                />
-                            );
-                        case 'richtext':
-                            return;
-                        case 'sticker':
-                            return (
-                                <Sticker
-                                    key={message['id']}
-                                    content={'wtf'}
-                                    username={message.username}
-                                    avatar={message.avatar as string}
-                                />
-                            );
-                            return;
-                    }
-                })}
+    return ($) => {
+        return (
+            <div id="scroller" ref={setScroller}>
+                {/* <div id="offset" ref={setOffset}> */}
+                <div id="items" ref={setItems}>
+                    {$(renderList).map((message) => {
+                        switch (message.type) {
+                            case 'text':
+                                return (
+                                    <Text
+                                        key={message['id']}
+                                        content={message.content}
+                                        username={message.username}
+                                        avatar={message.avatar as string}
+                                    />
+                                );
+                            case 'member':
+                                return (
+                                    <Member
+                                        key={message['id']}
+                                        content={'welcome to '}
+                                        username={message.username}
+                                        avatar={message.avatar as string}
+                                    />
+                                );
+                            case 'paid':
+                                return (
+                                    <Superchat
+                                        key={message['id']}
+                                        content={message.content}
+                                        username={message.username}
+                                        avatar={message.avatar as string}
+                                    />
+                                );
+                            case 'richtext':
+                                return;
+                            case 'sticker':
+                                return (
+                                    <Sticker
+                                        key={message['id']}
+                                        content={'wtf'}
+                                        username={message.username}
+                                        avatar={message.avatar as string}
+                                    />
+                                );
+                                return;
+                        }
+                    })}
+                </div>
+                {/* </div> */}
             </div>
-            {/* </div> */}
-        </div>
-    );
+        );
+    };
 });

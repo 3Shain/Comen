@@ -1,8 +1,9 @@
-import { Message } from "@comen/common";
-import { EventStream, Token, inject } from "kairo";
+import { Message } from '@comen/common';
+import { EventStream } from '@kairo/concurrency';
+import { Identifier, injected } from 'kairo';
 
-export const EVENT_MESSAGE = Token.for<EventStream<Message>>('message');
+export const EVENT_MESSAGE = Identifier.of<EventStream<Message>>('message');
 
-export function readMessages(){
-    return inject(EVENT_MESSAGE);
+export function readMessages() {
+    return injected(EVENT_MESSAGE);
 }

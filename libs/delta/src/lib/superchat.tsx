@@ -6,12 +6,8 @@ interface SuperchatProps {
     content: string;
     username: string;
     avatar: string;
-    
 }
 
 export default withKairo<SuperchatProps>(() => {
-
-    return () => <div>
-
-    </div>;
+    return () => <div></div>;
 });

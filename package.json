@@ -51,7 +51,9 @@
     "@fortawesome/free-brands-svg-icons": "^5.15.3",
     "@fortawesome/free-regular-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
-    "@kairo/react": "^0.3.1",
+    "@kairo/angular": "^13.0.0-alpha.0",
+    "@kairo/concurrency": "^0.8.0-alpha.1",
+    "@kairo/react": "0.8.0-alpha.0",
     "@nestjs/common": "^7.6.5",
     "@nestjs/core": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
@@ -70,7 +72,7 @@
     "got": "^11.8.1",
     "idb": "^6.0.0",
     "isomorphic-ws": "^4.0.1",
-    "kairo": "^0.3.2",
+    "kairo": "0.8.0-alpha.1",
     "knex": "^0.21.15",
     "long": "^4.0.0",
     "mockjs": "^1.1.0",
@@ -93,7 +95,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "12.0.0",
+    "@angular-builders/custom-webpack": "12.1.3",
     "@angular-devkit/build-angular": "12.0.2",
     "@angular-eslint/eslint-plugin": "12.0.0",
     "@angular-eslint/eslint-plugin-template": "12.0.0",

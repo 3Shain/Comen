@@ -6,28 +6,25 @@ import {
     ConfigurationSection,
     SafeAny,
 } from '@comen/common';
-import { WithKairo } from '@comen/dogfood';
+import { Action, effect, mut } from 'kairo';
 import {
-    Action,
-    effect,
     EventStream,
-    mut,
-    readEvents,
     stream,
     task,
-} from 'kairo';
+    ControlStatements as cs,
+} from '@kairo/concurrency';
+import { WithKairo } from '@kairo/angular';
 import { merge } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { EditorEnvironmentHost } from './editor.host';
 import { generateCode } from './variant/compiler';
 
+@WithKairo()
 @Component({
     selector: 'comen-editor',
     templateUrl: './editor.component.html',
     styleUrls: ['./editor.component.scss'],
     exportAs: 'editor',
-})
-@WithKairo({
     providers: [
         {
             provide: ComenEnvironmentHost,
@@ -259,21 +256,22 @@ function useVerticalDraggable(
         clientX: number;
         clientY: number;
     }) {
-        let y = position.value;
+        let y = position.current;
         let lastMv = e;
-        // yield* testTask();
-        const channel = readEvents({
-            from: mousemove,
-            until: mouseup,
-        });
-        while (yield* channel.hasNext()) {
-            const mv = yield* channel.next();
-            y += mv.clientY - lastMv.clientY;
-            lastMv = mv;
-            if(y<minimum) break;
-            setPosition(y);
-        }
-        channel.dispose();
+        yield* cs.loop(
+            function* () {
+                yield* cs.select
+                    .case(mousemove, function* (mv) {
+                        y += mv.clientY - lastMv.clientY;
+                        lastMv = mv;
+                        if (y < minimum) yield* cs.break();
+                        setPosition(y);
+                    })
+                    .case(mouseup, function* () {
+                        yield* cs.break();
+                    });
+            }
+        );
     });
 
     return {

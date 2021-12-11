@@ -1,4 +1,5 @@
-import { effect, stream } from 'kairo';
+import { effect } from 'kairo';
+import { stream } from '@kairo/concurrency';
 
 export function useFastdom() {
     const [measure, doMeasure] = stream<void>();

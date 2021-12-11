@@ -6,12 +6,8 @@ interface StickerProps {
     content: string;
     username: string;
     avatar: string;
-    
 }
 
 export default withKairo<StickerProps>(() => {
-
-    return () => <div>
-
-    </div>;
+    return () => <div></div>;
 });

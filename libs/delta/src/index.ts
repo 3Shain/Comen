@@ -1,5 +1,5 @@
 import { ComenAddonMetadata, Message } from '@comen/common';
-import { provide, stream } from 'kairo';
+import { stream } from '@kairo/concurrency';
 import { EVENT_MESSAGE } from './lib/tokens';
 
 const DELTA_METADATA: ComenAddonMetadata = {
@@ -18,7 +18,9 @@ export async function preloadDelta() {
         const [messages, emitMessage] = stream<Message>();
         instance.message().subscribe(emitMessage);
         return setup(instance.rootElement, () => {
-            provide(EVENT_MESSAGE, messages);
+            return {
+                [EVENT_MESSAGE]: messages,
+            };
         });
     });
 }

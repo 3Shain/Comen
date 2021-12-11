@@ -1,8 +1,5 @@
-name: "Vercel deployment for node backend"
-on: 
-  push:
-    branches: 
-      - main
+name: "Vercel staging deployment for node backend"
+on: [pull_request] 
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -29,13 +26,13 @@ jobs:
         run: pnpx nx build node-backend --prod
       - name: Deploy production
         uses: amondnet/vercel-action@v19
-        id: vercel-action-production
-        if: github.event_name == 'push'
+        id: vercel-action-staging
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           scope: ${{ secrets.VERCEL_SCOPE }}
-          vercel-args: '--prod'
+          alias-domains: |
+            {{BRANCH}}.comen.app
           
