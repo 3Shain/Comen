@@ -20,6 +20,8 @@ jobs:
           version: 6.0.2
       - name: Install dependencies
         run: pnpm install
+      - name: Ngcc
+        run: ngcc --properties es2015 browser module main
       # Build and deploy
       - name: Build frontend
         run: pnpx nx build core --prod
