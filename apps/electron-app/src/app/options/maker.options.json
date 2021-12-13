@@ -9,7 +9,10 @@
     "buildResources": "dist/apps/electron-app"
   },
   "win":{
-    "icon": "assets/icon.png"
+    "icon": "assets/icon.png",
+    "target": [
+      "portable"
+    ]
   },
   "nsis": {
     "oneClick": false,

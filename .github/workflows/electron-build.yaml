@@ -29,7 +29,7 @@ jobs:
       - name: Build electron app
         run: npx nx build electron-app --prod
       - name: Package electron app
-        run: npx nx run electron-app:make --platform windows --arch x64 --publishPolicy never
+        run: npm run build-electron-win
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
