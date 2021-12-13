@@ -33,7 +33,7 @@
     "dep-graph": "nx dep-graph",
     "help": "nx help",
     "workspace-generator": "nx workspace-generator",
-    "build-electorn-win": "nx run electron-app:make --platform windows --arch x64 --publishPolicy never"
+    "build-electron-win": "nx run electron-app:make --platform windows --arch x64 --publishPolicy never"
   },
   "private": true,
   "dependencies": {
