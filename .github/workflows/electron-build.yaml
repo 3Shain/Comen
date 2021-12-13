@@ -31,7 +31,7 @@ jobs:
       - name: Package electron app
         run: npx nx run electron-app:make --platform windows --arch x64 --publishPolicy never
       - name: Upload artifact
-      - uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2
         with:
           name: build-windows
           path: dist/executables/win-unpacked
