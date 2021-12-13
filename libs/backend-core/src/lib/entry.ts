@@ -1,7 +1,8 @@
 import { CacheModule, Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { BackendCoreModule } from './backend-core.module';
-import 'reflect-metadata'; import * as redisStore from 'cache-manager-redis';
+import 'reflect-metadata'; 
+import * as redisStore from 'cache-manager-redis-store';
 import * as fsStore from 'cache-manager-fs';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { tmpdir } from 'os';

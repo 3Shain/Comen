@@ -11,19 +11,15 @@ import {
     ViewEncapsulation,
 } from '@angular/core';
 import { GammaConfigService } from './gamma-config.service';
-import {
-    Message,
-    ComenEnvironmentHost,
-    SafeAny,
-} from '@comen/common';
+import { Message, ComenEnvironmentHost, SafeAny } from '@comen/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 // @ts-ignore
 import css from '!!to-string-loader!css-loader?esModule=false!./gamma.app.css';
 import { effect } from 'kairo';
-import { nextAnimationFrame, task} from '@kairo/concurrency';
-import {WithKairo} from '@kairo/angular';
- 
+import { nextAnimationFrame, task } from '@kairo/concurrency';
+import { WithKairo } from '@kairo/angular';
+
 const ANIMATION_SMOOTH_INTERVAL = 100;
 const ANIMATION_BUFFER_INTERVAL = 500;
 const VALID_TYPE = {
@@ -245,12 +241,21 @@ export class GammaApp implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
+        // now nativeElement is attached on the document.
+        const head = (this.element.nativeElement.getRootNode() as ShadowRoot).querySelector(
+            'head'
+        );
+
         const style = document.createElement('style');
         style.textContent = css;
-        // now nativeElement is attached on the document.
-        (this.element.nativeElement.getRootNode() as ShadowRoot)
-            .querySelector('head')
-            .appendChild(style);
+        head.appendChild(style);
+        // a trade-off
+        const hostDocument = (this.element.nativeElement.getRootNode() as ShadowRoot).host.getRootNode() as Document;
+        hostDocument.querySelectorAll('head > style').forEach((node) => {
+            const style = document.createElement('style');
+            style.textContent = node.textContent;
+            head.appendChild(style);
+        });
     }
 
     ngOnDestroy() {
