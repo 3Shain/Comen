@@ -7,6 +7,11 @@ import { HomePage } from './home.page';
 import { TimeAgoPipe } from './time-ago.pipe';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
+import { MatSliderModule } from '@angular/material/slider';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+
 @NgModule({
     declarations: [HomePage, TimeAgoPipe],
     imports: [
@@ -21,6 +26,10 @@ import { FlexLayoutModule } from '@angular/flex-layout';
                 component: HomePage,
             },
         ]),
+        MatSliderModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatIconModule
     ],
 })
 export class HomeModule {}

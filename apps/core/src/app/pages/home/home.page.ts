@@ -1,11 +1,8 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { combineLatest, defer, Observable } from 'rxjs';
-import { map, publishBehavior, refCount } from 'rxjs/operators';
-import { OverlayInfo } from '../../addon/definations';
-import { LookupService } from '../../addon/lookup.service';
-import { ComenFile, FileStorage } from '../../file';
-import { nanoid } from 'nanoid';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
+import { BehaviorSubject, combineLatest, Subject, Subscription } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
     selector: 'comen-home',
@@ -15,62 +12,46 @@ import { nanoid } from 'nanoid';
     ]
 })
 // eslint-disable-next-line
-export class HomePage {
+export class HomePage implements OnInit, OnDestroy {
 
-    constructor(
-        private file: FileStorage,
-        private lookup: LookupService,
-        private router: Router) {
+    platform$: Subject<string> = new BehaviorSubject(localStorage.getItem('platform') ?? 'bilibili');
+
+    roomId = new FormControl(localStorage.getItem('roomId') ?? '123456');
+    roomIdSubscription: Subscription;
+
+    comenEnvironment = COMEN_ENVIRONMENT ?? '';
+
+
+    generatedLink = combineLatest([this.platform$, this.roomId.valueChanges.pipe(startWith(this.roomId.value))]).pipe(
+        map(([platform, id]) => {
+            return `${window.location.origin}/${platform}/${id}`
+        })
+    )
+
+    constructor(private title: Title) {
+        title.setTitle('主页');
+        if (window.location.host == 'bilichat.3shain.com') {
+            window.location.href = 'https://github.com/3Shain/Comen/tree/bilichat';
+        }
     }
 
-
-    overlays$ = defer(() => this.lookup.getOverlays()).pipe(
-        publishBehavior([] as OverlayInfo[]),
-        refCount()
-    ) as Observable<OverlayInfo[]>;
-
-    files$ = combineLatest([this.overlays$, defer(() => this.file.getList())]).pipe(
-        map(([overlays, files]) => {
-            return files.map(x => {
-                return {
-                    ...overlays.find(s => s.name == x.constraint.name),
-                    ...x
-                }
-            }).sort((a, b) => b.lastModified - a.lastModified);
-        }),
-        publishBehavior([]),
-        refCount()
-    );
-
-    addFile() {
-        // TODO: add file plane:
-    }
-
-    async openFile(file: ComenFile) {
-        this.router.navigate(['edit'], {
-            queryParams: {
-                o: file.constraint.name,
-                id: file.id
-            }
+    ngOnInit() {
+        this.roomIdSubscription = this.roomId.valueChanges.subscribe(id => {
+            localStorage.setItem('roomId', id)
         });
     }
 
-    async createFile(overlay: OverlayInfo) {
-        const file = await this.file.addNewFile(`${overlay.displayName}-${nanoid(8)}`, {
-            name: overlay.name,
-            version: overlay.version
-        });
-        this.router.navigate(['edit'], {
-            queryParams: {
-                o: overlay.name,
-                id: file.id
-            }
-        });
+    setPlatform(platform: string) {
+        this.platform$.next(platform);
+        localStorage.setItem('platform', platform);
     }
 
-    async deleteFile(file:ComenFile){
-        // TODO: event handler triggered open
-        await this.file.removeFile(file);
-        // TODO: pop out
+    clickLink(event:Event){
+        (event.target as HTMLInputElement).select();
+        document.execCommand('copy');
+    }
+
+    ngOnDestroy() {
+        this.roomIdSubscription.unsubscribe();
     }
 }

@@ -252,6 +252,10 @@ export class GammaApp implements AfterViewInit, OnDestroy {
         // a trade-off
         const hostDocument = (this.element.nativeElement.getRootNode() as ShadowRoot).host.getRootNode() as Document;
         hostDocument.querySelectorAll('head > style').forEach((node) => {
+            // FIX ME: it's not safe!
+            if(node.textContent.indexOf('[_nghost-')>=0) {
+                return;
+            }
             const style = document.createElement('style');
             style.textContent = node.textContent;
             head.appendChild(style);

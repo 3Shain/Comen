@@ -29,7 +29,8 @@
               "apps/core/src/assets"
             ],
             "styles": [
-              "apps/core/src/styles.less"
+              "apps/core/src/styles.less",
+              "apps/core/src/material.scss"
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [

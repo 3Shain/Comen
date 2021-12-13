@@ -11,11 +11,7 @@ import {
     ViewContainerRef,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-    ComenAddonConfiguration,
-    Message,
-    SafeAny,
-} from '@comen/common';
+import { ComenAddonConfiguration, Message, SafeAny } from '@comen/common';
 import {
     EditorComponent,
     EditorRealtimeMessageProvider,
@@ -32,7 +28,10 @@ import { ComenFile } from '../../file';
 import { InMemoryStorage } from './in-memory.storage';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { OverlayContainerComponent } from '../../addon/overlay-container.component';
-import { serializeObjectToBase64, serializeObjectToBuffer } from '../../common/base64';
+import {
+    serializeObjectToBase64,
+    serializeObjectToBuffer,
+} from '../../common/base64';
 
 @Component({
     selector: 'comen-edit',
@@ -53,8 +52,7 @@ import { serializeObjectToBase64, serializeObjectToBuffer } from '../../common/b
     ],
 })
 // eslint-disable-next-line
-export class EditPage
-    implements OnInit, OnDestroy, EditorRealtimeMessageProvider {
+export class EditPage implements OnDestroy, EditorRealtimeMessageProvider {
     configuration: ComenAddonConfiguration;
     overlayContainerElement: HTMLElement = undefined;
 
@@ -167,44 +165,7 @@ export class EditPage
     overlayInfo: OverlayInfo = this.activatedRoute.snapshot.data.addonInfo
         .overlay!;
 
-    ngOnInit() {
-        if (this.session) {
-            // load the file!
-        } else {
-            window.location.pathname = '/'; // TODO this may cause panic?
-            return;
-        }
-        const bootstraped = this.container.bootstrap(this.addonTarget.name);
-        this.overlayContainerElement = bootstraped.element;
-        this.destroy$.subscribe(() => bootstraped.destroy());
-        setTimeout(() => {
-            if (this.session.data != null) {
-                this.editor.importWorkspace(this.session.data.workspace);
-            }
-        }, 0);
-    }
-
-    ngAfterViewInit() {
-        return this.editor
-            .workspaceChange(1 * 1000)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((workspaceData) => {
-                console.log(workspaceData);
-                this.session.file.storeData(
-                    {
-                        workspace: workspaceData,
-                    },
-                    {
-                        name: this.overlayInfo.name,
-                        version: this.overlayInfo.version,
-                    }
-                );
-                sessionStorage.setItem('modifying', this.session.file.id);
-            });
-    }
-
     ngOnDestroy() {
-        sessionStorage.removeItem('modifying');
         this.closeDialog$.complete();
         this.destroy$.next();
         this.destroy$.complete();

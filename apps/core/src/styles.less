@@ -1,73 +1,99 @@
-@import '~@angular/cdk/overlay-prebuilt.css';
+// @import '~@angular/cdk/overlay-prebuilt.css';
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/assets/fonts/MaterialIcons-Regular.ttf) format('truetype');
+}
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px; /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
 
 @primary-color: #a16ba1;
 
 .full-width {
-    width: 100%;
+  width: 100%;
 }
 
 body {
-    margin: 0;
-    font-size: 14px;
+  margin: 0;
+  font-size: 14px;
 }
 
 button.transparent {
-    border: none;
-    background-color: transparent;
-    user-select: none;
-    margin: unset;
-    padding: unset;
-    cursor: pointer;
-    color: #333;
+  border: none;
+  background-color: transparent;
+  user-select: none;
+  margin: unset;
+  padding: unset;
+  cursor: pointer;
+  color: #333;
 
-    &[disabled] {
-        color: #999;
-    }
-    &>fa-icon:not(:last-child){
-        margin-right: 4px;
-    }
+  &[disabled] {
+    color: #999;
+  }
+  & > fa-icon:not(:last-child) {
+    margin-right: 4px;
+  }
 }
 
-
 button {
-    &.cm {
-        border-radius: 4px;
-        border: solid 1px #f3f1f3;
-        background-color: white;
-        font-size: 12px;
-        padding: 4px;
-        cursor: pointer;
+  &.cm {
+    border-radius: 4px;
+    border: solid 1px #f3f1f3;
+    background-color: white;
+    font-size: 12px;
+    padding: 4px;
+    cursor: pointer;
 
-        &[disabled]{
-            cursor: not-allowed;
-        }
-
-        &.primary {
-            color: white;
-            background-color: #a16ba1;
-        }
-
-        &.secondary {
-
-        }
-
-        &.full-width {
-            display: block;
-            width: 100%;
-        }
+    &[disabled] {
+      cursor: not-allowed;
     }
+
+    &.primary {
+      color: white;
+      background-color: #a16ba1;
+    }
+
+    &.secondary {
+    }
+
+    &.full-width {
+      display: block;
+      width: 100%;
+    }
+  }
 }
 
 input[type='text'].cm {
-    
 }
 
 input[type='checkbox'].cm {
-
 }
 
 .list {
-    &.cm {
-
-    }
+  &.cm {
+  }
 }

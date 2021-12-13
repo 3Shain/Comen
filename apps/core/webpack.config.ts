@@ -9,7 +9,7 @@ export default (
 )=>{
   config.plugins?.push(
     new webpack.DefinePlugin({
-      
+      'COMEN_ENVIRONMENT': `"${process.env.COMEN_ENVIRONMENT ?? ''}"`
     })
   );
   config.resolve['fallback'] = {
