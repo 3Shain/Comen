@@ -137,6 +137,7 @@
     "dotenv": "8.2.0",
     "electron": "^11.2.1",
     "eslint": "7.22.0",
+    "webpack": "5.36.2",
     "eslint-config-prettier": "8.1.0",
     "exitzero": "^1.0.1",
     "generate-package-json-webpack-plugin": "^2.1.2",
