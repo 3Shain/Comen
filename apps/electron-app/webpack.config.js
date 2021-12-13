@@ -1,4 +1,5 @@
-const CopyPlugin = require('copy-webpack-plugin');
+// FIXME: it's not safe
+const CopyPlugin = require('nx-electron/node_modules/copy-webpack-plugin');
 const GeneratePackageJsonPlugin = require('generate-package-json-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
@@ -68,5 +69,8 @@ function generatePackageJson(basePackageJson) {
   }
   delete basePackageJson.dependencies.electron;
   const pathToPackageJson = path.join(__dirname, 'package.json');
-  return new GeneratePackageJsonPlugin(basePackageJson, pathToPackageJson);
+  return new GeneratePackageJsonPlugin(basePackageJson, {
+    sourcePackageFilenames: [pathToPackageJson],
+    forceWebpackVersion: 'webpack4'
+  });
 }
