@@ -17,6 +17,10 @@
             "use": "@now/static"
         },
         {
+            "src": "/dist/apps/core/assets/fonts/*",
+            "use": "@now/static"
+        },
+        {
             "src": "/dist/apps/core/*",
             "use": "@now/static"
         }
