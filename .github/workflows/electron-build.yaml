@@ -28,6 +28,13 @@ jobs:
           COMEN_ENVIRONMENT: "electron"
       - name: Build electron app
         run: npx nx build electron-app --prod
+      - name: Install wine
+        run: |
+          sudo dpkg --add-architecture i386
+          wget -qO - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
+          sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
+          sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu $(lsb_release -cs) main"
+          sudo apt install --install-recommends winehq-stable
       - name: Package electron app
         run: npm run build-electron-win
       - name: Upload artifact
