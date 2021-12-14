@@ -297,7 +297,7 @@
     <div id="inputs">
         自定义直播时显示评论/弹幕内容样式的 Chat v2.0 Style Generator 中文版<br>
       <a href="https://chatv2.septapus.com/" target="_blank">原项目地址</a>,由@3Shain提供中文翻译版本<br>
-      可以作用于<a href="https://bilichat.3shain.com">Bilichat</a>上,也可作用于Youtube原生评论栏上
+      可以作用于<a href="https://comen.app">Comen</a>、<a href="https://bilichat.3shain.com">Bilichat</a>上,也可作用于Youtube原生评论栏上
       <h4>名词解释</h4>
       Youtube中的Onwer=>即房主<br>
       Moderator=>管理员,即房管,有权限进行禁言等操作,ID后会有小扳手<br>
@@ -561,7 +561,7 @@
               <yt-live-chat-text-message-renderer author-type="owner">
                 <div id="author-photo"></div>
                 <div id="content">
-                  <span id="timestamp">12:00</span><span id="author-badges">
+                  <span id="timestamp">12:00 PM</span><span id="author-badges">
                     <yt-live-chat-author-badge-renderer type="owner"></yt-live-chat-author-badge-renderer>
                   </span><span id="author-name" type="owner">3Shain</span><span id="message">这是房主的信息</span>
                 </div>
@@ -569,23 +569,23 @@
               <yt-live-chat-text-message-renderer author-type="moderator">
                 <div id="author-photo"></div>
                 <div id="content">
-                  <span id="timestamp">12:00</span><span id="author-badges">
+                  <span id="timestamp">12:00 PM</span><span id="author-badges">
                     <yt-live-chat-author-badge-renderer type="moderator"></yt-live-chat-author-badge-renderer>
-                  </span><span id="author-name" type="moderator">9Shain</span><span id="message">这是管理员的信息</span>
+                  </span><span id="author-name" type="moderator">4Shain</span><span id="message">这是管理员的信息</span>
                 </div>
               </yt-live-chat-text-message-renderer>
               <yt-live-chat-text-message-renderer author-type="member">
                 <div id="author-photo"></div>
                 <div id="content">
-                  <span id="timestamp">12:00</span><span id="author-badges">
+                  <span id="timestamp">12:00 PM</span><span id="author-badges">
                     <yt-live-chat-author-badge-renderer type="member"></yt-live-chat-author-badge-renderer>
-                  </span><span id="author-name" type="member">Munra1to</span><span id="message" type="member">这是会员的信息</span>
+                  </span><span id="author-name" type="member">5Shain</span><span id="message" type="member">这是会员的信息</span>
                 </div>
               </yt-live-chat-text-message-renderer>
               <yt-live-chat-text-message-renderer>
                 <div id="author-photo"></div>
                 <div id="content">
-                  <span id="timestamp">12:00</span><span id="author-name">DD</span><span id="message">这是一般路过的信息</span>
+                  <span id="timestamp">12:00 PM</span><span id="author-name">DD</span><span id="message">这是一般路过的信息</span>
                 </div>
               </yt-live-chat-text-message-renderer>
               <yt-live-chat-legacy-paid-message-renderer>
@@ -598,7 +598,7 @@
               <yt-live-chat-text-message-renderer>
                 <div id="author-photo"></div>
                 <div id="content">
-                  <span id="timestamp">12:00</span><span id="author-name">用户名</span><span id="message">春眠不觉晓，处处闻啼鸟。夜来风雨声，
+                  <span id="timestamp">12:00 PM</span><span id="author-name">用户名</span><span id="message">春眠不觉晓，处处闻啼鸟。夜来风雨声，
                     花落知多少。
                   </span>
                 </div>
@@ -614,24 +614,21 @@
                 <div id="header" style="background-color: rgba(208,0,0,1);">
                   <div id="author-photo"></div>
                   <div id="header-content">
-                    <div id="author-name">绊爱厨</div>
+                    <div id="author-name">DD</div>
                     <div id="purchase-amount">赠送 小电视 × 2</div>
                   </div>
-                </div>
-                <div id="content" style="background-color: rgba(230,33,23,1);">
-                  <div id="message" dir="auto">但实际上下面这段文字并不会在Bilibili中被显示出来</div>
                 </div>
               </yt-live-chat-paid-message-renderer>
               <yt-live-chat-paid-message-renderer>
                 <div id="header" style="background-color: rgba(0,184,212,1);">
                   <div id="author-photo"></div>
                   <div id="header-content">
-                    <div id="author-name">xxxxxx</div>
-                    <div id="purchase-amount">赠送 DD × 1</div>
+                    <div id="author-name">DD</div>
+                    <div id="purchase-amount">¥100</div>
                   </div>
                 </div>
                 <div id="content" style="background-color: rgba(0,229,255,1);">
-                  <div id="message" dir="auto">但实际上下面这段文字并不会在Bilibili中被显示出来+1</div>
+                  <div id="message" dir="auto">醒目留言样例</div>
                 </div>
               </yt-live-chat-paid-message-renderer>
             </yt-live-chat-item-list-renderer>
@@ -1130,7 +1127,7 @@
         if (isChecked(id)) {
           return 'display: inline !important;'
         }
-        return '';
+        return 'display: none !important;';
       },
       'show-badges': function (id) {
         if (!isChecked(id)) {

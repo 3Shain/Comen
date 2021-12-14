@@ -1,7 +1,7 @@
 <p class="in">Produced by 3Shain</p>
 <div id="cover">
-    <h1>COMEN</h1>
-    <p>[新建"浏览器(源)"] - [复制生成链接到"URL"] - [完成]</p>
+    <img id="logo" src="/assets/logo_solid.png"/>
+    <h1 class="in">COMEN</h1>
     <div id="platforms">
         <div class="icon-button acfun" [ngClass]="{'selected':(platform$|ngrxPush)=='acfun'}"
             (click)="setPlatform('acfun')">
@@ -39,14 +39,19 @@
             </svg>
         </div>
     </div>
-    <div>
-        <span>直播间号</span>
-        <input [formControl]="roomId">
-    </div>
-    <div>
-        <span>生成链接</span>
-        <input (click)="clickLink($event)" class="generate-link" [value]="generatedLink|ngrxPush">
+    <div id="form">
+        <mat-form-field appearance="outline">
+            <mat-label>直播间号</mat-label>
+            <input matInput [formControl]="roomId">
+            <!-- <mat-hint>Hint</mat-hint> -->
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>生成链接</mat-label>
+            <input matInput (click)="clickLink($event)" class="generate-link" [value]="generatedLink|ngrxPush">
+            <mat-icon matSuffix>content_copy</mat-icon>
+            <mat-hint>单击复制到剪贴板</mat-hint>
+          </mat-form-field>
     </div>
     <p></p>
-    <a href="https://vercel.com?utm_source=miriko-ch&utm_campaign=oss" target="_blank"><img src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg" /></a>
+    <a *ngIf="comenEnvironment=='vercel'" href="https://vercel.com?utm_source=miriko-ch&utm_campaign=oss" target="_blank"><img src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg" /></a>
 </div>

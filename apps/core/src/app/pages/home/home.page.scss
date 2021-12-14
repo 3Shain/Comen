@@ -52,28 +52,38 @@
     align-items: center;
     justify-content: center;
 
+    &>#logo {
+        height: 128px;
+    }
+
     &>#platforms {
         display: flex;
     }
 
+    &>#form {
+        width: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        &>*{
+
+        width: 500px;
+        }
+    }
+
     .generate-link {
         cursor: pointer;
-        border-radius: 5px;
-        padding: 10px 16px;
+        // border-radius: 5px;
+        // padding: 10px 16px;
         color: #555;
-        border: 1px #cccccc solid;
+        // border: 1px #cccccc solid;
         font-variant-ligatures: none;
         font-family: "Fira Mono", "Andale Mono", "Consolas", monospace;
         letter-spacing: 0px;
         display: inline-block;
-        width: 400px;
-        line-height: 24px;
+        // width: 400px;
+        // line-height: 24px;
         transition: background-color 0.5s ease;
         user-select: none;
-        
-
-        &:hover {
-            background-color: #eaebec;
-        }
     }
 }
