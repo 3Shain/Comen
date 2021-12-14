@@ -19,6 +19,9 @@ export class HomePage implements OnInit, OnDestroy {
     roomId = new FormControl(localStorage.getItem('roomId') ?? '123456');
     roomIdSubscription: Subscription;
 
+    comenEnvironment = COMEN_ENVIRONMENT ?? '';
+
+
     generatedLink = combineLatest([this.platform$, this.roomId.valueChanges.pipe(startWith(this.roomId.value))]).pipe(
         map(([platform, id]) => {
             return `${window.location.origin}/${platform}/${id}`

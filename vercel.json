@@ -17,6 +17,10 @@
             "use": "@now/static"
         },
         {
+            "src": "/dist/apps/core/assets/fonts/*",
+            "use": "@now/static"
+        },
+        {
             "src": "/dist/apps/core/*",
             "use": "@now/static"
         }
@@ -36,6 +40,10 @@
         {
             "src": "/css4obs",
             "dest": "/dist/apps/core/assets/css4obs/index.html"
+        },
+        {
+            "src": "/assets/fonts/(.*)",
+            "dest": "/dist/apps/core/assets/fonts/$1"
         },
         {
             "src": "/assets/(.*)",
