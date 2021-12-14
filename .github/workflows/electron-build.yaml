@@ -43,5 +43,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build-windows
-          path: dist/executables/win-unpacked
+          path: dist/executables/Comen.exe
           

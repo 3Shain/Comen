@@ -85,6 +85,7 @@
     "ngx-color": "7.0.0",
     "pako": "^2.0.2",
     "pg": "^8.5.1",
+    "portfinder": "^1.0.28",
     "proper-lockfile": "^4.1.2",
     "protobufjs": "^6.10.2",
     "react": "^17.0.2",

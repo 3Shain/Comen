@@ -6,12 +6,13 @@ import { join, resolve } from 'path';
 async function initService() {
   await bootstrapBackendCore({
     dev: !environment.production,
-    frontendPath: join(resolve(__dirname), '..', 'core') // core: frontendProject
+    frontendPath: join(resolve(__dirname), '..', 'core'), // core: frontendProject
   });
 }
 
-function ready() {
+let currentMainWindow: BrowserWindow | null = null;
 
+function ready() {
   const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
   const width = Math.min(1400, workAreaSize.width || 1400);
   const height = Math.min(960, workAreaSize.height || 960);
@@ -22,16 +23,17 @@ function ready() {
     webPreferences: {
       contextIsolation: true,
       backgroundThrottling: false,
-      devTools: !environment.production
-    }
+      devTools: !environment.production,
+    },
   });
+  currentMainWindow = mainWindow;
   mainWindow.setMenu(null);
   mainWindow.center();
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
   mainWindow.once('closed', () => {
-    //todo anlahukeba
+    currentMainWindow = null;
   });
 
   if (!app.isPackaged) {
@@ -42,7 +44,6 @@ function ready() {
 }
 
 async function main() {
-
   await initService();
 
   app.on('window-all-closed', () => {
@@ -56,9 +57,10 @@ async function main() {
   });
 
   app.on('activate', () => {
-    ready();
+    if (currentMainWindow === null) {
+      ready();
+    }
   });
-
 }
 
 main();

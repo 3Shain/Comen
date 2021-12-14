@@ -12,7 +12,8 @@
     "icon": "assets/icon.png",
     "target": [
       "portable"
-    ]
+    ],
+    "artifactName": "${productName}.${ext}"
   },
   "nsis": {
     "oneClick": false,
