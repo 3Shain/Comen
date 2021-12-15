@@ -9,6 +9,7 @@ export type ComenAddonMetadata = {
     name: string;
     displayName: string;
     editable: boolean;
+    description: string;
     configuration: ComenAddonConfiguration;
 };
 

@@ -15,7 +15,7 @@ import {
     OverlayInfo,
     SourceInfo,
 } from './definations';
-// import { preloadDelta } from '@comen/delta';
+import { preloadDelta } from '@comen/delta';
 
 type LazyLoadStaticCallback = () => Promise<NgModuleFactory<any> | Type<any>>;
 
@@ -38,13 +38,13 @@ export class LookupService {
                 );
             },
         },
-        // {
-        //     name: 'delta',
-        //     displayName: '评论栏 v2',
-        //     icon: '/assets/icon_gamma.png',
-        //     version: '0.0.0',
-        //     preload: preloadDelta
-        // },
+        {
+            name: 'delta',
+            displayName: '评论栏 v2',
+            icon: '/assets/icon_gamma.png',
+            version: '0.0.0',
+            preload: preloadDelta
+        },
     ];
 
     readonly BUILT_IN_SOURCE: SourceInfo[] = [

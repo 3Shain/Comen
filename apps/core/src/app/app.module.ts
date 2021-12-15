@@ -8,6 +8,7 @@ import { DebugGuard } from './addon/debug.guard';
 import { AppComponent } from './app.component';
 import { CompatibleRoutes } from './compatible.guard';
 import { FileModule } from './file';
+import { RedirectGuard } from './redirect.guard';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { FileModule } from './file';
     RouterModule.forRoot([
       {
         path: '',
+        canActivate: [RedirectGuard],
         pathMatch: 'full',
         loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
       },
@@ -61,7 +63,7 @@ import { FileModule } from './file';
       }
     ])
   ],
-  providers: [CompatibleRoutes],
+  providers: [CompatibleRoutes, RedirectGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule {

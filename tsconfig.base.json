@@ -29,7 +29,6 @@
       ],
       "@comen/common": ["libs/common/src/index.ts"],
       "@comen/editor": ["libs/editor/src/index.ts"],
-      "@comen/dogfood": ["libs/dogfood/src/index.ts"],
       "@comen/delta": ["libs/delta/src/index.ts"]
     }
   },

@@ -1,7 +1,7 @@
 import { EditorAssetStorage } from "@comen/editor";
 import { nanoid } from 'nanoid';
 
-const MAX_STORAGE_SIZE = 2 * 1024 * 1024;
+const MAX_STORAGE_SIZE = 20 * 1024 * 1024;
 
 export class InMemoryStorage implements EditorAssetStorage {
 

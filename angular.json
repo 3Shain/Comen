@@ -39,7 +39,8 @@
               "date-fns",
               "react",
               "react-dom"
-            ]
+            ],
+            "webWorkerTsConfig": "apps/core/tsconfig.worker.json"
           },
           "configurations": {
             "production": {
@@ -471,27 +472,6 @@
           "outputs": ["coverage/apps/electron-app"],
           "options": {
             "jestConfig": "apps/electron-app/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "dogfood": {
-      "root": "libs/dogfood",
-      "sourceRoot": "libs/dogfood/src",
-      "projectType": "library",
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/dogfood/**/*.ts"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/dogfood"],
-          "options": {
-            "jestConfig": "libs/dogfood/jest.config.js",
             "passWithNoTests": true
           }
         }

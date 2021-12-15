@@ -30,7 +30,7 @@ type PlatformBase = {
 }
 
 type BaseTextMessage = {
-    avatar: string | Blob;
+    avatar: string;
     username: string;
 
     // extensions

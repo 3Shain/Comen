@@ -1,32 +1,39 @@
 import { OverlayModule } from '@angular/cdk/overlay';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ConditionPopoverComponent } from './config-plane/condition-popover/condition-popover.component';
-import { ConditionPopoverDirective } from './config-plane/condition-popover/condition-popover.directive';
 import { ConfigBlockComponent } from './config-plane/config-block/config-block.component';
-import { ConfigConditionComponent } from './config-plane/config-condition/config-condition.component';
 import { ConfigPlaneComponent } from './config-plane/config-plane.component';
 import { ControlsModule } from './controls/controls.module';
 import { EditorComponent } from './editor.component';
-import { ElementTreeNodeDirective } from './element-tree-plane/element-tree-node.directive';
-import { ElementTreePlaneComponent } from './element-tree-plane/element-tree-plane.component';
 import { MockMessagePlaneComponent } from './mock-message-plane/mock-message-plane.component';
 import { MockMessageEditDialogComponent } from './mock-message-plane/mock-message-edit-dialog/mock-message-edit-dialog.component';
+
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
     declarations: [
         EditorComponent,
-        ElementTreePlaneComponent,
-        ElementTreeNodeDirective,
         ConfigBlockComponent,
-        ConfigConditionComponent,
         ConfigPlaneComponent,
-        ConditionPopoverComponent,
-        ConditionPopoverDirective,
+        // ConditionPopoverComponent,
+        // ConditionPopoverDirective,
         MockMessagePlaneComponent,
         MockMessageEditDialogComponent,
     ],
@@ -34,10 +41,25 @@ import { MockMessageEditDialogComponent } from './mock-message-plane/mock-messag
         CommonModule,
         ControlsModule,
         OverlayModule,
+        DragDropModule,
         FlexLayoutModule,
         ReactiveFormsModule,
         ReactiveComponentModule,
-        FontAwesomeModule
+        FontAwesomeModule,
+        // mat controls
+        MatButtonModule,
+        MatSliderModule,
+        MatInputModule,
+        MatButtonToggleModule,
+        MatSlideToggleModule,
+        MatFormFieldModule,
+        MatExpansionModule,
+        MatIconModule,
+        MatMenuModule,
+        MatChipsModule,
+        MatDialogModule,
+        MatListModule,
+        MatCardModule,
     ],
     exports: [EditorComponent],
 })

@@ -14,6 +14,7 @@ import { RadiusControlComponent } from './radius-control/radius-control.componen
 import { BackgroundControlComponent } from './background-control/background-control.component';
 import { DisplayControlComponent } from './display-control/display-control.component';
 import { ShadowControlComponent } from './shadow-control/shadow-control.component';
+import { MonacoControlComponent } from './monaco-control/monaco-control.component';
 
 @NgModule({
     declarations: [
@@ -26,7 +27,8 @@ import { ShadowControlComponent } from './shadow-control/shadow-control.componen
         RadiusControlComponent,
         BackgroundControlComponent,
         DisplayControlComponent,
-        ShadowControlComponent
+        ShadowControlComponent,
+        MonacoControlComponent,
     ],
     imports: [
         ReactiveComponentModule,
@@ -45,7 +47,8 @@ import { ShadowControlComponent } from './shadow-control/shadow-control.componen
         RadiusControlComponent,
         BackgroundControlComponent,
         DisplayControlComponent,
-        ShadowControlComponent
+        ShadowControlComponent,
+        MonacoControlComponent,
     ]
 })
 export class ControlsModule {

@@ -31,8 +31,9 @@ export class GammaModule {
     entry = GammaApp;
     metadata = {
         name: 'gamma',
-        displayName: 'GAMMA',
-        editable: false,
+        displayName: '评论栏-γ型',
+        description: '能够兼容youtube样式表的评论栏',
+        editable: true,
         configuration: COMMENT_CONFIGURATION,
     };
 }

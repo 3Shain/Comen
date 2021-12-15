@@ -1,7 +1,7 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Overlay } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Component, ElementRef, HostListener, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SafeAny } from '@comen/common';
 import { ColorEvent } from 'ngx-color';
@@ -76,9 +76,11 @@ import { take } from 'rxjs/operators';
     ])
   ]
 })
-export class ColorControlComponent implements ControlValueAccessor {
+export class ColorControlComponent implements ControlValueAccessor, OnChanges {
 
   @ViewChild('temp') temp: TemplateRef<SafeAny>;
+
+  @Input() value: string;
 
   currentColor: BehaviorSubject<string> = new BehaviorSubject('#cccccc');
 
@@ -143,6 +145,12 @@ export class ColorControlComponent implements ControlValueAccessor {
   touchFn: SafeAny;
   registerOnTouched(fn: SafeAny): void {
     this.touchFn = fn;
+  }
+
+  ngOnChanges(simpleChanges: SimpleChanges) {
+    if(simpleChanges['value']){
+      this.currentColor.next(simpleChanges['value'].currentValue);
+    }
   }
 
 }

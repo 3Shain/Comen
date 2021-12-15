@@ -2,7 +2,6 @@ import { KeyValue } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ConfigurationSection, PropertySchema, SafeAny } from '@comen/common';
-import { faRemoveFormat } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'comen-config-block',

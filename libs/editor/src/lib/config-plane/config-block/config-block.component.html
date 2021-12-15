@@ -7,10 +7,12 @@
         </label>
         <div [ngSwitch]="prop.value['type']">
             <ng-container *ngSwitchCase="'text'">
-                <input [formControlName]="prop.key">
+                <input matInput [formControlName]="prop.key">
             </ng-container>
             <ng-container *ngSwitchCase="'number'">
-                <input type="number" [formControlName]="prop.key">
+                <mat-form-field>
+                    <input matInput type="number" [formControlName]="prop.key">
+                </mat-form-field>
             </ng-container>
             <ng-container *ngSwitchCase="'color'">
                 <comen-color-control [formControlName]="prop.key"></comen-color-control>
@@ -22,7 +24,7 @@
                 <comen-range-control [formControlName]="prop.key"></comen-range-control>
             </ng-container>
             <ng-container *ngSwitchCase="'switch'">
-                <label nz-checkbox [formControlName]="prop.key">{{prop.value['extra'].description}}</label>
+                <mat-slide-toggle [formControlName]="prop.key">{{prop.value['extra'].description}}</mat-slide-toggle>
             </ng-container>
             <ng-container *ngSwitchCase="'font'">
                 <comen-font-control [formControlName]="prop.key"></comen-font-control>
@@ -37,7 +39,10 @@
                 <comen-shadow-control [formControlName]="prop.key"></comen-shadow-control>
             </ng-container>
             <ng-container *ngSwitchCase="'list'">
-
+                <mat-form-field>
+                    <mat-chip-list #chipList [formControlName]="prop.key"></mat-chip-list>
+                    <input [matChipInputFor]="chipList">
+                </mat-form-field>
             </ng-container>
             <ng-container *ngSwitchCase="'position-offset'">
 
@@ -45,7 +50,15 @@
         </div>
     </div>
     <div class="control">
-        <button class="cm full-width">添加属性</button>
+        <button mat-stroked-button color="primary" [disabled]="allVisiable" [matMenuTriggerFor]="menu">
+            添加属性
+        </button>
+        <mat-menu #menu="matMenu">
+
+            <button mat-menu-item *ngFor="let prop of _invisibleProps|keyvalue:noorder;trackBy trackFn">
+                {{prop.value['displayName']}}
+            </button>
+        </mat-menu>
     </div>
 </ng-container>
 <!-- Add property -->

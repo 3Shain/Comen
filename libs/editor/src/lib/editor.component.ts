@@ -1,23 +1,19 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, Inject, Input, Optional } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import {
+    ComenAddonMetadata,
     ComenAddonConfiguration,
     ComenEnvironmentHost,
     ConfigurationSection,
     SafeAny,
 } from '@comen/common';
-import { Action, effect, mut } from 'kairo';
-import {
-    EventStream,
-    stream,
-    task,
-    ControlStatements as cs,
-} from '@kairo/concurrency';
+import { Action, injected, mut } from 'kairo';
 import { WithKairo } from '@kairo/angular';
 import { merge } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { EditorEnvironmentHost } from './editor.host';
 import { generateCode } from './variant/compiler';
+import { COMEN_ADDON_METADATA, EditorRealtimeMessageProvider, EDITOR_REALTIME_MESSAGE_PROVIDER } from './providers';
 
 @WithKairo()
 @Component({
@@ -37,53 +33,33 @@ export class EditorComponent {
     adjustments = this.fb.group({
         width: [600],
         height: [800],
-        background: ['#666666'],
+        background: ['#888888'],
         grid: [false],
     });
 
-    @Input() configuration: ComenAddonConfiguration;
-    @Input() elementView: HTMLElement = undefined;
-
+    readonly metadata: ComenAddonMetadata;
+    readonly configuration: ComenAddonConfiguration;
     readonly formGroup: FormGroup;
-    readonly currentConfigSection: string;
-    readonly currentConfig: ConfigurationSection;
-    readonly sHeight = 700;
-    readonly setCurrentConfigSection: Action<string>;
-    readonly onmouseup: Action<any>;
-    readonly onmousemove: Action<any>;
-    readonly startDrag: Action<any>;
 
     constructor(
         private fb: FormBuilder,
-        @Inject(ComenEnvironmentHost) private host: EditorEnvironmentHost
+        @Inject(ComenEnvironmentHost) private host: EditorEnvironmentHost,
+        @Inject(EDITOR_REALTIME_MESSAGE_PROVIDER) @Optional() public realtimeMessageProvider?: EditorRealtimeMessageProvider
     ) {}
-
+    
     ngSetup() {
         /** resizable */
 
-        const {
-            position: sHeight,
-            listenResizing: startDrag,
-        } = useVerticalDraggable(
-            700,
-            fromEvent(window, 'mouseup'),
-            fromEvent(window, 'mousemove'),
-            200
-        );
+        const metadata = injected(COMEN_ADDON_METADATA);
+
+        const configuration = metadata.configuration;
 
         /** config */
-        const [currentConfigSection, setCurrentConfigSection] = mut(
-            Object.keys(this.configuration.sections)[0]
-        ); // TODO: make sure length > 0
-
-        const currentConfig = currentConfigSection.map(
-            (x) => this.configuration.sections[x]
-        );
 
         /** form */
         const formGroup = this.fb.group(
             Object.fromEntries(
-                Object.entries(this.configuration.sections).map(
+                Object.entries(configuration.sections).map(
                     ([key, section]) => {
                         return [
                             key,
@@ -111,33 +87,10 @@ export class EditorComponent {
         });
 
         return {
-            sHeight,
-            currentConfigSection,
             formGroup,
-            currentConfig,
-            setCurrentConfigSection,
-            startDrag,
+            configuration,
+            metadata
         };
-    }
-
-    onTreeHover(selector: string) {
-        clearMasks();
-        if (selector != null && this.elementView) {
-            const viewport = this.elementView.getBoundingClientRect();
-            this.elementView.querySelectorAll(selector).forEach((_) => {
-                createMask(_, viewport);
-            });
-        }
-    }
-
-    onTreeLeave() {
-        clearMasks();
-    }
-
-    onSectionClick(section: string) {
-        if (section != this.currentConfigSection) {
-            this.setCurrentConfigSection(section);
-        }
     }
 
     importWorkspace(workspace: EditorWorkspace) {
@@ -202,6 +155,16 @@ export class EditorComponent {
             debounceTime(_debounceTime)
         );
     }
+
+    ngAfterViewInit() {
+        // console.log('wtf>');
+        // this.realtimeMessageProvider!.connect({
+        //     source: 'bilibili',
+        //     channel: 545
+        // }).subscribe(x=>{
+        //     this.host.emitMessage(x);
+        // })
+    }
 }
 
 export interface EditorWorkspace {
@@ -211,82 +174,4 @@ export interface EditorWorkspace {
     };
     mocks: {};
     values: SafeAny;
-}
-
-function createMask(target: Element, viewport: DOMRect) {
-    const rect = target.getBoundingClientRect();
-    if (rect.top < viewport.top || rect.bottom > viewport.bottom) {
-        return;
-    }
-    const hObj = document.createElement('div');
-    hObj.className = 'highlight-wrap';
-    hObj.style.position = 'absolute';
-    hObj.style.top = rect.top + 'px';
-    hObj.style.width = rect.width + 'px';
-    hObj.style.height = rect.height + 'px';
-    hObj.style.left = rect.left + 'px';
-    hObj.style.backgroundColor = '#a0c5e8';
-    hObj.style.opacity = '0.5';
-    hObj.style.cursor = 'default';
-    hObj.style.pointerEvents = 'none';
-    //hObj.style.WebkitTransition='top 0.2s';
-    document.body.appendChild(hObj);
-}
-
-function clearMasks() {
-    const hwrappersLength = document.getElementsByClassName('highlight-wrap')
-        .length;
-    const hwrappers = document.getElementsByClassName('highlight-wrap');
-    if (hwrappersLength > 0) {
-        for (let i = hwrappersLength - 1; i >= 0; i--) {
-            hwrappers[i].remove();
-        }
-    }
-}
-
-function useVerticalDraggable(
-    initial: number,
-    mouseup: EventStream<MouseEvent>,
-    mousemove: EventStream<MouseEvent>,
-    minimum: number
-) {
-    const [position, setPosition] = mut(initial);
-
-    const listenResizing = task(function* (e: {
-        clientX: number;
-        clientY: number;
-    }) {
-        let y = position.current;
-        let lastMv = e;
-        yield* cs.loop(
-            function* () {
-                yield* cs.select
-                    .case(mousemove, function* (mv) {
-                        y += mv.clientY - lastMv.clientY;
-                        lastMv = mv;
-                        if (y < minimum) yield* cs.break();
-                        setPosition(y);
-                    })
-                    .case(mouseup, function* () {
-                        yield* cs.break();
-                    });
-            }
-        );
-    });
-
-    return {
-        listenResizing,
-        position,
-    };
-}
-
-function fromEvent<T>(obj: GlobalEventHandlers, event: string) {
-    const [e, emit] = stream<T>();
-
-    effect(() => {
-        obj.addEventListener<any>(event, emit);
-        return () => obj.removeEventListener<any>(event, emit);
-    });
-
-    return e;
 }

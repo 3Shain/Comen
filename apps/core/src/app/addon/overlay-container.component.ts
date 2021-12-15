@@ -38,6 +38,7 @@ export class OverlayContainerComponent {
         const htmlElement = root.appendChild(document.createElement('html'));
         htmlElement.style.height = '100%';
         htmlElement.style.overflow = 'hidden';
+        htmlElement.lang = 'en'; // TODO
         htmlElement.appendChild(
             document.createElement('head')
         );

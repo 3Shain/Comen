@@ -32,6 +32,7 @@ export class AddonService {
             {
                 name: 'null',
                 displayName: 'N/A',
+                description: '似乎有什么出错了🤔',
                 editable: false,
                 configuration: {
                     displayName: 'N/A',

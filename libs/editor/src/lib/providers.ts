@@ -1,5 +1,6 @@
 import { InjectionToken } from '@angular/core';
-import { Message, SafeAny } from '@comen/common';
+import { ComenAddonConfiguration, ComenAddonMetadata, Message, SafeAny } from '@comen/common';
+import { Identifier } from 'kairo';
 import { Observable } from 'rxjs';
 
 export interface EditorRealtimeMessageProvider {
@@ -19,3 +20,5 @@ export interface EditorAssetStorage {
 }
 
 export const EDITOR_ASSET_STORAGE = new InjectionToken<EditorAssetStorage>('editor asset storage');
+
+export const COMEN_ADDON_METADATA = Identifier.of<ComenAddonMetadata>("ComenAddonMetadata");

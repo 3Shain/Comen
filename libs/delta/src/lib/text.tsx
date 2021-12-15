@@ -1,30 +1,21 @@
-import { RichText } from '@comen/common';
-import { withKairo } from '@kairo/react';
+import { RichText, TextMessage } from '@comen/common';
 import React from 'react';
 
-interface TextProps {
-    content: string | RichText;
-    username: string;
-    avatar: string;
-}
-
-export default withKairo<TextProps>(({ avatar, username, content }) => {
-    return () => (
-        <div id="text-message">
-            <div id="avatar">
-                <div>
-                    <img
-                        style={{
-                            height: '24px',
-                            width: '24px',
-                        }}
-                        src={avatar}
-                    />
-                </div>
+export default ({avatar,username,content}:TextMessage) => (
+    <div id="text-message">
+        <div id="avatar">
+            <div>
+                <img
+                    style={{
+                        height: '24px',
+                        width: '24px',
+                    }}
+                    src={avatar as string}
+                />
             </div>
-            <div id="user">{username}</div>
-            <div></div>
-            <div id="content">{content}</div>
         </div>
-    );
-});
+        <div id="user">{username}</div>
+        <div></div>
+        <div id="content">{content}</div>
+    </div>
+)
