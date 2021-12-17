@@ -1,11 +1,9 @@
-import { NgModule } from "@angular/core";
-import { AcfunSource } from "./acfun";
+import { NgModule } from '@angular/core';
+import { AcfunSource } from './acfun';
 
 @NgModule({
-    providers: [
-        AcfunSource
-    ]
+  providers: [AcfunSource],
 })
 export class AcfunSourceModule {
-    source = AcfunSource;
+  source = AcfunSource;
 }

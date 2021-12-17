@@ -5,27 +5,20 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   selector: 'comen-background-control',
   templateUrl: './background-control.component.html',
   styleUrls: ['./background-control.component.scss'],
-  providers:[
+  providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: BackgroundControlComponent,
-      multi: true
-    }
-  ]
+      multi: true,
+    },
+  ],
 })
 export class BackgroundControlComponent implements ControlValueAccessor {
+  constructor() {}
 
-  constructor() { }
+  writeValue() {}
 
-  writeValue(){
+  registerOnTouched() {}
 
-  }
-
-  registerOnTouched(){
-
-  }
-
-  registerOnChange(){
-    
-  }
+  registerOnChange() {}
 }

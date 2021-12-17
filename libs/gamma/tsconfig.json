@@ -11,6 +11,6 @@
     }
   ],
   "angularCompilerOptions": {
-      "fullTemplateTypeCheck": true
+    "fullTemplateTypeCheck": true
   }
 }

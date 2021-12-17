@@ -11,7 +11,7 @@ import { environment } from '../environments/environment';
 export class RedirectGuard implements CanActivate {
   constructor(private router: Router) {}
   async canActivate(route: ActivatedRouteSnapshot): Promise<UrlTree | boolean> {
-    if (COMEN_ENVIRONMENT === 'vercel'||!environment.production) {
+    if (COMEN_ENVIRONMENT === 'vercel' || !environment.production) {
       return true;
     }
     return this.router.createUrlTree(['/', 'edit'], {

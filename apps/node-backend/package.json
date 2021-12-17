@@ -11,7 +11,14 @@
     "name": "3Shain"
   },
   "description": "Comment box rendered in html5 for live stream",
-  "keywords": ["bilibili","acfun","youtube","livechat","comen","comment"],
+  "keywords": [
+    "bilibili",
+    "acfun",
+    "youtube",
+    "livechat",
+    "comen",
+    "comment"
+  ],
   "dependencies": {
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",

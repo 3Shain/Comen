@@ -11,9 +11,7 @@ import { FileModule } from './file';
 import { RedirectGuard } from './redirect.guard';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserAnimationsModule,
     HttpClientModule,
@@ -24,47 +22,54 @@ import { RedirectGuard } from './redirect.guard';
         path: '',
         canActivate: [RedirectGuard],
         pathMatch: 'full',
-        loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
+        loadChildren: () =>
+          import('./pages/home/home.module').then((m) => m.HomeModule),
       },
       {
         path: '',
         canActivate: [DebugGuard],
         resolve: {
-          addonInfo: AddonLazyloadResolver
+          addonInfo: AddonLazyloadResolver,
         },
         children: [
           {
             path: 'overlay',
-            loadChildren: () => import('./pages/overlay/overlay.module').then(m => m.OverlayModule)
+            loadChildren: () =>
+              import('./pages/overlay/overlay.module').then(
+                (m) => m.OverlayModule
+              ),
           },
           {
             path: 'edit',
-            loadChildren: () => import('./pages/edit/edit.module').then(m => m.EditModule)
-          }
-        ]
+            loadChildren: () =>
+              import('./pages/edit/edit.module').then((m) => m.EditModule),
+          },
+        ],
       },
       /** (bilichat) compatible routes  */
       {
         path: 'gkd/:id',
         canActivate: [CompatibleRoutes],
-        children: []
-      }, {
+        children: [],
+      },
+      {
         path: 'alpha/:id',
         canActivate: [CompatibleRoutes],
-        children: []
-      }, {
+        children: [],
+      },
+      {
         path: 'bilibili/:id',
         canActivate: [CompatibleRoutes],
-        children: []
-      }, {
+        children: [],
+      },
+      {
         path: 'acfun/:id',
         canActivate: [CompatibleRoutes],
-        children: []
-      }
-    ])
+        children: [],
+      },
+    ]),
   ],
   providers: [CompatibleRoutes, RedirectGuard],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule {}

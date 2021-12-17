@@ -6,20 +6,20 @@ import { AddonLazyloadResolver } from './addon-lazyload.resolve';
 import { OverlayContainerComponent } from './overlay-container.component';
 
 @NgModule({
-    declarations: [OverlayContainerComponent],
-    imports: [],
-    exports: [OverlayContainerComponent]
+  declarations: [OverlayContainerComponent],
+  imports: [],
+  exports: [OverlayContainerComponent],
 })
 export class AddonMoudle {
-    static forRoot(): ModuleWithProviders<AddonMoudle> {
-        return {
-            ngModule: AddonMoudle,
-            providers: [
-                AddonService,
-                AddonLazyloadResolver,
-                DebugGuard,
-                LookupService
-            ]
-        }
-    }
+  static forRoot(): ModuleWithProviders<AddonMoudle> {
+    return {
+      ngModule: AddonMoudle,
+      providers: [
+        AddonService,
+        AddonLazyloadResolver,
+        DebugGuard,
+        LookupService,
+      ],
+    };
+  }
 }

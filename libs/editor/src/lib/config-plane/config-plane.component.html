@@ -1,16 +1,30 @@
 <ng-container [formGroup]="formGroup">
-    <comen-config-block formControlName="default" [sectionSetting]="sectionSetting"></comen-config-block>
-    <!-- Variants -->
-    <mat-accordion>
-        <mat-expansion-panel *ngFor="let control of variantsFormArray.controls;let i = index">
-            <i nz-icon nzType="up" (click)="moveUpVariant(i)"></i><i nz-icon nzType="down" (click)="moveDownVariant(i)"></i>
-            <comen-config-block [formControl]="control.get('properties')" [sectionSetting]="sectionSetting">
-            </comen-config-block>
-        </mat-expansion-panel>
-    </mat-accordion>
-    <!-- Add Variants -->
-    <mat-action-row>
-        <button mat-button color="primary" *ngIf="sectionSetting.variantProperties!=undefined">
-            添加变化</button>
-    </mat-action-row>
+  <comen-config-block
+    formControlName="default"
+    [sectionSetting]="sectionSetting"
+  ></comen-config-block>
+  <!-- Variants -->
+  <mat-accordion>
+    <mat-expansion-panel
+      *ngFor="let control of variantsFormArray.controls; let i = index"
+    >
+      <i nz-icon nzType="up" (click)="moveUpVariant(i)"></i
+      ><i nz-icon nzType="down" (click)="moveDownVariant(i)"></i>
+      <comen-config-block
+        [formControl]="control.get('properties')"
+        [sectionSetting]="sectionSetting"
+      >
+      </comen-config-block>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <!-- Add Variants -->
+  <mat-action-row>
+    <button
+      mat-button
+      color="primary"
+      *ngIf="sectionSetting.variantProperties != undefined"
+    >
+      添加变化
+    </button>
+  </mat-action-row>
 </ng-container>

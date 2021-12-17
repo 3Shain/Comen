@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormBuilder,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 
 @Component({
   selector: 'comen-radius-control',
@@ -9,13 +13,11 @@ import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/f
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: RadiusControlComponent,
-      multi: true
-    }
-  ]
+      multi: true,
+    },
+  ],
 })
 export class RadiusControlComponent implements ControlValueAccessor {
-
-
   mode = this.fb.control('single');
 
   single = this.fb.control(0);
@@ -25,11 +27,11 @@ export class RadiusControlComponent implements ControlValueAccessor {
     value2: [0],
     value3: [0],
     value4: [0],
-    unit: ['px']
+    unit: ['px'],
   });
 
   constructor(private fb: FormBuilder) {
-    this.single.valueChanges.subscribe(v => {
+    this.single.valueChanges.subscribe((v) => {
       this.formGroup.patchValue({
         value1: v,
         value2: v,
@@ -46,7 +48,7 @@ export class RadiusControlComponent implements ControlValueAccessor {
         value2: v.value[1],
         value3: v.value[2],
         value4: v.value[3],
-        unit: v.unit
+        unit: v.unit,
       });
     }
   }
@@ -55,12 +57,10 @@ export class RadiusControlComponent implements ControlValueAccessor {
     this.formGroup.valueChanges.subscribe((v) => {
       callback({
         value: [v.value1, v.value2, v.value3, v.value4],
-        unit: v.unit
+        unit: v.unit,
       });
     });
   }
 
-  registerOnTouched() {
-
-  }
+  registerOnTouched() {}
 }

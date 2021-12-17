@@ -89,12 +89,7 @@ export default withKairo<{}>(() => {
           {$(renderList).map((message) => {
             switch (message.type) {
               case 'text':
-                return (
-                  <Text
-                    key={message['id']}
-                    {...message}
-                  />
-                );
+                return <Text key={message['id']} {...message} />;
               case 'member':
                 return (
                   <Member
@@ -135,20 +130,20 @@ export default withKairo<{}>(() => {
 });
 
 function useFastdom() {
-    const [measure, doMeasure] = stream<void>();
-    const [mutate, doMutate] = stream<void>();
+  const [measure, doMeasure] = stream<void>();
+  const [mutate, doMutate] = stream<void>();
 
-    effect(() => {
-        const rafCallback = () => {
-            doMeasure();
-            doMutate();
-            id = requestAnimationFrame(rafCallback);
-        };
-        let id = requestAnimationFrame(rafCallback);
-        return () => cancelAnimationFrame(id);
-    });
-    return {
-        measure,
-        mutate,
+  effect(() => {
+    const rafCallback = () => {
+      doMeasure();
+      doMutate();
+      id = requestAnimationFrame(rafCallback);
     };
+    let id = requestAnimationFrame(rafCallback);
+    return () => cancelAnimationFrame(id);
+  });
+  return {
+    measure,
+    mutate,
+  };
 }

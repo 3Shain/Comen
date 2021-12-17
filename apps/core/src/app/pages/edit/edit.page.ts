@@ -42,9 +42,9 @@ import { Title } from '@angular/platform-browser';
   const inject = addon.getOverlayAddonMetadata(
     rr.snapshot.queryParams.o ?? 'null'
   ); // TODO: reasonable default selection
- 
+
   return {
-      [COMEN_ADDON_METADATA]: inject
+    [COMEN_ADDON_METADATA]: inject,
   };
 })
 @Component({
@@ -66,11 +66,13 @@ import { Title } from '@angular/platform-browser';
   ],
 })
 // eslint-disable-next-line
-export class EditPage extends ngSetup(()=>{
+export class EditPage
+  extends ngSetup(() => {
     return {
-      addonMetadata: injected(COMEN_ADDON_METADATA)
+      addonMetadata: injected(COMEN_ADDON_METADATA),
     };
-}) implements OnDestroy, EditorRealtimeMessageProvider {
+  })
+  implements OnDestroy, EditorRealtimeMessageProvider {
   overlayContainerElement: HTMLElement = undefined;
 
   @ViewChild('container', { static: true })
@@ -99,8 +101,8 @@ export class EditPage extends ngSetup(()=>{
     private router: Router,
     private title: Title
   ) {
-      super();
-      title.setTitle('编辑器 - 活动 - Comen')
+    super();
+    title.setTitle('编辑器 - 活动 - Comen');
   }
 
   session: {
@@ -111,41 +113,40 @@ export class EditPage extends ngSetup(()=>{
     .overlay!;
 
   ngOnInit() {
-      if (this.session) {
-          // load the file!
-
-      } else {
-          // window.location.pathname = '/'; // TODO this may cause panic?
-          // return;
-      }
-      console.log(this.session);
-      const bootstraped = this.container.bootstrap(this.addonMetadata.name);
-      this.overlayContainerElement = bootstraped.element;
-      this.destroy$.subscribe(() => bootstraped.destroy());
-      // setTimeout(() => {
-      //     if (this.session.data != null) {
-      //         this.editor.importWorkspace(this.session.data.workspace);
-      //     }
-      // }, 0);
+    if (this.session) {
+      // load the file!
+    } else {
+      // window.location.pathname = '/'; // TODO this may cause panic?
+      // return;
+    }
+    console.log(this.session);
+    const bootstraped = this.container.bootstrap(this.addonMetadata.name);
+    this.overlayContainerElement = bootstraped.element;
+    this.destroy$.subscribe(() => bootstraped.destroy());
+    // setTimeout(() => {
+    //     if (this.session.data != null) {
+    //         this.editor.importWorkspace(this.session.data.workspace);
+    //     }
+    // }, 0);
   }
 
   ngAfterViewInit() {
-      return this.editor
-          .workspaceChange(1 * 1000)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((workspaceData) => {
-              console.log(workspaceData);
-              this.session.file.storeData(
-                  {
-                      workspace: workspaceData,
-                  },
-                  {
-                      name: this.overlayInfo.name,
-                      version: this.overlayInfo.version,
-                  }
-              );
-              sessionStorage.setItem('modifying', this.session.file.id);
-          });
+    return this.editor
+      .workspaceChange(1 * 1000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((workspaceData) => {
+        console.log(workspaceData);
+        this.session.file.storeData(
+          {
+            workspace: workspaceData,
+          },
+          {
+            name: this.overlayInfo.name,
+            version: this.overlayInfo.version,
+          }
+        );
+        sessionStorage.setItem('modifying', this.session.file.id);
+      });
   }
 
   ngOnDestroy() {

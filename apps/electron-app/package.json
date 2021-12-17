@@ -23,6 +23,6 @@
     "rxjs": "~6.5.5"
   },
   "devDependencies": {
-    "electron":""
+    "electron": ""
   }
 }

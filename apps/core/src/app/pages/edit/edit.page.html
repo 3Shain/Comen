@@ -1,17 +1,18 @@
-
 <comen-editor #editor="editor">
-    <comen-overlay-container #container="overlayContainer"></comen-overlay-container>
+  <comen-overlay-container
+    #container="overlayContainer"
+  ></comen-overlay-container>
 </comen-editor>
 
 <ng-template #dialogTpl let-css="css" let-url="url" let-size="size">
-    <div id="dialog" [@zoomBigMotion]="'active'">
-        <div id="mock">
-            <comen-mock-obs-dialog [cssInfo]="css" [url]="url" [size]="size">
-                <ng-container #mark></ng-container>
-            </comen-mock-obs-dialog>
-        </div>
-        <div id="info">
-            <h1>一切已就绪！</h1>
-        </div>
+  <div id="dialog" [@zoomBigMotion]="'active'">
+    <div id="mock">
+      <comen-mock-obs-dialog [cssInfo]="css" [url]="url" [size]="size">
+        <ng-container #mark></ng-container>
+      </comen-mock-obs-dialog>
     </div>
+    <div id="info">
+      <h1>一切已就绪！</h1>
+    </div>
+  </div>
 </ng-template>

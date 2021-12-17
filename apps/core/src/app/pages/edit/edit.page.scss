@@ -1,29 +1,29 @@
 :host {
-    display: flex;
-    width: 100vw;
-    height: 100vh; /* weird */
-    flex-direction: column;
+  display: flex;
+  width: 100vw;
+  height: 100vh; /* weird */
+  flex-direction: column;
 
-    background-color: #fafbfc;
+  background-color: #fafbfc;
 
-    & > comen-editor {
-        flex: auto;
-    }
+  & > comen-editor {
+    flex: auto;
+  }
 }
 
 #dialog {
-    background-color: white;
-    display: flex;
-    border-radius: 4px;
-    padding: 16px;
+  background-color: white;
+  display: flex;
+  border-radius: 4px;
+  padding: 16px;
 
-    & > #mock {
-        width: 550px;
-        height: 850px;
-        margin-right: 16px;
-    }
+  & > #mock {
+    width: 550px;
+    height: 850px;
+    margin-right: 16px;
+  }
 
-    & > #info {
-        width: 450px;
-    }
+  & > #info {
+    width: 450px;
+  }
 }

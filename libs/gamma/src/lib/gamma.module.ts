@@ -12,28 +12,28 @@ import { ReactiveComponentModule } from '@ngrx/component';
 import { COMMENT_CONFIGURATION } from './metadata';
 
 @NgModule({
-    declarations: [
-        GammaApp,
-        TextMessageRenderer,
-        PaidMessageRenderer,
-        MembershipItemRenderer,
-        PaidStickerRenderer,
-        TickerSponsorItemRenderer,
-        TickerPaidMessageItemRenderer,
-        TickerPaidStickerItemRenderer,
-    ],
-    imports: [CommonModule, ReactiveComponentModule],
-    providers: [],
-    exports: [GammaApp],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  declarations: [
+    GammaApp,
+    TextMessageRenderer,
+    PaidMessageRenderer,
+    MembershipItemRenderer,
+    PaidStickerRenderer,
+    TickerSponsorItemRenderer,
+    TickerPaidMessageItemRenderer,
+    TickerPaidStickerItemRenderer,
+  ],
+  imports: [CommonModule, ReactiveComponentModule],
+  providers: [],
+  exports: [GammaApp],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class GammaModule {
-    entry = GammaApp;
-    metadata = {
-        name: 'gamma',
-        displayName: '评论栏-γ型',
-        description: '能够兼容youtube样式表的评论栏',
-        editable: true,
-        configuration: COMMENT_CONFIGURATION,
-    };
+  entry = GammaApp;
+  metadata = {
+    name: 'gamma',
+    displayName: '评论栏-γ型',
+    description: '能够兼容youtube样式表的评论栏',
+    editable: true,
+    configuration: COMMENT_CONFIGURATION,
+  };
 }

@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormBuilder,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 import { ComenControlTypes } from '@comen/common';
 
 @Component({
@@ -10,17 +14,16 @@ import { ComenControlTypes } from '@comen/common';
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: OutlineControlComponent,
-      multi: true
-    }
-  ]
+      multi: true,
+    },
+  ],
 })
 export class OutlineControlComponent implements ControlValueAccessor {
-
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder) {}
 
   formGroup = this.fb.group({
     color: ['#ffffff'],
-    width: [0]
+    width: [0],
   });
 
   writeValue(value: ComenControlTypes.Outline) {
@@ -34,5 +37,4 @@ export class OutlineControlComponent implements ControlValueAccessor {
   registerOnTouched() {
     // stub method
   }
-
 }

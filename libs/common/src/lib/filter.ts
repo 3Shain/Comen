@@ -1,4 +1,4 @@
-import { Message } from "./message";
+import { Message } from './message';
 
-export type FilterNextFunction = (msg:Message)=>unknown;
-export type FilterFunction = (next:FilterNextFunction)=>FilterNextFunction;
+export type FilterNextFunction = (msg: Message) => unknown;
+export type FilterFunction = (next: FilterNextFunction) => FilterNextFunction;

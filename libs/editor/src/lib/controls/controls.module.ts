@@ -17,40 +17,38 @@ import { ShadowControlComponent } from './shadow-control/shadow-control.componen
 import { MonacoControlComponent } from './monaco-control/monaco-control.component';
 
 @NgModule({
-    declarations: [
-        ColorControlComponent,
-        MarginControlComponent,
-        FontControlComponent,
-        RangeControlComponent,
-        OutlineControlComponent,
-        BorderControlComponent,
-        RadiusControlComponent,
-        BackgroundControlComponent,
-        DisplayControlComponent,
-        ShadowControlComponent,
-        MonacoControlComponent,
-    ],
-    imports: [
-        ReactiveComponentModule,
-        ReactiveFormsModule,
-        CommonModule,
-        ColorChromeModule,
-        FlexLayoutModule
-    ],
-    exports: [
-        ColorControlComponent,
-        MarginControlComponent,
-        FontControlComponent,
-        RangeControlComponent,
-        OutlineControlComponent,
-        BorderControlComponent,
-        RadiusControlComponent,
-        BackgroundControlComponent,
-        DisplayControlComponent,
-        ShadowControlComponent,
-        MonacoControlComponent,
-    ]
+  declarations: [
+    ColorControlComponent,
+    MarginControlComponent,
+    FontControlComponent,
+    RangeControlComponent,
+    OutlineControlComponent,
+    BorderControlComponent,
+    RadiusControlComponent,
+    BackgroundControlComponent,
+    DisplayControlComponent,
+    ShadowControlComponent,
+    MonacoControlComponent,
+  ],
+  imports: [
+    ReactiveComponentModule,
+    ReactiveFormsModule,
+    CommonModule,
+    ColorChromeModule,
+    FlexLayoutModule,
+  ],
+  exports: [
+    ColorControlComponent,
+    MarginControlComponent,
+    FontControlComponent,
+    RangeControlComponent,
+    OutlineControlComponent,
+    BorderControlComponent,
+    RadiusControlComponent,
+    BackgroundControlComponent,
+    DisplayControlComponent,
+    ShadowControlComponent,
+    MonacoControlComponent,
+  ],
 })
-export class ControlsModule {
-
-}
+export class ControlsModule {}

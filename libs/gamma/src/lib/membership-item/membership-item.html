@@ -1,44 +1,94 @@
 <div id="card" class="style-scope yt-live-chat-membership-item-renderer">
-    <div id="header" class="style-scope yt-live-chat-membership-item-renderer">
-
-        <yt-img-shadow id="author-photo" height="40" width="40"
-            class="style-scope yt-live-chat-membership-item-renderer no-transition" loaded=""
-            style="background-color: transparent;">
-            <img id="img" class="style-scope yt-img-shadow" alt="" height="40" width="40" [src]="message.avatar">
-        </yt-img-shadow>
-        <div id="header-content" class="style-scope yt-live-chat-membership-item-renderer">
-            <div id="header-content-primary-column" class="style-scope yt-live-chat-membership-item-renderer">
-                <div id="header-content-inner-column" class="style-scope yt-live-chat-membership-item-renderer">
-
-                    <yt-live-chat-author-chip class="style-scope yt-live-chat-membership-item-renderer">
-                        <span id="author-name" dir="auto"
-                            class="member style-scope yt-live-chat-author-chip">{{message.username}}<span
-                                id="chip-badges" class="style-scope yt-live-chat-author-chip"></span></span><span
-                            id="chat-badges" class="style-scope yt-live-chat-author-chip">
-                            <yt-live-chat-author-badge-renderer class="style-scope yt-live-chat-author-chip"
-                                aria-label="新会员" type="member" shared-tooltip-text="新会员">
-                                <div id="image" class="style-scope yt-live-chat-author-badge-renderer">
-                                    <!-- <img [src]="message.badge"
+  <div id="header" class="style-scope yt-live-chat-membership-item-renderer">
+    <yt-img-shadow
+      id="author-photo"
+      height="40"
+      width="40"
+      class="style-scope yt-live-chat-membership-item-renderer no-transition"
+      loaded=""
+      style="background-color: transparent"
+    >
+      <img
+        id="img"
+        class="style-scope yt-img-shadow"
+        alt=""
+        height="40"
+        width="40"
+        [src]="message.avatar"
+      />
+    </yt-img-shadow>
+    <div
+      id="header-content"
+      class="style-scope yt-live-chat-membership-item-renderer"
+    >
+      <div
+        id="header-content-primary-column"
+        class="style-scope yt-live-chat-membership-item-renderer"
+      >
+        <div
+          id="header-content-inner-column"
+          class="style-scope yt-live-chat-membership-item-renderer"
+        >
+          <yt-live-chat-author-chip
+            class="style-scope yt-live-chat-membership-item-renderer"
+          >
+            <span
+              id="author-name"
+              dir="auto"
+              class="member style-scope yt-live-chat-author-chip"
+              >{{message.username}}<span
+                id="chip-badges"
+                class="style-scope yt-live-chat-author-chip"
+              ></span></span
+            ><span
+              id="chat-badges"
+              class="style-scope yt-live-chat-author-chip"
+            >
+              <yt-live-chat-author-badge-renderer
+                class="style-scope yt-live-chat-author-chip"
+                aria-label="新会员"
+                type="member"
+                shared-tooltip-text="新会员"
+              >
+                <div
+                  id="image"
+                  class="style-scope yt-live-chat-author-badge-renderer"
+                >
+                  <!-- <img [src]="message.badge"
                                         class="style-scope yt-live-chat-author-badge-renderer" alt="新会员"> -->
-                                </div>
-                            </yt-live-chat-author-badge-renderer>
-                        </span>
-                    </yt-live-chat-author-chip>
-                    <div id="header-primary-text" class="style-scope yt-live-chat-membership-item-renderer">
-                    </div>
                 </div>
-                <div id="header-subtext" class="style-scope yt-live-chat-membership-item-renderer">{{message.itemInfo}}
-                </div>
-            </div>
-            <div id="timestamp" class="style-scope yt-live-chat-membership-item-renderer">
-                {{date | date:'hh:mm a'}}</div>
+              </yt-live-chat-author-badge-renderer>
+            </span>
+          </yt-live-chat-author-chip>
+          <div
+            id="header-primary-text"
+            class="style-scope yt-live-chat-membership-item-renderer"
+          ></div>
         </div>
-
+        <div
+          id="header-subtext"
+          class="style-scope yt-live-chat-membership-item-renderer"
+        >
+          {{message.itemInfo}}
+        </div>
+      </div>
+      <div
+        id="timestamp"
+        class="style-scope yt-live-chat-membership-item-renderer"
+      >
+        {{date | date:'hh:mm a'}}
+      </div>
     </div>
-    <div id="content" class="style-scope yt-live-chat-membership-item-renderer">
-        <div id="message" dir="auto" class="style-scope yt-live-chat-membership-item-renderer">
-        </div>
-        <div id="input-container" class="style-scope yt-live-chat-membership-item-renderer">
-        </div>
-    </div>
+  </div>
+  <div id="content" class="style-scope yt-live-chat-membership-item-renderer">
+    <div
+      id="message"
+      dir="auto"
+      class="style-scope yt-live-chat-membership-item-renderer"
+    ></div>
+    <div
+      id="input-container"
+      class="style-scope yt-live-chat-membership-item-renderer"
+    ></div>
+  </div>
 </div>

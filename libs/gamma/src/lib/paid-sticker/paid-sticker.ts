@@ -9,16 +9,15 @@ import { StickerMessage } from '@comen/common';
   // eslint-disable-next-line
   host: {
     class: 'style-scope yt-live-chat-item-list-renderer',
-    '[style]': 'colorStyle'
+    '[style]': 'colorStyle',
   },
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 // eslint-disable-next-line
 export class PaidStickerRenderer {
-
   @Input() message: StickerMessage;
 
-  constructor(private config: GammaConfigService) { }
+  constructor(private config: GammaConfigService) {}
 
   get colorInfo() {
     return this.config.getColorInfo(this.message.price);

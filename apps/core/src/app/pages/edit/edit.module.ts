@@ -7,22 +7,23 @@ import { EditPage } from './edit.page';
 import { MockObsDialogModule } from './mock-obs-dialog/mock-obs-dialog.module';
 import { RestoreSessionResovler } from './restore.resolver';
 
-
 @NgModule({
-    declarations: [EditPage],
-    imports: [
-        CommonModule,
-        EditorModule,
-        RouterModule.forChild([{
-            path: '',
-            component: EditPage,
-            resolve: {
-                session: RestoreSessionResovler
-            }
-        }]),
-        AddonMoudle,
-        MockObsDialogModule
-    ],
-    providers: [RestoreSessionResovler]
+  declarations: [EditPage],
+  imports: [
+    CommonModule,
+    EditorModule,
+    RouterModule.forChild([
+      {
+        path: '',
+        component: EditPage,
+        resolve: {
+          session: RestoreSessionResovler,
+        },
+      },
+    ]),
+    AddonMoudle,
+    MockObsDialogModule,
+  ],
+  providers: [RestoreSessionResovler],
 })
-export class EditModule { }
+export class EditModule {}

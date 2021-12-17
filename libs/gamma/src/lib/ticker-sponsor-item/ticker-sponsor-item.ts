@@ -10,28 +10,27 @@ import { MemberMessage } from '@comen/common';
   host: {
     class: 'style-scope yt-live-chat-ticker-renderer',
     role: 'button',
-    '[@slideDown]':''
+    '[@slideDown]': '',
   },
-  animations:[
-    SLIDEDOWN
-  ]
+  animations: [SLIDEDOWN],
 })
 // eslint-disable-next-line
 export class TickerSponsorItemRenderer {
-
   @Input() message: MemberMessage;
 
   @ViewChild('container') container: ElementRef<HTMLDivElement>;
 
-  @Input() set status(
-    val: {
-      primary_color: string; // not used
-      secondary_color: string; // not used
-      percent: number
-    }
-  ) {
-    this.container?.nativeElement?.setAttribute('style', `background:linear-gradient(90deg, rgba(15,157,88,1),rgba(15,157,88,1)` +
-      ` ${(1 - val.percent) * 100}%,rgba(11,128,67,1) ${(1 - val.percent)* 100}%,rgba(11,128,67,1));`);
+  @Input() set status(val: {
+    primary_color: string; // not used
+    secondary_color: string; // not used
+    percent: number;
+  }) {
+    this.container?.nativeElement?.setAttribute(
+      'style',
+      `background:linear-gradient(90deg, rgba(15,157,88,1),rgba(15,157,88,1)` +
+        ` ${(1 - val.percent) * 100}%,rgba(11,128,67,1) ${
+          (1 - val.percent) * 100
+        }%,rgba(11,128,67,1));`
+    );
   }
-
 }

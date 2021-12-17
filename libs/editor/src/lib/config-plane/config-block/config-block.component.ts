@@ -1,6 +1,17 @@
 import { KeyValue } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
+import {
+  ControlValueAccessor,
+  FormBuilder,
+  FormGroup,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 import { ConfigurationSection, PropertySchema, SafeAny } from '@comen/common';
 
 @Component({
@@ -8,18 +19,21 @@ import { ConfigurationSection, PropertySchema, SafeAny } from '@comen/common';
   templateUrl: './config-block.component.html',
   styleUrls: ['./config-block.component.scss'],
   providers: [
-    { provide: NG_VALUE_ACCESSOR, useExisting: ConfigBlockComponent, multi: true }
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: ConfigBlockComponent,
+      multi: true,
+    },
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfigBlockComponent implements OnInit, ControlValueAccessor {
-
   allVisiable = false;
   _visibleProps: {
-    [key: string]: PropertySchema
+    [key: string]: PropertySchema;
   } = {};
   _invisibleProps: {
-    [key: string]: PropertySchema
+    [key: string]: PropertySchema;
   } = {};
 
   @Input() sectionSetting: ConfigurationSection;
@@ -30,23 +44,25 @@ export class ConfigBlockComponent implements OnInit, ControlValueAccessor {
 
   constructor(
     private fb: FormBuilder,
-    private changeDetector: ChangeDetectorRef) { }
-
+    private changeDetector: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.propertiesFormGroup = this.fb.group(
-      Object.fromEntries(Object.entries(this.sectionSetting.properties).map(([key, schema]) => {
-        return [key, [schema.defaultValue]];
-      }))
+      Object.fromEntries(
+        Object.entries(this.sectionSetting.properties).map(([key, schema]) => {
+          return [key, [schema.defaultValue]];
+        })
+      )
     );
-    this.addFromControl.valueChanges.subscribe(_ => {
+    this.addFromControl.valueChanges.subscribe((_) => {
       if (_ != null) {
         this._visibleProps[_] = this._invisibleProps[_];
         delete this._invisibleProps[_];
         this.checkAllVisible();
         this.changeDetector.markForCheck();
         this.propertiesFormGroup.patchValue({
-          [_]: this._visibleProps[_].defaultValue
+          [_]: this._visibleProps[_].defaultValue,
         });
         this.addFromControl.setValue(null);
       }
@@ -72,7 +88,7 @@ export class ConfigBlockComponent implements OnInit, ControlValueAccessor {
     delete this._visibleProps[_];
     this.allVisiable = false;
     this.propertiesFormGroup.patchValue({
-      [_]: this._invisibleProps[_].defaultValue
+      [_]: this._invisibleProps[_].defaultValue,
     });
     this.changeDetector.markForCheck();
   }
@@ -91,12 +107,15 @@ export class ConfigBlockComponent implements OnInit, ControlValueAccessor {
   }
 
   registerOnChange(callback: (v: SafeAny) => void) {
-    this.propertiesFormGroup.valueChanges.subscribe(props => {
-      callback(Object.fromEntries(Object.entries(props).filter(([prop]) => {
-        return this._visibleProps[prop] != undefined;
-      })));
+    this.propertiesFormGroup.valueChanges.subscribe((props) => {
+      callback(
+        Object.fromEntries(
+          Object.entries(props).filter(([prop]) => {
+            return this._visibleProps[prop] != undefined;
+          })
+        )
+      );
     });
   }
-  registerOnTouched() {
-  }
+  registerOnTouched() {}
 }

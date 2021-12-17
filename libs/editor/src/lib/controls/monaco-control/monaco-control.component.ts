@@ -35,19 +35,17 @@ export class MonacoControlComponent implements ControlValueAccessor {
   constructor(private fb: FormBuilder) {}
 
   ngAfterViewInit() {
-    // const model = 
+    // const model =
     //   monaco.editor.createModel( ['function x() {', '\tconsole.log("Hello world!");', '}'].join(
     //     '\n'
     //   ),'javascript', monaco.Uri.parse('file:///local.js'));
     // //   model.updateOptions({
-
     // //   });
     // monaco.editor.create(this.host.nativeElement, {
     //   model
     // });
     // console.log(monaco.languages.typescript.javascriptDefaults.getExtraLibs());
     // // monaco.languages.typescript.javascriptDefaults.addExtraLib(`
-    
     // // `,"comen.d.ts");
     // monaco.languages.typescript.javascriptDefaults.addExtraLib(text,"react.d.ts");
   }

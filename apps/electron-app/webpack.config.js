@@ -16,7 +16,12 @@ module.exports = (config, context) => {
 
   // Install additional plugins
   config.plugins = config.plugins || [];
-  config.plugins.push(...extractRelevantNodeModules(outputPath, require(path.resolve(context.options.sourceRoot, "..", "package.json"))));
+  config.plugins.push(
+    ...extractRelevantNodeModules(
+      outputPath,
+      require(path.resolve(context.options.sourceRoot, '..', 'package.json'))
+    )
+  );
 
   return config;
 };
@@ -35,7 +40,11 @@ module.exports = (config, context) => {
  * @returns {Array} An array of Webpack plugins
  */
 function extractRelevantNodeModules(outputPath, basePackageJson) {
-  return [copyLockFile(outputPath), generatePackageJson(basePackageJson), new CleanWebpackPlugin()];
+  return [
+    copyLockFile(outputPath),
+    generatePackageJson(basePackageJson),
+    new CleanWebpackPlugin(),
+  ];
 }
 
 /**
@@ -47,7 +56,12 @@ function extractRelevantNodeModules(outputPath, basePackageJson) {
  */
 function copyLockFile(outputPath) {
   return new CopyPlugin({
-    patterns: [{ from: 'package-lock.json', to: path.join(outputPath, 'package-lock.json') }]
+    patterns: [
+      {
+        from: 'package-lock.json',
+        to: path.join(outputPath, 'package-lock.json'),
+      },
+    ],
   });
 }
 
@@ -65,12 +79,12 @@ function generatePackageJson(basePackageJson) {
   }, {});
   basePackageJson.dependencies = {
     ...dependencies,
-    ...basePackageJson.dependencies
-  }
+    ...basePackageJson.dependencies,
+  };
   delete basePackageJson.dependencies.electron;
   const pathToPackageJson = path.join(__dirname, 'package.json');
   return new GeneratePackageJsonPlugin(basePackageJson, {
     sourcePackageFilenames: [pathToPackageJson],
-    forceWebpackVersion: 'webpack4'
+    forceWebpackVersion: 'webpack4',
   });
 }

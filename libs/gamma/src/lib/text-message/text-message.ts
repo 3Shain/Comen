@@ -9,30 +9,27 @@ import { TextMessage, RichTextMessage } from '@comen/common';
   // eslint-disable-next-line
   host: {
     class: 'style-scope yt-live-chat-item-list-renderer',
-    '[attr.author-type]': 'userType'
-  }
+    '[attr.author-type]': 'userType',
+  },
 })
 // eslint-disable-next-line
 export class TextMessageRenderer {
-
   // to disable angular template type check : type inference is not intelligent enough
   // eslint-disable-next-line
   @Input() message: TextMessage | RichTextMessage | any;
 
   readonly date = new Date();
 
-  constructor(public config:GammaConfigService) {}
+  constructor(public config: GammaConfigService) {}
 
-  get userType(){
-    if(this.isOwner){
+  get userType() {
+    if (this.isOwner) {
       return 'owner';
-    }
-    else if(this.isModerator){
+    } else if (this.isModerator) {
       return 'moderator';
-    }
-    else if(this.isMember){
+    } else if (this.isMember) {
       return 'member';
-    } else{
+    } else {
       return '';
     }
   }
@@ -49,17 +46,17 @@ export class TextMessageRenderer {
     return (this.message.usertype & 4) === 4;
   }
 
-  get isRichtext(){
+  get isRichtext() {
     return this.message.type == 'richtext';
   }
 
-  get richtext(){
+  get richtext() {
     // to disable angular template type check : type inference is not intelligent enough
     // eslint-disable-next-line
     return (this.message as RichTextMessage).richtext as any;
   }
 
-  get platformExtra(){
-    return (this.message as TextMessage).platformUserExtra ?? {} as any;
+  get platformExtra() {
+    return (this.message as TextMessage).platformUserExtra ?? ({} as any);
   }
 }

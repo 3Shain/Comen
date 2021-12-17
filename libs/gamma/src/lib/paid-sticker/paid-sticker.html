@@ -1,28 +1,73 @@
 <div id="card" class="style-scope yt-live-chat-paid-sticker-renderer">
-    <div id="author-info" tabindex="0" class="style-scope yt-live-chat-paid-sticker-renderer">
-        <yt-img-shadow id="author-photo" class="no-transition style-scope yt-live-chat-paid-sticker-renderer" loaded=""
-            style="background-color: transparent;">
-            <img id="img" class="style-scope yt-img-shadow" alt="" width="40" height="40" [src]="message.avatar">
-        </yt-img-shadow>
-        <div id="content" class="style-scope yt-live-chat-paid-sticker-renderer">
-            <span id="timestamp" class="style-scope yt-live-chat-paid-sticker-renderer">{{date | date:'hh:mm'}}</span>
-            <div id="content-primary-column" class="style-scope yt-live-chat-paid-sticker-renderer">
-                <div id="author-name" class="style-scope yt-live-chat-paid-sticker-renderer">
-                    {{message.username}}</div><span id="price-column"
-                    class="style-scope yt-live-chat-paid-sticker-renderer">
-                    <yt-formatted-string id="purchase-amount-chip"
-                        class="style-scope yt-live-chat-paid-sticker-renderer">
-                        {{message.itemInfo}}</yt-formatted-string>
-                </span>
-            </div>
+  <div
+    id="author-info"
+    tabindex="0"
+    class="style-scope yt-live-chat-paid-sticker-renderer"
+  >
+    <yt-img-shadow
+      id="author-photo"
+      class="no-transition style-scope yt-live-chat-paid-sticker-renderer"
+      loaded=""
+      style="background-color: transparent"
+    >
+      <img
+        id="img"
+        class="style-scope yt-img-shadow"
+        alt=""
+        width="40"
+        height="40"
+        [src]="message.avatar"
+      />
+    </yt-img-shadow>
+    <div id="content" class="style-scope yt-live-chat-paid-sticker-renderer">
+      <span
+        id="timestamp"
+        class="style-scope yt-live-chat-paid-sticker-renderer"
+        >{{date | date:'hh:mm'}}</span
+      >
+      <div
+        id="content-primary-column"
+        class="style-scope yt-live-chat-paid-sticker-renderer"
+      >
+        <div
+          id="author-name"
+          class="style-scope yt-live-chat-paid-sticker-renderer"
+        >
+          {{message.username}}
         </div>
+        <span
+          id="price-column"
+          class="style-scope yt-live-chat-paid-sticker-renderer"
+        >
+          <yt-formatted-string
+            id="purchase-amount-chip"
+            class="style-scope yt-live-chat-paid-sticker-renderer"
+          >
+            {{message.itemInfo}}</yt-formatted-string
+          >
+        </span>
+      </div>
     </div>
-    <div id="sticker-container" class="style-scope yt-live-chat-paid-sticker-renderer sticker-loaded">
-        <yt-img-shadow id="sticker" notify-on-loaded="" tabindex="0"
-            class="style-scope yt-live-chat-paid-sticker-renderer no-transition" loaded=""
-            style="background-color: transparent;">
-            <img id="img" class="style-scope yt-img-shadow" [width]="colorInfo.sticker_size"
-                [height]="colorInfo.sticker_size" [src]="message.sticker">
-        </yt-img-shadow>
-    </div>
+  </div>
+  <div
+    id="sticker-container"
+    class="style-scope yt-live-chat-paid-sticker-renderer sticker-loaded"
+  >
+    <yt-img-shadow
+      id="sticker"
+      notify-on-loaded=""
+      tabindex="0"
+      class="style-scope yt-live-chat-paid-sticker-renderer no-transition"
+      loaded=""
+      style="background-color: transparent"
+    >
+      <img
+        id="img"
+        class="style-scope yt-img-shadow"
+        [width]="colorInfo.sticker_size"
+        [height]="colorInfo.sticker_size"
+        [src]="message.sticker"
+      />
+    </yt-img-shadow>
+  </div>
 </div>
