@@ -1,23 +1,17 @@
-import { Component, Inject, Input, Optional } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import {
   ComenAddonMetadata,
   ComenAddonConfiguration,
-  ComenEnvironmentHost,
-  ConfigurationSection,
   SafeAny,
+  ComenOverlayConfig,
 } from '@comen/common';
 import { Action, injected, mut } from 'kairo';
 import { WithKairo } from '@kairo/angular';
 import { merge } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
-import { EditorEnvironmentHost } from './editor.host';
 import { generateCode } from './variant/compiler';
-import {
-  COMEN_ADDON_METADATA,
-  EditorRealtimeMessageProvider,
-  EDITOR_REALTIME_MESSAGE_PROVIDER,
-} from './providers';
+import { COMEN_ADDON_METADATA } from './providers';
 
 @WithKairo()
 @Component({
@@ -25,12 +19,6 @@ import {
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
   exportAs: 'editor',
-  providers: [
-    {
-      provide: ComenEnvironmentHost,
-      useClass: EditorEnvironmentHost,
-    },
-  ],
 })
 export class EditorComponent {
   mockControl = this.fb.control(null);
@@ -45,13 +33,7 @@ export class EditorComponent {
   readonly configuration: ComenAddonConfiguration;
   readonly formGroup: FormGroup;
 
-  constructor(
-    private fb: FormBuilder,
-    @Inject(ComenEnvironmentHost) private host: EditorEnvironmentHost,
-    @Inject(EDITOR_REALTIME_MESSAGE_PROVIDER)
-    @Optional()
-    public realtimeMessageProvider?: EditorRealtimeMessageProvider
-  ) {}
+  constructor(private fb: FormBuilder) {}
 
   ngSetup() {
     /** resizable */
@@ -82,11 +64,12 @@ export class EditorComponent {
           debounceTime(0) // NB: avoid repeating singal in one eventloop execution
         )
         .subscribe((val) => {
-          this.host.emitConfig(section, val.default);
-          this.host.emitVariantPipe(
-            section,
-            new Function('c', generateCode(val))
-          );
+          // this.host.emitConfig(section, val.default);
+          // this.host.emitVariantPipe(
+          //   section,
+          //   new Function('c', generateCode(val))
+          // );
+          // TODO:
         });
     });
 
@@ -104,11 +87,12 @@ export class EditorComponent {
     this.formGroup.patchValue(workspace.values, { emitEvent: false });
     this.mockControl.patchValue(workspace.mocks, { emitEvent: false });
     Object.entries(this.formGroup.controls).forEach(([section, control]) => {
-      this.host.emitConfig(section, control.value.default);
-      this.host.emitVariantPipe(
-        section,
-        new Function('c', generateCode(control.value))
-      );
+      // this.host.emitConfig(section, control.value.default);
+      // this.host.emitVariantPipe(
+      //   section,
+      //   new Function('c', generateCode(control.value))
+      // );
+      // TODO
     });
   }
 
@@ -120,7 +104,7 @@ export class EditorComponent {
     } as EditorWorkspace;
   }
 
-  generateWorkspace(): SafeAny {
+  generateWorkspace(): ComenOverlayConfig {
     return Object.fromEntries(
       Object.entries(this.formGroup.value).map(
         ([key, value]: [string, SafeAny]) => {

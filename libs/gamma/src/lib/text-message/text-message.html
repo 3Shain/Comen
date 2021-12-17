@@ -1,129 +1,123 @@
-<ng-container *ngrxLet="config.current$;let cc">
-  <yt-img-shadow
-    id="author-photo"
-    class="no-transition style-scope yt-live-chat-text-message-renderer"
+<yt-img-shadow
+  id="author-photo"
+  class="no-transition style-scope yt-live-chat-text-message-renderer"
+  height="24"
+  width="24"
+  style="background-color: transparent"
+  loaded=""
+>
+  <img
+    id="img"
+    class="style-scope yt-img-shadow"
+    alt=""
     height="24"
     width="24"
-    style="background-color: transparent"
-    loaded=""
-  >
-    <img
-      id="img"
-      class="style-scope yt-img-shadow"
-      alt=""
-      height="24"
-      width="24"
-      [src]="message.avatar"
-    />
-  </yt-img-shadow>
-  <div
-    id="content"
+    [src]="message.avatar"
+  />
+</yt-img-shadow>
+<div
+  id="content"
+  class="style-scope yt-live-chat-text-message-renderer"
+  [attr.bili-guard]="platformExtra.guardType"
+>
+  <span id="timestamp" class="style-scope yt-live-chat-text-message-renderer">
+    {{date | date:'hh:mm a'}}
+  </span>
+  <yt-live-chat-author-chip
     class="style-scope yt-live-chat-text-message-renderer"
-    [attr.bili-guard]="platformExtra.guardType"
   >
-    <span id="timestamp" class="style-scope yt-live-chat-text-message-renderer">
-      {{date | date:'hh:mm a'}}
-    </span>
-    <yt-live-chat-author-chip
-      class="style-scope yt-live-chat-text-message-renderer"
-    >
-      <!-- 让人心肺停止的逻辑运算 -->
-      <span
-        id="author-name"
-        dir="auto"
-        class="style-scope yt-live-chat-author-chip"
-        [ngClass]="{'member':isMember&&!isModerator&&!isOwner,'moderator':isModerator,'owner':isOwner}"
-        [attr.type]="userType"
-        >{{message.username}}
-        <span
-          id="chip-badges"
-          class="style-scope yt-live-chat-author-chip"
-        ></span>
-      </span>
-      <span id="chat-badges" class="style-scope yt-live-chat-author-chip">
-        <ng-container *ngIf="isModerator">
-          <!-- SVG badge -->
-          <yt-live-chat-author-badge-renderer
-            class="style-scope yt-live-chat-author-chip"
-            type="moderator"
-          >
-            <div
-              id="image"
-              class="style-scope yt-live-chat-author-badge-renderer"
-            >
-              <yt-icon class="style-scope yt-live-chat-author-badge-renderer">
-                <svg
-                  viewBox="0 0 16 16"
-                  preserveAspectRatio="xMidYMid meet"
-                  focusable="false"
-                  class="style-scope yt-icon"
-                  style="
-                    pointer-events: none;
-                    display: block;
-                    width: 100%;
-                    height: 100%;
-                  "
-                >
-                  <g class="style-scope yt-icon">
-                    <path
-                      d="M9.64589146,7.05569719 C9.83346524,6.562372 9.93617022,6.02722257 9.93617022,5.46808511 C9.93617022,3.00042984 7.93574038,1 5.46808511,1 C4.90894765,1 4.37379823,1.10270499 3.88047304,1.29027875 L6.95744681,4.36725249 L4.36725255,6.95744681 L1.29027875,3.88047305 C1.10270498,4.37379824 1,4.90894766 1,5.46808511 C1,7.93574038 3.00042984,9.93617022 5.46808511,9.93617022 C6.02722256,9.93617022 6.56237198,9.83346524 7.05569716,9.64589147 L12.4098057,15 L15,12.4098057 L9.64589146,7.05569719 Z"
-                      class="style-scope yt-icon"
-                    ></path>
-                  </g>
-                </svg>
-              </yt-icon>
-            </div>
-          </yt-live-chat-author-badge-renderer>
-        </ng-container>
-        <ng-container *ngFor="let badge of message.badges">
-          <!--  -->
-          <yt-live-chat-author-badge-renderer
-            class="style-scope yt-live-chat-author-chip"
-            aria-label=""
-            [type]="badge.type"
-          >
-            <div
-              id="image"
-              class="style-scope yt-live-chat-author-badge-renderer"
-            >
-              <img
-                [src]="badge.badge"
-                class="style-scope yt-live-chat-author-badge-renderer"
-                alt=""
-              />
-            </div>
-          </yt-live-chat-author-badge-renderer>
-        </ng-container>
-      </span> </yt-live-chat-author-chip
-    >&#8203;
     <span
-      id="message"
+      id="author-name"
       dir="auto"
-      class="style-scope yt-live-chat-text-message-renderer"
-    >
-      <ng-container *ngIf="isRichtext;else elseTpl">
-        <ng-container
-          *ngFor="let node of richtext.nodes"
-          [ngSwitch]="node.type"
-        >
-          <img
-            *ngSwitchCase="'emoji'"
-            class="emoji yt-formatted-string style-scope yt-live-chat-text-message-renderer"
-            [src]="node.url"
-            id="emoji-0"
-          />
-          <img
-            *ngSwitchCase="'image'"
-            style="vertical-align: top; width: auto; max-height: 3em"
-            class="style-scope yt-live-chat-text-message-renderer"
-            [src]="node.url"
-            [attr.height]="node.height"
-            [attr.width]="node.width"
-          />
-          <ng-container *ngSwitchCase="'text'">{{node.content}}</ng-container>
-        </ng-container>
-      </ng-container>
-      <ng-template #elseTpl> {{message.content}} </ng-template>
+      class="style-scope yt-live-chat-author-chip"
+      [ngClass]="{'member':isMember&&!isModerator&&!isOwner,'moderator':isModerator,'owner':isOwner}"
+      [attr.type]="userType"
+      >{{message.username}}
+      <span
+        id="chip-badges"
+        class="style-scope yt-live-chat-author-chip"
+      ></span>
     </span>
-  </div>
-</ng-container>
+    <span id="chat-badges" class="style-scope yt-live-chat-author-chip">
+      <ng-container *ngIf="isModerator">
+        <!-- SVG badge -->
+        <yt-live-chat-author-badge-renderer
+          class="style-scope yt-live-chat-author-chip"
+          type="moderator"
+        >
+          <div
+            id="image"
+            class="style-scope yt-live-chat-author-badge-renderer"
+          >
+            <yt-icon class="style-scope yt-live-chat-author-badge-renderer">
+              <svg
+                viewBox="0 0 16 16"
+                preserveAspectRatio="xMidYMid meet"
+                focusable="false"
+                class="style-scope yt-icon"
+                style="
+                  pointer-events: none;
+                  display: block;
+                  width: 100%;
+                  height: 100%;
+                "
+              >
+                <g class="style-scope yt-icon">
+                  <path
+                    d="M9.64589146,7.05569719 C9.83346524,6.562372 9.93617022,6.02722257 9.93617022,5.46808511 C9.93617022,3.00042984 7.93574038,1 5.46808511,1 C4.90894765,1 4.37379823,1.10270499 3.88047304,1.29027875 L6.95744681,4.36725249 L4.36725255,6.95744681 L1.29027875,3.88047305 C1.10270498,4.37379824 1,4.90894766 1,5.46808511 C1,7.93574038 3.00042984,9.93617022 5.46808511,9.93617022 C6.02722256,9.93617022 6.56237198,9.83346524 7.05569716,9.64589147 L12.4098057,15 L15,12.4098057 L9.64589146,7.05569719 Z"
+                    class="style-scope yt-icon"
+                  ></path>
+                </g>
+              </svg>
+            </yt-icon>
+          </div>
+        </yt-live-chat-author-badge-renderer>
+      </ng-container>
+      <ng-container *ngFor="let badge of message.badges">
+        <!--  -->
+        <yt-live-chat-author-badge-renderer
+          class="style-scope yt-live-chat-author-chip"
+          aria-label=""
+          [type]="badge.type"
+        >
+          <div
+            id="image"
+            class="style-scope yt-live-chat-author-badge-renderer"
+          >
+            <img
+              [src]="badge.badge"
+              class="style-scope yt-live-chat-author-badge-renderer"
+              alt=""
+            />
+          </div>
+        </yt-live-chat-author-badge-renderer>
+      </ng-container>
+    </span> </yt-live-chat-author-chip
+  >&#8203;
+  <span
+    id="message"
+    dir="auto"
+    class="style-scope yt-live-chat-text-message-renderer"
+  >
+    <ng-container *ngIf="isRichtext;else elseTpl">
+      <ng-container *ngFor="let node of richtext.nodes" [ngSwitch]="node.type">
+        <img
+          *ngSwitchCase="'emoji'"
+          class="emoji yt-formatted-string style-scope yt-live-chat-text-message-renderer"
+          [src]="node.url"
+          id="emoji-0"
+        />
+        <img
+          *ngSwitchCase="'image'"
+          style="vertical-align: top; width: auto; max-height: 3em"
+          class="style-scope yt-live-chat-text-message-renderer"
+          [src]="node.url"
+          [attr.height]="node.height"
+          [attr.width]="node.width"
+        />
+        <ng-container *ngSwitchCase="'text'">{{node.content}}</ng-container>
+      </ng-container>
+    </ng-container>
+    <ng-template #elseTpl> {{message.content}} </ng-template>
+  </span>
+</div>

@@ -37,7 +37,7 @@ export class OverlayContainerComponent {
     private inj: Injector
   ) {}
 
-  bootstrap(addonName: string) {
+  bootstrap(addonName: string, host: ComenEnvironmentHost) {
     const root = this.element.nativeElement.attachShadow({ mode: 'open' });
     const htmlElement = root.appendChild(document.createElement('html'));
     htmlElement.style.height = '100%';
@@ -55,7 +55,15 @@ export class OverlayContainerComponent {
         bodyElement,
         this.cfr,
         this.appRef,
-        this.inj,
+        Injector.create({
+          providers: [
+            {
+              provide: ComenEnvironmentHost,
+              useValue: host,
+            },
+          ],
+          parent: this.inj,
+        }),
         root
       );
       const portal = new ComponentPortal(addon.ngComponent);
@@ -65,15 +73,7 @@ export class OverlayContainerComponent {
         destroy: () => outlet.dispose(),
       };
     } else {
-      const host = this.inj.get(ComenEnvironmentHost);
-      const dispose = this.zone.runOutsideAngular(() =>
-        addon.entry({
-          message: host.message.bind(host),
-          variantPipe: host.variantPipe.bind(host),
-          config: host.config.bind(host),
-          rootElement: root,
-        })
-      );
+      const dispose = this.zone.runOutsideAngular(() => addon.entry(host));
 
       return {
         element: this.element.nativeElement,

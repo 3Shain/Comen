@@ -8,12 +8,13 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import {
   ComenEnvironmentHost,
+  ComenSerializedData,
   Message,
   SafeAny,
   TextMessage,
 } from '@comen/common';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { catchError, filter, retry, takeUntil, tap } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, filter, map, retry, takeUntil, tap } from 'rxjs/operators';
 import { AddonService } from '../../addon/addon.service';
 import { OverlayContainerComponent } from '../../addon/overlay-container.component';
 import { commentFilter, folder, smoother } from '../../common';
@@ -61,9 +62,7 @@ const BILICHAT_SYSTEM_MESSAGE = {
   ],
 })
 // eslint-disable-next-line
-export class OverlayPage
-  extends ComenEnvironmentHost
-  implements OnInit, OnDestroy {
+export class OverlayPage implements OnInit, OnDestroy {
   @ViewChild('data', { static: true }) data: ElementRef<HTMLDivElement>;
   @ViewChild('container', { static: true })
   container: OverlayContainerComponent;
@@ -74,24 +73,13 @@ export class OverlayPage
     private activatedRoute: ActivatedRoute,
     private rxzone: RxZone,
     private addon: AddonService
-  ) {
-    super();
-  }
+  ) {}
 
   get addonTarget() {
     return this.activatedRoute.snapshot.queryParams.o ?? 'null';
   }
 
   message$: Subject<Message> = new Subject();
-  legacyConfig$: Subject<ComenConfiguration> = new Subject();
-
-  private _configs: {
-    [key: string]: Observable<SafeAny>;
-  } = {};
-
-  private _variantPipes: {
-    [key: string]: Observable<SafeAny>;
-  } = {};
 
   async ngOnInit() {
     await waitUntilPageVisible();
@@ -102,26 +90,20 @@ export class OverlayPage
     const injectedConfiguration = await this.initConfig();
     const globalConfig = mergeQueryParameters(queryParams, {
       ...DEFAULT_CONFIG,
-      ...(injectedConfiguration?.config?.['@@global']?.default ?? {}),
+      ...(injectedConfiguration?.config?.['@@comen']?.default ?? {}),
     });
 
-    if (injectedConfiguration.config) {
-      Object.entries(injectedConfiguration.config).forEach(
-        ([key, value]: [string, SafeAny]) => {
-          this._configs[key] = new BehaviorSubject(value.default);
-          if (value.variantsPipe) {
-            this._variantPipes[key] = new BehaviorSubject(
-              new Function('c', value.variantsPipe)
-            );
-          }
-        }
-      );
-    }
-
-    const bootstraped = this.container.bootstrap(this.addonTarget);
+    const bootstraped = this.container.bootstrap(
+      this.addonTarget,
+      new OverlayComenEnvironmentHost(
+        this.addonTarget,
+        this.message$,
+        globalConfig,
+        injectedConfiguration
+      )
+    );
     this.destroy$.subscribe(() => bootstraped.destroy());
 
-    this.legacyConfig$.next(globalConfig);
     if ('bilichat' in globalConfig) {
       setTimeout(() => {
         // here showMessage is expected not undefined!
@@ -138,10 +120,10 @@ export class OverlayPage
         commentFilter(globalConfig),
         smoother(globalConfig),
         folder(globalConfig),
-        filter((msg) => {
+        map((msg) => {
           if ('bilichat' in globalConfig) {
             if (msg.type == 'system') {
-              this.message$.next({
+             return ({
                 type: 'text',
                 content: BILICHAT_SYSTEM_MESSAGE[msg.data.status],
                 avatar: '/assets/bilichat_icon.png',
@@ -150,7 +132,7 @@ export class OverlayPage
               } as TextMessage);
             } else if (msg.type == 'sticker') {
               // bilichat has no sticker type, downgrade to mock paid message
-              this.message$.next({
+              return ({
                 type: 'paid',
                 itemInfo: msg.itemInfo,
                 price: msg.price,
@@ -159,10 +141,9 @@ export class OverlayPage
                 username: msg.username,
                 platformUserId: msg.platformUserId,
               });
-              return false;
             }
           }
-          return true;
+          return msg;
         }),
         emojiFilter(globalConfig),
         tap((msg) => {
@@ -188,26 +169,7 @@ export class OverlayPage
     this.destroy$.complete();
   }
 
-  message() {
-    return this.message$;
-  }
-
-  config(section: string) {
-    if (section == '__legacy__') {
-      return this.legacyConfig$;
-    }
-    return this._configs[section] ?? of({});
-  }
-
-  variantPipe(section: string) {
-    return this._variantPipes[section] ?? of((x: unknown) => x);
-  }
-
-  assetUrl(id: string) {
-    return '';
-  }
-
-  async initConfig() {
+  async initConfig(): Promise<ComenSerializedData> {
     // config in css
     if ('obsstudio' in window) {
       let retryCount = 0;
@@ -219,8 +181,47 @@ export class OverlayPage
         }
         retryCount++;
       }
-      return {};
     }
-    return {};
+    return { config: {}, data: [] };
+  }
+}
+
+class OverlayComenEnvironmentHost extends ComenEnvironmentHost {
+  message(): Observable<Message> {
+    return this._message;
+  }
+  config(section: string) {
+    if (section == '@@comen') {
+      return this._globalConfig;
+    }
+    return this._config[section] ?? {};
+  }
+  variantPipe(section: string): (context: any) => any {
+    throw new Error('Method not implemented.');
+  }
+  assetUrl(id: string): string {
+    if (this.assetsMap.has(id)) {
+      return this.assetsMap.get(id);
+    }
+    throw new Error(`Assets name "${id}" was not found.`);
+  }
+
+  private assetsMap: Map<string, string>;
+
+  constructor(
+    public rootElement: SafeAny,
+    private _message: Observable<Message>,
+    private _globalConfig: ComenConfiguration,
+    private _config: ComenSerializedData,
+  ) {
+    super();
+    this.assetsMap = new Map(
+      _config.data.map((x) => {
+        return [
+          x.name,
+          URL.createObjectURL(new Blob([x.body], { type: x.type })),
+        ];
+      })
+    );
   }
 }

@@ -15,8 +15,8 @@ export type ComenAddonMetadata = {
 
 export interface ComenAddonInstance {
   message(): Observable<Message>;
-  config(section: string): Observable<SafeAny>;
-  variantPipe(section: string): Observable<SafeAny>;
+  config(section: string): SafeAny;
+  variantPipe(section: string): CalculateVariant;
   rootElement: SafeAny;
 }
 
@@ -29,9 +29,30 @@ declare global {
   ): void;
 }
 
-export abstract class ComenEnvironmentHost {
+type CalculateVariant = (context: SafeAny) => SafeAny;
+
+export abstract class ComenEnvironmentHost implements ComenAddonInstance{
   abstract message(): Observable<Message>;
-  abstract config(section: string): Observable<SafeAny>;
-  abstract variantPipe(section: string): Observable<SafeAny>;
+  abstract config(section: string): SafeAny;
+  abstract variantPipe(section: string): CalculateVariant;
   abstract assetUrl(id: string): string;
+  abstract rootElement: SafeAny;
+}
+
+export interface ComenDataItem {
+  name: string;
+  type: string;
+  body: Uint8Array;
+}
+
+export interface ComenOverlayConfig {
+  [key: string]: {
+    default: SafeAny,
+    variantsPipe?: string
+  }
+}
+
+export interface ComenSerializedData {
+  config: ComenOverlayConfig,
+  data: ComenDataItem[],
 }

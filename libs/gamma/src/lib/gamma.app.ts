@@ -10,7 +10,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { GammaConfigService } from './gamma-config.service';
+import { GammaColorMap } from './color-map';
 import { Message, ComenEnvironmentHost, SafeAny } from '@comen/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -38,7 +38,7 @@ const VALID_TYPE = {
   templateUrl: './gamma.app.html',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [GammaConfigService],
+  providers: [GammaColorMap],
 })
 // eslint-disable-next-line
 export class GammaApp implements AfterViewInit, OnDestroy {
@@ -82,7 +82,7 @@ export class GammaApp implements AfterViewInit, OnDestroy {
         while (
           this.atBottom &&
           this.renderedQueue.length >
-            this.config.current$.value.maxDanmakuNumber
+            this.config.maxDanmakuNumber
         ) {
           this.renderedQueue.shift();
         }
@@ -110,7 +110,7 @@ export class GammaApp implements AfterViewInit, OnDestroy {
             if (
               performance.now() - lastItemInserted >
                 ANIMATION_BUFFER_INTERVAL &&
-              !this.config.current$.value.disableSmoother
+              !this.config.disableSmoother
             ) {
               // do animation
               // calculate the length to move
@@ -157,10 +157,10 @@ export class GammaApp implements AfterViewInit, OnDestroy {
 
   checkTicker(msg: Message) {
     if (msg.type == 'sticker' || msg.type == 'paid' || msg.type == 'member') {
-      if (this.config.current$.value.tickerDisplayThreshold > msg.price) {
+      if (this.config.tickerDisplayThreshold > msg.price) {
         return;
       }
-      const colorInfo = this.config.getColorInfo(msg.price);
+      const colorInfo = this.colorMap.getColorInfo(msg.price);
       this.tickers.unshift({
         startTime: performance.now(),
         message: msg,
@@ -211,12 +211,14 @@ export class GammaApp implements AfterViewInit, OnDestroy {
     }
   }
 
+  config: GammaConfiguration = DEFAULT_GAMMA_CONFIGURATION;
+
   constructor(
     @Optional() host: ComenEnvironmentHost,
     private changeDetector: ChangeDetectorRef,
-    public config: GammaConfigService,
     public ngzone: NgZone,
-    private element: ElementRef<HTMLElement>
+    private element: ElementRef<HTMLElement>,
+    private colorMap: GammaColorMap
   ) {
     if (host) {
       host
@@ -231,6 +233,10 @@ export class GammaApp implements AfterViewInit, OnDestroy {
             this.bufferQueue.push(m as SafeAny);
           }
         });
+      this.config = {
+        ...DEFAULT_GAMMA_CONFIGURATION,
+        ...host.config('@@comen')
+      }
     }
   }
 
@@ -282,3 +288,17 @@ type TickerStatus = {
 function easeInOutSine(x: number): number {
   return -(Math.cos(Math.PI * x) - 1) / 2;
 }
+
+interface GammaConfiguration {
+  hideTimestamp: boolean;
+  tickerDisplayThreshold: number;
+  disableSmoother: boolean;
+  maxDanmakuNumber: number;
+}
+
+const DEFAULT_GAMMA_CONFIGURATION: GammaConfiguration = {
+  hideTimestamp: false,
+  tickerDisplayThreshold: 50,
+  disableSmoother: false,
+  maxDanmakuNumber: 100,
+};

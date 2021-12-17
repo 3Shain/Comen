@@ -56,6 +56,7 @@ export function commentFilter(config: {
 
 export function smoother(config: {
   disableSmoother: boolean;
+  maxDanmakuNumber: number;
 }): OperatorFunction<Message, Message> {
   return (upstream) => {
     if (config.disableSmoother) {
@@ -84,6 +85,9 @@ export function smoother(config: {
         .subscribe((comment) => {
           if (comment.type == 'text') {
             messageBuffer.push(comment);
+            if(messageBuffer.length > config.maxDanmakuNumber) { // too much!
+              messageBuffer.shift();
+            }
           } else {
             // ignore non text comment
             observer.next(comment);

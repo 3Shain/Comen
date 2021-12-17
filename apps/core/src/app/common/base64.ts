@@ -52,11 +52,11 @@ export function deserializeBuffer(buffer: Uint8Array) {
   return travelObject(json);
 }
 
-export function serializeObjectToBase64<T = SafeAny>(config: T) {
+export function serializeObjectToBase64<T extends object>(config: T) {
   return fromByteArray(serializeObjectToBuffer(config));
 }
 
-export function serializeObjectToBuffer<T = SafeAny>(object: T) {
+export function serializeObjectToBuffer<T extends object>(object: T) {
   const buffer = new Uint8Array(16 * 1024 * 1024); // 16MiB
   let length = 4;
   const dataView = new DataView(buffer.buffer);
@@ -65,7 +65,7 @@ export function serializeObjectToBuffer<T = SafeAny>(object: T) {
   let rawLen = 0;
 
   // TODO: iterate attachments
-  function travelObject(obj: SafeAny) {
+  function travelObject(obj: object) {
     const cloned = {};
     for (const props in obj) {
       if (obj[props] instanceof Uint8Array) {

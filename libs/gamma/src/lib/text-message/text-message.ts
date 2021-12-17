@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { GammaConfigService } from '../gamma-config.service';
+import { GammaColorMap } from '../color-map';
 import { TextMessage, RichTextMessage } from '@comen/common';
 
 @Component({
@@ -20,7 +20,7 @@ export class TextMessageRenderer {
 
   readonly date = new Date();
 
-  constructor(public config: GammaConfigService) {}
+  constructor() {}
 
   get userType() {
     if (this.isOwner) {

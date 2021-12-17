@@ -17,7 +17,7 @@ describe('Compiler', () => {
               target: 100,
             },
           ],
-          property: {
+          properties: {
             a: 3,
             c: 6,
           },
@@ -30,13 +30,13 @@ describe('Compiler', () => {
               target: 'work',
             },
           ],
-          property: {
+          properties: {
             a: 7,
           },
         },
       ],
     };
-    const fn = generateCode(testdata);
+    const fn = new Function('c',generateCode(testdata));
     const ret = fn({
       test: 0,
     });

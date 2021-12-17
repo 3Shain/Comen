@@ -10,8 +10,6 @@ import { ConfigBlockComponent } from './config-plane/config-block/config-block.c
 import { ConfigPlaneComponent } from './config-plane/config-plane.component';
 import { ControlsModule } from './controls/controls.module';
 import { EditorComponent } from './editor.component';
-import { MockMessagePlaneComponent } from './mock-message-plane/mock-message-plane.component';
-import { MockMessageEditDialogComponent } from './mock-message-plane/mock-message-edit-dialog/mock-message-edit-dialog.component';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -32,10 +30,6 @@ import { MatCardModule } from '@angular/material/card';
     EditorComponent,
     ConfigBlockComponent,
     ConfigPlaneComponent,
-    // ConditionPopoverComponent,
-    // ConditionPopoverDirective,
-    MockMessagePlaneComponent,
-    MockMessageEditDialogComponent,
   ],
   imports: [
     CommonModule,

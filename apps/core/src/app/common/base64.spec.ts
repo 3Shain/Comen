@@ -44,4 +44,16 @@ describe('configuration', () => {
 
     expect(ret).toEqual(conf);
   });
+
+  it('should work with blob attachments array', () => {
+    const conf = {
+      blob: new Uint8Array(16).fill(0x99),
+      nested: [new Uint8Array(32).fill(0x86)],
+    };
+
+    const serialized = serializeObjectToBase64(conf);
+    const ret = deserializeBase64<SafeAny>(serialized);
+
+    expect(ret).toEqual(conf);
+  });
 });
