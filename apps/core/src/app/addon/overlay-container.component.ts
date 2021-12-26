@@ -79,6 +79,7 @@ export class OverlayContainerComponent {
         element: this.element.nativeElement,
         destroy: () => {
           dispose();
+          this.element.nativeElement.innerHTML = ''; // clear inner nodes
         },
       };
     }

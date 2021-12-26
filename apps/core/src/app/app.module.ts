@@ -20,7 +20,7 @@ import { RedirectGuard } from './redirect.guard';
     RouterModule.forRoot([
       {
         path: '',
-        canActivate: [RedirectGuard],
+        // canActivate: [RedirectGuard], // TODO: remove comment if editor feature is ready
         pathMatch: 'full',
         loadChildren: () =>
           import('./pages/home/home.module').then((m) => m.HomeModule),
