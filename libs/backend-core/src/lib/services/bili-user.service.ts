@@ -1,4 +1,4 @@
-import { CACHE_MANAGER, Inject, Injectable } from "@nestjs/common";
+import { CACHE_MANAGER, Inject, Injectable, Logger } from "@nestjs/common";
 import { Cache } from "cache-manager";
 import got from 'got';
 
@@ -13,6 +13,7 @@ export class BilibiliUserService {
     lastFetch: number = Date.now();
     fetchQueue: Set<number> = new Set()
     currentFetchJob: NodeJS.Timeout = null;
+    log = new Logger(BilibiliUserService.name)
 
     interfaceUnlock = 0;
 
@@ -62,7 +63,7 @@ export class BilibiliUserService {
                             }
                         }
                         catch (e) {
-                            console.error(e);
+                            this.log.error(e);
                         }
                         finally {
                             this.currentFetchJob = null;
@@ -97,11 +98,15 @@ export class BilibiliUserService {
                         name: ret.data.name,
                         refresh_time: Date.now() + REFRESH_TIME,
                     };
-                    await this.cache.set(`BILI_USERINFO_${uid}`, obj, {
-                        ttl: CACHE_TIME / 1000
-                    });
+                    try {
+                        await this.cache.set(`BILI_USERINFO_${uid}`, obj, {
+                        ttl: CACHE_TIME / 1000 });
+                    }catch(e) {
+                        this.log.error(e);
+                    }
                     return obj;
                 } catch (e) {
+                    this.log.error(e); // hostReportError
                     this.interfaceUnlock = Date.now() + 10 * 60 * 1000; // 10 min
                 }
             }
