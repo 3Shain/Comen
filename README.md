@@ -3,12 +3,12 @@
 [![MIT License](https://img.shields.io/npm/l/isomorphic-danmaku.svg)](https://github.com/3Shain/isomorphic-danmaku/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-**当前仍在活跃开发中，代码结构可能尚未稳定，并行开发请注意代码的破坏更新** , 原项目【bilichat】请查看[bilichat](https://github.com/3Shain/Comen/tree/bilichat)分支
+**当前仍在开发中，代码结构可能尚未稳定，并行开发请注意代码的破坏更新** , 原项目【bilichat】请查看[bilichat](https://github.com/3Shain/Comen/tree/bilichat)分支
 
 Comen是一个主要用于在网络直播中向观众展示当前直播间实时评论流的工具。
 
 ### 主要特性
-* 多平台支持：默认提供了Acfun，Bilibili的接入实现。合理的抽象低耦合设计使得新平台的接入也很容易。
+* 多平台支持：默认提供了Acfun，Bilibili的接入实现。合理的抽象低耦合设计使得新平台的接入也很容易。
 * 高可靠性：不只是一个爱好项目。原项目已运行两年的时间，积累了各种对用户体验和异常处理的优化。
 * 兼容Youtube评论栏样式，只需修改URL就能迁移。
 * <span style="color:#7f7f7f">高度自定义 (计划中,TBD)</span>
