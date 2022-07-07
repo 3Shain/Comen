@@ -1,9 +1,10 @@
 # Comen
 
+> 此项目已长期没有维护
+
 [![MIT License](https://img.shields.io/npm/l/isomorphic-danmaku.svg)](https://github.com/3Shain/isomorphic-danmaku/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
-
-**当前仍在开发中，代码结构可能尚未稳定，并行开发请注意代码的破坏更新** , 原项目【bilichat】请查看[bilichat](https://github.com/3Shain/Comen/tree/bilichat)分支
+原项目【bilichat】请查看[bilichat](https://github.com/3Shain/Comen/tree/bilichat)分支
 
 Comen是一个主要用于在网络直播中向观众展示当前直播间实时评论流的工具。
 
