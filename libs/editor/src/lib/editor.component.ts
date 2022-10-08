@@ -29,6 +29,8 @@ export class EditorComponent {
     grid: [false],
   });
 
+  globalConfig = this.fb.control({});
+
   readonly metadata: ComenAddonMetadata;
   readonly configuration: ComenAddonConfiguration;
   readonly formGroup: FormGroup;
@@ -41,6 +43,12 @@ export class EditorComponent {
     const metadata = injected(COMEN_ADDON_METADATA);
 
     const configuration = metadata.configuration;
+
+    const globalConfiguration = {
+      default: {
+        
+      }
+    }
 
     /** config */
 

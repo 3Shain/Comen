@@ -31,7 +31,7 @@ declare global {
 
 type CalculateVariant = (context: SafeAny) => SafeAny;
 
-export abstract class ComenEnvironmentHost implements ComenAddonInstance{
+export abstract class ComenEnvironmentHost implements ComenAddonInstance {
   abstract message(): Observable<Message>;
   abstract config(section: string): SafeAny;
   abstract variantPipe(section: string): CalculateVariant;
@@ -47,12 +47,12 @@ export interface ComenDataItem {
 
 export interface ComenOverlayConfig {
   [key: string]: {
-    default: SafeAny,
-    variantsPipe?: string
-  }
+    default: SafeAny;
+    variantsPipe?: string;
+  };
 }
 
 export interface ComenSerializedData {
-  config: ComenOverlayConfig,
-  data: ComenDataItem[],
+  config: ComenOverlayConfig;
+  data: ComenDataItem[];
 }

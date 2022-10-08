@@ -15,6 +15,7 @@ import { BackgroundControlComponent } from './background-control/background-cont
 import { DisplayControlComponent } from './display-control/display-control.component';
 import { ShadowControlComponent } from './shadow-control/shadow-control.component';
 import { MonacoControlComponent } from './monaco-control/monaco-control.component';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { MonacoControlComponent } from './monaco-control/monaco-control.componen
     CommonModule,
     ColorChromeModule,
     FlexLayoutModule,
+    MonacoEditorModule
   ],
   exports: [
     ColorControlComponent,

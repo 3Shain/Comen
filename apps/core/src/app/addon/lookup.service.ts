@@ -80,6 +80,20 @@ export class LookupService {
         );
       },
     },
+    {
+      name: 'test',
+      version: '1.0.0',
+      displayName: '测试',
+      preload: async () => {
+        const module = await this.lazyloadNgModule<BuiltinSourceModule>(() =>
+          import('../sources/test/test.module').then((m) => m.TestSourceModule)
+        );
+        this.addon.registerBuiltinSource(
+          'test',
+          module.injector.get(module.instance.source)
+        );
+      },
+    },
   ];
 
   constructor(

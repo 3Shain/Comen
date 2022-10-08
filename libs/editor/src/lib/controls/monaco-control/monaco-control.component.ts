@@ -4,13 +4,13 @@ import {
   FormBuilder,
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
-// import * as monaco from 'monaco-editor';
+import * as monaco from 'monaco-editor';
 // @ts-ignore
 // import text from '!!raw-loader!./type.d.ts.string';
 
 @Component({
   selector: 'comen-monaco-control',
-  template: `<div id="monaco-host" #host></div>`,
+  template: `<ngx-monaco-editor [model]="model" [options]="options"></ngx-monaco-editor>`,
   styles: [
     `
       #monaco-host {
@@ -33,6 +33,15 @@ export class MonacoControlComponent implements ControlValueAccessor {
   @ViewChild('host') host: ElementRef<HTMLDivElement>;
 
   constructor(private fb: FormBuilder) {}
+  model = {
+    value:'',
+    language: 'javascript'
+  }
+
+  options = {theme: 'vs-dark', language: 'javascript'};
+  // monaco.editor.createModel( ['function x() {', '\tconsole.log("Hello world!");', '}'].join(
+  //   '\n'
+  // ),'javascript', monaco.Uri.parse('file:///local.js'));
 
   ngAfterViewInit() {
     // const model =

@@ -25,6 +25,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 
+import { MonacoEditorModule } from 'ngx-monaco-editor';
+
 @NgModule({
   declarations: [
     EditorComponent,
@@ -53,7 +55,7 @@ import { MatCardModule } from '@angular/material/card';
     MatChipsModule,
     MatDialogModule,
     MatListModule,
-    MatCardModule,
+    MatCardModule
   ],
   exports: [EditorComponent],
 })

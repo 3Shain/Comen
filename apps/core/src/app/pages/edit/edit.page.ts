@@ -11,10 +11,10 @@ import {
   ɵɵdirectiveInject as directiveInject,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ComenSerializedData, SafeAny } from '@comen/common';
-import { EditorComponent, EDITOR_ASSET_STORAGE } from '@comen/editor';
+import { ComenEnvironmentHost, ComenOverlayConfig, ComenSerializedData, Message, SafeAny } from '@comen/common';
+import { EditorAssetStorage, EditorComponent, EDITOR_ASSET_STORAGE } from '@comen/editor';
 import { zoomBigMotion, COMEN_ADDON_METADATA } from '@comen/editor';
-import { merge, Subject } from 'rxjs';
+import { merge, Observable, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { AddonService } from '../../addon/addon.service';
 import { OverlayInfo } from '../../addon/definations';
@@ -214,5 +214,34 @@ export class EditPage
     a.download = 'export.cmproj';
     a.click();
     URL.revokeObjectURL(a.href);
+  }
+}
+
+export class EditorComenEnvironmentHost extends ComenEnvironmentHost {
+
+  message(): Observable<Message> {
+    return this._message;
+  }
+  config(section: string): any {
+    return this._config[section] ?? {};
+  }
+  variantPipe(section: string): (context: any) => any {
+    throw new Error('Method not implemented.');
+  }
+  assetUrl(id: string): string {
+    return this.store.getUrl(id);
+  }
+
+  constructor(
+    public rootElement: any,
+    private _config: ComenOverlayConfig,
+    private _message: Observable<Message>,
+    private store: EditorAssetStorage
+  ) {
+    super();
+  }
+
+  dispose() {
+
   }
 }
