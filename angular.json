@@ -24,9 +24,7 @@
             "polyfills": "apps/core/src/polyfills.ts",
             "tsConfig": "apps/core/tsconfig.app.json",
             "aot": true,
-            "assets": [
-              "apps/core/src/favicon.ico",
-              "apps/core/src/assets"
+            "assets": ["apps/core/src/favicon.ico", "apps/core/src/assets",{ "glob": "**/*", "input": "node_modules/monaco-editor", "output": "assets/monaco-editor" }
             ],
             "styles": [
               "apps/core/src/styles.less",
@@ -39,7 +37,8 @@
               "date-fns",
               "react",
               "react-dom"
-            ]
+            ],
+            "webWorkerTsConfig": "apps/core/tsconfig.worker.json"
           },
           "configurations": {
             "production": {
@@ -471,27 +470,6 @@
           "outputs": ["coverage/apps/electron-app"],
           "options": {
             "jestConfig": "apps/electron-app/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "dogfood": {
-      "root": "libs/dogfood",
-      "sourceRoot": "libs/dogfood/src",
-      "projectType": "library",
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/dogfood/**/*.ts"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/dogfood"],
-          "options": {
-            "jestConfig": "libs/dogfood/jest.config.js",
             "passWithNoTests": true
           }
         }

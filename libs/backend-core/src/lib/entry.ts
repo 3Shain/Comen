@@ -50,8 +50,8 @@ function initModuleDependencies(options: ComenBackendOptions) {
       },
     }),
     InjectionModule.inject({
-        COMEN_DEVMODE: options.dev
-    })
+      COMEN_DEVMODE: options.dev,
+    }),
   ];
   if (!options.dev) {
     modules.push(
@@ -67,19 +67,18 @@ function initModuleDependencies(options: ComenBackendOptions) {
   Reflect.defineMetadata('imports', modules, BackendCoreModule);
 }
 
-
 export class InjectionModule {
-    static inject(object:Record<string,any>):DynamicModule {
-        const providers = Object.entries(object).map(([key,value])=>{
-            return {
-                provide: key,
-                useValue: value
-            }
-        });
-        return {
-            module: InjectionModule,
-            providers,
-            exports: providers
-        }
-    }
+  static inject(object: Record<string, any>): DynamicModule {
+    const providers = Object.entries(object).map(([key, value]) => {
+      return {
+        provide: key,
+        useValue: value,
+      };
+    });
+    return {
+      module: InjectionModule,
+      providers,
+      exports: providers,
+    };
+  }
 }

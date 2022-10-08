@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { GammaConfigService } from '../gamma-config.service';
+import { GammaColorMap } from '../color-map';
 import { PaidMessage } from '@comen/common';
 
 @Component({
@@ -11,16 +11,15 @@ import { PaidMessage } from '@comen/common';
     class: 'style-scope yt-live-chat-item-list-renderer',
     'allow-animations': '',
     '[style]': 'colorStyle',
-    '[attr.show-only-header]': '(message.content==\'\'||!message.content)?\'\':null' // TO BE CHECKED
-  }
+    '[attr.show-only-header]':
+      "(message.content==''||!message.content)?'':null", // TO BE CHECKED
+  },
 })
 // eslint-disable-next-line
 export class PaidMessageRenderer {
-
   @Input() message: PaidMessage;
 
-  constructor(private config: GammaConfigService) {
-  }
+  constructor(private config: GammaColorMap) {}
 
   get colorStyle() {
     const color = this.config.getColorInfo(this.message.price);

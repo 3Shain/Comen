@@ -56,9 +56,6 @@
     "electron-app": {
       "tags": []
     },
-    "dogfood": {
-      "tags": []
-    },
     "delta": {
       "tags": []
     }

@@ -1,75 +1,71 @@
 export interface ComenConfiguration {
+  platform?: string;
+  roomId?: string;
 
-    platform?: string;
-    roomId?: string;
+  bilichat?: unknown;
 
-    bilichat?: unknown;
+  disableAnalytics: boolean;
 
-    disableAnalytics: boolean,
+  /**
+   *
+   */
+  userBlacklist: number[];
+  wordBlacklist: string[];
+  minGiftValue: number;
+  levelFilter: number; //? what level?
+  /**
+   * bits (7h -> 0l): 0 0 0 0 <member> <paid message> <sticker> <message>
+   */
+  typeFilterControlBit: number;
 
-    /**
-     * 
-     */
-    userBlacklist: number[],
-    wordBlacklist: string[],
-    minGiftValue: number,
-    levelFilter: number, //? what level?
-    /**
-     * bits (7h -> 0l): 0 0 0 0 <member> <paid message> <sticker> <message>
-     */
-    typeFilterControlBit: number;
+  groupSimilar: boolean;
+  groupSimilarWindow: number;
 
-    groupSimilar: boolean,
-    groupSimilarWindow: number,
+  /**
+   * Misc
+   */
+  disableSmoother: boolean;
+  hideTimestamp: boolean;
 
-    /**
-     * Misc
-     */
-    disableSmoother: boolean,
-    hideTimestamp: boolean,
+  /**
+   * Renderer settings
+   */
 
-    /**
-     * Renderer settings
-     */
+  maxDanmakuNumber: number;
 
-    maxDanmakuNumber: number;
+  /**
+   * Bilibili
+   *
+   */
+  silverGoldRatio: number;
+  showGiftAutoDammaku: boolean;
+  disableAvatarPreload: boolean;
+  useJapaneseSC: boolean;
 
-    /**
-     * Bilibili
-     * 
-     */
-    silverGoldRatio: number,
-    showGiftAutoDammaku: boolean,
-    disableAvatarPreload: boolean,
-    useJapaneseSC: boolean,
-
-    /**
-     * Acfun
-     */
+  /**
+   * Acfun
+   */
 }
 
 export const DEFAULT_CONFIG: ComenConfiguration = {
+  disableAnalytics: false,
 
-    disableAnalytics: false,
+  userBlacklist: [],
+  wordBlacklist: [],
+  levelFilter: 0,
+  minGiftValue: 5,
+  typeFilterControlBit: 0,
 
-    userBlacklist: [],
-    wordBlacklist: [],
-    levelFilter: 0,
-    minGiftValue: 5,
-    typeFilterControlBit: 0,
+  groupSimilar: false,
+  groupSimilarWindow: 5,
 
-    groupSimilar: false,
-    groupSimilarWindow: 5,
+  disableSmoother: false,
+  hideTimestamp: false,
 
-    disableSmoother: false,
-    hideTimestamp: false,
-
-    maxDanmakuNumber: 100,
-    //bili
-    silverGoldRatio: 0,
-    showGiftAutoDammaku: false,
-    disableAvatarPreload: false,
-    useJapaneseSC: false
-}
-
-
+  maxDanmakuNumber: 100,
+  //bili
+  silverGoldRatio: 0,
+  showGiftAutoDammaku: false,
+  disableAvatarPreload: false,
+  useJapaneseSC: false,
+};

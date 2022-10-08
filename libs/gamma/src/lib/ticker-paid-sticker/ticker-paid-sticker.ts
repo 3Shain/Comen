@@ -10,27 +10,27 @@ import { StickerMessage } from '@comen/common';
   host: {
     class: 'style-scope yt-live-chat-ticker-renderer',
     role: 'botton',
-    '[@slideDown]':''
+    '[@slideDown]': '',
   },
-  animations:[
-    SLIDEDOWN
-  ]
+  animations: [SLIDEDOWN],
 })
 // eslint-disable-next-line
 export class TickerPaidStickerItemRenderer {
-
   @Input() message: StickerMessage;
 
   @ViewChild('container') container: ElementRef<HTMLDivElement>;
 
-  @Input() set status(
-    val: {
-      primary_color: string; 
-      secondary_color: string;
-      percent: number
-    }
-  ) {
-    this.container?.nativeElement?.setAttribute('style', `background:linear-gradient(90deg, ${val.primary_color},${val.primary_color}` +
-      ` ${(1 - val.percent) * 100}%,${val.secondary_color} ${(1 - val.percent) * 100}%,${val.secondary_color});`);
+  @Input() set status(val: {
+    primary_color: string;
+    secondary_color: string;
+    percent: number;
+  }) {
+    this.container?.nativeElement?.setAttribute(
+      'style',
+      `background:linear-gradient(90deg, ${val.primary_color},${val.primary_color}` +
+        ` ${(1 - val.percent) * 100}%,${val.secondary_color} ${
+          (1 - val.percent) * 100
+        }%,${val.secondary_color});`
+    );
   }
 }

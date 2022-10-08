@@ -1,5 +1,5 @@
-name: "Vercel staging deployment for node backend"
-on: [pull_request] 
+name: 'Vercel staging deployment for node backend'
+on: [pull_request]
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -20,7 +20,7 @@ jobs:
       - name: Build frontend
         run: npx nx build core --prod
         env:
-          COMEN_ENVIRONMENT: "vercel"
+          COMEN_ENVIRONMENT: 'vercel'
       - name: Build backend
         run: npx nx build node-backend --prod
       - name: Deploy production
@@ -32,4 +32,3 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           scope: ${{ secrets.VERCEL_SCOPE }}
-          

@@ -1,5 +1,5 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { GammaConfigService } from '../gamma-config.service';
+import { GammaColorMap } from '../color-map';
 import { StickerMessage } from '@comen/common';
 
 @Component({
@@ -9,16 +9,15 @@ import { StickerMessage } from '@comen/common';
   // eslint-disable-next-line
   host: {
     class: 'style-scope yt-live-chat-item-list-renderer',
-    '[style]': 'colorStyle'
+    '[style]': 'colorStyle',
   },
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 // eslint-disable-next-line
 export class PaidStickerRenderer {
-
   @Input() message: StickerMessage;
 
-  constructor(private config: GammaConfigService) { }
+  constructor(private config: GammaColorMap) {}
 
   get colorInfo() {
     return this.config.getColorInfo(this.message.price);

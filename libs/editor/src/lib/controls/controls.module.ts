@@ -14,40 +14,43 @@ import { RadiusControlComponent } from './radius-control/radius-control.componen
 import { BackgroundControlComponent } from './background-control/background-control.component';
 import { DisplayControlComponent } from './display-control/display-control.component';
 import { ShadowControlComponent } from './shadow-control/shadow-control.component';
+import { MonacoControlComponent } from './monaco-control/monaco-control.component';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 @NgModule({
-    declarations: [
-        ColorControlComponent,
-        MarginControlComponent,
-        FontControlComponent,
-        RangeControlComponent,
-        OutlineControlComponent,
-        BorderControlComponent,
-        RadiusControlComponent,
-        BackgroundControlComponent,
-        DisplayControlComponent,
-        ShadowControlComponent
-    ],
-    imports: [
-        ReactiveComponentModule,
-        ReactiveFormsModule,
-        CommonModule,
-        ColorChromeModule,
-        FlexLayoutModule
-    ],
-    exports: [
-        ColorControlComponent,
-        MarginControlComponent,
-        FontControlComponent,
-        RangeControlComponent,
-        OutlineControlComponent,
-        BorderControlComponent,
-        RadiusControlComponent,
-        BackgroundControlComponent,
-        DisplayControlComponent,
-        ShadowControlComponent
-    ]
+  declarations: [
+    ColorControlComponent,
+    MarginControlComponent,
+    FontControlComponent,
+    RangeControlComponent,
+    OutlineControlComponent,
+    BorderControlComponent,
+    RadiusControlComponent,
+    BackgroundControlComponent,
+    DisplayControlComponent,
+    ShadowControlComponent,
+    MonacoControlComponent,
+  ],
+  imports: [
+    ReactiveComponentModule,
+    ReactiveFormsModule,
+    CommonModule,
+    ColorChromeModule,
+    FlexLayoutModule,
+    MonacoEditorModule
+  ],
+  exports: [
+    ColorControlComponent,
+    MarginControlComponent,
+    FontControlComponent,
+    RangeControlComponent,
+    OutlineControlComponent,
+    BorderControlComponent,
+    RadiusControlComponent,
+    BackgroundControlComponent,
+    DisplayControlComponent,
+    ShadowControlComponent,
+    MonacoControlComponent,
+  ],
 })
-export class ControlsModule {
-
-}
+export class ControlsModule {}

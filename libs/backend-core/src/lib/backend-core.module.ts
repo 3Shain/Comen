@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { BilibiliController } from './controllers/bilibili.controller';
 
 import { AcfunController } from './controllers/acfun.controller';
@@ -9,17 +14,13 @@ import { AddonProxyMiddleware } from './middlewares/addon-proxy.middleware';
 
 @Module({
   controllers: [AcfunController, BilibiliController, AddonController],
-  providers: [
-    BilibiliUserService, AddonService
-  ],
+  providers: [BilibiliUserService, AddonService],
 })
 export class BackendCoreModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AddonProxyMiddleware)
-      .forRoutes({
-        path: '*',
-        method: RequestMethod.ALL
-      });
+    consumer.apply(AddonProxyMiddleware).forRoutes({
+      path: '*',
+      method: RequestMethod.ALL,
+    });
   }
 }

@@ -1,7 +1,17 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Overlay } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Component, ElementRef, HostListener, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SafeAny } from '@comen/common';
 import { ColorEvent } from 'ngx-color';
@@ -9,14 +19,20 @@ import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 @Component({
-  template: `<div id="checkbox" >
-    <div id="block" [ngStyle]="{'background-color':currentColor|ngrxPush}">
-  </div>
-  <ng-template #temp>
+  template: `<div id="checkbox">
+    <div
+      id="block"
+      [ngStyle]="{ 'background-color': currentColor | ngrxPush }"
+    ></div>
+    <ng-template #temp>
       <div [@inout]>
-      <color-chrome [color]="currentColor | ngrxPush" (onChange)="handleChange($event)" ></color-chrome>
-  </div>
-      </ng-template>`,
+        <color-chrome
+          [color]="currentColor | ngrxPush"
+          (onChange)="handleChange($event)"
+        ></color-chrome>
+      </div>
+    </ng-template>
+  </div>`,
   selector: 'comen-color-control',
   styles: [
     `
@@ -24,13 +40,13 @@ import { take } from 'rxjs/operators';
         display: inline-block;
       }
       #block {
-          display: inline-block;
-          height: 100%;
-          width: 3em;
-          overflow:hidden;
-          border: solid 1px #ddddde;
-          border-radius: 4px;
-          cursor: pointer;
+        display: inline-block;
+        height: 100%;
+        width: 3em;
+        overflow: hidden;
+        border: solid 1px #ddddde;
+        border-radius: 4px;
+        cursor: pointer;
       }
 
       #checkbox {
@@ -42,90 +58,113 @@ import { take } from 'rxjs/operators';
         background-position: center;
         background-repeat: repeat;
       }
-      `
+    `,
   ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: ColorControlComponent
-    }
+      useExisting: ColorControlComponent,
+    },
   ],
   animations: [
     trigger('inout', [
       transition(':enter', [
         style({
           opacity: 0,
-          transform: 'scale3d(0.95,0.95,0.95)'
+          transform: 'scale3d(0.95,0.95,0.95)',
         }),
-        animate(30, style({
-          opacity: 1,
-          transform: 'scale3d(1,1,1)'
-        }))
+        animate(
+          30,
+          style({
+            opacity: 1,
+            transform: 'scale3d(1,1,1)',
+          })
+        ),
       ]),
       transition(':leave', [
         style({
           opacity: 1,
-          transform: 'scale3d(1,1,1)'
+          transform: 'scale3d(1,1,1)',
         }),
-        animate(30, style({
-          opacity: 0,
-          transform: 'scale3d(0.95,0.95,0.95)'
-        }))
-      ])
-    ])
-  ]
+        animate(
+          30,
+          style({
+            opacity: 0,
+            transform: 'scale3d(0.95,0.95,0.95)',
+          })
+        ),
+      ]),
+    ]),
+  ],
 })
-export class ColorControlComponent implements ControlValueAccessor {
-
+export class ColorControlComponent implements ControlValueAccessor, OnChanges {
   @ViewChild('temp') temp: TemplateRef<SafeAny>;
+
+  @Input() value: string;
 
   currentColor: BehaviorSubject<string> = new BehaviorSubject('#cccccc');
 
-  constructor(private overlay: Overlay, private ele: ElementRef, private vc: ViewContainerRef) { }
+  constructor(
+    private overlay: Overlay,
+    private ele: ElementRef,
+    private vc: ViewContainerRef
+  ) {}
   ref = this.overlay.create({
     hasBackdrop: true,
     backdropClass: 'cdk-backdrop-transparent',
-    positionStrategy: this.overlay.position().flexibleConnectedTo(this.ele).withPositions([{
-      offsetX: -30,
-      offsetY: 0,
-      overlayX: 'start',
-      overlayY: 'center',
-      originX: 'start',
-      originY: 'center'
-    },
-    {
-      offsetX: -30,
-      offsetY: 0,
-      overlayX: 'start',
-      overlayY: 'top',
-      originX: 'start',
-      originY: 'center'
-    }, {
-      offsetX: -30,
-      offsetY: 0,
-      overlayX: 'start',
-      overlayY: 'bottom',
-      originX: 'start',
-      originY: 'center'
-    }]),
-    scrollStrategy: this.overlay.scrollStrategies.close()
+    positionStrategy: this.overlay
+      .position()
+      .flexibleConnectedTo(this.ele)
+      .withPositions([
+        {
+          offsetX: -30,
+          offsetY: 0,
+          overlayX: 'start',
+          overlayY: 'center',
+          originX: 'start',
+          originY: 'center',
+        },
+        {
+          offsetX: -30,
+          offsetY: 0,
+          overlayX: 'start',
+          overlayY: 'top',
+          originX: 'start',
+          originY: 'center',
+        },
+        {
+          offsetX: -30,
+          offsetY: 0,
+          overlayX: 'start',
+          overlayY: 'bottom',
+          originX: 'start',
+          originY: 'center',
+        },
+      ]),
+    scrollStrategy: this.overlay.scrollStrategies.close(),
   });
 
   handleChange(e: ColorEvent) {
-    this.currentColor.next(`rgba(${e.color.rgb.r},${e.color.rgb.g},${e.color.rgb.b},${e.color.rgb.a})`);
-    this.changeFn?.(`rgba(${e.color.rgb.r},${e.color.rgb.g},${e.color.rgb.b},${e.color.rgb.a})`);
+    this.currentColor.next(
+      `rgba(${e.color.rgb.r},${e.color.rgb.g},${e.color.rgb.b},${e.color.rgb.a})`
+    );
+    this.changeFn?.(
+      `rgba(${e.color.rgb.r},${e.color.rgb.g},${e.color.rgb.b},${e.color.rgb.a})`
+    );
     this.touchFn?.();
   }
 
   @HostListener('click')
   click() {
     this.ref.attach(new TemplatePortal(this.temp, this.vc));
-    this.ref.backdropClick().pipe(take(1)).subscribe(() => {
-      this.ref.detach();
-    });
+    this.ref
+      .backdropClick()
+      .pipe(take(1))
+      .subscribe(() => {
+        this.ref.detach();
+      });
   }
-
 
   writeValue(obj: string): void {
     if (obj == null) {
@@ -145,4 +184,9 @@ export class ColorControlComponent implements ControlValueAccessor {
     this.touchFn = fn;
   }
 
+  ngOnChanges(simpleChanges: SimpleChanges) {
+    if (simpleChanges['value']) {
+      this.currentColor.next(simpleChanges['value'].currentValue);
+    }
+  }
 }

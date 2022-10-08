@@ -1,26 +1,32 @@
 import { Component, Input } from '@angular/core';
-import { ControlValueAccessor, FormArray, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormArray,
+  FormBuilder,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 import { ConfigurationSection, SafeAny, VariantCondition } from '@comen/common';
 
 @Component({
   selector: 'comen-config-plane',
   templateUrl: './config-plane.component.html',
   styleUrls: ['./config-plane.component.scss'],
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: ConfigPlaneComponent,
-    multi: true
-  }]
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: ConfigPlaneComponent,
+      multi: true,
+    },
+  ],
 })
 export class ConfigPlaneComponent implements ControlValueAccessor {
-
   @Input() sectionSetting: ConfigurationSection;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder) {}
 
   formGroup = this.fb.group({
     default: this.fb.control({}),
-    variants: this.fb.array([])
+    variants: this.fb.array([]),
   });
 
   get variantsFormArray() {
@@ -32,10 +38,12 @@ export class ConfigPlaneComponent implements ControlValueAccessor {
   }
 
   addNewVariant(condition: VariantCondition) {
-    this.variantsFormArray.push(this.fb.group({
-      condition: [[condition]],
-      properties: [{}]
-    }));
+    this.variantsFormArray.push(
+      this.fb.group({
+        condition: [[condition]],
+        properties: [{}],
+      })
+    );
   }
 
   removeVariant(index: number) {
@@ -47,7 +55,10 @@ export class ConfigPlaneComponent implements ControlValueAccessor {
       return;
     }
     const control = this.variantsFormArray.at(index);
-    this.variantsFormArray.setControl(index, this.variantsFormArray.at(index - 1));
+    this.variantsFormArray.setControl(
+      index,
+      this.variantsFormArray.at(index - 1)
+    );
     this.variantsFormArray.setControl(index - 1, control);
   }
 
@@ -56,22 +67,27 @@ export class ConfigPlaneComponent implements ControlValueAccessor {
       return;
     }
     const control = this.variantsFormArray.at(index);
-    this.variantsFormArray.setControl(index, this.variantsFormArray.at(index + 1));
+    this.variantsFormArray.setControl(
+      index,
+      this.variantsFormArray.at(index + 1)
+    );
     this.variantsFormArray.setControl(index + 1, control);
   }
 
   writeValue(value: {
-    default: SafeAny,
+    default: SafeAny;
     variants: {
-      condition: SafeAny[],
-      properties: SafeAny
-    }[]
+      condition: SafeAny[];
+      properties: SafeAny;
+    }[];
   }) {
-    value.variants?.forEach(val => {
-      this.variantsFormArray.push(this.fb.group({
-        condition: this.fb.control(val.condition),
-        properties: val.properties
-      }));
+    value.variants?.forEach((val) => {
+      this.variantsFormArray.push(
+        this.fb.group({
+          condition: this.fb.control(val.condition),
+          properties: val.properties,
+        })
+      );
     });
     this.formGroup.get('default').setValue(value.default, { emitEvent: false });
   }

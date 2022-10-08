@@ -1,11 +1,9 @@
-import { NgModule } from "@angular/core";
-import { BilibiliSource } from "./bilibili";
+import { NgModule } from '@angular/core';
+import { BilibiliSource } from './bilibili';
 
 @NgModule({
-    providers: [
-        BilibiliSource
-    ]
+  providers: [BilibiliSource],
 })
 export class BilibiliSourceModule {
-    source = BilibiliSource;
+  source = BilibiliSource;
 }

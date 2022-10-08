@@ -1,70 +1,136 @@
-<div *ngrxLet="config.current$ as config" id="contents" class="style-scope yt-live-chat-app">
-    <yt-live-chat-renderer class="style-scope yt-live-chat-app" has-ticker=""
-        [attr.hide-timestamps]="config.hideTimestamp?'':null" style="--scrollbar-width:15px;">
-        <iron-pages id="content-pages" class="style-scope yt-live-chat-renderer">
-            <div id="chat-messages" class="style-scope yt-live-chat-renderer iron-selected">
-                <div id="contents" class="style-scope yt-live-chat-renderer">
-                    <div id="ticker" class="style-scope yt-live-chat-renderer">
-                        <!-- Ticker Renderer -->
-                        <yt-live-chat-ticker-renderer class="style-scope yt-live-chat-renderer">
-                            <div id="container" dir="ltr" class="style-scope yt-live-chat-ticker-renderer">
-                                <div id="items" class="style-scope yt-live-chat-ticker-renderer">
-                                    <ng-container *ngFor="let ticker of tickers" [ngSwitch]="ticker.message.type">
-                                        <yt-live-chat-ticker-paid-message-item-renderer [message]='ticker.message'
-                                            [status]="ticker.status" *ngSwitchCase="'paid'">
-                                        </yt-live-chat-ticker-paid-message-item-renderer>
-                                        <yt-live-chat-ticker-paid-sticker-item-renderer [message]='ticker.message'
-                                            [status]="ticker.status" *ngSwitchCase="'sticker'">
-                                        </yt-live-chat-ticker-paid-sticker-item-renderer>
-                                        <yt-live-chat-ticker-sponsor-item-renderer [message]='ticker.message'
-                                            [status]="ticker.status" *ngSwitchCase="'member'">
-                                        </yt-live-chat-ticker-sponsor-item-renderer>
-                                    </ng-container>
-                                </div>
-                            </div>
-                        </yt-live-chat-ticker-renderer>
-                    </div>
-                    <div id="separator" class="style-scope yt-live-chat-renderer"></div>
-                    <div id="chat" class="style-scope yt-live-chat-renderer">
-                        <div id="item-list" class="style-scope yt-live-chat-renderer" allow-scroll="">
-                            <!-- itemlist renderer -->
-                            <yt-live-chat-item-list-renderer class="style-scope yt-live-chat-renderer">
-                                <div id="contents" class="style-scope yt-live-chat-item-list-renderer">
-                                    <div id="item-scroller" (scroll)="onScroll($event)"
-                                        class="style-scope yt-live-chat-item-list-renderer animated" #scroller>
-                                        <div id="item-offset" class="style-scope yt-live-chat-item-list-renderer"
-                                            #offset>
-                                            <div id="items" class="style-scope yt-live-chat-item-list-renderer" #items>
-                                                <!-- Messages -->
-                                                <ng-container
-                                                    *ngFor="let queuedMsg of renderedQueue; trackBy: identifyMessage"
-                                                    [ngSwitch]="queuedMsg.type">
-                                                    <div style="height:100vh" *ngSwitchCase="'blank'"></div>
-                                                    <yt-live-chat-text-message-renderer [message]="queuedMsg"
-                                                        [context]="queuedMsg" *ngSwitchCase="'text'">
-                                                    </yt-live-chat-text-message-renderer>
-                                                    <yt-live-chat-text-message-renderer [message]="queuedMsg"
-                                                        *ngSwitchCase="'richtext'">
-                                                    </yt-live-chat-text-message-renderer>
-                                                    <yt-live-chat-paid-message-renderer [message]="queuedMsg"
-                                                        *ngSwitchCase="'paid'">
-                                                    </yt-live-chat-paid-message-renderer>
-                                                    <yt-live-chat-membership-item-renderer [message]="queuedMsg"
-                                                        *ngSwitchCase="'member'">
-                                                    </yt-live-chat-membership-item-renderer>
-                                                    <yt-live-chat-paid-sticker-renderer [message]="queuedMsg"
-                                                        *ngSwitchCase="'sticker'">
-                                                    </yt-live-chat-paid-sticker-renderer>
-                                                </ng-container>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </yt-live-chat-item-list-renderer>
-                        </div>
-                    </div>
+<div
+  id="contents"
+  class="style-scope yt-live-chat-app"
+>
+  <yt-live-chat-renderer
+    class="style-scope yt-live-chat-app"
+    has-ticker=""
+    [attr.hide-timestamps]="config.hideTimestamp?'':null"
+    style="--scrollbar-width: 15px"
+  >
+    <iron-pages id="content-pages" class="style-scope yt-live-chat-renderer">
+      <div
+        id="chat-messages"
+        class="style-scope yt-live-chat-renderer iron-selected"
+      >
+        <div id="contents" class="style-scope yt-live-chat-renderer">
+          <div id="ticker" class="style-scope yt-live-chat-renderer">
+            <!-- Ticker Renderer -->
+            <yt-live-chat-ticker-renderer
+              class="style-scope yt-live-chat-renderer"
+            >
+              <div
+                id="container"
+                dir="ltr"
+                class="style-scope yt-live-chat-ticker-renderer"
+              >
+                <div
+                  id="items"
+                  class="style-scope yt-live-chat-ticker-renderer"
+                >
+                  <ng-container
+                    *ngFor="let ticker of tickers"
+                    [ngSwitch]="ticker.message.type"
+                  >
+                    <yt-live-chat-ticker-paid-message-item-renderer
+                      [message]="ticker.message"
+                      [status]="ticker.status"
+                      *ngSwitchCase="'paid'"
+                    >
+                    </yt-live-chat-ticker-paid-message-item-renderer>
+                    <yt-live-chat-ticker-paid-sticker-item-renderer
+                      [message]="ticker.message"
+                      [status]="ticker.status"
+                      *ngSwitchCase="'sticker'"
+                    >
+                    </yt-live-chat-ticker-paid-sticker-item-renderer>
+                    <yt-live-chat-ticker-sponsor-item-renderer
+                      [message]="ticker.message"
+                      [status]="ticker.status"
+                      *ngSwitchCase="'member'"
+                    >
+                    </yt-live-chat-ticker-sponsor-item-renderer>
+                  </ng-container>
                 </div>
+              </div>
+            </yt-live-chat-ticker-renderer>
+          </div>
+          <div id="separator" class="style-scope yt-live-chat-renderer"></div>
+          <div id="chat" class="style-scope yt-live-chat-renderer">
+            <div
+              id="item-list"
+              class="style-scope yt-live-chat-renderer"
+              allow-scroll=""
+            >
+              <!-- itemlist renderer -->
+              <yt-live-chat-item-list-renderer
+                class="style-scope yt-live-chat-renderer"
+              >
+                <div
+                  id="contents"
+                  class="style-scope yt-live-chat-item-list-renderer"
+                >
+                  <div
+                    id="item-scroller"
+                    (scroll)="onScroll($event)"
+                    class="style-scope yt-live-chat-item-list-renderer animated"
+                    #scroller
+                  >
+                    <div
+                      id="item-offset"
+                      class="style-scope yt-live-chat-item-list-renderer"
+                      #offset
+                    >
+                      <div
+                        id="items"
+                        class="style-scope yt-live-chat-item-list-renderer"
+                        #items
+                      >
+                        <!-- Messages -->
+                        <ng-container
+                          *ngFor="let queuedMsg of renderedQueue; trackBy: identifyMessage"
+                          [ngSwitch]="queuedMsg.type"
+                        >
+                          <div
+                            style="height: 100vh"
+                            *ngSwitchCase="'blank'"
+                          ></div>
+                          <yt-live-chat-text-message-renderer
+                            [message]="queuedMsg"
+                            [context]="queuedMsg"
+                            *ngSwitchCase="'text'"
+                          >
+                          </yt-live-chat-text-message-renderer>
+                          <yt-live-chat-text-message-renderer
+                            [message]="queuedMsg"
+                            *ngSwitchCase="'richtext'"
+                          >
+                          </yt-live-chat-text-message-renderer>
+                          <yt-live-chat-paid-message-renderer
+                            [message]="queuedMsg"
+                            *ngSwitchCase="'paid'"
+                          >
+                          </yt-live-chat-paid-message-renderer>
+                          <yt-live-chat-membership-item-renderer
+                            [message]="queuedMsg"
+                            *ngSwitchCase="'member'"
+                          >
+                          </yt-live-chat-membership-item-renderer>
+                          <yt-live-chat-paid-sticker-renderer
+                            [message]="queuedMsg"
+                            *ngSwitchCase="'sticker'"
+                          >
+                          </yt-live-chat-paid-sticker-renderer>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </yt-live-chat-item-list-renderer>
             </div>
-        </iron-pages>
-    </yt-live-chat-renderer>
+          </div>
+        </div>
+      </div>
+    </iron-pages>
+  </yt-live-chat-renderer>
 </div>

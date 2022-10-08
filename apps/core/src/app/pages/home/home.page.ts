@@ -5,53 +5,54 @@ import { BehaviorSubject, combineLatest, Subject, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
-    selector: 'comen-home',
-    templateUrl: './home.page.html',
-    styleUrls: [
-        './home.page.scss'
-    ]
+  selector: 'comen-home',
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
 })
 // eslint-disable-next-line
 export class HomePage implements OnInit, OnDestroy {
+  platform$: Subject<string> = new BehaviorSubject(
+    localStorage.getItem('platform') ?? 'bilibili'
+  );
 
-    platform$: Subject<string> = new BehaviorSubject(localStorage.getItem('platform') ?? 'bilibili');
+  roomId = new FormControl(localStorage.getItem('roomId') ?? '123456');
+  roomIdSubscription: Subscription;
 
-    roomId = new FormControl(localStorage.getItem('roomId') ?? '123456');
-    roomIdSubscription: Subscription;
+  comenEnvironment = COMEN_ENVIRONMENT ?? '';
 
-    comenEnvironment = COMEN_ENVIRONMENT ?? '';
+  generatedLink = combineLatest([
+    this.platform$,
+    this.roomId.valueChanges.pipe(startWith(this.roomId.value)),
+  ]).pipe(
+    map(([platform, id]) => {
+      return `${window.location.origin}/${platform}/${id}`;
+    })
+  );
 
-
-    generatedLink = combineLatest([this.platform$, this.roomId.valueChanges.pipe(startWith(this.roomId.value))]).pipe(
-        map(([platform, id]) => {
-            return `${window.location.origin}/${platform}/${id}`
-        })
-    )
-
-    constructor(private title: Title) {
-        title.setTitle('主页');
-        if (window.location.host == 'bilichat.3shain.com') {
-            window.location.href = 'https://github.com/3Shain/Comen/tree/bilichat';
-        }
+  constructor(private title: Title) {
+    title.setTitle('主页');
+    if (window.location.host == 'bilichat.3shain.com') {
+      window.location.href = 'https://github.com/3Shain/Comen/tree/bilichat';
     }
+  }
 
-    ngOnInit() {
-        this.roomIdSubscription = this.roomId.valueChanges.subscribe(id => {
-            localStorage.setItem('roomId', id)
-        });
-    }
+  ngOnInit() {
+    this.roomIdSubscription = this.roomId.valueChanges.subscribe((id) => {
+      localStorage.setItem('roomId', id);
+    });
+  }
 
-    setPlatform(platform: string) {
-        this.platform$.next(platform);
-        localStorage.setItem('platform', platform);
-    }
+  setPlatform(platform: string) {
+    this.platform$.next(platform);
+    localStorage.setItem('platform', platform);
+  }
 
-    clickLink(event:Event){
-        (event.target as HTMLInputElement).select();
-        document.execCommand('copy');
-    }
+  clickLink(event: Event) {
+    (event.target as HTMLInputElement).select();
+    document.execCommand('copy');
+  }
 
-    ngOnDestroy() {
-        this.roomIdSubscription.unsubscribe();
-    }
+  ngOnDestroy() {
+    this.roomIdSubscription.unsubscribe();
+  }
 }

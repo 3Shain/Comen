@@ -11,6 +11,9 @@
     },
     {
       "path": "./tsconfig.editor.json"
+    },
+    {
+      "path": "./tsconfig.worker.json"
     }
   ],
   "angularCompilerOptions": {

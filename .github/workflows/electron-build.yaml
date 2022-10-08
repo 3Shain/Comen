@@ -1,10 +1,10 @@
-name: "Build electron executables"
-on: 
+name: 'Build electron executables'
+on:
   push:
-    branches: 
+    branches:
       - main
   pull_request:
-    
+
 jobs:
   deploy:
     runs-on: ubuntu-18.04
@@ -34,7 +34,7 @@ jobs:
       - name: Build frontend
         run: npx nx build core --prod
         env:
-          COMEN_ENVIRONMENT: "electron"
+          COMEN_ENVIRONMENT: 'electron'
       - name: Build electron app
         run: npx nx build electron-app --prod
       - name: Package electron app
@@ -44,4 +44,3 @@ jobs:
         with:
           name: build-windows
           path: dist/executables/Comen.exe
-          

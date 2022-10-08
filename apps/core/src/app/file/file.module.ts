@@ -4,15 +4,15 @@ import { IdbFileStorage } from './idb-file-storage';
 
 @NgModule()
 export class FileModule {
-    static forRoot(): ModuleWithProviders<FileModule> {
-        return {
-            ngModule: FileModule,
-            providers: [
-                {
-                    provide: FileStorage,
-                    useClass: IdbFileStorage
-                }
-            ]
-        }
-    }
+  static forRoot(): ModuleWithProviders<FileModule> {
+    return {
+      ngModule: FileModule,
+      providers: [
+        {
+          provide: FileStorage,
+          useClass: IdbFileStorage,
+        },
+      ],
+    };
+  }
 }

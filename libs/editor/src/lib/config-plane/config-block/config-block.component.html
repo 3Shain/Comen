@@ -1,51 +1,90 @@
 <!-- Properties -->
 <ng-container [formGroup]="propertiesFormGroup">
-    <div class="control" *ngFor="let prop of _visibleProps|keyvalue:noorder;trackBy trackFn">
-        <label>
-            <i *ngIf="prop.value['x-icon']" nz-icon [attr.type]="prop.value['x-icon']"></i>
-            {{prop.value['displayName']}}<i nz-icon nzType="close" (click)="removeProperty(prop.key)"></i>
-        </label>
-        <div [ngSwitch]="prop.value['type']">
-            <ng-container *ngSwitchCase="'text'">
-                <input [formControlName]="prop.key">
-            </ng-container>
-            <ng-container *ngSwitchCase="'number'">
-                <input type="number" [formControlName]="prop.key">
-            </ng-container>
-            <ng-container *ngSwitchCase="'color'">
-                <comen-color-control [formControlName]="prop.key"></comen-color-control>
-            </ng-container>
-            <ng-container *ngSwitchCase="'margin'">
-                <comen-margin-control [formControlName]="prop.key"></comen-margin-control>
-            </ng-container>
-            <ng-container *ngSwitchCase="'range'">
-                <comen-range-control [formControlName]="prop.key"></comen-range-control>
-            </ng-container>
-            <ng-container *ngSwitchCase="'switch'">
-                <label nz-checkbox [formControlName]="prop.key">{{prop.value['extra'].description}}</label>
-            </ng-container>
-            <ng-container *ngSwitchCase="'font'">
-                <comen-font-control [formControlName]="prop.key"></comen-font-control>
-            </ng-container>
-            <ng-container *ngSwitchCase="'outline'">
-                <comen-outline-control [formControlName]="prop.key"></comen-outline-control>
-            </ng-container>
-            <ng-container *ngSwitchCase="'radius'">
-                <comen-radius-control [formControlName]="prop.key"></comen-radius-control>
-            </ng-container>
-            <ng-container *ngSwitchCase="'shadow'">
-                <comen-shadow-control [formControlName]="prop.key"></comen-shadow-control>
-            </ng-container>
-            <ng-container *ngSwitchCase="'list'">
-
-            </ng-container>
-            <ng-container *ngSwitchCase="'position-offset'">
-
-            </ng-container>
-        </div>
+  <div
+    class="control"
+    *ngFor="let prop of _visibleProps | keyvalue: noorder; trackBy: trackFn"
+  >
+    <label>
+      <i
+        *ngIf="prop.value['x-icon']"
+        nz-icon
+        [attr.type]="prop.value['x-icon']"
+      ></i>
+      {{ prop.value['displayName']
+      }}<i nz-icon nzType="close" (click)="removeProperty(prop.key)"></i>
+    </label>
+    <div [ngSwitch]="prop.value['type']">
+      <ng-container *ngSwitchCase="'text'">
+        <input matInput [formControlName]="prop.key" />
+      </ng-container>
+      <ng-container *ngSwitchCase="'number'">
+        <mat-form-field>
+          <input matInput type="number" [formControlName]="prop.key" />
+        </mat-form-field>
+      </ng-container>
+      <ng-container *ngSwitchCase="'color'">
+        <comen-color-control [formControlName]="prop.key"></comen-color-control>
+      </ng-container>
+      <ng-container *ngSwitchCase="'margin'">
+        <comen-margin-control
+          [formControlName]="prop.key"
+        ></comen-margin-control>
+      </ng-container>
+      <ng-container *ngSwitchCase="'range'">
+        <comen-range-control [formControlName]="prop.key"></comen-range-control>
+      </ng-container>
+      <ng-container *ngSwitchCase="'switch'">
+        <mat-slide-toggle [formControlName]="prop.key">{{
+          prop.value['extra'].description
+        }}</mat-slide-toggle>
+      </ng-container>
+      <ng-container *ngSwitchCase="'font'">
+        <comen-font-control [formControlName]="prop.key"></comen-font-control>
+      </ng-container>
+      <ng-container *ngSwitchCase="'outline'">
+        <comen-outline-control
+          [formControlName]="prop.key"
+        ></comen-outline-control>
+      </ng-container>
+      <ng-container *ngSwitchCase="'radius'">
+        <comen-radius-control
+          [formControlName]="prop.key"
+        ></comen-radius-control>
+      </ng-container>
+      <ng-container *ngSwitchCase="'shadow'">
+        <comen-shadow-control
+          [formControlName]="prop.key"
+        ></comen-shadow-control>
+      </ng-container>
+      <ng-container *ngSwitchCase="'list'">
+        <mat-form-field>
+          <mat-chip-list #chipList [formControlName]="prop.key"></mat-chip-list>
+          <input [matChipInputFor]="chipList" />
+        </mat-form-field>
+      </ng-container>
+      <ng-container *ngSwitchCase="'position-offset'"> </ng-container>
     </div>
-    <div class="control">
-        <button class="cm full-width">添加属性</button>
-    </div>
+  </div>
+  <div class="control">
+    <button
+      mat-stroked-button
+      color="primary"
+      [disabled]="allVisiable"
+      [matMenuTriggerFor]="menu"
+    >
+      添加属性
+    </button>
+    <mat-menu #menu="matMenu">
+      <button
+        mat-menu-item
+        *ngFor="
+          let prop of _invisibleProps | keyvalue: noorder;
+          trackBy: trackFn
+        "
+      >
+        {{ prop.value['displayName'] }}
+      </button>
+    </mat-menu>
+  </div>
 </ng-container>
 <!-- Add property -->

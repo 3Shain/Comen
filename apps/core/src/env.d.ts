@@ -1,2 +1,1 @@
-
-declare var COMEN_ENVIRONMENT:string;
+declare var COMEN_ENVIRONMENT: string;

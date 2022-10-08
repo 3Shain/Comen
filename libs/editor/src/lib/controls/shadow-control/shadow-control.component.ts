@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormBuilder,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 
 @Component({
   selector: 'comen-shadow-control',
@@ -9,33 +13,25 @@ import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/f
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: ShadowControlComponent,
-      multi: true
-    }
-  ]
+      multi: true,
+    },
+  ],
 })
 export class ShadowControlComponent implements ControlValueAccessor {
-
-  constructor(private fb:FormBuilder) { }
+  constructor(private fb: FormBuilder) {}
 
   formGroup = this.fb.group({
-    color:['rgba(0,0,0,0.5)'],
-    x:[0],
-    y:[0],
-    spread:[0],
+    color: ['rgba(0,0,0,0.5)'],
+    x: [0],
+    y: [0],
+    spread: [0],
     blur: [0],
-    inset: [false]
+    inset: [false],
   });
 
-  writeValue(){
-    
-  }
+  writeValue() {}
 
-  registerOnChange(){
+  registerOnChange() {}
 
-  }
-
-  registerOnTouched(){
-
-  }
-
+  registerOnTouched() {}
 }
