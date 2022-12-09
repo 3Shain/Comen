@@ -50,7 +50,7 @@
     "cache-manager": "^3.4.0",
     "cache-manager-fs": "^1.0.8",
     "cache-manager-redis": "^0.6.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "got": "^11.8.1",
     "isomorphic-ws": "^4.0.1",
     "knex": "^0.21.15",
