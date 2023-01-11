@@ -53,7 +53,7 @@
     "express": "^4.17.1",
     "got": "^11.8.1",
     "isomorphic-ws": "^4.0.1",
-    "knex": "^0.21.15",
+    "knex": "^2.4.0",
     "nestjs-knex": "^1.0.1",
     "ng-zorro-antd": "^11.0.0",
     "pako": "^2.0.2",
